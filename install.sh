@@ -5,7 +5,7 @@ sudo pip install psycopg2
 sudo pip install virtualenv virtualenvwrapper
 mkvirtualenv opentraincommunity
 workon opentraincommunity
-pip install -r setup/requirements.txt
+pip install -r requirements.txt
 
 
 user=$USER
@@ -15,6 +15,6 @@ psql -c "CREATE USER admin WITH PASSWORD 'admin';"
 echo `printf "Changing back to user: %s" user`
 su ${user}
 
-python setup/setup_db.py
+python setup_db.py
 
 

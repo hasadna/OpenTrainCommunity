@@ -1,9 +1,24 @@
 from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 import entities
+from entities import Station, TrainStop
+import datetime
+import time
+import os
 
 Base = declarative_base()
 ENGINE_STRING = 'postgresql://admin:admin@localhost/opentrain_community'
+
+def get_session():
+  engine = create_engine(ENGINE_STRING)
+  # Bind the engine to the metadata of the Base class so that the
+  # declaratives can be accessed through a DBSession instance
+  Base.metadata.bind = engine
+
+  DBSession = sessionmaker(bind=engine)
+  session = DBSession()
+  return session
 
 def create_db():
   drop_db()
@@ -58,28 +73,20 @@ def drop_db():
       conn.execute(DropTable(table))
   
   trans.commit()
-    
+
+def _parse_timedelta(timestr):
+  while len(timestr) < 4:
+    timestr = '0' + timestr  
+  minutes = int(timestr[0:2])*60 + int(timestr[2:4])  
+  return datetime.timedelta(minutes=minutes)
+
+def _parsedate(datestr):
+  datestr = datestr.strip()
+  date_val = datetime.datetime.strptime(datestr, '%Y%m%d')
+  return date_val
+
 def add_opentrain_data(filename):
-  from sqlalchemy import create_engine
-  from sqlalchemy.orm import sessionmaker
-   
-  from entities import Station, TrainStop
-   
-  engine = create_engine(ENGINE_STRING)
-  # Bind the engine to the metadata of the Base class so that the
-  # declaratives can be accessed through a DBSession instance
-  Base.metadata.bind = engine
-   
-  DBSession = sessionmaker(bind=engine)
-  # A DBSession() instance establishes all conversations with the database
-  # and represents a "staging zone" for all the objects loaded into the
-  # database session object. Any change made against the objects in the
-  # session won't be persisted into the database until you call
-  # session.commit(). If you're not happy about the changes, you can
-  # revert all of them back to the last commit by calling
-  # session.rollback()
-  session = DBSession()
-   
+  session = get_session()
   with open(filename, 'r') as f:
     lines = f.readlines()
   max_lines = 200000000
@@ -92,15 +99,13 @@ def add_opentrain_data(filename):
     if count % 10000 == 0:
       print 'Done {}%'.format(int(count/float(row_count)*100))
       session.commit()
-      session = DBSession()
     line_data = line.split('\t')
-    date = int(line_data[0])
+    date = _parsedate(line_data[0])
     train_num = int(line_data[1].strip("\""))
-    # WATCH OUT!!! - the order here is all made up:
-    arrive_expected = int(line_data[2])
-    arrive_actual = int(line_data[3])
-    depart_expected = int(line_data[4])
-    depart_actual = int(line_data[5])
+    arrive_expected = date + _parse_timedelta(line_data[2])
+    arrive_actual = date + _parse_timedelta(line_data[3])
+    depart_expected = date + _parse_timedelta(line_data[4])
+    depart_actual = date + _parse_timedelta(line_data[5])
     station_id = int(line_data[6])
     train_stop = TrainStop(date=date, 
                            train_num=train_num, 
@@ -114,6 +119,7 @@ def add_opentrain_data(filename):
   print 'Done all'
 
 if __name__ == "__main__":
+  session = get_session()
   create_db()
-  add_opentrain_data()
+  add_opentrain_data(os.path.abspath('../data/01_2013.txt'))
 
