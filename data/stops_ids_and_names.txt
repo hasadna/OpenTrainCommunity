@@ -1,0 +1,54 @@
+300 Modiin
+400 Modiin Center
+700 Kiryat Hayyim
+800 Kiryat Motzkin
+1220 Leb Hmifratz
+1300 Hutsot HaMifrats
+1500 Akko
+1600 Nahariyya
+2100 Haifa Center HaShmona
+2200 Haifa Bat Gallim
+2300 Haifa Hof HaKarmel (Razi'el)
+2500 Atlit
+2800 Binyamina
+2820 Kesariyya - Pardes Hanna
+3100 Hadera West
+3300 Natanya
+3400 Bet Yehoshua
+3500 Herzliyya
+3600 Tel Aviv - University
+3700 Tel Aviv Center - Savidor
+4100 Bne Brak
+4170 Petah Tikva   Kiryat Arye
+4250 Petah Tikva Sgulla
+4600 Tel Aviv HaShalom
+4640 Holon Junction
+4660 Holon - Wolfson
+4680 Bat Yam - Yoseftal
+4690 Bat Yam - Komemiyyut
+4800 Kfar Habbad
+4900 Tel Aviv HaHagana
+5000 Lod
+5010 Ramla
+5150 Ganey Aviv
+5200 Rehovot E. Hadar
+5300 Be'er Ya'akov
+5410 Yavne
+5800 Ashdod Ad Halom
+5900 Ashkelon
+6300 Bet Shemesh
+6500 Jerusalem Biblical Zoo
+6700 Jerusalem Malha
+7000 Kiryat Gat
+7300 Be'er Sheva North University
+7320 Be'er Sheva Center
+7500 Dimona
+8550 Lehavim - Rahat
+8600 Ben Gurion Airport
+8700 Kfar Sava
+8800 Rosh Ha'Ayin North
+9000 Yavne - West
+9100 Rishon LeTsiyyon HaRishonim
+9200 Hod HaSharon
+9600 Sderot
+9800 Rishon LeTsiyyon - Moshe Dayan
