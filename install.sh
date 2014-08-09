@@ -7,6 +7,8 @@ mkvirtualenv opentraincommunity
 workon opentraincommunity
 pip install -r requirements.txt
 
+sudo apt-get install python-numpy python-scipy python-matplotlib ipython ipython-notebook python-pandas python-nose
+sudo apt-get build-dep matplotlib
 
 user=$USER
 sudo su postgres

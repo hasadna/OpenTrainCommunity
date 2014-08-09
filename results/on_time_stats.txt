@@ -1,0 +1,2 @@
+Passenger ontime=68%, rush=60% (up to 1 minutes delay)
+Passenger ontime=91%, rush=88% (up to 5 minutes delay)

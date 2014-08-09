@@ -23,7 +23,7 @@ class MyTopology(ministorm.Topology):
   def create(self):
     # creating the bolts
     session = manage.get_session()
-    query = session.query(TrainStop).filter(TrainStop.date == datetime.date(2013, 1, 1))
+    query = session.query(TrainStop)#.filter(TrainStop.date == datetime.date(2013, 1, 1))
     trainstops = query.all()
     #spout = self.addbolt(bolts.FileSpout('rawlines', self._args.input_db_file[0]))
     spout = self.addbolt(bolts.SQLAlchemyToLineSpout('rawlines', trainstops))

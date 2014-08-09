@@ -54,7 +54,6 @@ class SQLAlchemyToLineSpout(Bolt):
   def run(self):
     for trainstop in self._trainstops:
       line = self.trainstop_to_line(trainstop)
-      print line      
       self.write(self._outputlabel, line)
     self.doneall()
 
@@ -78,7 +77,6 @@ class FileSpout(Bolt):
     
   def run(self):
     for line in self._f:
-      print line
       self.write(self._outputlabel, line)
     self.doneall()
 
