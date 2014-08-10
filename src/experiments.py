@@ -32,16 +32,6 @@ def display_station_delay_bar_graph(vals_dict, stop_names_list, title, figsize):
   plt.savefig('../results/on_time_delay_is_{}_minutes.png'.format(minutes), bbox_inches='tight')  
   #plt.show() 
 
-def get_stop_names():
-  with open('../data/stops_ids_and_names.txt', 'r') as f:
-    lines = f.readlines()
-  stop_names = {}
-  for line in lines:
-    if line.strip():
-      split = line.split(' ', 1)
-      stop_names[int(split[0])] = split[1].strip()
-  return stop_names
-
 def get_stop_passenger_ratio():
   with open('../data/passenger_stats.txt', 'r') as f:
     lines = f.readlines()
@@ -55,8 +45,9 @@ def get_stop_passenger_ratio():
 def get_ontime_percent(trainstops_rush, minutes):
   count = 0  
   for x in trainstops_rush:
-    if x.arrive_actual - x.arrive_expected >= datetime.timedelta(minutes = minutes):
-      count += 1
+    if x.arrive_expected.hour != 0 and x.arrive_actual.hour != 0:
+      if x.arrive_actual - x.arrive_expected >= datetime.timedelta(minutes = minutes):
+        count += 1
   return int(100 - float(count) / len(trainstops_rush) * 100)
 
 def calc_ontime_data(stops, session, minutes, stop_names):
@@ -83,7 +74,7 @@ def calc_passenger_weighted_ontime_percent(stops, stop_passenger_ratio, data):
 
 # exclude stops - only from bar graph
 def get_ontime_percentage_report_for_given_minutes(minutes, session, exclude_stops=None):
-  stop_names = get_stop_names()
+  stop_names = manage.get_stop_names()
   stop_passenger_ratio = get_stop_passenger_ratio()  
   stops = stop_names.keys()
 
@@ -113,7 +104,7 @@ if __name__ == "__main__":
   # excluding stops with less than 1% of passengers:
   exclude_stops = [4170, 8700, 7000, 6300, 4100, 4250, 5410, 4690, 9100, 9000, 700, 4660, 5150, 300, 6700, 5010, 5300, 1300, 8550, 4640, 4800, 2500, 6500, 7500]
   
-  for minutes in [1,5]:
+  for minutes in [1, 4, 5]:
     get_ontime_percentage_report_for_given_minutes(minutes, session, exclude_stops)
   
   

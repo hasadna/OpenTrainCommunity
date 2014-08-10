@@ -1,11 +1,14 @@
+from __future__ import print_function
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+
 import entities
 from entities import Station, TrainStop
 import datetime
 import time
 import os
+
 
 Base = declarative_base()
 ENGINE_STRING = 'postgresql://admin:admin@localhost/opentrain_community'
@@ -98,7 +101,7 @@ def add_opentrain_data(filename):
     if count > max_lines:
       break
     if count % 10000 == 0:
-      print 'Done {}%'.format(int(count/float(row_count)*100))
+      print('Done {}%'.format(int(count/float(row_count)*100)))
       session.commit()
     line_data = line.split('\t')
     date = _parsedate(line_data[0])
@@ -119,21 +122,45 @@ def add_opentrain_data(filename):
                            station_id=station_id)
     session.add(train_stop)
   session.commit()
-  print 'Done all'
+  print('Done all')
 
+
+def get_stop_names():
+  with open('../data/stops_ids_and_names.txt', 'r') as f:
+    lines = f.readlines()
+  stop_names = {}
+  for line in lines:
+    if line.strip():
+      split = line.split(' ', 1)
+      stop_names[int(split[0])] = split[1].strip()
+  return stop_names
+
+def output_all_data_to_csv(session, filename):
+  query = session.query(TrainStop).filter(TrainStop.date == datetime.date(2013, 7, 14))
+  trainstops = query.all()
+  stop_names = get_stop_names()
+  with open(filename, 'w') as f:
+    print("date,train_num,arrive_expected,arrive_actual,arrive_delay,depart_expected,depart_actual,depart_delay,stop_id,stop_name", file=f)
+    for x in trainstops:
+      arrive_delay = (x.arrive_actual - x.arrive_expected).total_seconds()/60
+      if x.arrive_actual.hour == 0 or x.arrive_expected.hour == 0:
+        arrive_delay = 0
+      depart_delay = (x.depart_actual - x.depart_expected).total_seconds()/60
+      if x.depart_actual.hour == 0 or x.depart_expected.hour == 0:
+        depart_delay = 0      
+      line = "{},{},{},{},{},{},{},{},{},{}".format(x.date, x.train_num, 
+                                                x.arrive_expected,#.strftime('%H:%M'), 
+                                                x.arrive_actual,#.strftime('%H:%M'), 
+                                                arrive_delay, 
+                                                x.depart_expected,#.strftime('%H:%M'), 
+                                                x.depart_actual,#.strftime('%H:%M'), 
+                                                depart_delay, x.station_id, stop_names[x.station_id])
+      print(line)
+      print(line, file=f)  
+  
 if __name__ == "__main__":
   session = get_session()
   #create_db()
   #add_opentrain_data(os.path.abspath('../data/01_2013.txt'))
-  query = session.query(TrainStop).filter(TrainStop.date == datetime.date(2013, 1, 1))
-  trainstops = query.all()
-  for x in trainstops:
-    arrive_delay = (x.arrive_actual - x.arrive_expected).total_seconds()/60
-    depart_delay = (x.depart_actual - x.depart_expected).total_seconds()/60
-    print "{},{},{},{},{},{},{},{},{}".format(x.date, x.train_num, 
-                                              x.arrive_expected,#.strftime('%H:%M'), 
-                                              x.arrive_actual,#.strftime('%H:%M'), 
-                                              arrive_delay, 
-                                              x.depart_expected,#.strftime('%H:%M'), 
-                                              x.depart_actual,#.strftime('%H:%M'), 
-                                              depart_delay, x.station_id)
+  output_all_data_to_csv(session, '../output-14-7.csv')
+  
