@@ -95,6 +95,11 @@ def get_ontime_percentage_report_for_given_minutes(minutes, session, exclude_sto
   title = 'Percentage of on-time trains per station. On time is when delay < {} minutes'.format(minutes)
   vals_dict = {"all":all_vals_ordered, "rush":rush_ordered}  
   display_station_delay_bar_graph(vals_dict, stop_names_list_ordered, title, (22.0, 16.0))
+  print title
+  print "Name\tAll\tRush-hour"
+  for val in reversed(zip(stop_names_list_ordered, all_vals_ordered, rush_ordered)):
+    print val[0] + '\t' + str(val[1]) + '\t' + str(val[2])
+  print ""
 
   passenger_weighted_all, passenger_weighted_rush = calc_passenger_weighted_ontime_percent(stops, stop_passenger_ratio, data)
   print "Passenger ontime={}%, rush={}% (up to {} minutes delay)".format(passenger_weighted_all, passenger_weighted_rush, minutes)

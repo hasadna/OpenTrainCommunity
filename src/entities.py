@@ -21,10 +21,13 @@ class TrainStop(Base):
   train_num = Column(Integer, nullable=False)
   depart_expected = Column(DateTime)
   depart_actual = Column(DateTime)
+  depart_delay = Column(Integer)
   arrive_expected = Column(DateTime)
   arrive_actual = Column(DateTime)
+  arrive_delay = Column(Integer)
   
   station_id = Column(Integer)
+  station_name = Column(String)
   #station_id = Column(Integer, ForeignKey('station.id'))
   #station = relationship(Station)
  

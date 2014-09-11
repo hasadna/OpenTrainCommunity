@@ -96,6 +96,7 @@ def add_opentrain_data(filename):
   max_lines = 200000000
   count = 0
   row_count = min(len(lines), max_lines)
+  stop_names = get_stop_names('data')
   for line in lines:
     count += 1
     if count > max_lines:
@@ -108,8 +109,16 @@ def add_opentrain_data(filename):
     train_num = int(line_data[1].strip("\""))
     arrive_expected = date + _parse_timedelta(line_data[2])
     arrive_actual = date + _parse_timedelta(line_data[3])
+    arrive_delay = (arrive_actual - arrive_expected).total_seconds()/60
     depart_expected = date + _parse_timedelta(line_data[4])
     depart_actual = date + _parse_timedelta(line_data[5])
+    
+    arrive_delay = (arrive_actual - arrive_expected).total_seconds()/60
+    if arrive_actual.hour == 0 or arrive_expected.hour == 0:
+      arrive_delay = 0
+    depart_delay = (depart_actual - depart_expected).total_seconds()/60
+    if depart_actual.hour == 0 or depart_expected.hour == 0:
+      depart_delay = 0 
     station_id = int(line_data[6])
     if station_id not in real_stops:
       continue
@@ -117,16 +126,19 @@ def add_opentrain_data(filename):
                            train_num=train_num, 
                            arrive_expected=arrive_expected, 
                            arrive_actual=arrive_actual,
+                           arrive_delay=arrive_delay,
                            depart_expected=depart_expected, 
                            depart_actual=depart_actual,
-                           station_id=station_id)
+                           depart_delay=depart_delay,
+                           station_id=station_id,
+                           station_name=stop_names[station_id])
     session.add(train_stop)
   session.commit()
   print('Done all')
 
 
-def get_stop_names():
-  with open('../data/stops_ids_and_names.txt', 'r') as f:
+def get_stop_names(data_dir='../data'):
+  with open(os.path.join(data_dir, 'stops_ids_and_names.txt'), 'r') as f:
     lines = f.readlines()
   stop_names = {}
   for line in lines:
@@ -135,13 +147,20 @@ def get_stop_names():
       stop_names[int(split[0])] = split[1].strip()
   return stop_names
 
-def output_all_data_to_csv(session, filename):
-  query = session.query(TrainStop).filter(TrainStop.date == datetime.date(2013, 7, 14))
+def output_all_data_to_csv(session, filename, is_2014):
+  if is_2014:
+    query = session.query(TrainStop).filter(TrainStop.date >= datetime.date(2014, 1, 1))
+  else:
+    query = session.query(TrainStop).filter(TrainStop.date < datetime.date(2014, 1, 1))
   trainstops = query.all()
   stop_names = get_stop_names()
   with open(filename, 'w') as f:
     print("date,train_num,arrive_expected,arrive_actual,arrive_delay,depart_expected,depart_actual,depart_delay,stop_id,stop_name", file=f)
+    count = 0
     for x in trainstops:
+      count += 1
+      if count % 10000 == 0:
+        print('Done {}%'.format(int(count/float(query.count())*100)))      
       arrive_delay = (x.arrive_actual - x.arrive_expected).total_seconds()/60
       if x.arrive_actual.hour == 0 or x.arrive_expected.hour == 0:
         arrive_delay = 0
@@ -154,13 +173,17 @@ def output_all_data_to_csv(session, filename):
                                                 arrive_delay, 
                                                 x.depart_expected,#.strftime('%H:%M'), 
                                                 x.depart_actual,#.strftime('%H:%M'), 
-                                                depart_delay, x.station_id, stop_names[x.station_id])
-      print(line)
+                                                depart_delay,
+                                                x.station_id, stop_names[x.station_id])
+      #print(line)
       print(line, file=f)  
   
 if __name__ == "__main__":
   session = get_session()
   #create_db()
   #add_opentrain_data(os.path.abspath('../data/01_2013.txt'))
-  output_all_data_to_csv(session, '../output-14-7.csv')
-  
+  output_all_data_to_csv(session, '../output_2013.csv', False)
+  output_all_data_to_csv(session, '../output_2014.csv', True)
+  os.system('sed 1d ../output_2014.csv > ../output_2014_noheader.csv')
+  os.system('cat ../output_2013.csv ../output_2014_noheader.csv > ../output.csv')
+  #os.system("sed '1817218d' output.csv > output.csv")
