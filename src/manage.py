@@ -114,6 +114,9 @@ def add_opentrain_data(filename):
             print('Done {}%'.format(int(count / float(row_count) * 100)))
             session.commit()
         line_data = line.split('\t')
+        station_id = int(line_data[6])
+        if station_id not in real_stops:
+            continue
         date = _parsedate(line_data[0])
         train_num = int(line_data[1].strip("\""))
         arrive_expected = date + _parse_timedelta(line_data[2])
@@ -128,9 +131,6 @@ def add_opentrain_data(filename):
         depart_delay = (depart_actual - depart_expected).total_seconds() / 60
         if depart_actual.hour == 0 or depart_expected.hour == 0:
             depart_delay = 0
-        station_id = int(line_data[6])
-        if station_id not in real_stops:
-            continue
         train_stop = TrainStop(date=date,
                                train_num=train_num,
                                arrive_expected=arrive_expected,
