@@ -126,11 +126,17 @@ def add_opentrain_data(filename):
         depart_actual = date + _parse_timedelta(line_data[5])
 
         arrive_delay = (arrive_actual - arrive_expected).total_seconds() / 60
-        if arrive_actual.hour == 0 or arrive_expected.hour == 0:
-            arrive_delay = 0
+        if ((arrive_actual.hour == 0) and (arrive_actual.minute == 0) and
+                (arrive_expected.hour == 0) and (arrive_expected.minute == 0)):
+            arrive_delay = None
+            arrive_actual = None
+            arrive_expected = None
         depart_delay = (depart_actual - depart_expected).total_seconds() / 60
-        if depart_actual.hour == 0 or depart_expected.hour == 0:
-            depart_delay = 0
+        if ((depart_actual.hour == 0) and (depart_actual.minute == 0) and
+                (depart_expected.hour == 0) and (depart_expected.minute == 0)):
+            depart_delay = None
+            depart_actual = None
+            depart_expected = None
         train_stop = TrainStop(date=date,
                                train_num=train_num,
                                arrive_expected=arrive_expected,
@@ -158,50 +164,51 @@ def get_stop_names(data_dir='../data'):
 
 
 def output_all_data_to_csv(session, filename, is_2014):
+    last_id = -1
     if is_2014:
         query = session.query(TrainStop).filter(
             TrainStop.date >= datetime.date(2014, 1, 1))
     else:
         query = session.query(TrainStop).filter(
             TrainStop.date < datetime.date(2014, 1, 1))
-    trainstops = query.all()
+    #trainstops = query.all()
     stop_names = get_stop_names()
     with open(filename, 'w') as f:
         print("date,train_num,arrive_expected,arrive_actual,arrive_delay,"
               "depart_expected,depart_actual,depart_delay,stop_id,"
               "stop_name", file=f)
         count = 0
-        for x in trainstops:
-            count += 1
-            if count % 10000 == 0:
-                print('Done {}%'.format(
-                    int(count / float(query.count()) * 100)))
-            arrive_delay = (x.arrive_actual - x.arrive_expected
-                            ).total_seconds() / 60
-            if x.arrive_actual.hour == 0 or x.arrive_expected.hour == 0:
-                arrive_delay = 0
-            depart_delay = (x.depart_actual - x.depart_expected
-                            ).total_seconds() / 60
-            if x.depart_actual.hour == 0 or x.depart_expected.hour == 0:
-                depart_delay = 0
-            line = "{},{},{},{},{},{},{},{},{},{}".format(
-                x.date, x.train_num,
-                x.arrive_expected,
-                x.arrive_actual,
-                arrive_delay,
-                x.depart_expected,
-                x.depart_actual,
-                depart_delay,
-                x.station_id,
-                stop_names[x.station_id])
-            print(line, file=f)
+        while True:
+            trainstops = query.filter(TrainStop.id > last_id).limit(1000).all()
+            if (not trainstops) or (len(trainstops) == 0):
+                break
+            for x in trainstops:
+                last_id = x.id
+                count += 1
+                if count % 10000 == 0:
+                    print('Done {}%'.format(
+                        int(count / float(query.count()) * 100)))
+                line = "{},{},{},{},{},{},{},{},{},{}".format(
+                    x.date, x.train_num,
+                    x.arrive_expected,
+                    x.arrive_actual,
+                    x.arrive_delay,
+                    x.depart_expected,
+                    x.depart_actual,
+                    x.depart_delay,
+                    x.station_id,
+                    stop_names[x.station_id])
+                print(line, file=f)
 
 if __name__ == "__main__":
     session = get_session()
     #create_db()
     #add_opentrain_data(os.path.abspath('../data/01_2013.txt'))
+    print("writing 2013 to csv")
     output_all_data_to_csv(session, '../output_2013.csv', False)
+    print("writing 2014 to csv")
     output_all_data_to_csv(session, '../output_2014.csv', True)
+    print("joining files to output.csv")
     os.system('sed 1d ../output_2014.csv > ../output_2014_noheader.csv')
     os.system('cat ../output_2013.csv ../output_2014_noheader.csv >'
               ' ../output.csv')
