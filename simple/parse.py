@@ -4,6 +4,8 @@ import datetime
 import argparse
 import pytz
 import itertools
+from collections import defaultdict
+
 
 ISRAEL_TZ = pytz.timezone('Asia/Jerusalem')
 LONG_AGO = ISRAEL_TZ.localize(datetime.datetime.fromtimestamp(0))
@@ -30,35 +32,10 @@ class Trip(object):
         self.stops = stops
         self.is_valid = False
         self.error = None
-        self.fix_split()
         self.check()
 
     def __unicode__(self):
         return '%s: %s - %s' % (self.train_num, unicode(self.stops[0]), unicode(self.stops[-1]))
-
-    def is_split(self):
-        before_24 = False
-        after_0 = False
-        for stop in self.stops:
-            if stop.exp_arrival and stop.exp_arrival.hour >= 22:
-                before_24 = True
-            if stop.exp_arrival and stop.exp_arrival.hour <= 2:
-                after_0 = True
-        return before_24 and after_0
-
-    def fix_split(self):
-        if self.is_split():
-            for stop in self.stops:
-                if stop.exp_arrival and stop.exp_arrival.hour < 12:
-                    stop.exp_arrival += datetime.timedelta(hours=24)
-                if stop.exp_departure and stop.exp_departure.hour < 12:
-                    stop.exp_departure += datetime.timedelta(hours=24)
-                if stop.actual_arrival and stop.actual_arrival.hour < 12:
-                    stop.actual_arrival += datetime.timedelta(hours=24)
-                if stop.actual_departure and stop.actual_departure.hour < 12:
-                    stop.actual_departure += datetime.timedelta(hours=24)
-
-            self.stops.sort(key=lambda x : x.exp_arrival or LONG_AGO)
 
     def check(self):
         try:
@@ -66,8 +43,6 @@ class Trip(object):
             self.is_valid = True
         except Exception, e:
             self.error = unicode(e)
-
-
 
     def do_check(self):
         assert self.stops, 'no stops'
@@ -80,9 +55,6 @@ class Trip(object):
             assert stop.exp_arrival is not None,'exp arrival of %d is None' % idx
         for idx,stop in enumerate(self.stops[0:-1]):
             assert stop.exp_departure is not None,'exp departure of %d is None' % idx
-
-
-
 
 class StopLine(object):
     def parse_time(self, t):
@@ -104,7 +76,7 @@ class StopLine(object):
         if dt is not None:
             return dt.strftime('%H:%M')
         else:
-            return "None"
+            return "-----"
 
     def __unicode__(self):
         return '%5d %4d %25s A=%5s(%5s) D=%5s(%5s)' % (self.line,
@@ -131,15 +103,35 @@ class TrainParser():
                 if (1+idx) % 10000 == 0:
                     print 'parsed %d lines' % (idx+1)
 
-    def collect_trips(self):
-        group_res = itertools.groupby(self.stop_lines,key=lambda x : (x.date,x.train_num))
-        for (date,train_num),stops_iter in group_res:
-            trip  = Trip(list(stops_iter))
-            if trip.is_valid:
-                self.trips.append(trip)
-            else:
-                print 'Invalid trip: %s %s' % (unicode(trip),trip.error)
+    def build_trips(self):
+        stops_by_trip_num = defaultdict(list)
+        for trip in self.stop_lines:
+            stops_by_trip_num[trip.train_num].append(trip)
 
+        for trip_num,trips in stops_by_trip_num.iteritems():
+            self.split_trips(trip_num,trips)
+
+    def print_trips_status(self):
+        invalid_trips = [trip for trip in self.trips if not trip.is_valid]
+        print 'Total trips: %d' % len(self.trips)
+        print 'Invalid trips: %d' % len(invalid_trips)
+        with codecs.open('invalid.txt','w','utf-8') as invalid_fh:
+            for invalid_trip in invalid_trips:
+                invalid_fh.write('%s: %s\n' % (unicode(invalid_trip),invalid_trip.error))
+
+    def split_trips(self,trip_num,stops):
+        cur_stops = []
+        for idx,stop in enumerate(stops):
+            if stop.exp_arrival is None:
+                if cur_stops:
+                    trip = Trip(cur_stops)
+                    self.trips.append(trip)
+                    cur_stops = []
+            cur_stops.append(stop)
+        # build the left-overs
+        if cur_stops:
+            trip = Trip(cur_stops)
+            self.trips.append(trip)
 
     def dump(self):
         for line in self.stop_lines:
@@ -156,15 +148,16 @@ class TrainParser():
         if m:
             gd = m.groupdict()
             stop_id = int(gd['raw_stop_id'])
-            #if stop_id not in REAL_STOP_IDS:
-            #    return
+            is_real = stop_id in REAL_STOP_IDS
+
             sl = StopLine()
             sl.date = self._parse_date(gd['date'])
             sl.train_num = gd['train_num']
             sl.stop_id = stop_id
             sl.stop_name = gd['raw_stop_name'].strip()
             sl.file = self.ifile
-            sl.line = idx
+            sl.line = idx + 1 # make it base 1 now, like file editors
+            sl.is_real = is_real
             sl.build_times(gd['actual_arrival'],
                            gd['exp_arrival'],
                            gd['actual_departure'],
@@ -176,7 +169,8 @@ class TrainParser():
 
     def main(self):
         self.parse()
-        self.collect_trips()
+        self.build_trips()
+        self.print_trips_status()
         #self.dump()
 
 
