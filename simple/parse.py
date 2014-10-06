@@ -29,25 +29,28 @@ REAL_STOP_IDS = [8550, 800, 6700, 7300, 8700, 1500, 4690, 4600, 3400, 4640, 4680
 DELAY_THRESHOLD = 60 * 90
 ONE_DAY = datetime.timedelta(hours=24)
 
-ERROR_NO_STOPS='ERROR_NO_STOPS'
-ERROR_EXP_ARRIVAL_NON_NONE='ERROR_EXP_ARRIVAL_NON_NONE'
-ERROR_ACTUAL_ARRIVAL_NON_NONE='ERROR_ACTUAL_ARRIVAL_NON_NONE'
-ERROR_EXP_DEPARTURE_NON_NONE='ERROR_EXP_DEPARTURE_NON_NONE'
-ERROR_ACTUAL_DEPARTURE_NON_NONE='ERROR_ACTUAL_DEPARTURE_NON_NONE'
-ERROR_EXP_ARRIVAL_NONE='ERROR_EXP_ARRIVAL_NONE'
-ERROR_EXP_DEPARTURE_NONE='ERROR_EXP_DEPARTURE_NONE'
-ERROR_ARRIVE_DELAY_TOO_LONG='ERROR_ARRIVE_DELAY_TOO_LONG'
-ERROR_DEPARTURE_DELAY_TOO_LONG='ERROR_DEPARTURE_DELAY_TOO_LONG'
+ERROR_NO_STOPS = 'ERROR_NO_STOPS'
+ERROR_EXP_ARRIVAL_NON_NONE = 'ERROR_EXP_ARRIVAL_NON_NONE'
+ERROR_ACTUAL_ARRIVAL_NON_NONE = 'ERROR_ACTUAL_ARRIVAL_NON_NONE'
+ERROR_EXP_DEPARTURE_NON_NONE = 'ERROR_EXP_DEPARTURE_NON_NONE'
+ERROR_ACTUAL_DEPARTURE_NON_NONE = 'ERROR_ACTUAL_DEPARTURE_NON_NONE'
+ERROR_EXP_ARRIVAL_NONE = 'ERROR_EXP_ARRIVAL_NONE'
+ERROR_EXP_DEPARTURE_NONE = 'ERROR_EXP_DEPARTURE_NONE'
+ERROR_ARRIVE_DELAY_TOO_LONG = 'ERROR_ARRIVE_DELAY_TOO_LONG'
+ERROR_DEPARTURE_DELAY_TOO_LONG = 'ERROR_DEPARTURE_DELAY_TOO_LONG'
+ERROR_GAP_TOO_LONG = 'ERROR_GAP_TOO_LONG'
+ERROR_NEGATIVE_GAP = 'ERROR_NEGATIVE_GAP'
+
 
 class CheckException(Exception):
-    def __init__(self,code,details=None):
+    def __init__(self, code, details=None):
         if details:
-            text = '%s: %s' % (code,details)
+            text = '%s: %s' % (code, details)
         else:
             text = code
         self.code = code
         self.details = details
-        super(CheckException,self).__init__(text)
+        super(CheckException, self).__init__(text)
 
 
 class Trip(object):
@@ -86,20 +89,42 @@ class Trip(object):
 
         for idx, stop in enumerate(self.stops[1:]):
             if stop.exp_arrival is None:
-                raise CheckException(ERROR_EXP_ARRIVAL_NONE,'stop is %s' % stop)
+                raise CheckException(ERROR_EXP_ARRIVAL_NONE, 'stop is %s' % stop)
         for idx, stop in enumerate(self.stops[0:-1]):
             if stop.exp_departure is None:
-                raise CheckException(ERROR_EXP_DEPARTURE_NONE,'stop is %s' % stop)
+                raise CheckException(ERROR_EXP_DEPARTURE_NONE, 'stop is %s' % stop)
+
+        for idx in xrange(1,len(self.stops)):
+            self.check_gap(self.stops[idx-1],self.stops[idx])
 
         for stop in self.stops:
-            delay_arrive = stop.get_delay_arrival()
-            if delay_arrive is not None and abs(
+            self.check_delay(stop)
+
+
+    def check_delay(self,stop):
+        delay_arrive = stop.get_delay_arrival()
+        if delay_arrive is not None and abs(
                 delay_arrive) > DELAY_THRESHOLD:
-                raise CheckException(ERROR_ARRIVE_DELAY_TOO_LONG,'stop is %s' % unicode(stop))
-            delay_departure = stop.get_delay_departure()
-            if delay_departure is not None and abs(
+            raise CheckException(ERROR_ARRIVE_DELAY_TOO_LONG, 'stop is %s' % unicode(stop))
+        delay_departure = stop.get_delay_departure()
+        if delay_departure is not None and abs(
                 delay_departure) > DELAY_THRESHOLD:
-                raise CheckException(ERROR_DEPARTURE_DELAY_TOO_LONG,'stop is %s' % unicode(stop))
+            raise CheckException(ERROR_DEPARTURE_DELAY_TOO_LONG, 'stop is %s' % unicode(stop))
+
+
+
+    def check_gap(self,early_stop,late_stop):
+        attrs = ['actual_arrival','exp_arrival','actual_departure','exp_departure']
+        for attr in attrs:
+            late_time = getattr(late_stop,attr)
+            early_time  = getattr(early_stop,attr)
+            if not early_time or not late_time:
+                return
+            gap = (late_time-early_time).total_seconds()
+            if gap < 0:
+                raise CheckException(ERROR_NEGATIVE_GAP,'stops %s %s' % (unicode(early_stop),unicode(late_stop)))
+            if gap > 3600:
+                raise CheckException(ERROR_GAP_TOO_LONG,'stops %s %s' % (unicode(early_stop),unicode(late_stop)))
 
 
 class StopLine(object):
@@ -135,8 +160,6 @@ class StopLine(object):
                 self.exp_departure -= ONE_DAY
             if self.actual_departure and self.actual_departure.hour >= 22:
                 self.actual_departure -= ONE_DAY
-
-
 
 
     def get_delay_arrival(self):
@@ -199,9 +222,9 @@ class TrainParser():
         print 'Invalid trips: %d' % len(invalid_trips)
         count_by_code = defaultdict(int)
         for invalid_trip in invalid_trips:
-            count_by_code[invalid_trip.error.code]+=1
-        for code,code_count in count_by_code.iteritems():
-            print '    %s: %s' % (code,code_count)
+            count_by_code[invalid_trip.error.code] += 1
+        for code, code_count in count_by_code.iteritems():
+            print '    %s: %s' % (code, code_count)
 
         invalid_file = 'log/invalid.txt'
         self.make_log_dir()
