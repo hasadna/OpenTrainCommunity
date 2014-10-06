@@ -25,6 +25,7 @@ REAL_STOP_IDS = [8550, 800, 6700, 7300, 8700, 1500, 4690, 4600, 3400, 4640, 4680
                  3300, 9100, 2500, 3500, 4660, 3100, 300, 4250, 6500, 700, 1300, 4800, 1600, 5000, 2800, 3600, 4100,
                  5010, 5200, 7000]
 
+DELAY_THRESHOLD = 60*90
 
 class Trip(object):
     def __init__(self,stops):
@@ -56,6 +57,15 @@ class Trip(object):
         for idx,stop in enumerate(self.stops[0:-1]):
             assert stop.exp_departure is not None,'exp departure of %d is None' % idx
 
+        for stop in self.stops:
+            delay_arrive = stop.get_delay_arrival()
+            assert delay_arrive is None or abs(delay_arrive) < DELAY_THRESHOLD,'delay_arrive too big: %d' % delay_arrive
+            delay_departure = stop.get_delay_departure()
+            assert delay_departure is None or abs(delay_departure) < DELAY_THRESHOLD,'delay_departure too big: %d' % delay_departure
+        
+                
+
+
 class StopLine(object):
     def parse_time(self, t):
         t = int(t)
@@ -71,6 +81,19 @@ class StopLine(object):
         self.exp_arrival = self.parse_time(ea)
         self.actual_departure = self.parse_time(ad)
         self.exp_departure = self.parse_time(ed)
+
+    def get_delay_arrival(self):
+        if self.exp_arrival is None or self.actual_arrival is None:
+            return None
+        return (self.actual_arrival - self.exp_arrival).total_seconds()
+    
+    def get_delay_departure(self):
+        if self.exp_departure is None or self.actual_departure is None:
+            return None
+        return (self.actual_departure - self.exp_departure).total_seconds()
+    
+    
+    
 
     def print_time(self,dt):
         if dt is not None:
