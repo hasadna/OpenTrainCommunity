@@ -27,6 +27,27 @@ REAL_STOP_IDS = [8550, 800, 6700, 7300, 8700, 1500, 4690, 4600, 3400, 4640, 4680
                  5010, 5200, 7000]
 
 DELAY_THRESHOLD = 60 * 90
+ONE_DAY = datetime.timedelta(hours=24)
+
+ERROR_NO_STOPS='ERROR_NO_STOPS'
+ERROR_EXP_ARRIVAL_NON_NONE='ERROR_EXP_ARRIVAL_NON_NONE'
+ERROR_ACTUAL_ARRIVAL_NON_NONE='ERROR_ACTUAL_ARRIVAL_NON_NONE'
+ERROR_EXP_DEPARTURE_NON_NONE='ERROR_EXP_DEPARTURE_NON_NONE'
+ERROR_ACTUAL_DEPARTURE_NON_NONE='ERROR_ACTUAL_DEPARTURE_NON_NONE'
+ERROR_EXP_ARRIVAL_NONE='ERROR_EXP_ARRIVAL_NONE'
+ERROR_EXP_DEPARTURE_NONE='ERROR_EXP_DEPARTURE_NONE'
+ERROR_ARRIVE_DELAY_TOO_LONG='ERROR_ARRIVE_DELAY_TOO_LONG'
+ERROR_DEPARTURE_DELAY_TOO_LONG='ERROR_DEPARTURE_DELAY_TOO_LONG'
+
+class CheckException(Exception):
+    def __init__(self,code,details=None):
+        if details:
+            text = '%s: %s' % (code,details)
+        else:
+            text = code
+        self.code = code
+        self.details = details
+        super(CheckException,self).__init__(text)
 
 
 class Trip(object):
@@ -44,28 +65,41 @@ class Trip(object):
         try:
             self.do_check()
             self.is_valid = True
-        except Exception, e:
-            self.error = unicode(e)
+        except CheckException, e:
+            self.error = e
 
     def do_check(self):
-        assert self.stops, 'no stops'
-        assert self.stops[0].exp_arrival is None, 'exp arrival of 0 is not None'
-        assert self.stops[0].actual_arrival is None, 'actual arrival of 0 is not None'
-        assert self.stops[-1].exp_departure is None, 'exp departure of -1 is not None'
-        assert self.stops[-1].actual_departure is None, 'actual departure of -1 is not None'
+        if not self.stops:
+            raise CheckException(ERROR_NO_STOPS)
+
+        if self.stops[0].exp_arrival is not None:
+            raise CheckException(ERROR_EXP_ARRIVAL_NON_NONE)
+
+        if self.stops[0].actual_arrival is not None:
+            raise CheckException(ERROR_ACTUAL_ARRIVAL_NON_NONE)
+
+        if self.stops[-1].exp_departure is not None:
+            raise CheckException(ERROR_EXP_DEPARTURE_NON_NONE)
+
+        if self.stops[-1].actual_departure is not None:
+            raise CheckException(ERROR_ACTUAL_DEPARTURE_NON_NONE)
 
         for idx, stop in enumerate(self.stops[1:]):
-            assert stop.exp_arrival is not None, 'exp arrival of %d is None' % idx
+            if stop.exp_arrival is None:
+                raise CheckException(ERROR_EXP_ARRIVAL_NONE,'stop is %s' % stop)
         for idx, stop in enumerate(self.stops[0:-1]):
-            assert stop.exp_departure is not None, 'exp departure of %d is None' % idx
+            if stop.exp_departure is None:
+                raise CheckException(ERROR_EXP_DEPARTURE_NONE,'stop is %s' % stop)
 
         for stop in self.stops:
             delay_arrive = stop.get_delay_arrival()
-            assert delay_arrive is None or abs(
-                delay_arrive) < DELAY_THRESHOLD, 'delay_arrive too big: %d' % delay_arrive
+            if delay_arrive is not None and abs(
+                delay_arrive) > DELAY_THRESHOLD:
+                raise CheckException(ERROR_ARRIVE_DELAY_TOO_LONG,'stop is %s' % unicode(stop))
             delay_departure = stop.get_delay_departure()
-            assert delay_departure is None or abs(
-                delay_departure) < DELAY_THRESHOLD, 'delay_departure too big: %d' % delay_departure
+            if delay_departure is not None and abs(
+                delay_departure) > DELAY_THRESHOLD:
+                raise CheckException(ERROR_DEPARTURE_DELAY_TOO_LONG,'stop is %s' % unicode(stop))
 
 
 class StopLine(object):
@@ -84,6 +118,26 @@ class StopLine(object):
         self.exp_arrival = self.parse_time(ea)
         self.actual_departure = self.parse_time(ad)
         self.exp_departure = self.parse_time(ed)
+        # the date is according to the exp_arrival,
+        # so if it before 24 and other are low, we need to offset them in 24 hours
+        if self.exp_arrival and self.exp_arrival.hour >= 22:
+            if self.actual_arrival and self.actual_arrival.hour < 3:
+                self.actual_arrival += ONE_DAY
+            if self.exp_departure and self.exp_departure.hour < 3:
+                self.exp_departure += ONE_DAY
+            if self.actual_departure and self.actual_departure.hour < 3:
+                self.actual_departure += ONE_DAY
+        # the other case, if if exp_arrival is "tomorrow" and we have something from today
+        elif self.exp_arrival and self.exp_arrival.hour <= 3:
+            if self.actual_arrival and self.actual_arrival.hour >= 22:
+                self.actual_arrival -= ONE_DAY
+            if self.exp_departure and self.exp_departure.hour >= 22:
+                self.exp_departure -= ONE_DAY
+            if self.actual_departure and self.actual_departure.hour >= 22:
+                self.actual_departure -= ONE_DAY
+
+
+
 
     def get_delay_arrival(self):
         if self.exp_arrival is None or self.actual_arrival is None:
@@ -143,11 +197,17 @@ class TrainParser():
         invalid_trips = [trip for trip in self.trips if not trip.is_valid]
         print 'Total trips: %d' % len(self.trips)
         print 'Invalid trips: %d' % len(invalid_trips)
+        count_by_code = defaultdict(int)
+        for invalid_trip in invalid_trips:
+            count_by_code[invalid_trip.error.code]+=1
+        for code,code_count in count_by_code.iteritems():
+            print '    %s: %s' % (code,code_count)
+
         invalid_file = 'log/invalid.txt'
         self.make_log_dir()
         with codecs.open(invalid_file, 'w', 'utf-8') as invalid_fh:
             for invalid_trip in invalid_trips:
-                invalid_fh.write('%s: %s\n' % (unicode(invalid_trip), invalid_trip.error))
+                invalid_fh.write('%s: %s\n' % (unicode(invalid_trip), unicode(invalid_trip.error)))
         print 'Invalid details written to %s' % invalid_file
 
 
