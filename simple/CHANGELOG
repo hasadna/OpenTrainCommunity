@@ -1,0 +1,15 @@
+Oct 7,2014:
+
+did the following:
+1. added handle of the dates - might be buggy
+2. change assert to CheckException, now has categories and these are count
+3. invalid trips are written to log/invalid.txt
+
+need to do:
+1. code might be buggy, need to check 
+2. add errors for 0 in inner stops ?
+3. complete teh dump part 
+4. check the invalid trips, are these really invalid? bugs in the code, or maybe we should relax the checks
+
+==============================================================================
+
