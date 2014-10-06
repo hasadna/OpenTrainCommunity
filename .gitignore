@@ -4,3 +4,6 @@
 *.wpr
 *.wpu
 *~*
+unzip_data
+.idea
+
