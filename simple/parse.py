@@ -3,6 +3,7 @@ import re
 import datetime
 import argparse
 import pytz
+import os
 import itertools
 from collections import defaultdict
 
@@ -25,10 +26,11 @@ REAL_STOP_IDS = [8550, 800, 6700, 7300, 8700, 1500, 4690, 4600, 3400, 4640, 4680
                  3300, 9100, 2500, 3500, 4660, 3100, 300, 4250, 6500, 700, 1300, 4800, 1600, 5000, 2800, 3600, 4100,
                  5010, 5200, 7000]
 
-DELAY_THRESHOLD = 60*90
+DELAY_THRESHOLD = 60 * 90
+
 
 class Trip(object):
-    def __init__(self,stops):
+    def __init__(self, stops):
         self.train_num = stops[0].train_num
         self.stops = stops
         self.is_valid = False
@@ -47,23 +49,23 @@ class Trip(object):
 
     def do_check(self):
         assert self.stops, 'no stops'
-        assert self.stops[0].exp_arrival is None,'exp arrival of 0 is not None'
-        assert self.stops[0].actual_arrival is None,'actual arrival of 0 is not None'
-        assert self.stops[-1].exp_departure is None,'exp departure of -1 is not None'
-        assert self.stops[-1].actual_departure is None,'actual departure of -1 is not None'
+        assert self.stops[0].exp_arrival is None, 'exp arrival of 0 is not None'
+        assert self.stops[0].actual_arrival is None, 'actual arrival of 0 is not None'
+        assert self.stops[-1].exp_departure is None, 'exp departure of -1 is not None'
+        assert self.stops[-1].actual_departure is None, 'actual departure of -1 is not None'
 
-        for idx,stop in enumerate(self.stops[1:]):
-            assert stop.exp_arrival is not None,'exp arrival of %d is None' % idx
-        for idx,stop in enumerate(self.stops[0:-1]):
-            assert stop.exp_departure is not None,'exp departure of %d is None' % idx
+        for idx, stop in enumerate(self.stops[1:]):
+            assert stop.exp_arrival is not None, 'exp arrival of %d is None' % idx
+        for idx, stop in enumerate(self.stops[0:-1]):
+            assert stop.exp_departure is not None, 'exp departure of %d is None' % idx
 
         for stop in self.stops:
             delay_arrive = stop.get_delay_arrival()
-            assert delay_arrive is None or abs(delay_arrive) < DELAY_THRESHOLD,'delay_arrive too big: %d' % delay_arrive
+            assert delay_arrive is None or abs(
+                delay_arrive) < DELAY_THRESHOLD, 'delay_arrive too big: %d' % delay_arrive
             delay_departure = stop.get_delay_departure()
-            assert delay_departure is None or abs(delay_departure) < DELAY_THRESHOLD,'delay_departure too big: %d' % delay_departure
-        
-                
+            assert delay_departure is None or abs(
+                delay_departure) < DELAY_THRESHOLD, 'delay_departure too big: %d' % delay_departure
 
 
 class StopLine(object):
@@ -73,7 +75,8 @@ class StopLine(object):
             return None
         m = t % 100
         h = (t - t % 100) / 100
-        dt = datetime.datetime(year=self.date.year,month=self.date.month,day=self.date.day) + datetime.timedelta(hours=h, minutes=m)
+        dt = datetime.datetime(year=self.date.year, month=self.date.month, day=self.date.day) + datetime.timedelta(
+            hours=h, minutes=m)
         return ISRAEL_TZ.localize(dt)
 
     def build_times(self, aa, ea, ad, ed):
@@ -86,16 +89,14 @@ class StopLine(object):
         if self.exp_arrival is None or self.actual_arrival is None:
             return None
         return (self.actual_arrival - self.exp_arrival).total_seconds()
-    
+
     def get_delay_departure(self):
         if self.exp_departure is None or self.actual_departure is None:
             return None
         return (self.actual_departure - self.exp_departure).total_seconds()
-    
-    
-    
 
-    def print_time(self,dt):
+
+    def print_time(self, dt):
         if dt is not None:
             return dt.strftime('%H:%M')
         else:
@@ -123,28 +124,36 @@ class TrainParser():
         with codecs.open(self.ifile, encoding="windows-1255") as ifh:
             for idx, line in enumerate(ifh):
                 self.parse_line(idx, line)
-                if (1+idx) % 10000 == 0:
-                    print 'parsed %d lines' % (idx+1)
+                if (1 + idx) % 10000 == 0:
+                    print 'parsed %d lines' % (idx + 1)
 
     def build_trips(self):
         stops_by_trip_num = defaultdict(list)
         for trip in self.stop_lines:
             stops_by_trip_num[trip.train_num].append(trip)
 
-        for trip_num,trips in stops_by_trip_num.iteritems():
-            self.split_trips(trip_num,trips)
+        for trip_num, trips in stops_by_trip_num.iteritems():
+            self.split_trips(trip_num, trips)
+
+    def make_log_dir(self):
+        if not os.path.exists('log'):
+            os.mkdir('log')
 
     def print_trips_status(self):
         invalid_trips = [trip for trip in self.trips if not trip.is_valid]
         print 'Total trips: %d' % len(self.trips)
         print 'Invalid trips: %d' % len(invalid_trips)
-        with codecs.open('invalid.txt','w','utf-8') as invalid_fh:
+        invalid_file = 'log/invalid.txt'
+        self.make_log_dir()
+        with codecs.open(invalid_file, 'w', 'utf-8') as invalid_fh:
             for invalid_trip in invalid_trips:
-                invalid_fh.write('%s: %s\n' % (unicode(invalid_trip),invalid_trip.error))
+                invalid_fh.write('%s: %s\n' % (unicode(invalid_trip), invalid_trip.error))
+        print 'Invalid details written to %s' % invalid_file
 
-    def split_trips(self,trip_num,stops):
+
+    def split_trips(self, trip_num, stops):
         cur_stops = []
-        for idx,stop in enumerate(stops):
+        for idx, stop in enumerate(stops):
             if stop.exp_arrival is None:
                 if cur_stops:
                     trip = Trip(cur_stops)
@@ -179,7 +188,7 @@ class TrainParser():
             sl.stop_id = stop_id
             sl.stop_name = gd['raw_stop_name'].strip()
             sl.file = self.ifile
-            sl.line = idx + 1 # make it base 1 now, like file editors
+            sl.line = idx + 1  # make it base 1 now, like file editors
             sl.is_real = is_real
             sl.build_times(gd['actual_arrival'],
                            gd['exp_arrival'],
@@ -194,7 +203,7 @@ class TrainParser():
         self.parse()
         self.build_trips()
         self.print_trips_status()
-        #self.dump()
+        # self.dump()
 
 
 def main():
@@ -205,7 +214,6 @@ def main():
     ns = parser.parse_args()
     tp = TrainParser(**vars(ns))
     tp.main()
-
 
 
 if __name__ == '__main__':
