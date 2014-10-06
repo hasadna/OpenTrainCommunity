@@ -26,11 +26,15 @@ REAL_STOP_IDS = [8550, 800, 6700, 7300, 8700, 1500, 4690, 4600, 3400, 4640, 4680
 
 class Trip(object):
     def __init__(self,stops):
+        self.train_num = stops[0].train_num
         self.stops = stops
         self.is_valid = False
         self.error = None
         self.fix_split()
         self.check()
+
+    def __unicode__(self):
+        return '%s: %s - %s' % (self.train_num, unicode(self.stops[0]), unicode(self.stops[-1]))
 
     def is_split(self):
         before_24 = False
@@ -60,13 +64,13 @@ class Trip(object):
         try:
             self.do_check()
             self.is_valid = True
-        except Exception,e:
+        except Exception, e:
             self.error = unicode(e)
 
 
 
     def do_check(self):
-        assert self.stops,'no stops'
+        assert self.stops, 'no stops'
         assert self.stops[0].exp_arrival is None,'exp arrival of 0 is not None'
         assert self.stops[0].actual_arrival is None,'actual arrival of 0 is not None'
         assert self.stops[-1].exp_departure is None,'exp departure of -1 is not None'
@@ -97,7 +101,10 @@ class StopLine(object):
         self.exp_departure = self.parse_time(ed)
 
     def print_time(self,dt):
-        return dt.strftime('%H:%M')
+        if dt is not None:
+            return dt.strftime('%H:%M')
+        else:
+            return "None"
 
     def __unicode__(self):
         return '%5d %4d %25s A=%5s(%5s) D=%5s(%5s)' % (self.line,
@@ -149,8 +156,8 @@ class TrainParser():
         if m:
             gd = m.groupdict()
             stop_id = int(gd['raw_stop_id'])
-            if stop_id not in REAL_STOP_IDS:
-                return
+            #if stop_id not in REAL_STOP_IDS:
+            #    return
             sl = StopLine()
             sl.date = self._parse_date(gd['date'])
             sl.train_num = gd['train_num']
