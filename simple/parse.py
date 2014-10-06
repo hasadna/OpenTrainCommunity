@@ -13,6 +13,7 @@ LINE_RE = re.compile(r'^\s*' +
                      r'(?P<raw_stop_id>\d+)\s+' +
                      r'"(?P<raw_stop_name>.*)"\s*$')
 
+REAL_STOP_IDS = [8550, 800, 6700, 7300, 8700, 1500, 4690, 4600, 3400, 4640, 4680, 4170, 8600, 5410, 400, 6300, 9600, 2300, 5150, 5900, 7500, 9200, 8800, 9800, 1220, 4900, 9000, 2200, 7320, 3700, 5800, 5300, 2820, 2100, 3300, 9100, 2500, 3500, 4660, 3100, 300, 4250, 6500, 700, 1300, 4800, 1600, 5000, 2800, 3600, 4100, 5010, 5200, 7000]
 
 class StopLine(object):
     def parse_time(self,t):
@@ -27,6 +28,7 @@ class StopLine(object):
         self.exp_arrival = self.parse_time(ea)
         self.actual_departure = self.parse_time(ad)
         self.exp_departure = self.parse_time(ed)
+
     def __unicode__(self):
         return '%5d %4d %25s A=%5s(%5s) D=%5s(%5s)' % (self.line,
                                                        self.stop_id,
@@ -55,7 +57,6 @@ class TrainParser():
                 print unicode(line)
             except Exception, e:
                 import pdb
-
                 pdb.set_trace()
 
     def _parse_date(self, date):
@@ -63,7 +64,6 @@ class TrainParser():
         month = int(date[4:6])
         day = int(date[6:8])
         return datetime.date(year=year, month=month, day=day)
-
 
     def parse_line(self, idx, line):
         m = LINE_RE.match(line)
@@ -81,11 +81,9 @@ class TrainParser():
                            gd['actual_departure'],
                            gd['exp_departure'])
 
-            # if td.raw_stop_id in stop_ids:
-            # td.stop_id = td.raw_stop_id
             self.stop_lines.append(td)
-            else:
-            raise Exception('Illegal line %d at %s' % (idx, fname))
+        else:
+            raise Exception('Illegal line %d at %s' % (idx, self.ifile))
 
 
 def main():
