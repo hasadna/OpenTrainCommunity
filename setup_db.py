@@ -32,8 +32,9 @@ src.manage.create_db()
 if True:
   extract_tar(TAR_FILE_2013, temp_data_dir)
   for filename in os.listdir(temp_data_dir):
-    full_filename = os.path.join(temp_data_dir, filename)
-    src.manage.add_opentrain_data(full_filename)
+    if os.path.basename(filename) != "2013-12.txt":  # "2013-12.txt" is identical to "12_2013.txt"
+      full_filename = os.path.join(temp_data_dir, filename)
+      src.manage.add_opentrain_data(full_filename)
 
 # load 2014 data:
 if True:

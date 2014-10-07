@@ -45,9 +45,8 @@ def get_stop_passenger_ratio():
 def get_ontime_percent(trainstops_rush, minutes):
   count = 0  
   for x in trainstops_rush:
-    if x.arrive_expected.hour != 0 and x.arrive_actual.hour != 0:
-      if x.arrive_actual - x.arrive_expected >= datetime.timedelta(minutes = minutes):
-        count += 1
+    if (not x.arrive_delay or x.arrive_delay <= 1) and (not x.depart_delay or x.depart_delay >= -1):
+      count += 1
   return int(100 - float(count) / len(trainstops_rush) * 100)
 
 def calc_ontime_data(stops, session, minutes, stop_names):
@@ -109,7 +108,7 @@ if __name__ == "__main__":
   # excluding stops with less than 1% of passengers:
   exclude_stops = [4170, 8700, 7000, 6300, 4100, 4250, 5410, 4690, 9100, 9000, 700, 4660, 5150, 300, 6700, 5010, 5300, 1300, 8550, 4640, 4800, 2500, 6500, 7500]
   
-  for minutes in [1, 4, 5]:
+  for minutes in [1, 5]:
     get_ontime_percentage_report_for_given_minutes(minutes, session, exclude_stops)
   
   

@@ -8,6 +8,7 @@ from entities import Station, TrainStop
 import datetime
 import time
 import os
+import math
 
 
 Base = declarative_base()
@@ -81,7 +82,7 @@ def drop_db():
 def _parse_timedelta(timestr):
   while len(timestr) < 4:
     timestr = '0' + timestr  
-  minutes = int(timestr[0:2])*60 + int(timestr[2:4])  
+  minutes = int(timestr[0:2])*60 + int(timestr[2:4])
   return datetime.timedelta(minutes=minutes)
 
 def _parsedate(datestr):
@@ -102,7 +103,7 @@ def add_opentrain_data(filename):
     if count > max_lines:
       break
     if count % 10000 == 0:
-      print('Done {}%'.format(int(count/float(row_count)*100)))
+      print('{} {}%'.format(os.path.basename(filename), int(count/float(row_count)*100)))
       session.commit()
     line_data = line.split('\t')
     date = _parsedate(line_data[0])
@@ -114,11 +115,25 @@ def add_opentrain_data(filename):
     depart_actual = date + _parse_timedelta(line_data[5])
     
     arrive_delay = (arrive_actual - arrive_expected).total_seconds()/60
-    if arrive_actual.hour == 0 or arrive_expected.hour == 0:
-      arrive_delay = 0
     depart_delay = (depart_actual - depart_expected).total_seconds()/60
-    if depart_actual.hour == 0 or depart_expected.hour == 0:
-      depart_delay = 0 
+    # if we're more than half a day late, it's probably a mistake or a date change:
+    if abs(arrive_delay) > 24 * 60 / 2: 
+      # correct to be less than half a day and change signs (late becomes early and vice versa):
+      arrive_delay = (24 * 60 - abs(arrive_delay)) * math.copysign(1, arrive_delay) * -1
+    # same here:      
+    if abs(depart_delay) > 24 * 60 / 2:
+      depart_delay = (24 * 60 - abs(depart_delay)) * math.copysign(1, depart_delay) * -1
+      
+    if (arrive_actual.hour == 0 and arrive_expected.hour == 0 and
+        arrive_actual.minute == 0 and arrive_expected.minute == 0 and
+        arrive_actual.second == 0 and arrive_expected.second == 0):
+      arrive_delay = None
+    if (depart_actual.hour == 0 and depart_actual.hour == 0 and
+        depart_actual.minute == 0 and depart_actual.minute == 0 and
+        depart_actual.second == 0 and depart_actual.second == 0):
+      depart_delay = None
+    if (arrive_delay and abs(arrive_delay) > 1000) or (depart_delay and abs(depart_delay) > 1000):
+      print('Ohh no!')
     station_id = int(line_data[6])
     if station_id not in real_stops:
       continue
@@ -160,20 +175,14 @@ def output_all_data_to_csv(session, filename, is_2014):
     for x in trainstops:
       count += 1
       if count % 10000 == 0:
-        print('Done {}%'.format(int(count/float(query.count())*100)))      
-      arrive_delay = (x.arrive_actual - x.arrive_expected).total_seconds()/60
-      if x.arrive_actual.hour == 0 or x.arrive_expected.hour == 0:
-        arrive_delay = 0
-      depart_delay = (x.depart_actual - x.depart_expected).total_seconds()/60
-      if x.depart_actual.hour == 0 or x.depart_expected.hour == 0:
-        depart_delay = 0      
+        print('Done {}%'.format(int(count/float(query.count())*100)))
       line = "{},{},{},{},{},{},{},{},{},{}".format(x.date, x.train_num, 
                                                 x.arrive_expected,#.strftime('%H:%M'), 
                                                 x.arrive_actual,#.strftime('%H:%M'), 
-                                                arrive_delay, 
+                                                x.arrive_delay if x.arrive_delay is not None else 'NaN', 
                                                 x.depart_expected,#.strftime('%H:%M'), 
                                                 x.depart_actual,#.strftime('%H:%M'), 
-                                                depart_delay,
+                                                x.depart_delay if x.depart_delay is not None else 'NaN',
                                                 x.station_id, stop_names[x.station_id])
       #print(line)
       print(line, file=f)  
@@ -186,4 +195,6 @@ if __name__ == "__main__":
   output_all_data_to_csv(session, '../output_2014.csv', True)
   os.system('sed 1d ../output_2014.csv > ../output_2014_noheader.csv')
   os.system('cat ../output_2013.csv ../output_2014_noheader.csv > ../output.csv')
+  os.system('cat ../output.csv | sort -n -k 2,3 -t"," > ../output_sorted.csv')
+  print('Done')
   #os.system("sed '1817218d' output.csv > output.csv")
