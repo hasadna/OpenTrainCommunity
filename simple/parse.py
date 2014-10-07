@@ -34,6 +34,7 @@ ERROR_ARRIVE_DELAY_TOO_LONG = 'ERROR_ARRIVE_DELAY_TOO_LONG'
 ERROR_DEPARTURE_DELAY_TOO_LONG = 'ERROR_DEPARTURE_DELAY_TOO_LONG'
 ERROR_GAP_TOO_LONG = 'ERROR_GAP_TOO_LONG'
 ERROR_NEGATIVE_GAP = 'ERROR_NEGATIVE_GAP'
+ERROR_DECR_CSV = 'ERROR_DECR_CSV'
 
 
 class CheckException(Exception):
@@ -125,6 +126,9 @@ class Trip(object):
         for idx in xrange(1,len(self.stops)):
             self.check_gap(idx-1,idx)
 
+        for idx in xrange(1,len(self.stops)):
+            self.check_csv_incr(idx-1,idx)
+
         for idx in xrange(len(self.stops)):
             self.check_delay(idx)
 
@@ -140,7 +144,11 @@ class Trip(object):
                 delay_departure) > DELAY_THRESHOLD:
             raise CheckException(ERROR_DEPARTURE_DELAY_TOO_LONG, 'stop index %d' % idx)
 
-
+    def check_csv_incr(self,early_idx,late_idx):
+        early_stop = self.stops[early_idx]
+        late_stop = self.stops[late_idx]
+        if early_stop.line >= late_stop.line:
+            raise CheckException(ERROR_DECR_CSV,'stop indexes %d %d' % (early_idx,late_idx))
 
     def check_gap(self,early_idx,late_idx):
         early_stop = self.stops[early_idx]
@@ -165,32 +173,46 @@ class StopLine(object):
             return None
         m = t % 100
         h = (t - t % 100) / 100
+        return h,m
+
+    def build_datetime(self,hm,offset=0):
         dt = datetime.datetime(year=self.date.year, month=self.date.month, day=self.date.day) + datetime.timedelta(
-            hours=h, minutes=m)
+            hours=hm[0] + 24*offset, minutes=hm[1])
         return ISRAEL_TZ.localize(dt)
 
-    def build_times(self, aa, ea, ad, ed):
-        self.actual_arrival = self.parse_time(aa)
-        self.exp_arrival = self.parse_time(ea)
-        self.actual_departure = self.parse_time(ad)
-        self.exp_departure = self.parse_time(ed)
-        # the date is according to the exp_arrival,
-        # so if it before 24 and other are low, we need to offset them in 24 hours
-        if self.exp_arrival and self.exp_arrival.hour >= 22:
-            if self.actual_arrival and self.actual_arrival.hour < 3:
-                self.actual_arrival += ONE_DAY
-            if self.exp_departure and self.exp_departure.hour < 3:
-                self.exp_departure += ONE_DAY
-            if self.actual_departure and self.actual_departure.hour < 3:
-                self.actual_departure += ONE_DAY
-        # the other case, if if exp_arrival is "tomorrow" and we have something from today
-        elif self.exp_arrival and self.exp_arrival.hour <= 3:
-            if self.actual_arrival and self.actual_arrival.hour >= 22:
-                self.actual_arrival -= ONE_DAY
-            if self.exp_departure and self.exp_departure.hour >= 22:
-                self.exp_departure -= ONE_DAY
-            if self.actual_departure and self.actual_departure.hour >= 22:
-                self.actual_departure -= ONE_DAY
+    def find_offset(self,main_hm,hm):
+        if main_hm[0] >= 22 and hm[0] <= 3:
+            # hm is tomorrow
+            return +1
+        elif main_hm[0] < 3 and hm[0] >= 22:
+            # hm is still yesterday
+            return -1
+        else:
+            return 0
+
+    def build_times(self, gd):
+        # now convert each h:m into date
+        # these are the rules
+        # if there is exp arrival, then this is its date, and all has to be according
+        for key in ['exp_arrival','actual_arrival','actual_departure','exp_departure']:
+            setattr(self,key,None)
+        ea_hm = self.parse_time(gd['exp_arrival'])
+        ed_hm = self.parse_time(gd['exp_departure'])
+        if ea_hm is not None:
+            main_hm = ea_hm
+        elif ed_hm:
+            main_hm = ed_hm
+        else:
+            assert False,'no exp arrival and no exp departure'
+        for key in ['exp_arrival','actual_arrival','actual_departure','exp_departure']:
+            hm = self.parse_time(gd[key])
+            if hm is not None:
+                offset = self.find_offset(main_hm,hm)
+                setattr(self,key,self.build_datetime(hm,offset=offset))
+
+
+
+
 
 
     def get_delay_arrival(self):
@@ -275,6 +297,7 @@ class TrainParser():
 
     def split_trips(self, trip_num, stops):
         cur_stops = []
+        stops.sort(key=lambda x : x.exp_arrival or x.exp_departure)
         for idx, stop in enumerate(stops):
             if stop.exp_arrival is None:
                 if cur_stops:
@@ -312,10 +335,7 @@ class TrainParser():
             sl.file = self.ifile
             sl.line = idx + 1  # make it base 1 now, like file editors
             sl.is_real = is_real
-            sl.build_times(gd['actual_arrival'],
-                           gd['exp_arrival'],
-                           gd['actual_departure'],
-                           gd['exp_departure'])
+            sl.build_times(gd)
 
             self.stop_lines.append(sl)
         else:
