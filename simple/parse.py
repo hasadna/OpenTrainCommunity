@@ -54,6 +54,7 @@ class Trip(object):
         self.is_valid = False
         self.error = None
         self.check()
+        self.is_midnight = self.check_is_midnight()
 
 
     def print_full(self):
@@ -66,10 +67,27 @@ class Trip(object):
         return '\n'.join(res)
 
     def __unicode__(self):
-        return 'Num %s in %s from %s to %s' % (self.stops[0].train_num,
+        return 'Num %s%s in %s from %s to %s' % (self.stops[0].train_num,
+                                                 ' [MID]' if self.is_midnight else '',
                                                self.stops[0].date,
                                                self.stops[0].stop_name,
                                                self.stops[-1].stop_name)
+
+
+    def check_is_midnight(self):
+        attrs = ['actual_arrival','exp_arrival','actual_departure','exp_departure']
+        before_midnight = False
+        after_midnight = False
+        for stop in self.stops:
+            for attr in attrs:
+                t = getattr(stop,attr)
+                if t and t.hour >= 21:
+                    before_midnight = True
+                if t and t.hour <= 3:
+                    after_midnight = True
+                if before_midnight and after_midnight:
+                    return True
+        return False
 
     def __str__(self):
         return self.__unicode__()
@@ -233,8 +251,12 @@ class TrainParser():
 
     def print_trips_status(self):
         invalid_trips = [trip for trip in self.trips if not trip.is_valid]
+        midnight_trips = [trip for trip in self.trips if trip.is_midnight]
+        invalid_midnights = [trip for trip in invalid_trips if trip.is_midnight]
         print 'Total trips: %d' % len(self.trips)
+        print 'Midnight trips %d' % (len(midnight_trips))
         print 'Invalid trips: %d' % len(invalid_trips)
+        print 'Invalid midnights: %d' % len(invalid_midnights)
         count_by_code = defaultdict(int)
         for invalid_trip in invalid_trips:
             count_by_code[invalid_trip.error.code] += 1

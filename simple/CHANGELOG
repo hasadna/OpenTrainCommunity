@@ -22,4 +22,6 @@ log/invalid.txt contains all stops
 
 It seems that many issues are related to trips around midnight, probably buggy.
 
+- add count for midnights trips
+
 	
