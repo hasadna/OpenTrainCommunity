@@ -8,8 +8,18 @@ did the following:
 need to do:
 1. code might be buggy, need to check 
 2. add errors for 0 in inner stops ?
-3. complete teh dump part 
+3. complete the dump part 
 4. check the invalid trips, are these really invalid? bugs in the code, or maybe we should relax the checks
 
 ==============================================================================
 
+Oct 7, 2014:
+move stop names to stops_utils.py
+change names to be in english
+unicode(trip) just return short header
+trip.unicode_full() return all stops
+log/invalid.txt contains all stops
+
+It seems that many issues are related to trips around midnight, probably buggy.
+
+	

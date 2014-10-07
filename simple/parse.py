@@ -4,9 +4,8 @@ import datetime
 import argparse
 import pytz
 import os
-import itertools
 from collections import defaultdict
-
+import stops_utils
 
 ISRAEL_TZ = pytz.timezone('Asia/Jerusalem')
 LONG_AGO = ISRAEL_TZ.localize(datetime.datetime.fromtimestamp(0))
@@ -20,11 +19,6 @@ LINE_RE = re.compile(r'^\s*' +
                      r'(?P<actual_departure>\d+)\s+' +
                      r'(?P<raw_stop_id>\d+)\s+' +
                      r'"(?P<raw_stop_name>.*)"\s*$')
-
-REAL_STOP_IDS = [8550, 800, 6700, 7300, 8700, 1500, 4690, 4600, 3400, 4640, 4680, 4170, 8600, 5410, 400, 6300, 9600,
-                 2300, 5150, 5900, 7500, 9200, 8800, 9800, 1220, 4900, 9000, 2200, 7320, 3700, 5800, 5300, 2820, 2100,
-                 3300, 9100, 2500, 3500, 4660, 3100, 300, 4250, 6500, 700, 1300, 4800, 1600, 5000, 2800, 3600, 4100,
-                 5010, 5200, 7000]
 
 DELAY_THRESHOLD = 60 * 90
 ONE_DAY = datetime.timedelta(hours=24)
@@ -61,8 +55,24 @@ class Trip(object):
         self.error = None
         self.check()
 
+
+    def print_full(self):
+        print self.unicode_full()
+
+    def unicode_full(self):
+        res = []
+        for idx,stop in enumerate(self.stops):
+             res.append('%2d %s' % (idx,stop))
+        return '\n'.join(res)
+
     def __unicode__(self):
-        return '%s: %s - %s' % (self.train_num, unicode(self.stops[0]), unicode(self.stops[-1]))
+        return 'Num %s in %s from %s to %s' % (self.stops[0].train_num,
+                                               self.stops[0].date,
+                                               self.stops[0].stop_name,
+                                               self.stops[-1].stop_name)
+
+    def __str__(self):
+        return self.__unicode__()
 
     def check(self):
         try:
@@ -89,31 +99,34 @@ class Trip(object):
 
         for idx, stop in enumerate(self.stops[1:]):
             if stop.exp_arrival is None:
-                raise CheckException(ERROR_EXP_ARRIVAL_NONE, 'stop is %s' % stop)
+                raise CheckException(ERROR_EXP_ARRIVAL_NONE, 'stop index %d' % idx)
         for idx, stop in enumerate(self.stops[0:-1]):
             if stop.exp_departure is None:
-                raise CheckException(ERROR_EXP_DEPARTURE_NONE, 'stop is %s' % stop)
+                raise CheckException(ERROR_EXP_DEPARTURE_NONE, 'stop index %d' % idx)
 
         for idx in xrange(1,len(self.stops)):
-            self.check_gap(self.stops[idx-1],self.stops[idx])
+            self.check_gap(idx-1,idx)
 
-        for stop in self.stops:
-            self.check_delay(stop)
+        for idx in xrange(len(self.stops)):
+            self.check_delay(idx)
 
 
-    def check_delay(self,stop):
+    def check_delay(self,idx):
+        stop = self.stops[idx]
         delay_arrive = stop.get_delay_arrival()
         if delay_arrive is not None and abs(
                 delay_arrive) > DELAY_THRESHOLD:
-            raise CheckException(ERROR_ARRIVE_DELAY_TOO_LONG, 'stop is %s' % unicode(stop))
+            raise CheckException(ERROR_ARRIVE_DELAY_TOO_LONG, 'stop index %d' % idx)
         delay_departure = stop.get_delay_departure()
         if delay_departure is not None and abs(
                 delay_departure) > DELAY_THRESHOLD:
-            raise CheckException(ERROR_DEPARTURE_DELAY_TOO_LONG, 'stop is %s' % unicode(stop))
+            raise CheckException(ERROR_DEPARTURE_DELAY_TOO_LONG, 'stop index %d' % idx)
 
 
 
-    def check_gap(self,early_stop,late_stop):
+    def check_gap(self,early_idx,late_idx):
+        early_stop = self.stops[early_idx]
+        late_stop = self.stops[late_idx]
         attrs = ['actual_arrival','exp_arrival','actual_departure','exp_departure']
         for attr in attrs:
             late_time = getattr(late_stop,attr)
@@ -122,9 +135,9 @@ class Trip(object):
                 return
             gap = (late_time-early_time).total_seconds()
             if gap < 0:
-                raise CheckException(ERROR_NEGATIVE_GAP,'stops %s %s' % (unicode(early_stop),unicode(late_stop)))
+                raise CheckException(ERROR_NEGATIVE_GAP,'stop indexes %d %d' % (early_idx,late_idx))
             if gap > 3600:
-                raise CheckException(ERROR_GAP_TOO_LONG,'stops %s %s' % (unicode(early_stop),unicode(late_stop)))
+                raise CheckException(ERROR_GAP_TOO_LONG,'stop indexes %d %d' % (early_idx,late_idx))
 
 
 class StopLine(object):
@@ -178,9 +191,11 @@ class StopLine(object):
             return dt.strftime('%H:%M')
         else:
             return "-----"
+    def __str__(self):
+        return self.__unicode__()
 
     def __unicode__(self):
-        return '%5d %4d %25s A=%5s(%5s) D=%5s(%5s)' % (self.line,
+        return '%5d %4d %-20s A=%5s(%5s) D=%5s(%5s)' % (self.line,
                                                        self.stop_id,
                                                        self.stop_name,
                                                        self.print_time(self.actual_arrival),
@@ -190,7 +205,7 @@ class StopLine(object):
 
 
 class TrainParser():
-    def __init__(self, input, output, append):
+    def __init__(self, input, output=None, append=True):
         self.ifile = input
         self.append = append
         self.ofile = output
@@ -228,9 +243,11 @@ class TrainParser():
 
         invalid_file = 'log/invalid.txt'
         self.make_log_dir()
-        with codecs.open(invalid_file, 'w', 'utf-8') as invalid_fh:
+        with open(invalid_file, 'w') as invalid_fh:
             for invalid_trip in invalid_trips:
-                invalid_fh.write('%s: %s\n' % (unicode(invalid_trip), unicode(invalid_trip.error)))
+                invalid_fh.write('='*80 + '\n')
+                invalid_fh.write('TRIP = %s ERROR = %s\n' % (invalid_trip,unicode(invalid_trip.error)))
+                invalid_fh.write(invalid_trip.unicode_full() + '\n')
         print 'Invalid details written to %s' % invalid_file
 
 
@@ -263,13 +280,13 @@ class TrainParser():
         if m:
             gd = m.groupdict()
             stop_id = int(gd['raw_stop_id'])
-            is_real = stop_id in REAL_STOP_IDS
+            is_real = stops_utils.is_real(stop_id)
 
             sl = StopLine()
             sl.date = self._parse_date(gd['date'])
             sl.train_num = gd['train_num']
             sl.stop_id = stop_id
-            sl.stop_name = gd['raw_stop_name'].strip()
+            sl.stop_name = stops_utils.get_stop_name(sl.stop_id)
             sl.file = self.ifile
             sl.line = idx + 1  # make it base 1 now, like file editors
             sl.is_real = is_real
@@ -295,9 +312,16 @@ def main():
     parser.add_argument('--output', required=False)
     parser.add_argument('--append', required=False, default=True, action='store_true')
     ns = parser.parse_args()
-    tp = TrainParser(**vars(ns))
-    tp.main()
+    run(**vars(ns))
 
+
+def run(input=None, output=None, append=True):
+    """
+     to debug from ipython, do something like tp = run('sample2.txt')
+    """
+    tp = TrainParser(input=input,output=output,append=append)
+    tp.main()
+    return tp
 
 if __name__ == '__main__':
     main()
