@@ -24,4 +24,9 @@ It seems that many issues are related to trips around midnight, probably buggy.
 
 - add count for midnights trips
 
-	
+Oct 7,2014
+Hope I fixed the dates. The split accroding to CSV order was wrong, since the first stop of tomorrow is alwasy before the stops that end yesterday trip.
+For example, look at 01_2013.txt line 11690 is the first line of the trip that starts in Jan 2, and then there and the second stop is only at line 11714, between 11691 to 11713 is the end of the trip of Jan 1.
+Anyhow, there are much few errors now, I checked on 01_2013 and 02_2013 and in each there are about 10-15 invalid from around 9000 trips.
+
+
