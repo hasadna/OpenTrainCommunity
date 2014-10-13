@@ -68,6 +68,14 @@ class Trip(object):
              res.append('%2d %s' % (idx,stop))
         return '\n'.join(res)
 
+    def get_start_date(self):
+        """
+        return the date of the first exp_arrival
+        """
+        for stop in self.stops:
+            if stop.exp_arrival:
+                return stop.exp_arrival.date()
+
     def __unicode__(self):
         return 'Num %s%s in %s from %s to %s' % (self.stops[0].train_num,
                                                  ' [MID]' if self.is_midnight else '',
@@ -90,6 +98,34 @@ class Trip(object):
                 if before_midnight and after_midnight:
                     return True
         return False
+
+    def get_csv_rows(self):
+        result = []
+        for idx,stop in enumerate(self.stops):
+            result.append(self.get_csv_row(idx,stop))
+        return result
+
+    def get_csv_row(self,idx,stop):
+        result = {'train_num' : self.train_num,
+                  'start_date' : self.get_start_date().isoformat(),
+                  'index' : idx,
+                  'valid' : 1 if self.is_valid else 0,
+                  'is_first' : 1 if idx == 0 else 0,
+                  'is_last' : 1 if 1 + idx == len(self.stops) else 0,
+                  'stop_id' : stop.stop_id,
+                   'stop_name' : stops_utils.get_stop_name(stop.stop_id),
+                   'is_real_stop' : 1 if stops_utils.is_real(stop.stop_id) else 0
+                  }
+        attrs = ['actual_arrival','exp_arrival','actual_departure','exp_departure']
+        for attr in attrs:
+            val = getattr(stop,attr)
+            result[attr] = val.isoformat() if val else ''
+        da = stop.get_delay_arrival()
+        dd = stop.get_delay_departure()
+        result['delay_arrival'] = da if da is not None else ''
+        result['delay_departure'] = dd if dd is not None else ''
+
+        return result
 
     def __str__(self):
         return self.__unicode__()
@@ -216,11 +252,6 @@ class StopLine(object):
                 offset = self.find_offset(main_hm,hm)
                 setattr(self,key,self.build_datetime(hm,offset=offset))
 
-
-
-
-
-
     def get_delay_arrival(self):
         if self.exp_arrival is None or self.actual_arrival is None:
             return None
@@ -237,8 +268,11 @@ class StopLine(object):
             return dt.strftime('%H:%M')
         else:
             return "-----"
+
+
     def __str__(self):
         return self.__unicode__()
+
 
     def __unicode__(self):
         return '%5d %4d %-20s A=%5s(%5s) D=%5s(%5s)' % (self.line,
@@ -253,8 +287,6 @@ class StopLine(object):
 class TrainParser():
     def __init__(self, input, output=None, append=True):
         self.ifile = input
-        self.append = append
-        self.ofile = output
         self.stop_lines = []
         self.trips = []
         self.get_basename() # just to check for no errors
@@ -277,9 +309,9 @@ class TrainParser():
         for trip_num, trips in stops_by_trip_num.iteritems():
             self.split_trips(trip_num, trips)
 
-    def make_log_dir(self):
-        if not os.path.exists('log'):
-            os.mkdir('log')
+    def make_dir(self,dirname):
+        if not os.path.exists(dirname):
+            os.mkdir(dirname)
 
     def print_trips_status(self):
         invalid_trips = [trip for trip in self.trips if not trip.is_valid]
@@ -295,7 +327,7 @@ class TrainParser():
         for code, code_count in count_by_code.iteritems():
             print '    %s: %s' % (code, code_count)
         invalid_file = 'log/invalid_%s.txt' % self.get_basename()
-        self.make_log_dir()
+        self.make_dir('log')
         with open(invalid_file, 'w') as invalid_fh:
             for invalid_trip in invalid_trips:
                 invalid_fh.write('='*80 + '\n')
@@ -320,8 +352,33 @@ class TrainParser():
             self.trips.append(trip)
 
     def dump(self):
-        for line in self.stop_lines:
-            print unicode(line)
+        import csv
+        self.make_dir('output')
+        output_csv = 'output/%s.csv' % self.get_basename()
+        fieldnames = ['train_num',
+                      'start_date',
+                      'index',
+                      'stop_id',
+                      'stop_name',
+                      'is_real_stop',
+                      'valid',
+                      'is_first',
+                      'is_last',
+                      'actual_arrival',
+                      'exp_arrival',
+                      'delay_arrival',
+                      'actual_departure',
+                      'exp_departure',
+                      'delay_departure'
+                      ]
+        with open(output_csv,'w') as csv_fh:
+            csv_writer = csv.DictWriter(csv_fh,fieldnames=fieldnames)
+            csv_writer.writeheader()
+            for trip in self.trips:
+                rows = trip.get_csv_rows()
+                for row in rows:
+                    csv_writer.writerow(row)
+        print 'CSV was writtten to %s' % output_csv
 
     def _parse_date(self, date):
         year = int(date[0:4])
@@ -355,7 +412,7 @@ class TrainParser():
         self.parse()
         self.build_trips()
         self.print_trips_status()
-        # self.dump()
+        self.dump()
 
 
 def main():
