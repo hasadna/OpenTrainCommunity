@@ -9,7 +9,8 @@ import stops_utils
 
 ISRAEL_TZ = pytz.timezone('Asia/Jerusalem')
 LONG_AGO = ISRAEL_TZ.localize(datetime.datetime.fromtimestamp(0))
-
+MAX_GAP = 60*120 # 120 minutes
+DELAY_THRESHOLD = 60 * 120 # 120 minutes
 LINE_RE = re.compile(r'^\s*' +
                      r'(?P<date>\d+)\s+"' +
                      r'(?P<train_num>\d+)"\s+' +
@@ -20,7 +21,6 @@ LINE_RE = re.compile(r'^\s*' +
                      r'(?P<raw_stop_id>\d+)\s+' +
                      r'"(?P<raw_stop_name>.*)"\s*$')
 
-DELAY_THRESHOLD = 60 * 90
 ONE_DAY = datetime.timedelta(hours=24)
 
 ERROR_NO_STOPS = 'ERROR_NO_STOPS'
@@ -35,6 +35,7 @@ ERROR_DEPARTURE_DELAY_TOO_LONG = 'ERROR_DEPARTURE_DELAY_TOO_LONG'
 ERROR_GAP_TOO_LONG = 'ERROR_GAP_TOO_LONG'
 ERROR_NEGATIVE_GAP = 'ERROR_NEGATIVE_GAP'
 ERROR_DECR_CSV = 'ERROR_DECR_CSV'
+ERROR_MISSING_SAMPLE = 'ERROR_MISSING_SAMPLE'
 
 
 class CheckException(Exception):
@@ -123,6 +124,11 @@ class Trip(object):
             if stop.exp_departure is None:
                 raise CheckException(ERROR_EXP_DEPARTURE_NONE, 'stop index %d' % idx)
 
+        #for idx, stop in enumerate(self.stops):
+            #if (stop.actual_arrival is None and stop.exp_arrival is not None
+            #    or stop.actual_departure is None and stop.exp_departure is not None):
+            #    raise CheckException(ERROR_MISSING_SAMPLE,'stop index %d' % idx)
+
         for idx in xrange(1,len(self.stops)):
             self.check_gap(idx-1,idx)
 
@@ -162,7 +168,7 @@ class Trip(object):
             gap = (late_time-early_time).total_seconds()
             if gap < 0:
                 raise CheckException(ERROR_NEGATIVE_GAP,'stop indexes %d %d' % (early_idx,late_idx))
-            if gap > 3600:
+            if gap > MAX_GAP:
                 raise CheckException(ERROR_GAP_TOO_LONG,'stop indexes %d %d' % (early_idx,late_idx))
 
 
@@ -251,6 +257,10 @@ class TrainParser():
         self.ofile = output
         self.stop_lines = []
         self.trips = []
+        self.get_basename() # just to check for no errors
+
+    def get_basename(self):
+        return os.path.splitext(os.path.basename(self.ifile))[0]
 
     def parse(self):
         with codecs.open(self.ifile, encoding="windows-1255") as ifh:
@@ -284,8 +294,7 @@ class TrainParser():
             count_by_code[invalid_trip.error.code] += 1
         for code, code_count in count_by_code.iteritems():
             print '    %s: %s' % (code, code_count)
-
-        invalid_file = 'log/invalid.txt'
+        invalid_file = 'log/invalid_%s.txt' % self.get_basename()
         self.make_log_dir()
         with open(invalid_file, 'w') as invalid_fh:
             for invalid_trip in invalid_trips:
@@ -334,6 +343,7 @@ class TrainParser():
             sl.stop_name = stops_utils.get_stop_name(sl.stop_id)
             sl.file = self.ifile
             sl.line = idx + 1  # make it base 1 now, like file editors
+            sl.filename = self.get_basename()
             sl.is_real = is_real
             sl.build_times(gd)
 
