@@ -36,7 +36,7 @@ ERROR_GAP_TOO_LONG = 'ERROR_GAP_TOO_LONG'
 ERROR_NEGATIVE_GAP = 'ERROR_NEGATIVE_GAP'
 ERROR_DECR_CSV = 'ERROR_DECR_CSV'
 ERROR_MISSING_SAMPLE = 'ERROR_MISSING_SAMPLE'
-
+ERROR_DUPLICATE_NUM_DATE = 'ERROR_DUPLICATE_NUM_DATE'
 
 class CheckException(Exception):
     def __init__(self, code, details=None):
@@ -79,7 +79,7 @@ class Trip(object):
     def __unicode__(self):
         return 'Num %s%s in %s from %s to %s' % (self.stops[0].train_num,
                                                  ' [MID]' if self.is_midnight else '',
-                                                 self.stops[0].date,
+                                                 self.get_start_date(),
                                                  self.stops[0].stop_name,
                                                  self.stops[-1].stop_name)
 
@@ -411,9 +411,20 @@ class TrainParser():
         else:
             raise Exception('Illegal line %d at %s' % (idx, self.ifile))
 
+    def check_global_trips(self):
+        trip_by_train_num_date = defaultdict(list)
+        for trip in self.trips:
+            trip_by_train_num_date[(trip.train_num,trip.get_start_date())].append(trip)
+        for k,trips in trip_by_train_num_date.iteritems():
+            if len(trips) > 1:
+                for trip in trips:
+                    trip.valid = False
+                    trip.error = CheckException(code=ERROR_DUPLICATE_NUM_DATE)
+
     def main(self):
         self.parse()
         self.build_trips()
+        self.check_global_trips()
         self.print_trips_status()
         self.dump()
 
