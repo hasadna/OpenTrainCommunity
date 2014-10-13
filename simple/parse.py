@@ -9,8 +9,8 @@ import stops_utils
 
 ISRAEL_TZ = pytz.timezone('Asia/Jerusalem')
 LONG_AGO = ISRAEL_TZ.localize(datetime.datetime.fromtimestamp(0))
-MAX_GAP = 60*120 # 120 minutes
-DELAY_THRESHOLD = 60 * 120 # 120 minutes
+MAX_GAP = 60 * 120  # 120 minutes
+DELAY_THRESHOLD = 60 * 120  # 120 minutes
 LINE_RE = re.compile(r'^\s*' +
                      r'(?P<date>\d+)\s+"' +
                      r'(?P<train_num>\d+)"\s+' +
@@ -64,8 +64,8 @@ class Trip(object):
 
     def unicode_full(self):
         res = []
-        for idx,stop in enumerate(self.stops):
-             res.append('%2d %s' % (idx,stop))
+        for idx, stop in enumerate(self.stops):
+            res.append('%2d %s' % (idx, stop))
         return '\n'.join(res)
 
     def get_start_date(self):
@@ -79,18 +79,18 @@ class Trip(object):
     def __unicode__(self):
         return 'Num %s%s in %s from %s to %s' % (self.stops[0].train_num,
                                                  ' [MID]' if self.is_midnight else '',
-                                               self.stops[0].date,
-                                               self.stops[0].stop_name,
-                                               self.stops[-1].stop_name)
+                                                 self.stops[0].date,
+                                                 self.stops[0].stop_name,
+                                                 self.stops[-1].stop_name)
 
 
     def check_is_midnight(self):
-        attrs = ['actual_arrival','exp_arrival','actual_departure','exp_departure']
+        attrs = ['actual_arrival', 'exp_arrival', 'actual_departure', 'exp_departure']
         before_midnight = False
         after_midnight = False
         for stop in self.stops:
             for attr in attrs:
-                t = getattr(stop,attr)
+                t = getattr(stop, attr)
                 if t and t.hour >= 21:
                     before_midnight = True
                 if t and t.hour <= 3:
@@ -99,26 +99,28 @@ class Trip(object):
                     return True
         return False
 
-    def get_csv_rows(self):
+    def get_csv_rows(self, parser):
         result = []
-        for idx,stop in enumerate(self.stops):
-            result.append(self.get_csv_row(idx,stop))
+        for idx, stop in enumerate(self.stops):
+            result.append(self.get_csv_row(idx, parser, stop))
         return result
 
-    def get_csv_row(self,idx,stop):
-        result = {'train_num' : self.train_num,
-                  'start_date' : self.get_start_date().isoformat(),
-                  'index' : idx,
-                  'valid' : 1 if self.is_valid else 0,
-                  'is_first' : 1 if idx == 0 else 0,
-                  'is_last' : 1 if 1 + idx == len(self.stops) else 0,
-                  'stop_id' : stop.stop_id,
-                   'stop_name' : stops_utils.get_stop_name(stop.stop_id),
-                   'is_real_stop' : 1 if stops_utils.is_real(stop.stop_id) else 0
-                  }
-        attrs = ['actual_arrival','exp_arrival','actual_departure','exp_departure']
+    def get_csv_row(self, idx, parser, stop):
+        result = {'train_num': self.train_num,
+                  'start_date': self.get_start_date().isoformat(),
+                  'index': idx,
+                  'valid': 1 if self.is_valid else 0,
+                  'is_first': 1 if idx == 0 else 0,
+                  'is_last': 1 if 1 + idx == len(self.stops) else 0,
+                  'stop_id': stop.stop_id,
+                  'stop_name': stops_utils.get_stop_name(stop.stop_id),
+                  'is_real_stop': 1 if stops_utils.is_real(stop.stop_id) else 0,
+                  'data_file': os.path.basename(parser.ifile),
+                  'data_file_line': stop.line,
+        }
+        attrs = ['actual_arrival', 'exp_arrival', 'actual_departure', 'exp_departure']
         for attr in attrs:
-            val = getattr(stop,attr)
+            val = getattr(stop, attr)
             result[attr] = val.isoformat() if val else ''
         da = stop.get_delay_arrival()
         dd = stop.get_delay_departure()
@@ -160,22 +162,22 @@ class Trip(object):
             if stop.exp_departure is None:
                 raise CheckException(ERROR_EXP_DEPARTURE_NONE, 'stop index %d' % idx)
 
-        #for idx, stop in enumerate(self.stops):
-            #if (stop.actual_arrival is None and stop.exp_arrival is not None
-            #    or stop.actual_departure is None and stop.exp_departure is not None):
-            #    raise CheckException(ERROR_MISSING_SAMPLE,'stop index %d' % idx)
+                # for idx, stop in enumerate(self.stops):
+                #if (stop.actual_arrival is None and stop.exp_arrival is not None
+                #    or stop.actual_departure is None and stop.exp_departure is not None):
+                #    raise CheckException(ERROR_MISSING_SAMPLE,'stop index %d' % idx)
 
-        for idx in xrange(1,len(self.stops)):
-            self.check_gap(idx-1,idx)
+        for idx in xrange(1, len(self.stops)):
+            self.check_gap(idx - 1, idx)
 
-        for idx in xrange(1,len(self.stops)):
-            self.check_csv_incr(idx-1,idx)
+        for idx in xrange(1, len(self.stops)):
+            self.check_csv_incr(idx - 1, idx)
 
         for idx in xrange(len(self.stops)):
             self.check_delay(idx)
 
 
-    def check_delay(self,idx):
+    def check_delay(self, idx):
         stop = self.stops[idx]
         delay_arrive = stop.get_delay_arrival()
         if delay_arrive is not None and abs(
@@ -186,26 +188,26 @@ class Trip(object):
                 delay_departure) > DELAY_THRESHOLD:
             raise CheckException(ERROR_DEPARTURE_DELAY_TOO_LONG, 'stop index %d' % idx)
 
-    def check_csv_incr(self,early_idx,late_idx):
+    def check_csv_incr(self, early_idx, late_idx):
         early_stop = self.stops[early_idx]
         late_stop = self.stops[late_idx]
         if early_stop.line >= late_stop.line:
-            raise CheckException(ERROR_DECR_CSV,'stop indexes %d %d' % (early_idx,late_idx))
+            raise CheckException(ERROR_DECR_CSV, 'stop indexes %d %d' % (early_idx, late_idx))
 
-    def check_gap(self,early_idx,late_idx):
+    def check_gap(self, early_idx, late_idx):
         early_stop = self.stops[early_idx]
         late_stop = self.stops[late_idx]
-        attrs = ['actual_arrival','exp_arrival','actual_departure','exp_departure']
+        attrs = ['actual_arrival', 'exp_arrival', 'actual_departure', 'exp_departure']
         for attr in attrs:
-            late_time = getattr(late_stop,attr)
-            early_time  = getattr(early_stop,attr)
+            late_time = getattr(late_stop, attr)
+            early_time = getattr(early_stop, attr)
             if not early_time or not late_time:
                 return
-            gap = (late_time-early_time).total_seconds()
+            gap = (late_time - early_time).total_seconds()
             if gap < 0:
-                raise CheckException(ERROR_NEGATIVE_GAP,'stop indexes %d %d' % (early_idx,late_idx))
+                raise CheckException(ERROR_NEGATIVE_GAP, 'stop indexes %d %d' % (early_idx, late_idx))
             if gap > MAX_GAP:
-                raise CheckException(ERROR_GAP_TOO_LONG,'stop indexes %d %d' % (early_idx,late_idx))
+                raise CheckException(ERROR_GAP_TOO_LONG, 'stop indexes %d %d' % (early_idx, late_idx))
 
 
 class StopLine(object):
@@ -215,14 +217,14 @@ class StopLine(object):
             return None
         m = t % 100
         h = (t - t % 100) / 100
-        return h,m
+        return h, m
 
-    def build_datetime(self,hm,offset=0):
+    def build_datetime(self, hm, offset=0):
         dt = datetime.datetime(year=self.date.year, month=self.date.month, day=self.date.day) + datetime.timedelta(
-            hours=hm[0] + 24*offset, minutes=hm[1])
+            hours=hm[0] + 24 * offset, minutes=hm[1])
         return ISRAEL_TZ.localize(dt)
 
-    def find_offset(self,main_hm,hm):
+    def find_offset(self, main_hm, hm):
         if main_hm[0] >= 22 and hm[0] <= 3:
             # hm is tomorrow
             return +1
@@ -236,8 +238,8 @@ class StopLine(object):
         # now convert each h:m into date
         # these are the rules
         # if there is exp arrival, then this is its date, and all has to be according
-        for key in ['exp_arrival','actual_arrival','actual_departure','exp_departure']:
-            setattr(self,key,None)
+        for key in ['exp_arrival', 'actual_arrival', 'actual_departure', 'exp_departure']:
+            setattr(self, key, None)
         ea_hm = self.parse_time(gd['exp_arrival'])
         ed_hm = self.parse_time(gd['exp_departure'])
         if ea_hm is not None:
@@ -245,12 +247,12 @@ class StopLine(object):
         elif ed_hm:
             main_hm = ed_hm
         else:
-            assert False,'no exp arrival and no exp departure'
-        for key in ['exp_arrival','actual_arrival','actual_departure','exp_departure']:
+            assert False, 'no exp arrival and no exp departure'
+        for key in ['exp_arrival', 'actual_arrival', 'actual_departure', 'exp_departure']:
             hm = self.parse_time(gd[key])
             if hm is not None:
-                offset = self.find_offset(main_hm,hm)
-                setattr(self,key,self.build_datetime(hm,offset=offset))
+                offset = self.find_offset(main_hm, hm)
+                setattr(self, key, self.build_datetime(hm, offset=offset))
 
     def get_delay_arrival(self):
         if self.exp_arrival is None or self.actual_arrival is None:
@@ -276,12 +278,12 @@ class StopLine(object):
 
     def __unicode__(self):
         return '%5d %4d %-20s A=%5s(%5s) D=%5s(%5s)' % (self.line,
-                                                       self.stop_id,
-                                                       self.stop_name,
-                                                       self.print_time(self.actual_arrival),
-                                                       self.print_time(self.exp_arrival),
-                                                       self.print_time(self.actual_departure),
-                                                       self.print_time(self.exp_departure))
+                                                        self.stop_id,
+                                                        self.stop_name,
+                                                        self.print_time(self.actual_arrival),
+                                                        self.print_time(self.exp_arrival),
+                                                        self.print_time(self.actual_departure),
+                                                        self.print_time(self.exp_departure))
 
 
 class TrainParser():
@@ -289,7 +291,7 @@ class TrainParser():
         self.ifile = input
         self.stop_lines = []
         self.trips = []
-        self.get_basename() # just to check for no errors
+        self.get_basename()  # just to check for no errors
 
     def get_basename(self):
         return os.path.splitext(os.path.basename(self.ifile))[0]
@@ -309,7 +311,7 @@ class TrainParser():
         for trip_num, trips in stops_by_trip_num.iteritems():
             self.split_trips(trip_num, trips)
 
-    def make_dir(self,dirname):
+    def make_dir(self, dirname):
         if not os.path.exists(dirname):
             os.mkdir(dirname)
 
@@ -330,15 +332,15 @@ class TrainParser():
         self.make_dir('log')
         with open(invalid_file, 'w') as invalid_fh:
             for invalid_trip in invalid_trips:
-                invalid_fh.write('='*80 + '\n')
-                invalid_fh.write('TRIP = %s ERROR = %s\n' % (invalid_trip,unicode(invalid_trip.error)))
+                invalid_fh.write('=' * 80 + '\n')
+                invalid_fh.write('TRIP = %s ERROR = %s\n' % (invalid_trip, unicode(invalid_trip.error)))
                 invalid_fh.write(invalid_trip.unicode_full() + '\n')
         print 'Invalid details written to %s' % invalid_file
 
 
     def split_trips(self, trip_num, stops):
         cur_stops = []
-        stops.sort(key=lambda x : x.exp_arrival or x.exp_departure)
+        stops.sort(key=lambda x: x.exp_arrival or x.exp_departure)
         for idx, stop in enumerate(stops):
             if stop.exp_arrival is None:
                 if cur_stops:
@@ -353,6 +355,7 @@ class TrainParser():
 
     def dump(self):
         import csv
+
         self.make_dir('output')
         output_csv = 'output/%s.csv' % self.get_basename()
         fieldnames = ['train_num',
@@ -369,13 +372,15 @@ class TrainParser():
                       'delay_arrival',
                       'actual_departure',
                       'exp_departure',
-                      'delay_departure'
-                      ]
-        with open(output_csv,'w') as csv_fh:
-            csv_writer = csv.DictWriter(csv_fh,fieldnames=fieldnames)
+                      'delay_departure',
+                      'data_file',
+                      'data_file_line'
+        ]
+        with open(output_csv, 'w') as csv_fh:
+            csv_writer = csv.DictWriter(csv_fh, fieldnames=fieldnames)
             csv_writer.writeheader()
             for trip in self.trips:
-                rows = trip.get_csv_rows()
+                rows = trip.get_csv_rows(self)
                 for row in rows:
                     csv_writer.writerow(row)
         print 'CSV was writtten to %s' % output_csv
@@ -398,9 +403,7 @@ class TrainParser():
             sl.train_num = gd['train_num']
             sl.stop_id = stop_id
             sl.stop_name = stops_utils.get_stop_name(sl.stop_id)
-            sl.file = self.ifile
             sl.line = idx + 1  # make it base 1 now, like file editors
-            sl.filename = self.get_basename()
             sl.is_real = is_real
             sl.build_times(gd)
 
@@ -428,9 +431,10 @@ def run(input=None, output=None, append=True):
     """
      to debug from ipython, do something like tp = run('sample2.txt')
     """
-    tp = TrainParser(input=input,output=output,append=append)
+    tp = TrainParser(input=input, output=output, append=append)
     tp.main()
     return tp
+
 
 if __name__ == '__main__':
     main()
