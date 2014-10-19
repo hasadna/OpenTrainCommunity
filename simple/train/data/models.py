@@ -22,9 +22,6 @@ class Sample(models.Model):
     data_file_line = models.IntegerField()
     data_file_link = models.URLField(max_length=200)
 
-"""
- \copy data_sample(train_num,start_date,trip_id,index,stop_id,stop_name,is_real_stop,valid,is_first,is_last,actual_arrival,exp_arrival,delay_arrival,
- actual_departure,exp_departure,delay_departure,data_file,data_file_line,data_file_link)
- from '/home/eran/work/OpenTrainCommunity/simple/train/parser/output/sample2.csv' with delimiter ',' CSV HEADER;
+    class Meta:
+        unique_together = ('trip_id','index')
 
-"""
