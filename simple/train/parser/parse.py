@@ -118,6 +118,9 @@ class Trip(object):
                   'data_file': os.path.basename(parser.ifile),
                   'data_file_line': stop.line,
         }
+        result['data_file_link'] = 'http://localhost:8000/raw-data/?file={0}?line={1}'.format(result['data_file'],
+                                                                                              result['data_file_line'])
+        result['trip_id'] = '%s_%s' % (result['train_num'],self.get_start_date().strftime('%Y%m%d'))
         attrs = ['actual_arrival', 'exp_arrival', 'actual_departure', 'exp_departure']
         for attr in attrs:
             val = getattr(stop, attr)
@@ -360,6 +363,7 @@ class TrainParser():
         output_csv = 'output/%s.csv' % self.get_basename()
         fieldnames = ['train_num',
                       'start_date',
+                      'trip_id',
                       'index',
                       'stop_id',
                       'stop_name',
@@ -374,7 +378,8 @@ class TrainParser():
                       'exp_departure',
                       'delay_departure',
                       'data_file',
-                      'data_file_line'
+                      'data_file_line',
+                      'data_file_link'
         ]
         with open(output_csv, 'w') as csv_fh:
             csv_writer = csv.DictWriter(csv_fh, fieldnames=fieldnames)
