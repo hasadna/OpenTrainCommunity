@@ -118,7 +118,7 @@ class Trip(object):
                   'data_file': os.path.basename(parser.ifile),
                   'data_file_line': stop.line,
         }
-        result['data_file_link'] = 'http://localhost:8000/raw-data/?file={0}?line={1}'.format(result['data_file'],
+        result['data_file_link'] = 'http://localhost:8000/raw-data/?file={0}&line={1}'.format(result['data_file'],
                                                                                               result['data_file_line'])
         result['trip_id'] = '%s_%s' % (result['train_num'],self.get_start_date().strftime('%Y%m%d'))
         attrs = ['actual_arrival', 'exp_arrival', 'actual_departure', 'exp_departure']
