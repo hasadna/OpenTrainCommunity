@@ -8,5 +8,6 @@ unzip_data
 .idea
 log/
 output/
+output.old/
 local_settings.py
 

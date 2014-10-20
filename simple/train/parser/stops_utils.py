@@ -74,6 +74,7 @@ STOP_NAMES[7300] = 'BS North' # באר שבע-צפון
 STOP_NAMES[7320] = 'BS Center' # באר שבע מרכז
 STOP_NAMES[7400] = 'Ganot Junc' # צומת גנות
 STOP_NAMES[7500] = 'Dimona' # דימונה
+STOP_NAMES]7900] = 'Oron Eilata' # אורון אילתה
 STOP_NAMES[8100] = 'Nevatim' # נבטים
 STOP_NAMES[8200] = 'Aroar' # ערוער
 STOP_NAMES[8300] = 'Ahuzam' # אחוזם
@@ -89,6 +90,9 @@ STOP_NAMES[9000] = 'Yavna West' # יבנה מערב
 STOP_NAMES[9100] = 'Rishonim' # ראשונים
 STOP_NAMES[9200] = 'Hod Hashron' # הוד השרון
 STOP_NAMES[9300] = 'Nizanim' # ניצנים
+STOP_NAMES[9400] = 'Shikma'
+STOP_NAMES[9600] = 'Sderot'
+STOP_NAMES[9610] = 'Sderot Oper'
 STOP_NAMES[9800] = 'Rishon Dayan' # רשל""צ משה דיין
 STOP_NAMES[9900] = 'Rishon South' # רשל""צ דרום
 
@@ -100,7 +104,7 @@ REAL_STOP_IDS = [8550, 800, 6700, 7300, 8700, 1500, 4690, 4600, 3400, 4640, 4680
 def is_real(stop_id):
     return stop_id in REAL_STOP_IDS
 
-def get_stop_name(stop_id):
+def get_stop_name(stop_id,heb_name=None):
     """ returns the stop_name of stop_id
      if stop is not real, name if prefixed with -
      if no stop name returns unicode(stop_id) and print warning
@@ -110,7 +114,7 @@ def get_stop_name(stop_id):
     prefix = '-' if not is_real else ''
     result = prefix + STOP_NAMES.get(stop_id,unicode(stop_id))
     if stop_id not in STOP_NAMES:
-        print 'No stop name for %s - please fix in stops_utils.py' % stop_id
+        print 'No stop name for %s (%s) - please fix in stops_utils.py' % (stop_id,heb_name or '')
     return result
 
 

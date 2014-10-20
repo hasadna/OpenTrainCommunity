@@ -1,7 +1,6 @@
 import codecs
 import re
 import datetime
-import argparse
 import pytz
 import os
 from collections import defaultdict
@@ -12,15 +11,24 @@ ISRAEL_TZ = pytz.timezone('Asia/Jerusalem')
 LONG_AGO = ISRAEL_TZ.localize(datetime.datetime.fromtimestamp(0))
 MAX_GAP = 60 * 120  # 120 minutes
 DELAY_THRESHOLD = 60 * 120  # 120 minutes
-LINE_RE = re.compile(r'^\s*' +
-                     r'(?P<date>\d+)\s+"' +
-                     r'(?P<train_num>\d+)"\s+' +
-                     r'(?P<exp_arrival>\d+)\s+' +
-                     r'(?P<actual_arrival>\d+)\s+' +
-                     r'(?P<exp_departure>\d+)\s+' +
-                     r'(?P<actual_departure>\d+)\s+' +
-                     r'(?P<raw_stop_id>\d+)\s+' +
-                     r'"(?P<raw_stop_name>.*)"\s*$')
+LINE_RE_2013 = re.compile(r'^\s*' +
+                         r'(?P<date>\d+)\s+"' +
+                         r'(?P<train_num>\d+)"\s+' +
+                         r'(?P<exp_arrival>\d+)\s+' +
+                         r'(?P<actual_arrival>\d+)\s+' +
+                         r'(?P<exp_departure>\d+)\s+' +
+                         r'(?P<actual_departure>\d+)\s+' +
+                         r'(?P<raw_stop_id>\d+)\s+' +
+                         r'"(?P<raw_stop_name>.*)"\s*$')
+
+LINE_RE_2014 = re.compile(r'^\s*' +
+                         r'(?P<date_train_num>\d+)\s+' +
+                         r'(?P<exp_arrival>\d+)\s+' +
+                         r'(?P<actual_arrival>\d+)\s+' +
+                         r'(?P<exp_departure>\d+)\s+' +
+                         r'(?P<actual_departure>\d+)\s+' +
+                         r'(?P<raw_stop_id>\d+)\s*' +
+                         r'(?P<raw_stop_name>.*)\s*$')
 
 ONE_DAY = datetime.timedelta(hours=24)
 
@@ -402,15 +410,26 @@ class TrainParser():
         return datetime.date(year=year, month=month, day=day)
 
     def parse_line(self, idx, line):
-        m = LINE_RE.match(line)
+        is_2013 = False
+        m = LINE_RE_2013.match(line)
+        if m:
+            is_2013 = True
+        else:
+            m = LINE_RE_2014.match(line)
         if m:
             gd = m.groupdict()
             stop_id = int(gd['raw_stop_id'])
             is_real = stops_utils.is_real(stop_id)
 
             sl = StopLine()
-            sl.date = self._parse_date(gd['date'])
-            sl.train_num = gd['train_num']
+            if is_2013:
+                date_str = gd['date']
+                train_num = gd['train_num']
+            else:
+                date_str = gd['date_train_num'][0:8]
+                train_num = gd['date_train_num'][8:]
+            sl.date = self._parse_date(date_str)
+            sl.train_num = train_num
             sl.stop_id = stop_id
             sl.stop_name = stops_utils.get_stop_name(sl.stop_id)
             sl.line = idx + 1  # make it base 1 now, like file editors
