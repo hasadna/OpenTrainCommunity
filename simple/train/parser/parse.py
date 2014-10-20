@@ -6,6 +6,7 @@ import pytz
 import os
 from collections import defaultdict
 import stops_utils
+from django.conf import settings
 
 ISRAEL_TZ = pytz.timezone('Asia/Jerusalem')
 LONG_AGO = ISRAEL_TZ.localize(datetime.datetime.fromtimestamp(0))
@@ -290,8 +291,8 @@ class StopLine(object):
 
 
 class TrainParser():
-    def __init__(self, input, output=None, append=True):
-        self.ifile = input
+    def __init__(self, filename):
+        self.ifile = filename
         self.stop_lines = []
         self.trips = []
         self.get_basename()  # just to check for no errors
@@ -315,8 +316,12 @@ class TrainParser():
             self.split_trips(trip_num, trips)
 
     def make_dir(self, dirname):
-        if not os.path.exists(dirname):
-            os.mkdir(dirname)
+        path = os.path.join(settings.BASE_DIR,'parser',dirname)
+        if not os.path.exists(path):
+            os.mkdir(path)
+
+    def get_file(self,filename):
+        return os.path.join(settings.BASE_DIR,'parser',filename)
 
     def print_trips_status(self):
         invalid_trips = [trip for trip in self.trips if not trip.is_valid]
@@ -331,7 +336,7 @@ class TrainParser():
             count_by_code[invalid_trip.error.code] += 1
         for code, code_count in count_by_code.iteritems():
             print '    %s: %s' % (code, code_count)
-        invalid_file = 'log/invalid_%s.txt' % self.get_basename()
+        invalid_file = self.get_file('log/invalid_%s.txt' % self.get_basename())
         self.make_dir('log')
         with open(invalid_file, 'w') as invalid_fh:
             for invalid_trip in invalid_trips:
@@ -360,7 +365,7 @@ class TrainParser():
         import csv
 
         self.make_dir('output')
-        output_csv = 'output/%s.csv' % self.get_basename()
+        output_csv = self.get_file('output/%s.csv' % self.get_basename())
         fieldnames = ['train_num',
                       'start_date',
                       'trip_id',
@@ -434,23 +439,11 @@ class TrainParser():
         self.dump()
 
 
-def main():
-    parser = argparse.ArgumentParser('parser')
-    parser.add_argument('--input', required=True)
-    parser.add_argument('--output', required=False)
-    parser.add_argument('--append', required=False, default=True, action='store_true')
-    ns = parser.parse_args()
-    run(**vars(ns))
-
-
-def run(input=None, output=None, append=True):
+def run(file):
     """
      to debug from ipython, do something like tp = run('sample2.txt')
     """
-    tp = TrainParser(input=input, output=output, append=append)
+    tp = TrainParser(file)
     tp.main()
     return tp
 
-
-if __name__ == '__main__':
-    main()
