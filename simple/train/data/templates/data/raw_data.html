@@ -1,1 +1,24 @@
 <h1>Raw Data</h1>
+<h2>Location {{filename}} {{lineno}}</h2>
+<h3><a href="{{prev}}">prev</a> <a href="{{next}}">next</a></h3>
+<table>
+    <tr>
+        <th>Line No</th>
+        <th></th>
+        <th>Line</th>
+    </tr>
+{%for line in lines%}
+<tr>
+    <td>
+        <pre>#{{line.lineno}}</pre>
+    </td>
+    <td>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td>
+        <pre>{{line.line}}</pre>
+    </td>
+</tr>
+
+{%endfor%}
+</table>
