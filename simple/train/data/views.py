@@ -1,5 +1,7 @@
 from django.shortcuts import render
 import codecs
+import os.path
+from django.conf import settings
 OFFSET=10
 def show_raw_data(req):
     filename = req.GET['file']
@@ -9,7 +11,7 @@ def show_raw_data(req):
     ctx = dict()
     cur_lineno = 1
     lines = []
-    file_path = 'parser/unzip_data/%s' % filename
+    file_path = os.path.join(settings.BASE_DIR,'parser/unzip_data/%s' % filename)
     with codecs.open(file_path,encoding="windows-1255") as fh:
         for line in fh:
             if cur_lineno >= from_lineno and cur_lineno <= to_lineno:
