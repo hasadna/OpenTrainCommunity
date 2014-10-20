@@ -1,5 +1,5 @@
 <h1>Raw Data</h1>
-<h2>Location {{filename}} {{lineno}}</h2>
+<h2>Location {{filename}} <a href="#{{lineno}}">{{lineno}}</a></h2>
 <h3><a href="{{prev}}">prev</a> <a href="{{next}}">next</a></h3>
 <table>
     <tr>
@@ -10,7 +10,7 @@
 {%for line in lines%}
 <tr>
     <td>
-        <pre>#{{line.lineno}}</pre>
+        <pre><a name="{{line.lineno}}">#{{line.lineno}}</a></pre>
     </td>
     <td>
         &nbsp;&nbsp;&nbsp;&nbsp;

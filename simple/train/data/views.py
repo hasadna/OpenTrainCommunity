@@ -2,7 +2,7 @@ from django.shortcuts import render
 import codecs
 import os.path
 from django.conf import settings
-OFFSET=10
+OFFSET=20
 def show_raw_data(req):
     filename = req.GET['file']
     lineno = int(req.GET['line'])
@@ -21,7 +21,7 @@ def show_raw_data(req):
     ctx['lines'] = lines
     ctx['filename'] = filename
     ctx['lineno'] = lineno
-    ctx['prev'] = '/raw-data?file=%s&line=%s' % (filename,lineno-OFFSET*2)
-    ctx['next'] = '/raw-data?file=%s&line=%s' % (filename,lineno+OFFSET*2)
+    ctx['prev'] = '/raw-data?file=%s&line=%s' % (filename,lineno-OFFSET*2-1)
+    ctx['next'] = '/raw-data?file=%s&line=%s' % (filename,lineno+OFFSET*2+1)
     return render(req, 'data/raw_data.html', ctx)
 
