@@ -47,6 +47,11 @@ ERROR_DECR_CSV = 'ERROR_DECR_CSV'
 ERROR_MISSING_SAMPLE = 'ERROR_MISSING_SAMPLE'
 ERROR_DUPLICATE_NUM_DATE = 'ERROR_DUPLICATE_NUM_DATE'
 
+def print_and_write(fh,txt):
+    print txt
+    fh.write(txt)
+    fh.write('\n')
+
 class CheckException(Exception):
     def __init__(self, code, details=None):
         if details:
@@ -84,6 +89,10 @@ class Trip(object):
         for stop in self.stops:
             if stop.exp_arrival:
                 return stop.exp_arrival.date()
+        for stop in self.stops:
+            if stop.exp_departure:
+                return stop.exp_departure.date()
+
 
     def __unicode__(self):
         return 'Num %s%s in %s from %s to %s' % (self.stops[0].train_num,
@@ -335,18 +344,18 @@ class TrainParser():
         invalid_trips = [trip for trip in self.trips if not trip.is_valid]
         midnight_trips = [trip for trip in self.trips if trip.is_midnight]
         invalid_midnights = [trip for trip in invalid_trips if trip.is_midnight]
-        print 'Total trips: %d' % len(self.trips)
-        print 'Midnight trips %d' % (len(midnight_trips))
-        print 'Invalid trips: %d' % len(invalid_trips)
-        print 'Invalid midnights: %d' % len(invalid_midnights)
-        count_by_code = defaultdict(int)
-        for invalid_trip in invalid_trips:
-            count_by_code[invalid_trip.error.code] += 1
-        for code, code_count in count_by_code.iteritems():
-            print '    %s: %s' % (code, code_count)
-        invalid_file = self.get_file('log/invalid_%s.txt' % self.get_basename())
         self.make_dir('log')
+        invalid_file = self.get_file('log/invalid_%s.txt' % self.get_basename())
         with open(invalid_file, 'w') as invalid_fh:
+            print_and_write(invalid_fh,'Total trips: %d' % len(self.trips))
+            print_and_write(invalid_fh,'Midnight trips %d' % (len(midnight_trips)))
+            print_and_write(invalid_fh,'Invalid trips: %d' % len(invalid_trips))
+            print_and_write(invalid_fh,'Invalid midnights: %d' % len(invalid_midnights))
+            count_by_code = defaultdict(int)
+            for invalid_trip in invalid_trips:
+                count_by_code[invalid_trip.error.code] += 1
+            for code, code_count in count_by_code.iteritems():
+                print_and_write(invalid_fh,'    %s: %s' % (code, code_count))
             for invalid_trip in invalid_trips:
                 invalid_fh.write('=' * 80 + '\n')
                 invalid_fh.write('TRIP = %s ERROR = %s\n' % (invalid_trip, unicode(invalid_trip.error)))
