@@ -120,7 +120,9 @@ class Trip(object):
     def get_csv_rows(self, parser):
         result = []
         for idx, stop in enumerate(self.stops):
-            result.append(self.get_csv_row(idx, parser, stop))
+            idx_offset = getattr(self,'idx_offset',0)
+            assert idx_offset == 0 or self.error
+            result.append(self.get_csv_row(idx+idx_offset, parser, stop))
         return result
 
     def get_csv_row(self, idx, parser, stop):
@@ -458,6 +460,14 @@ class TrainParser():
                 for trip in trips:
                     trip.valid = False
                     trip.error = CheckException(code=ERROR_DUPLICATE_NUM_DATE)
+                    offset = 0
+                    for trip in trips:
+                        trip.idx_offset = offset
+                        offset += len(trip.stops)
+
+
+
+
 
     def main(self):
         self.parse()
