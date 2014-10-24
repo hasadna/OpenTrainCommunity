@@ -2,7 +2,7 @@ from models import Sample, Trip
 from django.http import HttpResponse
 from django.core import serializers
 from django.db.models import Q
-import itertools, dateutil.tz
+import itertools, datetime
 from django.utils.timezone import make_naive, get_current_timezone
 
 def show_sample(req):
@@ -62,6 +62,20 @@ def get_delay_average(req):
         average += (sample[1].delay_arrival or 0) / size
 
     return HttpResponse(average)
+
+
+def get_delay_over_total_duration(req):
+    samples = get_relevant_routes_from_request(req)
+    delay = 0
+    duration = datetime.timedelta()
+    for sample in samples:
+        if len(sample) != 2:
+            continue
+
+        delay += (sample[1].delay_arrival or 0)
+        duration += sample[1].exp_arrival - sample[0].exp_departure
+
+    return HttpResponse(delay / duration.total_seconds())
 
 
 #  from station to station, from time of day to time of day: delay average, % delays over threshold, delay/totalDuration
