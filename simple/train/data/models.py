@@ -20,16 +20,16 @@ class Sample(models.Model):
     and their name is prefixed with -
 
     """
-    trip_id = models.CharField(max_length=30,db_index=True) # generated id for the given trip (combination of train num and date)
+    trip_id= models.CharField(max_length=30,db_index=True) # generated id for the given trip (combination of train num and date)
     train_num = models.IntegerField(db_index=True) # the train num as given in the text files
     start_date = models.DateField(db_index=True) # the start date of the trip (note that trip can be spanned over two days)
     index = models.IntegerField() # the index of the stop in the trip (0 based)
     stop_id = models.IntegerField(db_index=True) # the stop id
     stop_name = models.CharField(max_length=100) # the stop name in english - not formal name, if this is not real stop will be prefixed with -
-    is_real_stop = models.BooleanField() # true is this is real stop
-    valid = models.BooleanField(db_index=True) # true if this is stop in valid trip (e.g. with no errros)
-    is_first = models.BooleanField() # true if this is the first stop of the trip (index = 0)
-    is_last = models.BooleanField() # true if this is the last stop
+    is_real_stop = models.BooleanField(default=False) # true is this is real stop
+    valid = models.BooleanField(default=False,db_index=True) # true if this is stop in valid trip (e.g. with no errros)
+    is_first = models.BooleanField(default=False) # true if this is the first stop of the trip (index = 0)
+    is_last = models.BooleanField(default=False) # true if this is the last stop
     actual_arrival = models.DateTimeField(blank=True,null=True) # actual arrival time with tz, will be None if there is no such
     exp_arrival = models.DateTimeField(blank=True,null=True) # exp arrival time with tz, will be None if this is the first stop
     delay_arrival = models.FloatField(blank=True,null=True) # the delay in the arrival in seconds
