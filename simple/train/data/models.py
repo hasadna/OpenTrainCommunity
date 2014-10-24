@@ -45,10 +45,10 @@ class Sample(models.Model):
         unique_together = ('trip_id','index')
 
 class Trip(models.Model):
-    trip_id = models.CharField(max_length=30,db_index=True,unique=True)
+    id = models.CharField(primary_key=True,max_length=30,db_index=True,unique=True)
     train_num = models.IntegerField(db_index=True)
     start_date = models.DateField(db_index=True)
     valid = models.BooleanField(default=False)
-    stop_ids = IntegerArrayField()
+    stop_ids = IntegerArrayField() 
 
 
