@@ -47,6 +47,10 @@ def import_csv(csv_file):
 
 
 def build_trips():
+    """
+    note: there is problem with sample with trip name 443_20140330
+    since it has no real stops
+    """
     from django.db import connection
     before = Trip.objects.count()
     with connection.cursor() as c:

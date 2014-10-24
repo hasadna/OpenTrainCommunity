@@ -457,13 +457,12 @@ class TrainParser():
             trip_by_train_num_date[(trip.train_num,trip.get_start_date())].append(trip)
         for k,trips in trip_by_train_num_date.iteritems():
             if len(trips) > 1:
+                offset = 0
                 for trip in trips:
-                    trip.valid = False
+                    trip.is_valid = False
                     trip.error = CheckException(code=ERROR_DUPLICATE_NUM_DATE)
-                    offset = 0
-                    for trip in trips:
-                        trip.idx_offset = offset
-                        offset += len(trip.stops)
+                    trip.idx_offset = offset
+                    offset += len(trip.stops)
 
 
 

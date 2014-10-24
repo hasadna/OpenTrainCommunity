@@ -4,5 +4,6 @@ django-extensions==1.4.4
 djorm-pgarray==1.0.4
 ipython==2.3.0
 psycopg2==2.5.4
+pytz==2014.7
 six==1.8.0
 wsgiref==0.1.2
