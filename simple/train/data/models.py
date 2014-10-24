@@ -1,5 +1,7 @@
 from django.db import models
 from django.conf import settings
+from djorm_pgarray.fields import IntegerArrayField
+
 
 class Sample(models.Model):
     """
@@ -37,7 +39,16 @@ class Sample(models.Model):
     data_file = models.CharField(max_length=100) # the name of the data file (text file)
     data_file_line = models.IntegerField() # the line number in the data file (text file)
     data_file_link = models.URLField(max_length=200) # link to show the snippet of the text file in browser
+    parent_trip = models.ForeignKey('Trip',blank=True,null=True)
 
     class Meta:
         unique_together = ('trip_id','index')
+
+class Trip(models.Model):
+    trip_id = models.CharField(max_length=30,db_index=True,unique=True)
+    train_num = models.IntegerField(db_index=True)
+    start_date = models.DateField(db_index=True)
+    valid = models.BooleanField(default=False)
+    stop_ids = IntegerArrayField()
+
 
