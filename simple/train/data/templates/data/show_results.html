@@ -1,13 +1,11 @@
-<html>
-
-
+<html ng-app="{{app}}">
 <h1>{{title}}</h1>
 <hr/>
-
-
-    <div ng-controller="{{app_name}}Controller" ng-include="'/static/tpls/{{app_name}}.html'">
+    <div ng-controller="{{app}}Controller" ng-include="'/static/data/tpls/{{app}}.html'">
    	<div>
-    <script src="/static/common/js/ext/angular.min.js"></script>
-    <script src="/static/common/js/ang/services/myhttp.js"></script>
-
+    <script src="/static/data/js/ext/angular.min.js"></script>
+    <script src="/static/data/js/services/myhttp.js"></script>
+    <script src="/static/data/js/filters/filters.js"></script>
+    <script src="/static/data/js/apps/FromTo.js"></script>
 </html>
+
