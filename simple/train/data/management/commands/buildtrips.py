@@ -8,7 +8,3 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         data.utils.build_trips()
 
-        
-
-                          
-                          

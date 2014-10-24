@@ -23,7 +23,7 @@ def import_csv(csv_file):
     import os
     cmd = r"""\copy data_sample(train_num,
               start_date,
-              trip_id,
+              trip_name,
               index,
               stop_id,
               stop_name,
@@ -50,15 +50,14 @@ def build_trips():
     from django.db import connection
     before = Trip.objects.count()
     with connection.cursor() as c:
-        c.execute("""insert into data_trip(trip_id,train_num,start_date,valid,stop_ids)
-        (SELECT trip_id,train_num,start_date,valid,array_agg(stop_id ORDER BY index) AS stop_ids
+        c.execute("""insert into data_trip(id,train_num,start_date,valid,stop_ids)
+        (SELECT trip_name,train_num,start_date,valid,array_agg(stop_id ORDER BY index) AS stop_ids
             FROM public.data_sample
-            WHERE is_real_stop and parent_trip_id is null
-            GROUP BY trip_id,train_num,start_date,valid)""")
+            WHERE is_real_stop and trip_id is null
+            GROUP BY trip_name,train_num,start_date,valid)""")
+        c.execute('update data_sample set trip_id = trip_name where trip_id is null')
     after = Trip.objects.count()
     print 'Before = %s After = %s Added = %s' % (before,after,after-before)
-    #for trip in Trip.objects.all():
-    #    Sample.objects.filter(trip_id=trip.trip_id).update(parent_trip=trip)
 
 
 

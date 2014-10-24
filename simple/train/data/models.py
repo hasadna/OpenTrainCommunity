@@ -20,7 +20,7 @@ class Sample(models.Model):
     and their name is prefixed with -
 
     """
-    trip_id= models.CharField(max_length=30,db_index=True) # generated id for the given trip (combination of train num and date)
+    trip_name = models.CharField(max_length=30,db_index=True) # generated id for the given trip (combination of train num and date)
     train_num = models.IntegerField(db_index=True) # the train num as given in the text files
     start_date = models.DateField(db_index=True) # the start date of the trip (note that trip can be spanned over two days)
     index = models.IntegerField() # the index of the stop in the trip (0 based)
@@ -39,16 +39,16 @@ class Sample(models.Model):
     data_file = models.CharField(max_length=100) # the name of the data file (text file)
     data_file_line = models.IntegerField() # the line number in the data file (text file)
     data_file_link = models.URLField(max_length=200) # link to show the snippet of the text file in browser
-    parent_trip = models.ForeignKey('Trip',blank=True,null=True)
+    trip = models.ForeignKey('Trip',blank=True,null=True)
 
     class Meta:
-        unique_together = ('trip_id','index')
+        unique_together = ('trip_name','index')
 
 class Trip(models.Model):
     id = models.CharField(primary_key=True,max_length=30,db_index=True,unique=True)
     train_num = models.IntegerField(db_index=True)
     start_date = models.DateField(db_index=True)
     valid = models.BooleanField(default=False)
-    stop_ids = IntegerArrayField() 
+    stop_ids = IntegerArrayField()
 
 
