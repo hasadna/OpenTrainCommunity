@@ -170,8 +170,7 @@ def get_route(req):
       res = get_delay_from_data(samples)
       res['delay_2'] = get_delay_over_threshold_from_data(samples, 2*60)
       res['delay_5'] = get_delay_over_threshold_from_data(samples, 5*60)
-      return HttpResponse(json.dumps(res))
-
+      return json_resp(res)
     except Exception as e:
         print(e)
 

@@ -31,6 +31,12 @@ myFilters.filter('yesNo',function() {
 	};
 });
 
+myFilters.filter('toPrec',function() {
+	return function(input) {
+	    return input * 100;
+	};
+});
+
 
 myFilters.filter('hmOnly',function() {
 	return function(input) {

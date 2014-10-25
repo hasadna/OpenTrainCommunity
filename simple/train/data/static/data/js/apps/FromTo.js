@@ -31,15 +31,14 @@ function($scope, MyHttp) {
         localStorage.setItem('toStop',$scope.input.toStop.stop_id);
         localStorage.setItem('fromHour',$scope.input.fromHour);
         localStorage.setItem('toHour',$scope.input.toHour);
-        MyHttp.get('/api/routes/delays',
+        MyHttp.get('/api/routes/',
             {'from' : $scope.input.fromStop.stop_id,
             'to' : $scope.input.toStop.stop_id,
             'from_time' : $scope.input.fromHour,
             'to_time' : $scope.input.toHour
             }).success(function(data) {
                 console.log(data);
-                $scope.results = $scope.results || {};
-                $scope.results.delays = data;
+                $scope.results = data;
             });
     };
 }]);

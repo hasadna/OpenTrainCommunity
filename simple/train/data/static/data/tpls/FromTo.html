@@ -33,10 +33,18 @@
         <table border="1">
             <tr>
                 <td>
-                    <b>Average</b>
+                    <b>Total</b>
                 </td>
                 <td>
-                    {{results.delays.average|toMinSec}}
+                    {{results.total}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>Average Delay</b>
+                </td>
+                <td>
+                    {{results.average|toMinSec}}
                 </td>
                 <td>
 
@@ -44,26 +52,42 @@
             </tr>
             <tr>
                 <td>
-                    <b>Max</b>
+                    <b>Max Delay</b>
                 </td>
                 <td>
-                    {{results.delays.max.duration|toMinSec}}
+                    {{results.max.duration|toMinSec}}
                  </td>
                 <td>
-                    <trip tid="results.delays.max.trips[0]">
+                    <trip tid="results.max.trips[0]">
                     </trip>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <b>Min</b>
+                    <b>Min Delay</b>
                 </td>
                 <td>
-                    {{results.delays.min.duration|toMinSec}}
+                    {{results.min.duration|toMinSec}}
                 </td>
                 <td>
-                    <trip tid="results.delays.min.trips[0]">
+                    <trip tid="results.min.trips[0]">
                     </trip>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>Delays over 5 Minutes</b>
+                </td>
+                <td>
+                    {{results.delay_5.nominal}} ({{results.delay_5.proportional | toPrec | number:1 }}%)
+                </td>
+             </tr>
+            <tr>
+                <td>
+                    <b>Delays over 2 Minutes</b>
+                </td>
+                <td>
+                    {{results.delay_2.nominal}} ({{results.delay_2.proportional | toPrec | number:1}}%)
                 </td>
             </tr>
         </table>
