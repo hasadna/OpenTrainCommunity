@@ -55,11 +55,9 @@ function($http) {
 
 services.controller('TripController', ['$scope', 'MyHttp',
     function($scope, MyHttp) {
-        if ($scope.tid) {
             MyHttp.get('/api/trips/' + $scope.tid + '/').success(function(data) {
                 $scope.trip = data;
                 $scope.expand = false;
             });
-        };
     }]);
 
