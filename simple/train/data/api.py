@@ -30,12 +30,13 @@ def get_stops(req):
     stops.sort(key=lambda x : x['stop_name'])
     return json_resp(stops)
 
-def get_relevant_routes(origin, destination, fromTime, toTime):
+def get_relevant_routes(origin, destination, fromTime, toTime, days):
         routes = Trip.objects.raw('''SELECT id, stop_ids
         FROM public.data_trip
         WHERE valid
         AND ARRAY[%s::int,%s::int] <@ stop_ids
-        ''', [origin, destination])
+        AND EXTRACT(dow FROM start_date)::int = ANY(%s)
+        ''', [origin, destination, days])
 
         trips = [route.id for route in routes if route.stop_ids.index(int(origin)) < route.stop_ids.index(int(destination))]
 
@@ -58,8 +59,10 @@ def get_relevant_routes_from_request(req):
         destination = int(req.GET.get('to'))
         fromTime = int(req.GET.get('from_time') or 0)
         toTime = int(req.GET.get('to_time') or 23)
+        days = req.GET.get('days')
+        days = (days and map(int, days.split(','))) or list(range(0,6))
 
-        return get_relevant_routes(origin, destination, fromTime, toTime)
+        return get_relevant_routes(origin, destination, fromTime, toTime, days)
 
     except Exception as e:
         print(e)
