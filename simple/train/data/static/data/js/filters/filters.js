@@ -51,3 +51,9 @@ myFilters.filter('hmOnly',function() {
 	};
 });
 
+myFilters.filter('toDate',function() {
+    return function(input) {
+        return new Date(input).toDateString();
+    };
+});
+
