@@ -5,6 +5,7 @@ from django.core import serializers
 from django.db.models import Q
 import itertools, datetime, json
 from django.utils.timezone import make_naive, get_current_timezone
+from collections import Counter
 
 def json_resp(obj,status=200):
     import json
@@ -113,9 +114,22 @@ def get_trip(req,trip_id):
 #         delays = [sample[1].delay_arrival or 0 for sample in samples]
 #         for sample in sample
 
+def get_delay_buckets(req):
+    if req.GET.get('from'):  # TODO: check all routes
+        samples = get_relevant_routes_from_request(req)
+        delays = [sample[1].delay_arrival or 0 for sample in samples]
+        res = {}
+        for key, value in dict(Counter([delay//240 for delay in delays])).iteritems():
+            res[key*5] = value
+        return HttpResponse(res)
 
+def get_delay_over_threshold(req):
+    samples = get_relevant_routes_from_request(req)
+    threshold = int(req.GET.get('threshold'))
+    delaysOverThreshold = len([sample[1].delay_arrival for sample in samples if sample[1].delay_arrival > threshold])
 
-#  from station to station, from time of day to time of day: delay average, % delays over threshold, delay/totalDuration
-#  buckets of delays
+    return HttpResponse(json.dumps({'nominal': delaysOverThreshold, 'proportional': float(delaysOverThreshold) / len(samples)}))
+
+#  from station to station, from time of day to time of day:  % delays over threshold
 # correlation between early lates in the routes
 # find direction of a route,compare the two directions
