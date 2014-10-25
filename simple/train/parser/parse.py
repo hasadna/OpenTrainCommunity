@@ -225,7 +225,7 @@ class Trip(object):
             late_time = getattr(late_stop, attr)
             early_time = getattr(early_stop, attr)
             if not early_time or not late_time:
-                return
+                continue
             gap = (late_time - early_time).total_seconds()
             if gap < 0:
                 raise CheckException(ERROR_NEGATIVE_GAP, 'stop indexes %d %d' % (early_idx, late_idx))
