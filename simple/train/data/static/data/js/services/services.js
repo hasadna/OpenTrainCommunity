@@ -1,6 +1,5 @@
 "use strict";
-
-var services = angular.module('my.services', []);
+var services = angular.module('my.services', ['my.filters']);
 
 services.factory('MyHttp', ['$http',
 function($http) {
@@ -53,4 +52,12 @@ function($http) {
 	};
 	return service;
 }]);
+
+services.controller('TripController', ['$scope', 'MyHttp',
+    function($scope, MyHttp) {
+        MyHttp.get('/api/trips/' + $scope.tid + '/').success(function(data) {
+            $scope.trip = data;
+            $scope.expand = false;
+        });
+    }]);
 

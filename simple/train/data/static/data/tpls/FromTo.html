@@ -24,15 +24,18 @@
             </tr>
         </table>
     </form>
-    <div ng-show="results">
+    <div ng-if="results">
         <h1>Results</h1>
-        <table>
+        <table border="1">
             <tr>
                 <td>
                     <b>Average</b>
                 </td>
                 <td>
                     {{results.delays.average|toMinSec}}
+                </td>
+                <td>
+
                 </td>
             </tr>
             <tr>
@@ -41,6 +44,10 @@
                 </td>
                 <td>
                     {{results.delays.max.duration|toMinSec}}
+                 </td>
+                <td>
+                    <trip tid="results.delays.max.trips[0]">
+                    </trip>
                 </td>
             </tr>
             <tr>
@@ -49,6 +56,10 @@
                 </td>
                 <td>
                     {{results.delays.min.duration|toMinSec}}
+                </td>
+                <td>
+                    <trip tid="results.delays.min.trips[0]">
+                    </trip>
                 </td>
             </tr>
         </table>

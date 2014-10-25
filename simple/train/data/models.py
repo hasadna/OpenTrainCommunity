@@ -41,6 +41,19 @@ class Sample(models.Model):
     data_file_link = models.URLField(max_length=200) # link to show the snippet of the text file in browser
     trip = models.ForeignKey('Trip',blank=True,null=True)
 
+    def to_json(self):
+        return {'index' : self.index,
+                'stop_id' : self.stop_id,
+                'stop_name' : self.stop_name,
+                'actual_arrival' : self.actual_arrival.isoformat() if self.actual_arrival else None,
+                'exp_arrival' : self.exp_arrival.isoformat() if self.exp_arrival else None,
+                'delay_arrival' : self.delay_arrival,
+                'actual_departure' : self.actual_departure.isoformat() if self.actual_departure else None,
+                'exp_departure' : self.exp_departure.isoformat() if self.exp_departure else None,
+                'delay_departure' : self.delay_departure,
+                'link' : self.data_file_link
+        }
+
     class Meta:
         unique_together = ('trip_name','index')
 
@@ -50,5 +63,14 @@ class Trip(models.Model):
     start_date = models.DateField(db_index=True)
     valid = models.BooleanField(default=False)
     stop_ids = IntegerArrayField()
+
+    def to_json(self):
+        stops = [stop.to_json() for stop in self.sample_set.filter(is_real_stop=True).order_by('index')]
+        return {'id' : self.id,
+                'train_num' : self.train_num,
+                'start_date' : self.start_date.isoformat(),
+                 'valid' : self.valid,
+                 'stops' : stops
+                }
 
 

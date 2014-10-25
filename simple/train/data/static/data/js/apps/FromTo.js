@@ -1,4 +1,4 @@
-var app = angular.module('FromTo', ['my.filters','my.services']);
+var app = angular.module('FromTo', ['my.filters','my.services','my.directives']);
 
 app.controller('FromToController', ['$scope', 'MyHttp',
 function($scope, MyHttp) {

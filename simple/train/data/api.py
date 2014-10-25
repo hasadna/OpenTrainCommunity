@@ -1,5 +1,6 @@
+from django.http.response import HttpResponse
 from models import Sample, Trip
-from django.http import HttpResponse
+from django.http import HttpResponse,Http404
 from django.core import serializers
 from django.db.models import Q
 import itertools, datetime, json
@@ -96,7 +97,15 @@ def get_delay_over_total_duration(req):
 
     return HttpResponse(delay / duration.total_seconds())
 
-
+def get_trip(req,trip_id):
+    from models import Trip
+    try:
+        trip = Trip.objects.get(id=trip_id)
+    except Trip.DoesNotExist:
+        return json_resp({'error' : '404',
+                          'trip_id' : trip_id},
+                         status=404)
+    return json_resp(trip.to_json());
 # def get_delay_buckets(req):
 #     if req.GET.get('from'): # TODO: check all routes
 #         samples = get_relevant_routes_from_request(req)
