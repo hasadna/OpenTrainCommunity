@@ -4,6 +4,7 @@ from django.core import serializers
 from django.db.models import Q
 import itertools, datetime, json
 from django.utils.timezone import make_naive, get_current_timezone
+from collections import Counter
 
 def json_resp(obj,status=200):
     import json
@@ -97,12 +98,14 @@ def get_delay_over_total_duration(req):
     return HttpResponse(delay / duration.total_seconds())
 
 
-# def get_delay_buckets(req):
-#     if req.GET.get('from'): # TODO: check all routes
-#         samples = get_relevant_routes_from_request(req)
-#         histogram = {}
-#         delays = [sample[1].delay_arrival or 0 for sample in samples]
-#         for sample in sample
+def get_delay_buckets(req):
+    if req.GET.get('from'):  # TODO: check all routes
+        samples = get_relevant_routes_from_request(req)
+        delays = [sample[1].delay_arrival or 0 for sample in samples]
+        res = {}
+        for key, value in dict(Counter([delay//240 for delay in delays])).iteritems():
+            res[key*5] = value
+        return HttpResponse(res)
 
 
 
