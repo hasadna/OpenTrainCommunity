@@ -1,1 +1,40 @@
-<h2>From To</h2>
+<div>
+    <form ng-submit="go()">
+        <table>
+            <tr>
+                <td>From</td>
+                <td><select ng-model="input.fromStop" ng-options="stop.stop_name for stop in stops"></select></td>
+            </tr>
+            <tr>
+                <td>To</td>
+                <td><select ng-model="input.toStop" ng-options="stop.stop_name for stop in stops"></select></td>
+            </tr>
+            <tr>
+                <td>From Hour</td>
+                <td><input type="numeric" min="0" max="23" ng-model="input.fromHour" required></td>
+            </tr>
+            <tr>
+                <td>To Hour</td>
+                <td><input type="numeric" min="0" max="23" ng-model="input.toHour" required></td>
+            </tr>
+
+            <tr>
+                <td><input type="submit" value="GO"></td>
+                <td></td>
+            </tr>
+        </table>
+    </form>
+    <div ng-show="results">
+        <h1>Results</h1>
+        <table>
+            <tr>
+                <td>
+                    <b>Average delay</b>
+                </td>
+                <td>
+                    {{results.delays | number:1}} seconds
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

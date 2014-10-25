@@ -5,6 +5,10 @@ from django.db.models import Q
 import itertools, datetime
 from django.utils.timezone import make_naive, get_current_timezone
 
+def json_resp(obj,status=200):
+    import json
+    return HttpResponse(content=json.dumps(obj),content_type='application/json')
+
 def show_sample(req):
     try:
         sample = Sample.objects.filter(stop_id=req.GET.get('stop_id'), valid=True, is_real_stop=True)
@@ -18,6 +22,9 @@ def show_sample(req):
 def get_departure_hour(sample):
     return make_naive(sample.exp_departure, get_current_timezone()).hour
 
+def get_stops(req):
+    stops = Sample.objects.filter(is_real_stop=True).values('stop_id','stop_name').distinct().order_by('stop_name')
+    return json_resp(list(stops))
 
 def get_relevant_routes(origin, destination, fromTime, toTime):
         routes = Trip.objects.raw('''SELECT id, stop_ids
