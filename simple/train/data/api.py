@@ -26,7 +26,9 @@ def get_departure_hour(sample):
 
 def get_stops(req):
     import services
-    return json_resp(services.get_stops())
+    stops = services.get_stops()
+    stops.sort(key=lambda x : x['stop_name'])
+    return json_resp(stops)
 
 def get_relevant_routes(origin, destination, fromTime, toTime):
         routes = Trip.objects.raw('''SELECT id, stop_ids

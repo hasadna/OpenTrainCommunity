@@ -71,8 +71,11 @@ class Trip(models.Model):
     valid = models.BooleanField(default=False)
     stop_ids = IntegerArrayField()
 
-    def is_north(self):
-        ta_hagana = self.stop_ids.index()
+    def is_to_north(self):
+        import services
+        first_stop = services.get_stop(self.stop_ids[0])
+        last_stop = services.get_stop(self.stop_ids[-1])
+        return first_stop['latlon'][0] < last_stop['latlon'][0]
 
     def to_json(self):
         stops = [stop.to_json() for stop in self.sample_set.filter(is_real_stop=True).order_by('index')]
@@ -80,7 +83,8 @@ class Trip(models.Model):
                 'train_num' : self.train_num,
                 'start_date' : self.start_date.isoformat(),
                  'valid' : self.valid,
-                 'stops' : stops
+                 'stops' : stops,
+                 'is_to_north' : self.is_to_north()
                 }
 
 

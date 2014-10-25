@@ -28,6 +28,14 @@
         </tr>
         <tr ng-show="expand">
             <td>
+                To North?
+            </td>
+            <td>
+                {{trip.is_to_north | yesNo}}
+            </td>
+        </tr>
+        <tr ng-show="expand">
+            <td>
                 Stops
             </td>
             <td>

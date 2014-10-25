@@ -27,3 +27,8 @@ def get_stops():
     global STOPS
     return STOPS.values()
 
+def get_stop(stop_id):
+    global STOPS
+    read_json()
+    return STOPS[stop_id]
+
