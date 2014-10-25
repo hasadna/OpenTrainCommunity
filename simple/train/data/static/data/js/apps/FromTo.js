@@ -34,10 +34,13 @@ function($scope, MyHttp) {
         $scope.results = null;
         localStorage.setItem('input',JSON.stringify($scope.input));
         MyHttp.get('/api/routes/',
-            {'from' : $scope.input.fromStop.stop_id,
-            'to' : $scope.input.toStop.stop_id,
-            'from_time' : $scope.input.fromHour,
-            'to_time' : $scope.input.toHour
+            {from : $scope.input.fromStop.stop_id,
+            to : $scope.input.toStop.stop_id,
+            from_time : $scope.input.fromHour,
+            to_time : $scope.input.toHour,
+            days : $scope.input.days.map(function(x) {
+                    return x ? '1' : '0'
+                }).join(','),
             }).success(function(data) {
                if ( data.total ) {
                     $scope.results = data;
