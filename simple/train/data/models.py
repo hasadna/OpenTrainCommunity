@@ -71,6 +71,9 @@ class Trip(models.Model):
     valid = models.BooleanField(default=False)
     stop_ids = IntegerArrayField()
 
+    def is_north(self):
+        ta_hagana = self.stop_ids.index()
+
     def to_json(self):
         stops = [stop.to_json() for stop in self.sample_set.filter(is_real_stop=True).order_by('index')]
         return {'id' : self.id,
