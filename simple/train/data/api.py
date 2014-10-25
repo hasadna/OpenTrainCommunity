@@ -184,26 +184,21 @@ def get_route(req):
 
 
 def get_worst_direction(req):
-    try:
-     stop = int(req.GET.get('stop'))
-     samples = Sample.objects.filter(stop_id=stop, is_real_stop=True, valid=True)
-     if len(samples) == 0:
-         return json_resp({'total': 0})
+    stop = int(req.GET.get('stop'))
+    samples = Sample.objects.filter(stop_id=stop, is_real_stop=True, valid=True)
+    if len(samples) == 0:
+        return json_resp({'total': 0})
 
-     trips = Trip.objects.filter(id__in=[sample.trip_name for sample in samples])
-     toNorth = [trip for trip in trips if trip.is_to_north()]
-     toSouth = [trip for trip in trips if not trip.is_to_north()]
+    trips = Trip.objects.filter(id__in=[sample.trip_name for sample in samples])
+    toNorth = [trip.id for trip in trips if trip.is_to_north()]
+    toSouth = [trip.id for trip in trips if not trip.is_to_north()]
 
-     northDelays = sum([sample.delay_arrival for sample in samples if sample.trip_name in toNorth]) / len(toNorth)
-     southDelays = sum([sample.delay_arrival for sample in samples if sample.trip_name in toSouth]) / len(toSouth)
+    northDelays = sum([sample.delay_arrival or 0 for sample in samples if sample.trip_name in toNorth]) / len(toNorth)
+    southDelays = sum([sample.delay_arrival or 0 for sample in samples if sample.trip_name in toSouth]) / len(toSouth)
 
-     res = {
-         'worst': 'North' if northDelays > southDelays else 'South',
-         'percentage': (abs(northDelays-southDelays)/max(northDelays,southDelays,1))
-     }
+    res = {
+        'worst': 'North' if northDelays > southDelays else 'South',
+        'percentage': (abs(northDelays-southDelays)/max(northDelays,southDelays,1))
+    }
 
-     return json_resp(res)
-    except Exception as e:
-        print(e)
-
-
+    return json_resp(res)
