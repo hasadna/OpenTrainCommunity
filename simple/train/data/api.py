@@ -24,7 +24,7 @@ def get_departure_hour(sample):
     return make_naive(sample.exp_departure, get_current_timezone()).hour
 
 def get_stops(req):
-    stops = Sample.objects.filter(is_real_stop=True).values('stop_id','stop_name').distinct().order_by('stop_name')
+    stops = Sample.objects.filter(is_real_stop=True).values('stop_id','stop_name').distinct().order_by('stop_id')
     return json_resp(list(stops))
 
 def get_relevant_routes(origin, destination, fromTime, toTime):
@@ -103,7 +103,7 @@ def get_delay_buckets(req):
         samples = get_relevant_routes_from_request(req)
         delays = [sample[1].delay_arrival or 0 for sample in samples]
         res = {}
-        for key, value in dict(Counter([delay//240 for delay in delays])).iteritems():
+        for key, value in dict(Counter([delay//300 for delay in delays])).iteritems():
             res[key*5] = value
         return HttpResponse(res)
 
@@ -115,6 +115,32 @@ def get_delay_over_threshold(req):
 
     return HttpResponse(json.dumps({'nominal': delaysOverThreshold, 'proportional': float(delaysOverThreshold) / len(samples)}))
 
-#  from station to station, from time of day to time of day:  % delays over threshold
+
+def get_worst_station_in_route_helper(req):
+    samples = get_relevant_routes_from_request(req)
+    trips = [sample[0].trip_name for sample in samples]
+    allStops = Sample.objects.filter(trip_name__in=trips).filter(delay_arrival__gt=600).order_by('trip_name')
+    worstSamples = []
+    for trip, samples in itertools.groupby(allStops, lambda sample: sample.trip_name):
+        worstSamples.append(max(samples, key=lambda sample: sample.delay_arrival))
+
+    return dict(Counter([sample.stop_id for sample in worstSamples]))
+
+
+def get_worst_station_in_route(req):
+    return HttpResponse(json.dumps(get_worst_station_in_route_helper(req)))
+
+
+
+# def get_delayed_direction(req):
+#     stop = req.GET.get('stop')
+#     routes = Trip.objects.raw('''SELECT id, stop_ids
+#     FROM public.data_trip
+#     WHERE valid
+#     AND %s = ANY(stop_ids)
+#     ''', [stop])
+#     toRoutes = [route for route in routes if ]
+
+
 # correlation between early lates in the routes
 # find direction of a route,compare the two directions
