@@ -92,7 +92,6 @@ def get_delay_from_data(samples):
 
 def get_delay(req):
     samples = get_relevant_routes_from_request(req)
-
     return HttpResponse(json.dumps(get_delay_from_data(samples)))
 
 
@@ -161,29 +160,13 @@ def get_worst_station_in_route(req):
 
 
 def get_route(req):
-    try:
+    samples = get_relevant_routes_from_request(req)
+    if len(samples) == 0:
+        return json_resp({})
 
-      samples = get_relevant_routes_from_request(req)
-      if len(samples) == 0:
-          return HttpResponse(json.dumps({}))
+    res = get_delay_from_data(samples)
+    res['delay_2'] = get_delay_over_threshold_from_data(samples, 2*60)
+    res['delay_5'] = get_delay_over_threshold_from_data(samples, 5*60)
+    res['total'] = len(samples)
+    return json_resp(res)
 
-      res = get_delay_from_data(samples)
-      res['delay_2'] = get_delay_over_threshold_from_data(samples, 2*60)
-      res['delay_5'] = get_delay_over_threshold_from_data(samples, 5*60)
-      return json_resp(res)
-    except Exception as e:
-        print(e)
-
-
-# def get_delayed_direction(req):
-#     stop = req.GET.get('stop')
-#     routes = Trip.objects.raw('''SELECT id, stop_ids
-#     FROM public.data_trip
-#     WHERE valid
-#     AND %s = ANY(stop_ids)
-#     ''', [stop])
-#     toRoutes = [route for route in routes if ]
-
-
-# correlation between early lates in the routes
-# find direction of a route,compare the two directions
