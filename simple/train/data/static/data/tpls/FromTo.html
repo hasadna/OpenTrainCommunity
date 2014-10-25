@@ -28,7 +28,10 @@
             </tr>
         </table>
     </form>
-    <div ng-if="results">
+    <div ng-hide="results">
+        No Results
+    </div>
+    <div ng-show="results">
         <h1>Results</h1>
         <table border="1">
             <tr>

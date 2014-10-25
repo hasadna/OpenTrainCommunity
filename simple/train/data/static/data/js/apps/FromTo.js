@@ -37,8 +37,12 @@ function($scope, MyHttp) {
             'from_time' : $scope.input.fromHour,
             'to_time' : $scope.input.toHour
             }).success(function(data) {
-                console.log(data);
-                $scope.results = data;
+               if ( data.total ) {
+                    $scope.results = data;
+                } else {
+                    $scope.results = null;
+                }
+                console.log('results = ' + $scope.results);
             });
     };
 }]);
