@@ -42,9 +42,11 @@ class Sample(models.Model):
     trip = models.ForeignKey('Trip',blank=True,null=True)
 
     def to_json(self):
+        import services
+        stop_name = services.get_stop_name(self.stop_id,self.stop_name)
         return {'index' : self.index,
                 'stop_id' : self.stop_id,
-                'stop_name' : self.stop_name,
+                'stop_name' : stop_name,
                 'actual_arrival' : self.actual_arrival.isoformat() if self.actual_arrival else None,
                 'exp_arrival' : self.exp_arrival.isoformat() if self.exp_arrival else None,
                 'delay_arrival' : self.delay_arrival,

@@ -1,4 +1,3 @@
-from django.http.response import HttpResponse
 from models import Sample, Trip
 from django.http import HttpResponse,Http404
 from django.core import serializers
@@ -6,6 +5,7 @@ from django.db.models import Q
 import itertools, datetime, json
 from django.utils.timezone import make_naive, get_current_timezone
 from collections import Counter
+from django.conf import settings
 
 def json_resp(obj,status=200):
     import json
@@ -25,8 +25,8 @@ def get_departure_hour(sample):
     return make_naive(sample.exp_departure, get_current_timezone()).hour
 
 def get_stops(req):
-    stops = Sample.objects.filter(is_real_stop=True).values('stop_id','stop_name').distinct().order_by('stop_name')
-    return json_resp(list(stops))
+    import services
+    return json_resp(services.get_stops())
 
 def get_relevant_routes(origin, destination, fromTime, toTime):
         routes = Trip.objects.raw('''SELECT id, stop_ids
