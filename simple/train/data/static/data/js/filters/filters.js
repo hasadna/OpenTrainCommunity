@@ -41,7 +41,7 @@ myFilters.filter('toPrec',function() {
 myFilters.filter('hmOnly',function() {
 	return function(input) {
 	    function to2(d) {
-	        return d > 10 ? '' + d : '0' + d;
+	        return d >= 10 ? '' + d : '0' + d;
 	    }
 	    if (!input) {
 	        return '----';
