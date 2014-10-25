@@ -132,7 +132,7 @@ def get_delay_buckets(req):
         return HttpResponse(res)
 
 def get_delay_over_threshold_from_data(samples, threshold):
-    delaysOverThreshold = len([sample[1].delay_arrival for sample in samples if sample[1].delay_arrival > threshold])
+    delaysOverThreshold = len([sample[1].delay_arrival for sample in samples if sample[1].delay_arrival >= threshold])
     res = {'nominal': delaysOverThreshold, 'proportional': float(delaysOverThreshold) / len(samples)}
     return res
 
