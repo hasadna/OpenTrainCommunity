@@ -2,7 +2,7 @@ from models import Sample, Trip
 from django.http import HttpResponse
 from django.core import serializers
 from django.db.models import Q
-import itertools, datetime
+import itertools, datetime, json
 from django.utils.timezone import make_naive, get_current_timezone
 
 def show_sample(req):
@@ -54,14 +54,15 @@ def get_relevant_routes_from_request(req):
         print(e)
 
 
-def get_delay_average(req):
+def get_delay(req):
     samples = get_relevant_routes_from_request(req)
     size = len(samples)
-    average = 0
-    for sample in samples:
-        average += (sample[1].delay_arrival or 0) / size
+    delays = [sample[1].delay_arrival or 0 for sample in samples]
+    average = sum(delays) / size
+    minimum = min(delays)
+    maximum = max(delays)
 
-    return HttpResponse(average)
+    return HttpResponse(json.dumps({'min': minimum, 'max': maximum, 'average': average}))
 
 
 def get_delay_over_total_duration(req):
@@ -78,7 +79,16 @@ def get_delay_over_total_duration(req):
     return HttpResponse(delay / duration.total_seconds())
 
 
+# def get_delay_buckets(req):
+#     if req.GET.get('from'): # TODO: check all routes
+#         samples = get_relevant_routes_from_request(req)
+#         histogram = {}
+#         delays = [sample[1].delay_arrival or 0 for sample in samples]
+#         for sample in sample
+
+
+
 #  from station to station, from time of day to time of day: delay average, % delays over threshold, delay/totalDuration
 #  buckets of delays
 # correlation between early lates in the routes
-#
+# find direction of a route,compare the two directions
