@@ -44,6 +44,11 @@ class Sample(models.Model):
     def to_json(self):
         import services
         stop_name = services.get_stop_name(self.stop_id,self.stop_name)
+        def remove_site(link):
+            import re
+            result = re.sub('http://.*?/','/',link)
+            return result
+
         return {'index' : self.index,
                 'stop_id' : self.stop_id,
                 'stop_name' : stop_name,
@@ -53,7 +58,7 @@ class Sample(models.Model):
                 'actual_departure' : self.actual_departure.isoformat() if self.actual_departure else None,
                 'exp_departure' : self.exp_departure.isoformat() if self.exp_departure else None,
                 'delay_departure' : self.delay_departure,
-                'link' : self.data_file_link
+                'link' : remove_site(self.data_file_link)
         }
 
     class Meta:
