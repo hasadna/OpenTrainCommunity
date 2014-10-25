@@ -170,7 +170,7 @@ def get_dates_range(samples):
 def get_route(req):
     samples = get_relevant_routes_from_request(req)
     if len(samples) == 0:
-        return json_resp({})
+        return json_resp({'total': 0})
 
     res = get_delay_from_data(samples)
     res['delay_2'] = get_delay_over_threshold_from_data(samples, 2*60)
