@@ -14,6 +14,7 @@ urlpatterns = patterns('',
                        url(r'^api/routes/delays_over_threshold', 'data.api.get_delay_over_threshold'),
                        url(r'^api/routes/delays', 'data.api.get_delay'),
                        url(r'^api/routes/worst_station', 'data.api.get_worst_station_in_route'),
+                       url(r'^api/routes', 'data.api.get_route'),
                        url(r'^api/stops','data.api.get_stops'),
                        url(r'^results/from-to', 'data.views.show_results_from_to')
 )

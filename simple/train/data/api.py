@@ -24,7 +24,7 @@ def get_departure_hour(sample):
     return make_naive(sample.exp_departure, get_current_timezone()).hour
 
 def get_stops(req):
-    stops = Sample.objects.filter(is_real_stop=True).values('stop_id','stop_name').distinct().order_by('stop_id')
+    stops = Sample.objects.filter(is_real_stop=True).values('stop_id','stop_name').distinct().order_by('stop_name')
     return json_resp(list(stops))
 
 def get_relevant_routes(origin, destination, fromTime, toTime):
@@ -62,9 +62,12 @@ def get_relevant_routes_from_request(req):
         print(e)
 
 
-def get_delay(req):
-    samples = get_relevant_routes_from_request(req)
+def get_delay_from_data(samples):
     size = len(samples)
+
+    if size == 0:
+        return {}
+
     delays = [sample[1].delay_arrival or 0 for sample in samples]
     average = sum(delays) / size
     minimum = min(delays)
@@ -73,7 +76,7 @@ def get_delay(req):
     minTrips = [sample[1].trip_name for sample in samples if sample[1].delay_arrival == minimum]
     maxTrips = [sample[1].trip_name for sample in samples if sample[1].delay_arrival == maximum]
 
-    res = {'min': {
+    return {'min': {
         'duration': minimum,
         'trips': minTrips
     }, 'max': {
@@ -82,10 +85,15 @@ def get_delay(req):
     },
         'average': average
     }
-    return HttpResponse(json.dumps(res))
 
-def get_delay_over_total_duration(req):
+
+def get_delay(req):
     samples = get_relevant_routes_from_request(req)
+
+    return HttpResponse(json.dumps(get_delay_from_data(samples)))
+
+
+def get_delay_over_total_duration_from_data(samples):
     delay = 0
     duration = datetime.timedelta()
     for sample in samples:
@@ -94,8 +102,13 @@ def get_delay_over_total_duration(req):
 
         delay += (sample[1].delay_arrival or 0)
         duration += sample[1].exp_arrival - sample[0].exp_departure
+    res = delay / duration.total_seconds()
+    return res
 
-    return HttpResponse(delay / duration.total_seconds())
+
+def get_delay_over_total_duration(req):
+    samples = get_relevant_routes_from_request(req)
+    return HttpResponse(get_delay_over_total_duration_from_data(samples))
 
 
 def get_delay_buckets(req):
@@ -108,28 +121,50 @@ def get_delay_buckets(req):
         return HttpResponse(res)
 
 
+def get_delay_over_threshold_from_data(samples, threshold):
+    delaysOverThreshold = len([sample[1].delay_arrival for sample in samples if sample[1].delay_arrival > threshold])
+    res = {'nominal': delaysOverThreshold, 'proportional': float(delaysOverThreshold) / len(samples)}
+    return res
+
+
 def get_delay_over_threshold(req):
     samples = get_relevant_routes_from_request(req)
     threshold = int(req.GET.get('threshold'))
-    delaysOverThreshold = len([sample[1].delay_arrival for sample in samples if sample[1].delay_arrival > threshold])
-
-    return HttpResponse(json.dumps({'nominal': delaysOverThreshold, 'proportional': float(delaysOverThreshold) / len(samples)}))
+    return HttpResponse(json.dumps(get_delay_over_threshold_from_data(samples, threshold)))
 
 
-def get_worst_station_in_route_helper(req):
-    samples = get_relevant_routes_from_request(req)
+def get_worst_station_from_data(samples):
     trips = [sample[0].trip_name for sample in samples]
     allStops = Sample.objects.filter(trip_name__in=trips).filter(delay_arrival__gt=600).order_by('trip_name')
     worstSamples = []
     for trip, samples in itertools.groupby(allStops, lambda sample: sample.trip_name):
         worstSamples.append(max(samples, key=lambda sample: sample.delay_arrival))
-
     return dict(Counter([sample.stop_id for sample in worstSamples]))
+
+
+def get_worst_station_in_route_helper(req):
+    samples = get_relevant_routes_from_request(req)
+    return get_worst_station_from_data(samples)
 
 
 def get_worst_station_in_route(req):
     return HttpResponse(json.dumps(get_worst_station_in_route_helper(req)))
 
+
+def get_route(req):
+    try:
+
+      samples = get_relevant_routes_from_request(req)
+      if len(samples) == 0:
+          return HttpResponse(json.dumps({}))
+
+      res = get_delay_from_data(samples)
+      res['delay_2'] = get_delay_over_threshold_from_data(samples, 2*60)
+      res['delay_5'] = get_delay_over_threshold_from_data(samples, 5*60)
+      return HttpResponse(json.dumps(res))
+
+    except Exception as e:
+        print(e)
 
 
 # def get_delayed_direction(req):
