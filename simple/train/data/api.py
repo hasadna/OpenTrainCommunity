@@ -159,14 +159,23 @@ def get_worst_station_in_route(req):
     return HttpResponse(json.dumps(get_worst_station_in_route_helper(req)))
 
 
+def get_dates_range(samples):
+    dates = [sample[0].actual_departure for sample in samples if sample[0].actual_departure != None]
+    return {
+        'first': min(dates).isoformat(),
+        'last': max(dates).isoformat()
+    }
+
+
 def get_route(req):
     samples = get_relevant_routes_from_request(req)
     if len(samples) == 0:
-        return json_resp({})
+        return json_resp({'total': 0})
 
     res = get_delay_from_data(samples)
     res['delay_2'] = get_delay_over_threshold_from_data(samples, 2*60)
     res['delay_5'] = get_delay_over_threshold_from_data(samples, 5*60)
     res['total'] = len(samples)
+    res['dates'] = get_dates_range(samples)
     return json_resp(res)
 
