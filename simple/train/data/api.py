@@ -108,8 +108,13 @@ def get_delay_buckets(req):
         return HttpResponse(res)
 
 
+def get_delay_over_threshold(req):
+    samples = get_relevant_routes_from_request(req)
+    threshold = int(req.GET.get('threshold'))
+    delaysOverThreshold = len([sample[1].delay_arrival for sample in samples if sample[1].delay_arrival > threshold])
 
-#  from station to station, from time of day to time of day: delay average, % delays over threshold, delay/totalDuration
-#  buckets of delays
+    return HttpResponse(json.dumps({'nominal': delaysOverThreshold, 'proportional': float(delaysOverThreshold) / len(samples)}))
+
+#  from station to station, from time of day to time of day:  % delays over threshold
 # correlation between early lates in the routes
 # find direction of a route,compare the two directions
