@@ -10,27 +10,29 @@ function($scope, MyHttp) {
     $scope.results = null;
     MyHttp.get('/api/stops').success(function(data) {
         $scope.stops = data;
+        var oldInput = JSON.parse(localStorage.getItem('input'));
         $scope.input.fromStop = $scope.stops[0];
         $scope.input.toStop = $scope.stops[0];
-        $scope.input.fromHour = localStorage.fromHour || null;
-        $scope.input.toHour = localStorage.toHour || null;
-        if (localStorage.fromStop || localStorage.toStop) {
+        $scope.input.fromHour = null;
+        $scope.input.toHour = null;
+        $scope.input.days = [true,true,true,true,true,true,true];
+        if (oldInput) {
             $scope.stops.forEach(function(stop) {
-                if (stop.stop_id == localStorage.fromStop) {
+                if (oldInput.fromStop && stop.stop_id == oldInput.fromStop.stop_id) {
                     $scope.input.fromStop = stop;
                 };
-                if (stop.stop_id == localStorage.toStop) {
+                if (oldInput.toStop && stop.stop_id == oldInput.toStop.stop_id) {
                     $scope.input.toStop = stop;
                 }
             });
+            $scope.input.days = oldInput.days;
+            $scope.input.fromHour = oldInput.fromHour;
+            $scope.input.toHour = oldInput.toHour;
         }
     });
     $scope.go = function() {
         $scope.results = null;
-        localStorage.setItem('fromStop',$scope.input.fromStop.stop_id);
-        localStorage.setItem('toStop',$scope.input.toStop.stop_id);
-        localStorage.setItem('fromHour',$scope.input.fromHour);
-        localStorage.setItem('toHour',$scope.input.toHour);
+        localStorage.setItem('input',JSON.stringify($scope.input));
         MyHttp.get('/api/routes/',
             {'from' : $scope.input.fromStop.stop_id,
             'to' : $scope.input.toStop.stop_id,
