@@ -29,10 +29,26 @@
         <table>
             <tr>
                 <td>
-                    <b>Average delay</b>
+                    <b>Average</b>
                 </td>
                 <td>
-                    {{results.delays | number:1}} seconds
+                    {{results.delays.average|toMinSec}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>Max</b>
+                </td>
+                <td>
+                    {{results.delays.max|toMinSec}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>Min</b>
+                </td>
+                <td>
+                    {{results.delays.min|toMinSec}}
                 </td>
             </tr>
         </table>

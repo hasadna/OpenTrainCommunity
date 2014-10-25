@@ -7,7 +7,7 @@ function($scope, MyHttp) {
         fromStop : null,
         toStop : null,
     };
-    $scope.results = {};
+    $scope.results = null;
     MyHttp.get('/api/stops').success(function(data) {
         $scope.stops = data;
         $scope.input.fromStop = $scope.stops[0];

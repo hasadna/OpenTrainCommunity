@@ -1,5 +1,27 @@
 var myFilters = angular.module('my.filters',[]);
 
+myFilters.filter('toMinSec',function() {
+	return function(input) {
+	    function toMinSecPos(secs) {
+            if (secs == 0) {
+                return '0:00';
+            } else if (secs > 0) {
+                var m = Math.floor(secs/60)
+                var s = Math.floor(secs - m * 60);
+                if (s < 10) {
+                    s = '0' + s.toString();
+                }
+                return m + ':' + s;
+            }
+    	};
+	    if (input < 0) {
+	        return '-' + toMinSecPos(-input) + ' min';
+	    }
+	    return toMinSecPos(input) + ' min';
+	}
+});
+
+
 myFilters.filter('filterCount',function() {
 	return function(input) {
 		if ( input > 0) {
