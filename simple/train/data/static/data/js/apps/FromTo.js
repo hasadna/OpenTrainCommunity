@@ -33,14 +33,18 @@ function($scope, MyHttp) {
     $scope.go = function() {
         $scope.results = null;
         localStorage.setItem('input',JSON.stringify($scope.input));
+        var positive = [];
+        for (var i = 0 ; i < 7 ; i++ ) {
+            if ($scope.input.days[i]) {
+                positive.push(i);
+            }
+        };
         MyHttp.get('/api/routes/',
             {from : $scope.input.fromStop.stop_id,
             to : $scope.input.toStop.stop_id,
             from_time : $scope.input.fromHour,
             to_time : $scope.input.toHour,
-            days : $scope.input.days.map(function(x) {
-                    return x ? '1' : '0'
-                }).join(','),
+            days : positive.join(','),
             }).success(function(data) {
                if ( data.total ) {
                     $scope.results = data;
