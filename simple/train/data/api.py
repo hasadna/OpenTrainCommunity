@@ -69,8 +69,19 @@ def get_delay(req):
     minimum = min(delays)
     maximum = max(delays)
 
-    return HttpResponse(json.dumps({'min': minimum, 'max': maximum, 'average': average}))
+    minTrips = [sample[1].trip_name for sample in samples if sample[1].delay_arrival == minimum]
+    maxTrips = [sample[1].trip_name for sample in samples if sample[1].delay_arrival == maximum]
 
+    res = {'min': {
+        'duration': minimum,
+        'trips': minTrips
+    }, 'max': {
+        'duration': maximum,
+        'trips': maxTrips
+    },
+        'average': average
+    }
+    return HttpResponse(json.dumps(res))
 
 def get_delay_over_total_duration(req):
     samples = get_relevant_routes_from_request(req)
