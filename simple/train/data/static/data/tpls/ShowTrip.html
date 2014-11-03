@@ -1,0 +1,19 @@
+
+<div>
+    <div>
+        Use this page to show specific trip by its trip id
+    </div>
+    <div>
+        <form ng-submit="go()">
+            <input ng-model="input.tripId" type="text">
+            <input type="submit" value="GO">
+        </form>
+    </div>
+    <div ng-if="input.tripId">
+        <trip tid="input.tripId"></trip>
+    </div>
+</div>
+
+        
+
+

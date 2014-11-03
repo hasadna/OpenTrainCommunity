@@ -5,7 +5,6 @@ from django.conf import settings
 
 OFFSET = 20
 
-
 def show_raw_data(req):
     filename = req.GET['file']
     lineno = int(req.GET['line'])
@@ -32,4 +31,8 @@ def show_raw_data(req):
 def show_results_from_to(req):
     return render(req, 'data/show_results.html', {'title': 'From To',
                                                   'app' : 'FromTo'})
+
+def show_trip(req):
+    return render(req,'data/show_results.html',{'title' : 'Show Trip',
+                                             'app' : 'ShowTrip'})
 
