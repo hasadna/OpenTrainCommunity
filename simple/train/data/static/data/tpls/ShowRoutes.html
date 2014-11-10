@@ -1,18 +1,29 @@
 <div>
-    <table>
+    <div>
         <tr>
-            <th># of train</th>
-            <th># of stops</th>
-            <th>From</th>
-            <th>To</th>
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            <td># of trips</td>
+            <td># of stops</td>
+            <td>From</td>
+            <td>To</td>
         </tr>
-        <tr ng-repeat="route in routes">
-            <td>{{route.count}}</td>
-            <td>{{route.stops.length}}</td>
-            <td>{{route.stops[0].stop_name}}</td>
-            <td>{{route.stops[route.stops.length-1].stop_name}}</td>
-        </tr>
-    </table>
+        <hr/>
+    </div>
+    <div ng-repeat="route in routes" ng-controller="RouteController">
+        <table>
+            <tr>
+                <td>
+                    <button ng-hide="expanded" ng-click="expand()">&plus;</button>
+                    <button ng-show="expanded" ng-click="collapse()">&minus;</button>
+                    </button></td>
+                <td>{{route.count}}</td>
+                <td>{{route.stops.length}}</td>
+                <td>{{route.stops[0].stop_name}}</td>
+                <td>{{route.stops[route.stops.length-1].stop_name}}</td>
+            </tr>
+        </table>
+        <hr/>
+    </div>
 </div>
 
 

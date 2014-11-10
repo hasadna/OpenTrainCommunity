@@ -11,3 +11,14 @@ function($scope, MyHttp) {
     $scope.refreshRoutes();
 }]);
 
+app.controller('RouteController', ['$scope', 'MyHttp',
+function($scope, MyHttp) {
+    $scope.expanded = false;
+    $scope.expand = function() {
+        console.log('expand()');
+        $scope.expanded = true;
+    }
+    $scope.collapse = function() {
+        $scope.expanded = false;
+    }
+}]);
