@@ -5,6 +5,7 @@
             <td># of trips</td>
             <td># of stops</td>
             <td>From</td>
+            <td></td>
             <td>To</td>
         </tr>
         <hr/>
@@ -19,10 +20,12 @@
                 <td>{{route.count}}</td>
                 <td>{{route.stops.length}}</td>
                 <td>{{route.stops[0].stop_name}}</td>
+                <td>&rarr;</td>
                 <td>{{route.stops[route.stops.length-1].stop_name}}</td>
             </tr>
         </table>
         <div ng-if="expanded">
+            Count = {{routeInfo.count}}
             <table ng-show="routeInfo">
                 <tr>
                     <td>Stop id</td>
@@ -33,8 +36,8 @@
                 <tr ng-repeat="stop in routeInfo.stops">
                     <td>{{stop.gtfs_stop_id}}</td>
                     <td>{{stop.stop_name}}</td>
-                    <td>{{stop.avg_arrival_delay}}</td>
-                    <td>{{stop.avg_departure_delay}}</td>
+                    <td>{{stop.avg_delay_arrival | number:1}}</td>
+                    <td>{{stop.avg_delay_departure | number:1}}</td>
                 </tr>
             </table>
         </div>

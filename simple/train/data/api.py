@@ -203,12 +203,19 @@ def get_all_routes(req):
     return json_resp(result)
 
 def get_route_info(req):
-    stop_ids = req.GET['stop_ids'].split(',')
-    trips = Trip.objects.filter(stop_ids=stop_ids)
-
+    import services
+    from django.db.models import Avg
+    stop_ids = [int(s) for s in req.GET['stop_ids'].split(',')]
+    trips_len = Trip.objects.filter(stop_ids=stop_ids).count()
+    stops = [services.get_stop(sid) for sid in stop_ids]
+    for stop in stops:
+        stop.update(Sample.objects.filter(trip__stop_ids=stop_ids,
+                                          stop_id=stop['gtfs_stop_id'],
+                                          valid=True).aggregate(avg_delay_arrival=Avg('delay_arrival'),
+                                                                avg_delay_departure=Avg('delay_departure')))
     result = {
-        'count' : len(trips),
-        'stops' : [],
+        'count' : trips_len,
+        'stops' : stops,
     }
     return json_resp(result)
 
