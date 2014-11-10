@@ -22,6 +22,22 @@
                 <td>{{route.stops[route.stops.length-1].stop_name}}</td>
             </tr>
         </table>
+        <div ng-if="expanded">
+            <table ng-show="routeInfo">
+                <tr>
+                    <td>Stop id</td>
+                    <td>Stop name</td>
+                    <td>Average Arrival Delay</td>
+                    <td>Average Departure Delay</td>
+                </tr>
+                <tr ng-repeat="stop in routeInfo.stops">
+                    <td>{{stop.gtfs_stop_id}}</td>
+                    <td>{{stop.stop_name}}</td>
+                    <td>{{stop.avg_arrival_delay}}</td>
+                    <td>{{stop.avg_departure_delay}}</td>
+                </tr>
+            </table>
+        </div>
         <hr/>
     </div>
 </div>

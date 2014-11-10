@@ -17,8 +17,19 @@ function($scope, MyHttp) {
     $scope.expand = function() {
         console.log('expand()');
         $scope.expanded = true;
+        $scope.getRouteInfo();
     }
     $scope.collapse = function() {
         $scope.expanded = false;
+    }
+    $scope.stop_ids = $scope.route.stops.map(function(s) {
+        return s.gtfs_stop_id;
+    });
+    $scope.getRouteInfo = function() {
+        MyHttp.get('/api/route-info/',{
+            stop_ids : $scope.stop_ids.join(','),
+        }).success(function(data) {
+            $scope.routeInfo = data;
+        });
     }
 }]);

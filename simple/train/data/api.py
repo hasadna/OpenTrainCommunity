@@ -202,5 +202,16 @@ def get_all_routes(req):
         )
     return json_resp(result)
 
+def get_route_info(req):
+    stop_ids = req.GET['stop_ids'].split(',')
+    trips = Trip.objects.filter(stop_ids=stop_ids)
+
+    result = {
+        'count' : len(trips),
+        'stops' : [],
+    }
+    return json_resp(result)
+
+
 
 
