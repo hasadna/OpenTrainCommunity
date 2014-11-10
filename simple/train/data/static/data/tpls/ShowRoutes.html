@@ -1,0 +1,20 @@
+<div>
+    <table>
+        <tr>
+            <th># of train</th>
+            <th># of stops</th>
+            <th>From</th>
+            <th>To</th>
+        </tr>
+        <tr ng-repeat="route in routes">
+            <td>{{route.count}}</td>
+            <td>{{route.stops.length}}</td>
+            <td>{{route.stops[0].stop_name}}</td>
+            <td>{{route.stops[route.stops.length-1].stop_name}}</td>
+        </tr>
+    </table>
+</div>
+
+
+
+

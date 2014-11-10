@@ -182,3 +182,25 @@ def get_route(req):
     res['dates'] = get_dates_range(samples)
     return json_resp(res)
 
+def get_routes_from_db():
+    from django.db import connection
+    with connection.cursor() as c:
+        c.execute("select stop_ids,count(*) as num_stops from data_trip where valid group by stop_ids order by num_stops DESC")
+        routes = c.fetchall()
+        return routes
+
+def get_all_routes(req):
+    import services
+    routes = get_routes_from_db()
+    result = []
+    for r in routes:
+        stop_ids = r[0]
+        stops = [services.get_stop(sid) for sid in stop_ids]
+        result.append(
+            {'stops' : stops,
+             'count' : r[1]}
+        )
+    return json_resp(result)
+
+
+

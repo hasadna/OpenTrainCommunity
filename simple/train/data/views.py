@@ -36,3 +36,7 @@ def show_trip(req):
     return render(req,'data/show_results.html',{'title' : 'Show Trip',
                                              'app' : 'ShowTrip'})
 
+def show_routes(req):
+    return render(req,'data/show_results.html',{'title': 'Show Routes',
+                                                'app': 'ShowRoutes'})
+
