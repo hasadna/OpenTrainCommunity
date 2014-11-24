@@ -209,10 +209,15 @@ def get_route_info(req):
     trips_len = Trip.objects.filter(stop_ids=stop_ids).count()
     stops = [services.get_stop(sid) for sid in stop_ids]
     for stop in stops:
-        stop.update(Sample.objects.filter(trip__stop_ids=stop_ids,
-                                          stop_id=stop['gtfs_stop_id'],
-                                          valid=True).aggregate(avg_delay_arrival=Avg('delay_arrival'),
-                                                                avg_delay_departure=Avg('delay_departure')))
+        samples = list(Sample.objects.filter(trip__stop_ids=stop_ids,
+                                             stop_id=stop['gtfs_stop_id'],
+                                             valid=True))
+        samples_len = float(len(samples))
+        stop['avg_delay_arrival'] = sum(x.delay_arrival or 0.0 for x in samples)/samples_len
+        stop['avg_delay_departure'] = sum(x.delay_departure or 0.0 for x in samples)/samples_len
+        stop['delay_arrival_gte2'] = sum(1 if x.delay_arrival >= 120 else 0 for x in samples)/samples_len
+        stop['delay_arrival_gte5'] = sum(1 if x.delay_arrival >= 300 else 0 for x in samples)/samples_len
+
     result = {
         'count' : trips_len,
         'stops' : stops,

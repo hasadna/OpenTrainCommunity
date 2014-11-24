@@ -32,12 +32,16 @@
                     <td>Stop name</td>
                     <td>Average Arrival Delay</td>
                     <td>Average Departure Delay</td>
+		    <td>% arrival &ge; 2 minutes </td>
+		    <td>% arrival &ge; 5 minutes </td>
                 </tr>
                 <tr ng-repeat="stop in routeInfo.stops">
                     <td>{{stop.gtfs_stop_id}}</td>
                     <td>{{stop.stop_name}}</td>
                     <td>{{stop.avg_delay_arrival | number:1}}</td>
                     <td>{{stop.avg_delay_departure | number:1}}</td>
+		    <td>{{100*stop.delay_arrival_gte2 | number:1}}%</td>
+		    <td>{{100*stop.delay_arrival_gte5 | number:1}}%</td>
                 </tr>
             </table>
         </div>
