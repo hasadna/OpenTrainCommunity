@@ -39,11 +39,13 @@ INSTALLED_APPS = (
     'django_extensions',
     'train',
     'data',
-    'parser'
+    'parser',
+    'corsheaders'
 )
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -82,6 +84,7 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = '/home/opentrain/public_html/static/'
 
+CORS_ORIGIN_ALLOW_ALL = True
 
 try:
     from local_settings import *
