@@ -10,4 +10,4 @@ log/
 output/
 output.old/
 local_settings.py
-
+simple/train/perf/cur
