@@ -69,7 +69,7 @@ class Trip(models.Model):
     train_num = models.IntegerField(db_index=True)
     start_date = models.DateField(db_index=True)
     valid = models.BooleanField(default=False)
-    stop_ids = IntegerArrayField()
+    stop_ids = IntegerArrayField(db_index=True)
 
     def is_to_north(self):
         import services
