@@ -24,8 +24,6 @@ urlpatterns = patterns('',
                        url(r'^api/trips/(?P<trip_id>\w+)/','data.api.get_trip'),
                        url(r'^results/from-to', 'data.views.show_results_from_to'),
                        url(r'^results/show-trip', 'data.views.show_trip'),
-                       url(r'^results/show-routes', 'data.views.show_routes')
+                       url(r'^results/show-routes', 'data.views.show_routes'),
+                       url(r'^ui/routes', 'data.views.route_explorer')
 )
-
-
-

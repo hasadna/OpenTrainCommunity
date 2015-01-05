@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/static/ui/RouteExplorer/css/main.css">
+        <script src="/static/ui/RouteExplorer/js/ext/angular.min.js"></script>
+        <script src="/static/ui/RouteExplorer/js/ext/angular-route.min.js"></script>
+        <script src="/static/ui/RouteExplorer/js/ext/ui-bootstrap-tpls-0.12.0.min.js"></script>        
+        <script src="/static/ui/RouteExplorer/js/RouteExplorer.js"></script>
+    </head>
+    <body ng-app="RouteExplorer">
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">OpenTrain Route Explorer</a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container" ng-view>
+        </div>
+    </body>
+</html>
