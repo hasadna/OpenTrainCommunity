@@ -40,6 +40,7 @@ class Sample(models.Model):
     data_file_line = models.IntegerField() # the line number in the data file (text file)
     data_file_link = models.URLField(max_length=200) # link to show the snippet of the text file in browser
     trip = models.ForeignKey('Trip',blank=True,null=True)
+    stop_ids = IntegerArrayField(db_index=True)
 
     def to_json(self):
         import services

@@ -201,27 +201,37 @@ def get_all_routes(req):
              'count' : r[1]}
         )
     return json_resp(result)
-
+import time
 def get_route_info(req):
     import services
     from django.db.models import Avg
+    t1 = time.time()
     stop_ids = [int(s) for s in req.GET['stop_ids'].split(',')]
     trips_len = Trip.objects.filter(stop_ids=stop_ids).count()
     stops = [services.get_stop(sid) for sid in stop_ids]
+    t2 = time.time()
+    print 't2 - t1 = %.3f' % (t2-t1)
     for stop in stops:
+        t3 = time.time()
         samples = list(Sample.objects.filter(trip__stop_ids=stop_ids,
                                              stop_id=stop['gtfs_stop_id'],
                                              valid=True))
+        print len(samples)
+        t4 = time.time()
+        print 't4 - t3 = %.3f' % (t4-t3)
         samples_len = float(len(samples))
         stop['avg_delay_arrival'] = sum(x.delay_arrival or 0.0 for x in samples)/samples_len
         stop['avg_delay_departure'] = sum(x.delay_departure or 0.0 for x in samples)/samples_len
         stop['delay_arrival_gte2'] = sum(1 if x.delay_arrival >= 120 else 0 for x in samples)/samples_len
         stop['delay_arrival_gte5'] = sum(1 if x.delay_arrival >= 300 else 0 for x in samples)/samples_len
+        t5 = time.time()
+        print 't5 - t4 = %.3f' % (t5-t4)
 
     result = {
         'count' : trips_len,
         'stops' : stops,
     }
+    t3 = time.time()
     return json_resp(result)
 
 
