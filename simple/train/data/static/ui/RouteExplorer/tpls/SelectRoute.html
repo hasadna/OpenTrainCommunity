@@ -4,19 +4,28 @@
 <form>
     <div class="row">
         <div class="col-sm-6">
-            <label for="fromStop">From: </label>
-            <input ng-model="fromStop" name="fromStop" class="form-control" type="text" placeholder="Start typing a station name..."
-                typeahead="stop as stop.name for stop in stops | filter:$viewValue"/>
-
-            <label for="toStop">To: </label>
-            <input ng-model="toStop" name="toStop" class="form-control" type="text" placeholder="Start typing a station name..."
-                typeahead="stop as stop.name for stop in stops | filter:$viewValue"/>
+            <label for="origin">From: </label>
+            <input ng-model="origin" name="origin" class="form-control" type="text" placeholder="Start typing a station name..."
+                typeahead="stop as stop.name for stop in stops | filter:$viewValue" typeahead-editable="false" />
         </div>
-
         <div class="col-sm-6">
-            <label for="time">At: </label>
-            <timepicker ng-model="time" hour-step="1" minute-step="15" show-meridian="false"></timepicker>
+            <label for="destination">To: </label>
+            <input ng-model="destination" name="destination" class="form-control" type="text" placeholder="Start typing a station name..."
+                typeahead="stop as stop.name for stop in stops | filter:$viewValue" typeahead-editable="false" />
         </div>
+    </div>
+
+    <div class="container">
+        <table>
+            <thead>
+                <th>Stops</th>
+                <th>Count</th>
+            </thead>
+            <tr ng-repeat="route in matchingRoutes()">
+                <td>{{ route.stops.length }}</td>
+                <td>{{ route.count }}</td>
+            </tr>
+        </table>
     </div>
 </form>
 </div>
