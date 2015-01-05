@@ -213,7 +213,7 @@ def get_route_info(req):
     print 't2 - t1 = %.3f' % (t2-t1)
     for stop in stops:
         t3 = time.time()
-        samples = list(Sample.objects.filter(trip__stop_ids=stop_ids,
+        samples = list(Sample.objects.filter(stop_ids=stop_ids,
                                              stop_id=stop['gtfs_stop_id'],
                                              valid=True))
         print len(samples)
