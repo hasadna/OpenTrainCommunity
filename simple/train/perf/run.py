@@ -13,6 +13,7 @@ def check(url, reffile,ext):
         reffolder = 'local'
     t1 = time.time()
     final_url = 'http://%s%s' % (server,url)
+    print 'starting %s' % final_url
     resp = requests.get(final_url)
     t2 = time.time()
     cur = resp.json()
