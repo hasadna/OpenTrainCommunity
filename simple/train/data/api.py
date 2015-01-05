@@ -208,12 +208,10 @@ def get_route_info(req):
     stop_ids = [int(s) for s in req.GET['stop_ids'].split(',')]
     trips_len = Trip.objects.filter(stop_ids=stop_ids).count()
     stops = [services.get_stop(sid) for sid in stop_ids]
-    all_gtfs_stop_ids = [s['gtfs_stop_id'] for s in stops]
-    all_samples = list(Sample.objects.filter(trip__stop_ids=stop_ids,
-                                             stop_id__in=all_gtfs_stop_ids,
-                                             valid=True))
     for stop in stops:
-        samples = [s for s in all_samples if s['stop_id'] == stop['gtfs_stop_id']]
+        samples = list(Sample.objects.filter(trip__stop_ids=stop_ids,
+                                             stop_id=stop['gtfs_stop_id'],
+                                             valid=True))
         samples_len = float(len(samples))
         stop['avg_delay_arrival'] = sum(x.delay_arrival or 0.0 for x in samples)/samples_len
         stop['avg_delay_departure'] = sum(x.delay_departure or 0.0 for x in samples)/samples_len
