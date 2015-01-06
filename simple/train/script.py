@@ -5,7 +5,7 @@ def main():
     count = 0
     total_trips = Trip.objects.count()
     while True:
-        trips = Trip.objects.order_by('id')[offset:offset+1000]
+        trips = Trip.objects.order_by('id')[offset:offset+limit]
         trips = list(trips)
         count += len(trips)
         if not trips:
