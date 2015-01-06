@@ -10,10 +10,11 @@ def main():
         count += len(trips)
         if not trips:
             break
-            for trip in trips:
-                trip.sample_set.all().do_update(stop_ids=trip.stop_ids)
-                print 'Trips %s/%s done' % (count,total_trips)
-                offset+=100
+        for trip in trips:
+            trip.sample_set.all().do_update(stop_ids=trip.stop_ids)
+            print 'Trips %s/%s done' % (count,total_trips)
+        
+        offset+=limit
 
     print 'count = %s' % count
 
