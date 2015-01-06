@@ -1,3 +1,4 @@
+from data.models import Trip
 def main():
     limit = 100
     offset = 0
