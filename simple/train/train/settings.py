@@ -51,6 +51,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'data.middleware.OpenTrainMiddleware',
 )
 
 ROOT_URLCONF = 'train.urls'
@@ -91,3 +92,24 @@ try:
 except ImportError:
     pass
 
+LOGGING = {
+    'version' : 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'simple' : {
+            'format' : "==========================================\n[%(asctime)s %(levelname)s] %(message)s"
+        },
+    },
+    'handlers': {
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': '/var/log/opentrain/error.log',
+            'formatter' : 'simple',
+        },
+    },
+    'loggers': {
+        'errors': {
+            'handlers': ['file'],
+        },
+    },
+}

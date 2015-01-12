@@ -215,8 +215,8 @@ def fill_stop_info(stop, stop_ids):
     samples = list(Sample.objects.filter(stop_ids=stop_ids,
                                          stop_id=stop['gtfs_stop_id'],
                                          valid=True).values('delay_arrival','delay_departure'))
-    print django.db.connection.queries[-1]
-    print len(samples)
+    #print django.db.connection.queries[-1]
+    #print len(samples)
     t4 = time.time()
     print 't4 - t3 = %.3f' % (t4-t3)
     samples_len = float(len(samples))
