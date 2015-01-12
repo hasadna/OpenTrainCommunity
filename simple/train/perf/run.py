@@ -4,6 +4,12 @@ import time
 import sys
 import os
 
+def rewrite_file(fname):
+    with open(fname) as fh:
+        x = json.load(fh)
+    with open(fname,'w') as fh:
+        json.dump(x,fh,indent=4,sort_keys=True)
+
 def check(url, reffile,ext):
     if ext:
         server = '104.131.88.144'
@@ -19,7 +25,7 @@ def check(url, reffile,ext):
     cur = resp.json()
 
     with open('cur/%s' % reffile,'w') as fh:
-        json.dump(cur,fh)
+        json.dump(cur,fh,indent=4,sort_keys=True)
     try:
         with open('%s/%s' % (reffolder,reffile)) as fh:
             ref = json.load(fh)

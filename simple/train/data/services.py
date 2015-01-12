@@ -25,10 +25,10 @@ def get_stop_name(stop_id,defval):
 def get_stops():
     read_json()
     global STOPS
-    return STOPS.values()
+    return STOPS.values()[:]
 
 def get_stop(stop_id):
     global STOPS
     read_json()
-    return STOPS[stop_id]
+    return STOPS[stop_id].copy()
 

@@ -77,7 +77,7 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
+# Static files (CSS, JavaScript, Images)django.db.backends
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
@@ -90,5 +90,4 @@ try:
     from local_settings import *
 except ImportError:
     pass
-
 

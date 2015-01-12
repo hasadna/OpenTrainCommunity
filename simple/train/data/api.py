@@ -7,9 +7,11 @@ from django.utils.timezone import make_naive, get_current_timezone
 from collections import Counter
 from django.conf import settings
 
+
 def json_resp(obj,status=200):
     import json
     return HttpResponse(content=json.dumps(obj),content_type='application/json')
+
 
 def show_sample(req):
     try:
@@ -21,14 +23,17 @@ def show_sample(req):
     except Exception as e:
         print(e)
 
+
 def get_departure_hour(sample):
     return make_naive(sample.exp_departure, get_current_timezone()).hour
+
 
 def get_stops(req):
     import services
     stops = services.get_stops()
     stops.sort(key=lambda x : x['stop_name'])
     return json_resp(stops)
+
 
 def get_relevant_routes(origin, destination, fromTime, toTime, days):
         routes = Trip.objects.raw('''SELECT id, stop_ids
@@ -105,7 +110,7 @@ def get_delay_over_total_duration_from_data(samples):
         if len(sample) != 2:
             continue
 
-        delay += (sample[1].delay_arrival or 0)
+        delay += (sample[1].delay_arr0ival or 0)
         duration += sample[1].exp_arrival - sample[0].exp_departure
     res = delay / duration.total_seconds()
     return res
@@ -202,30 +207,48 @@ def get_all_routes(req):
         )
     return json_resp(result)
 import time
+
+import django.db
+
+def fill_stop_info(stop, stop_ids):
+    t3 = time.time()
+    samples = list(Sample.objects.filter(stop_ids=stop_ids,
+                                         stop_id=stop['gtfs_stop_id'],
+                                         valid=True).values('delay_arrival','delay_departure'))
+    print django.db.connection.queries[-1]
+    print len(samples)
+    t4 = time.time()
+    print 't4 - t3 = %.3f' % (t4-t3)
+    samples_len = float(len(samples))
+    stop['avg_delay_arrival'] = sum(x['delay_arrival'] or 0.0 for x in samples)/samples_len
+    stop['avg_delay_departure'] = sum(x['delay_departure'] or 0.0 for x in samples)/samples_len
+    stop['delay_arrival_gte2'] = sum(1 if x['delay_arrival'] >= 120 else 0 for x in samples)/samples_len
+    stop['delay_arrival_gte5'] = sum(1 if x['delay_arrival'] >= 300 else 0 for x in samples)/samples_len
+    t5 = time.time()
+    print 't5 - t4 = %.3f' % (t5-t4)
+
+import threading
+
 def get_route_info(req):
     import services
-    from django.db.models import Avg
     t1 = time.time()
     stop_ids = [int(s) for s in req.GET['stop_ids'].split(',')]
     trips_len = Trip.objects.filter(stop_ids=stop_ids).count()
     stops = [services.get_stop(sid) for sid in stop_ids]
     t2 = time.time()
     print 't2 - t1 = %.3f' % (t2-t1)
-    for stop in stops:
-        t3 = time.time()
-        samples = list(Sample.objects.filter(stop_ids=stop_ids,
-                                             stop_id=stop['gtfs_stop_id'],
-                                             valid=True))
-        print len(samples)
-        t4 = time.time()
-        print 't4 - t3 = %.3f' % (t4-t3)
-        samples_len = float(len(samples))
-        stop['avg_delay_arrival'] = sum(x.delay_arrival or 0.0 for x in samples)/samples_len
-        stop['avg_delay_departure'] = sum(x.delay_departure or 0.0 for x in samples)/samples_len
-        stop['delay_arrival_gte2'] = sum(1 if x.delay_arrival >= 120 else 0 for x in samples)/samples_len
-        stop['delay_arrival_gte5'] = sum(1 if x.delay_arrival >= 300 else 0 for x in samples)/samples_len
-        t5 = time.time()
-        print 't5 - t4 = %.3f' % (t5-t4)
+    use_threads = False #True
+    if use_threads:
+        threads = []
+        for stop in stops:
+            t = threading.Thread(target=fill_stop_info,args=(stop,stop_ids))
+            threads.append(t)
+            t.start()
+        for t in threads:
+            t.join()
+    else:
+        for stop in stops:
+            fill_stop_info(stop, stop_ids)
 
     result = {
         'count' : trips_len,
