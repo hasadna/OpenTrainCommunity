@@ -196,7 +196,12 @@ def get_routes_from_db():
 
 def get_all_routes(req):
     import services
+    t1 = time.time()
     routes = get_routes_from_db()
+    if settings.DEBUG:
+        print django.db.connection.queries[-1]
+        t2 = time.time()
+        print 't2 - t1 = %s' % (t2-t1)
     result = []
     for r in routes:
         stop_ids = r[0]
