@@ -6,49 +6,56 @@ function($routeProvider) {
     $routeProvider
         .when('/', {
             templateUrl: baseDir + '/tpls/SelectRoute.html',
-            controller: 'SelectRouteController'
+            controller: 'SelectRouteController',
+            resolve: {
+                loaded: function(Layout) {
+                    return Layout.loaded;
+                }
+            }
         })
         .otherwise({
             redirectTo: '/'
         });
 }]);
 
-app.controller('SelectRouteController', ['$scope', '$http',
-function($scope, $http) {
-    $scope.stops = [];
-    var routes = [];
-
+app.controller('SelectRouteController', ['$scope', 'Layout',
+function($scope, Layout) {
+    $scope.stops = Layout.getStops();
     $scope.origin = null;
     $scope.destination = null;
 
-    $http.get('/api/stops')
-        .success(function(data) {
-            $scope.stops = data.map(function(s) { return { id: s.stop_id, name: s.stop_name, shortName: s.stop_short_name }; });
-        });
+    $scope.stopsSelected = function() {
+        return (
+            !!$scope.origin &&
+            !!$scope.destination &&
+            $scope.origin != $scope.destination
+        );
+    };
 
-    $http.get('/api/all-routes')
-        .success(function(data) {
-            routes = data.map(function(r) { return {
-                stops: r.stops.map(function(s) { return s.stop_id; }),
-                count: r.count
-            }});
-        });
-
-    $scope.matchingRoutes = function(r) {
-        if (!$scope.origin || !$scope.destination)
+    $scope.stopName = function(stopId) {
+        var stop = Layout.findStop(stopId);
+        if (!stop)
             return null;
 
-        return routes.filter(function(r) {
-            var originIndex = r.stops.indexOf($scope.origin.id);
-            var destinationIndex = r.stops.indexOf($scope.destination.id);
+        return stop.name;
+    };
 
-            if (originIndex < 0 || destinationIndex < 0)
-                return false;
+    $scope.barWidth = function(path) {
+        var percentWidth = path.count * 100.0 / $scope.paths[0].count;
 
-            if (originIndex > destinationIndex)
-                return false;
+        if (percentWidth < 1.0)
+            return "1px";
 
-            return true;
-        });
+        return percentWidth + "%";
+    };
+
+    $scope.$watch('origin', function() { $scope.paths = findMatchingPaths(); });
+    $scope.$watch('destination', function() { $scope.paths = findMatchingPaths(); });
+
+    function findMatchingPaths() {
+        if (!$scope.stopsSelected())
+            return null;
+
+        return Layout.findPaths($scope.origin.id, $scope.destination.id);
     }
 }])

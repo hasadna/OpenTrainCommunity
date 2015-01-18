@@ -1,3 +1,23 @@
 body {
-    padding-top: 50px; 
+    /* Leave room for fixed header */
+    padding-top: 50px;
 }
+
+/* More prominent hovering effect on striped tables */
+.table-hover.table-striped > tbody > tr:hover {
+    background-color: #d9edf7;
+}
+
+/* Stop-lists */
+.stop-list .stop {
+    display: inline-block; margin: 2px; padding: 2px 5px;
+    background-color: #337ab7; color: white;
+    border-radius: 5px/50%;
+}
+.stop-list .stop:first-child { border-top-left-radius: 0; border-bottom-left-radius: 0; }
+.stop-list .stop:last-child { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+
+/* SelectRoute */
+.paths .count-bar { width: 100px; height: 5px; }
+.paths .count-bar-value { background-color: #337ab7; height: 100%; }
+.paths tbody > tr { cursor: pointer; }
