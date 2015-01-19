@@ -273,8 +273,8 @@ def get_path_info(req):
         SELECT  s.stop_id as stop_id,
                 avg(coalesce(delay_arrival, 0.0)) as avg_arrival_delay,
                 avg(coalesce(delay_departure, 0.0)) as avg_departure_delay,
-                avg(case when delay_departure >= 120 then 1.0 else 0.0 end)::float as delay_2min_pct,
-                avg(case when delay_departure >= 300 then 1.0 else 0.0 end)::float as delay_5min_pct
+                avg(case when delay_arrival >= 120 then 1.0 else 0.0 end)::float as delay_2min_pct,
+                avg(case when delay_arrival >= 300 then 1.0 else 0.0 end)::float as delay_5min_pct
         FROM    data_sample as s INNER JOIN data_trip as t ON s.trip_id = t.id
         WHERE   s.stop_id = ANY (%(stop_ids)s)
         AND     s.valid
