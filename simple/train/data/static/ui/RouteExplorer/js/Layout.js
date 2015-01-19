@@ -26,8 +26,8 @@ function($http, $q) {
         return stopsMap[stopId] || null;
     };
 
-    var findPaths = function(originId, destinationId) {
-        var paths = {};
+    var findRoutes = function(originId, destinationId) {
+        var matchingRoutes = {};
 
         routes.forEach(function(r) {
             var originIndex = r.stops.indexOf(originId);
@@ -39,29 +39,29 @@ function($http, $q) {
             if (originIndex > destinationIndex)
                 return;
 
-            var pathStops = r.stops.slice(originIndex, destinationIndex + 1);
-            var pathId = pathStops.join(',');
+            var routeStops = r.stops.slice(originIndex, destinationIndex + 1);
+            var routeId = routeStops.join(',');
 
-            if (pathId in paths)
-                paths[pathId].count += r.count;
+            if (routeId in matchingRoutes)
+                matchingRoutes[routeId].count += r.count;
             else {
-                paths[pathId] = {
-                    stops: pathStops,
+                matchingRoutes[routeId] = {
+                    stops: routeStops,
                     count: r.count
                 };
             }
         });
 
-        paths = Object.keys(paths).map(function(pathId) { return paths[pathId] });
-        paths.sort(function(p1, p2) { return p2.count - p1.count; });
-        return paths;
+        matchingRoutes = Object.keys(matchingRoutes).map(function(routeId) { return matchingRoutes[routeId] });
+        matchingRoutes.sort(function(r1, r2) { return r2.count - r1.count; });
+        return matchingRoutes;
     };
 
     return {
         getStops: function() { return stops; },
         getRoutes: function() { return routes; },
         findStop: findStop,
-        findPaths: findPaths,
+        findRoutes: findRoutes,
         loaded: loaded
     }
 }]);

@@ -28,16 +28,16 @@
                 <th>Stops</th>
                 <th>Trips</th>
             </thead>
-            <tr ng-repeat="path in paths">
+            <tr ng-repeat="route in routes" ng-click="goToRouteDetails(route)">
                 <td>
                     <span class="stop-list">
-                        <span class="stop" ng-repeat="stop in path.stops track by $index">{{ stopName(stop) }} </span>
+                        <span class="stop" ng-repeat="stop in route.stops track by $index">{{ stopName(stop) }} </span>
                     </span>
                 </td>
                 <td>
                     <div class="count-bar">
-                        <div class="count-bar-value" ng-style="{ width: barWidth(path) }"></div>
-                        {{ path.count }}
+                        <div class="count-bar-value" ng-style="{ width: barWidth(route) }"></div>
+                        {{ route.count }}
                     </div>
                 </td>
             </tr>

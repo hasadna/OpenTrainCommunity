@@ -1,6 +1,27 @@
+/*
+    TODO: We need color constants that work with the Bootstrap theme.
+    Should probably use LESS or SASS regardlessly.
+*/
+
 body {
     /* Leave room for fixed header */
     padding-top: 50px;
+}
+
+/* Spinning icons for loaders etc. */
+.glyphicon.glyphicon-animate-spin {
+    -animation: spin .7s infinite linear;
+    -webkit-animation: spin-webkit .7s infinite linear;
+}
+
+@-webkit-keyframes spin-webkit {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg); }
+    to { transform: scale(1) rotate(360deg); }
 }
 
 /* More prominent hovering effect on striped tables */

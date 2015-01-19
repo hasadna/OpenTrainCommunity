@@ -262,6 +262,31 @@ def get_route_info(req):
     t3 = time.time()
     return json_resp(result)
 
+def get_path_info(req):
+    import services
 
+    stop_ids = [int(s) for s in req.GET['stop_ids'].split(',')]
+    stop_ids_str = ','.join(str(stop_id) for stop_id in stop_ids)
 
+    cursor =  django.db.connection.cursor();
+    cursor.execute('''
+        SELECT  s.stop_id as stop_id,
+                avg(coalesce(delay_arrival, 0.0)) as avg_arrival_delay,
+                avg(coalesce(delay_departure, 0.0)) as avg_departure_delay,
+                avg(case when delay_departure >= 120 then 1.0 else 0.0 end)::float as delay_2min_pct,
+                avg(case when delay_departure >= 300 then 1.0 else 0.0 end)::float as delay_5min_pct
+        FROM    data_sample as s INNER JOIN data_trip as t ON s.trip_id = t.id
+        WHERE   s.stop_id = ANY (%(stop_ids)s)
+        AND     s.valid
+        AND     t.stop_ids @> %(stop_ids)s
+        AND     position(%(stop_ids_str)s in array_to_string(t.stop_ids, ',')) > 0
+        GROUP BY s.stop_id
+    ''', { 'stop_ids': stop_ids, 'stop_ids_str': stop_ids_str })
 
+    cols = ['stop_id', 'avg_arrival_delay', 'avg_departure_delay', 'delay_2min_pct', 'delay_5min_pct']
+    stats_map = {}
+    for row in cursor:
+        stat = dict(zip(cols, row))
+        stats_map[stat['stop_id']] = stat
+
+    return json_resp(list(stats_map[stop_id] for stop_id in stop_ids))

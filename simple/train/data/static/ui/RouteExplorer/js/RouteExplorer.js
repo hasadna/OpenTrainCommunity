@@ -13,13 +13,22 @@ function($routeProvider) {
                 }
             }
         })
+        .when('/route-details/:stop_ids', {
+            templateUrl: baseDir + '/tpls/RouteDetails.html',
+            controller: 'RouteDetailsController',
+            resolve: {
+                loaded: function(Layout) {
+                    return Layout.loaded;
+                }
+            }
+        })
         .otherwise({
             redirectTo: '/'
         });
 }]);
 
-app.controller('SelectRouteController', ['$scope', 'Layout',
-function($scope, Layout) {
+app.controller('SelectRouteController', ['$scope', '$location', 'Layout',
+function($scope, $location, Layout) {
     $scope.stops = Layout.getStops();
     $scope.origin = null;
     $scope.destination = null;
@@ -40,8 +49,8 @@ function($scope, Layout) {
         return stop.name;
     };
 
-    $scope.barWidth = function(path) {
-        var percentWidth = path.count * 100.0 / $scope.paths[0].count;
+    $scope.barWidth = function(route) {
+        var percentWidth = route.count * 100.0 / $scope.routes[0].count;
 
         if (percentWidth < 1.0)
             return "1px";
@@ -49,13 +58,60 @@ function($scope, Layout) {
         return percentWidth + "%";
     };
 
-    $scope.$watch('origin', function() { $scope.paths = findMatchingPaths(); });
-    $scope.$watch('destination', function() { $scope.paths = findMatchingPaths(); });
+    $scope.goToRouteDetails = function(route) {
+        $location.path('/route-details/' + route.stops.join(','));
+    };
 
-    function findMatchingPaths() {
+    $scope.$watch('origin', updateMatchingRoutes);
+    $scope.$watch('destination', updateMatchingRoutes);
+
+    function updateMatchingRoutes() {
+        $scope.routes = findMatchingRoutes();
+    }
+
+    function findMatchingRoutes() {
         if (!$scope.stopsSelected())
             return null;
 
-        return Layout.findPaths($scope.origin.id, $scope.destination.id);
+        return Layout.findRoutes($scope.origin.id, $scope.destination.id);
     }
-}])
+}]);
+
+app.controller('RouteDetailsController', ['$scope', '$route', '$http', 'Layout',
+function($scope, $route, $http, Layout) {
+    $scope.loaded = false;
+
+    $http.get('/api/path-info', { params: { stop_ids: $route.current.params['stop_ids'] } })
+        .success(function(data) {
+            $scope.stats = data;
+            $scope.loaded = true;
+        });
+
+    $scope.stopName = function(stopId) {
+        var stop = Layout.findStop(stopId);
+        if (!stop)
+            return null;
+
+            return stop.name;
+    }
+}]);
+
+app.filter('duration', function() {
+    return function(seconds) {
+        seconds = Math.trunc(seconds);
+
+        var minutes = Math.trunc(seconds / 60);
+        seconds -= minutes * 60;
+        var hours = Math.trunc(minutes / 60);
+        minutes -= hours * 60;
+
+        var res = seconds + "s";
+        if (minutes != 0 || hours != 0)
+            res = minutes + "m " + res;
+
+        if (hours != 0)
+            res = hours + "h " + res;
+
+        return res;
+    }
+});
