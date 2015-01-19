@@ -1,0 +1,27 @@
+<div>
+    <h1>Route Details</h1>
+
+    <div class="loading alert alert-info" ng-show="!loaded">
+        <span class="glyphicon glyphicon-refresh glyphicon-animate-spin"></span>
+        Loading data...
+    </div>
+
+    <table class="table table-striped" ng-show="loaded">
+        <thead>
+            <th>Station</th>
+            <th>Avg. arrival delay</th>
+            <th>Avg. departure delay</th>
+            <th>Delay > 2min %</th>
+            <th>Delay > 5min %</th>
+        </thead>
+        <tbody>
+            <tr ng-repeat="stat in stats">
+                <td>{{ stopName(stat.stop_id) }}</td>
+                <td>{{ stat.avg_arrival_delay | duration }}</td>
+                <td>{{ stat.avg_departure_delay | duration }}</td>
+                <td>{{ stat.delay_2min_pct * 100 | number: 2 }}%</td>
+                <td>{{ stat.delay_5min_pct * 100 | number: 2 }}%</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

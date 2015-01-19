@@ -39,4 +39,5 @@ def show_trip(req):
 def show_routes(req):
     return render(req,'data/show_results.html',{'title': 'Show Routes',
                                                 'app': 'ShowRoutes'})
-
+def route_explorer(req):
+    return render(req, 'ui/RouteExplorer.html')

@@ -1,0 +1,46 @@
+<div>
+    <h1>Select a Route</h3>
+    <div class="container">
+        <form>
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="origin">From: </label>
+                    <input ng-model="origin" name="origin" class="form-control" type="text" placeholder="Start typing a station name..."
+                        typeahead="stop as stop.name for stop in stops | filter:$viewValue" typeahead-editable="false" />
+                </div>
+                <div class="col-sm-6">
+                    <label for="destination">To: </label>
+                    <input ng-model="destination" name="destination" class="form-control" type="text" placeholder="Start typing a station name..."
+                        typeahead="stop as stop.name for stop in stops | filter:$viewValue" typeahead-editable="false" />
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="container" ng-show="stopsSelected()">
+        <h3>Paths</h3>
+        <table class="paths table table-striped table-hover">
+            <cols>
+                <col class="stops-col"/>
+                <col class="count-col"/>
+            </cols>
+            <thead>
+                <th>Stops</th>
+                <th>Trips</th>
+            </thead>
+            <tr ng-repeat="route in routes" ng-click="goToRouteDetails(route)">
+                <td>
+                    <span class="stop-list">
+                        <span class="stop" ng-repeat="stop in route.stops track by $index">{{ stopName(stop) }} </span>
+                    </span>
+                </td>
+                <td>
+                    <div class="count-bar">
+                        <div class="count-bar-value" ng-style="{ width: barWidth(route) }"></div>
+                        {{ route.count }}
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

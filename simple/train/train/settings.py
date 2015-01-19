@@ -87,11 +87,6 @@ STATIC_ROOT = '/home/opentrain/public_html/static/'
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-try:
-    from local_settings import *
-except ImportError:
-    pass
-
 LOGGING = {
     'version' : 1,
     'disable_existing_loggers': False,
@@ -113,3 +108,8 @@ LOGGING = {
         },
     },
 }
+
+try:
+    from local_settings import *
+except ImportError:
+    pass
