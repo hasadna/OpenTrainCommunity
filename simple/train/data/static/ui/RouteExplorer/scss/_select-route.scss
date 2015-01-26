@@ -1,0 +1,5 @@
+.paths {
+    .count-bar { width: 100px; height: 5px; }
+    .count-bar-value { background-color: $brand-primary; height: 100%; }
+    tbody > tr { cursor: pointer; }
+}
