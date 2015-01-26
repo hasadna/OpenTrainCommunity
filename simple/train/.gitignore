@@ -1,1 +1,6 @@
+bower_components/
+node_modules/
+.sass-cache/
+css/
+
 error.log
