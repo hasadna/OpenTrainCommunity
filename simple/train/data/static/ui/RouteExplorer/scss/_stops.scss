@@ -1,0 +1,44 @@
+.stop-list .stop {
+    display: inline-block; margin: 2px; padding: 2px 5px;
+    background-color: $brand-primary; color: white;
+    border-radius: 5px/50%;
+
+    &:first-child { border-top-left-radius: 0; border-bottom-left-radius: 0; }
+    &:last-child { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+}
+
+.stop-diagram {
+    $stop-diagram-icon-width: 32px;
+    $stop-diagram-line-color: #858585;
+    $stop-diagram-line-width: 2px;
+    $stop-diagram-text-color: black;
+    $stop-diagram-bg-color: white;
+
+    position: relative;
+
+    >.stop-diagram-number {
+        position: relative;
+        display: inline-block;
+        width: $stop-diagram-icon-width;
+        height: $stop-diagram-icon-width;
+        border: $stop-diagram-line-width solid $stop-diagram-line-color;
+        background-color: $stop-diagram-bg-color;
+        border-radius: 50%;
+        text-align: center;
+        line-height: $stop-diagram-icon-width - $stop-diagram-line-width * 2;
+        color: $stop-diagram-text-color;
+        font-size: 11pt;
+    }
+
+    &::before {
+        content: "";
+        display: block;
+        width: $stop-diagram-line-width;
+        position: absolute;
+        top: 0; bottom: 0; right: ($table-cell-padding + ($stop-diagram-icon-width - $stop-diagram-line-width) / 2);
+        background-color: $stop-diagram-line-color;
+    }
+
+    &.stop-diagram-start::before { top: $table-cell-padding; }
+    &.stop-diagram-end::before { bottom: $table-cell-padding; }
+}

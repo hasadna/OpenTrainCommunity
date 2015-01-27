@@ -3,13 +3,3 @@ $header-height: 50px;
 body {
     padding-top: $header-height;
 }
-
-// Stop-lists
-.stop-list .stop {
-    display: inline-block; margin: 2px; padding: 2px 5px;
-    background-color: $brand-primary; color: white;
-    border-radius: 5px/50%;
-
-    &:first-child { border-top-left-radius: 0; border-bottom-left-radius: 0; }
-    &:last-child { border-top-right-radius: 0; border-bottom-right-radius: 0; }
-}

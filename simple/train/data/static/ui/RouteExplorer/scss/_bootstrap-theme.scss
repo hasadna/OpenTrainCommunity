@@ -7,3 +7,4 @@ $headings-font-family: "Alef Hebrew", "Helvetica Neue", Helvetica, Arial, sans-s
 
 // Tables
 $table-bg-hover: #e5e5e5;
+.table.table-striped > tbody > tr > td { border-bottom: none; border-top: none; }

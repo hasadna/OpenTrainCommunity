@@ -7,6 +7,7 @@
 
     <table class="table table-striped" ng-show="loaded">
         <thead>
+            <th>#</th>
             <th>תחנה</th>
             <th>איחור ממוצע בהגעה</th>
             <th>איחור ממוצע ביציאה</th>
@@ -15,6 +16,11 @@
         </thead>
         <tbody>
             <tr ng-repeat="stat in stats">
+                <td class="stop-diagram" ng-class="{ 'stop-diagram-start': $first, 'stop-diagram-end': $last }">
+                    <div class="stop-diagram-number">
+                        {{ $index +1 }}
+                    </div>
+                </td>
                 <td>{{ stopName(stat.stop_id) }}</td>
                 <td>{{ stat.avg_arrival_delay | duration }}</td>
                 <td>{{ stat.avg_departure_delay | duration }}</td>
