@@ -1,4 +1,4 @@
-<div>
+<div class="route-details">
     <h1>פרטי מסלול</h1>
     <div class="loading alert alert-info" ng-show="!loaded">
         <i class="fa fa-spinner fa-pulse"></i>
@@ -6,13 +6,28 @@
     </div>
 
     <table class="table table-striped" ng-show="loaded">
+        <colgroup span="2">
+        </colgroup>
+        <colgroup span="3">
+        </colgroup>
+        <colgroup span="1">
+        </colgroup>
         <thead>
-            <th>#</th>
-            <th>תחנה</th>
-            <th>איחור ממוצע בהגעה</th>
-            <th>איחור ממוצע ביציאה</th>
-            <th>% איחור > 2 דקות</th>
-            <th>% איחור > 5 דקות</th>
+            <tr class="table-header-primary">
+                <th scope="colgroup" colspan="2">תחנות</th>
+                <th scope="colgroup" colspan="3">הגעה לתחנה</th>
+                <th scope="colgroup" colspan="3">יציאה מהתחנה</th>
+            </tr>
+            <tr class="table-header-secondary">
+                <th></th>
+                <th></th>
+                <th>איחור ממוצע</th>
+                <th>% איחור > 2 דקות</th>
+                <th>% איחור > 5 דקות</th>
+                <th>איחור ממוצע</th>
+                <th>% איחור > 2 דקות</th>
+                <th>% איחור > 5 דקות</th>
+            </tr>
         </thead>
         <tbody>
             <tr ng-repeat="stat in stats">
@@ -21,11 +36,33 @@
                         {{ $index +1 }}
                     </div>
                 </td>
-                <td>{{ stopName(stat.stop_id) }}</td>
+                <th>{{ stopName(stat.stop_id) }}</th>
                 <td>{{ stat.avg_arrival_delay | duration }}</td>
+                <td>
+                    <span class="delay-percent">{{ stat.delay_2min_pct * 100 | number: 0 }}%</span>
+                    <div class="progress progress-inline">
+                        <div class="progress-bar progress-bar-warning" ng-style="{ width: (stat.delay_2min_pct * 100) + '%' }"></div>
+                    </div>
+                </td>
+                <td>
+                    <span class="delay-percent">{{ stat.delay_5min_pct * 100 | number: 0 }}%</span>
+                    <div class="progress progress-inline">
+                        <div class="progress-bar progress-bar-danger" ng-style="{ width: (stat.delay_5min_pct * 100) + '%' }"></div>
+                    </div>
+                </td>
                 <td>{{ stat.avg_departure_delay | duration }}</td>
-                <td>{{ stat.delay_2min_pct * 100 | number: 2 }}%</td>
-                <td>{{ stat.delay_5min_pct * 100 | number: 2 }}%</td>
+                <td>
+                    <span class="delay-percent">{{ stat.delay_2min_pct * 100 | number: 0 }}%</span>
+                    <div class="progress progress-inline">
+                        <div class="progress-bar progress-bar-warning" ng-style="{ width: (stat.delay_2min_pct * 100) + '%' }"></div>
+                    </div>
+                </td>
+                <td>
+                    <span class="delay-percent">{{ stat.delay_5min_pct * 100 | number: 0 }}%</span>
+                    <div class="progress progress-inline">
+                        <div class="progress-bar progress-bar-danger" ng-style="{ width: (stat.delay_5min_pct * 100) + '%' }"></div>
+                    </div>
+                </td>
             </tr>
         </tbody>
     </table>

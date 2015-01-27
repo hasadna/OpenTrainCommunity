@@ -7,4 +7,25 @@ $headings-font-family: "Alef Hebrew", "Helvetica Neue", Helvetica, Arial, sans-s
 
 // Tables
 $table-bg-hover: #e5e5e5;
-.table.table-striped > tbody > tr > td { border-bottom: none; border-top: none; }
+.table.table-striped {
+    > tbody,
+    > thead,
+    > tfoot {
+        > tr {
+            > td,
+            > th {
+                border-bottom: none; border-top: none; }
+        }
+    }
+}
+
+// Progress bars
+.progress.progress-inline, {
+    display: inline-block;
+    margin-bottom: 0;
+    height: 15px;
+    border-radius: 7px;
+    box-shadow: none;
+    background-color: #e5e5e5;
+    > .progress-bar { box-shadow: none; }
+}
