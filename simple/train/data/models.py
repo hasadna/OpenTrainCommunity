@@ -20,9 +20,6 @@ class Sample(models.Model):
     and their name is prefixed with -
 
     """
-    trip_name = models.CharField(max_length=30,db_index=True) # generated id for the given trip (combination of train num and date)
-    train_num = models.IntegerField(db_index=True) # the train num as given in the text files
-    start_date = models.DateField(db_index=True) # the start date of the trip (note that trip can be spanned over two days)
     index = models.IntegerField() # the index of the stop in the trip (0 based)
     stop_id = models.IntegerField(db_index=True) # the stop id
     stop_name = models.CharField(max_length=100) # the stop name in english - not formal name, if this is not real stop will be prefixed with -
@@ -40,7 +37,6 @@ class Sample(models.Model):
     data_file_line = models.IntegerField() # the line number in the data file (text file)
     data_file_link = models.URLField(max_length=200) # link to show the snippet of the text file in browser
     trip = models.ForeignKey('Trip',blank=True,null=True)
-    stop_ids = IntegerArrayField(db_index=True)
 
     def to_json(self):
         import services
@@ -62,31 +58,33 @@ class Sample(models.Model):
                 'link' : remove_site(self.data_file_link)
         }
 
-    class Meta:
-        unique_together = ('trip_name','index')
-
 class Trip(models.Model):
     id = models.CharField(primary_key=True,max_length=30,db_index=True,unique=True)
     train_num = models.IntegerField(db_index=True)
     start_date = models.DateField(db_index=True)
     valid = models.BooleanField(default=False)
-    stop_ids = IntegerArrayField(db_index=True)
+    route = models.ForeignKey('Route')
+    trip_name = models.CharField(max_length=30,db_index=True) # generated id for the given trip (combination of train num and date)
+    train_num = models.IntegerField(db_index=True) # the train num as given in the text files
+    start_date = models.DateField(db_index=True) # the start date of the trip (note that trip can be spanned over two days)
 
-    def is_to_north(self):
-        import services
-        first_stop = services.get_stop(self.stop_ids[0])
-        last_stop = services.get_stop(self.stop_ids[-1])
-        return first_stop['latlon'][0] < last_stop['latlon'][0]
 
     def to_json(self):
         stops = [stop.to_json() for stop in self.sample_set.filter(is_real_stop=True).order_by('index')]
         return {'id' : self.id,
                 'train_num' : self.train_num,
                 'start_date' : self.start_date.isoformat(),
-                 'valid' : self.valid,
-                 'stops' : stops,
-                 'is_to_north' : self.is_to_north()
+                'valid' : self.valid,
+                'stops' : stops,
+                'is_to_north' : self.route.is_to_north()
                 }
 
+class Route(models.Model):
+    stop_ids = IntegerArrayField(db_index=True,unique=True)
+    def is_to_north(self):
+        import services
+        first_stop = services.get_stop(self.stop_ids[0])
+        last_stop = services.get_stop(self.stop_ids[-1])
+        return first_stop['latlon'][0] < last_stop['latlon'][0]
 
 

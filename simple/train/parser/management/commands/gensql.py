@@ -9,4 +9,4 @@ class Command(BaseCommand):
         if not args:
             raise CommandError('must give filename')
         for filename in args:
-            data.utils.gen_sql(filename)
+            data.utils.import_current_csv(filename)
