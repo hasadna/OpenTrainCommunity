@@ -17,7 +17,8 @@
             th, td { vertical-align: middle; }
         }
 
-        .delay-percent { display: inline-block; width: 30px; }
-        .progress-inline { width: 80px; height: 15px; }
+        .progress-inline { width: 80px; height: 15px; position: relative;
+            .progress-value { display: block; position: absolute; left: 2px; right: 2px; text-align: center; font-size: 8pt; }
+        }
     }
 }

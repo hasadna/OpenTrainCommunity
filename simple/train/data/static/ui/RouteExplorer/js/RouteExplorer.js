@@ -1,8 +1,8 @@
+var baseDir = '/static/ui/RouteExplorer';
 var app = angular.module('RouteExplorer', ['ngRoute', 'ui.bootstrap']);
 
 app.config(['$routeProvider',
 function($routeProvider) {
-    var baseDir = '/static/ui/RouteExplorer';
     $routeProvider
         .when('/', {
             templateUrl: baseDir + '/tpls/SelectRoute.html',
@@ -114,4 +114,15 @@ app.filter('duration', function() {
 
         return res;
     }
+});
+
+app.directive("rexPercentBar", function() {
+    return {
+        restrict: 'E',
+        scope: {
+          value: '=value',
+          type: '=type'
+        },
+        templateUrl: baseDir + '/tpls/PercentBar.html'
+      };
 });
