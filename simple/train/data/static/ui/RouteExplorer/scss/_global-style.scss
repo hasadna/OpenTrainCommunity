@@ -1,7 +1,14 @@
+// Container width
+@media (min-width: 1600px) {
+    .container { width: 1570px; }
+}
+
 // Page layout
 $header-height: 50px;
 body {
     padding-top: $header-height;
 }
+
+h1 { margin-bottom: 30px; }
 
 .duration { direction: ltr; &::before { content: '\202d'; } &::after { content: '\202c'; } }
