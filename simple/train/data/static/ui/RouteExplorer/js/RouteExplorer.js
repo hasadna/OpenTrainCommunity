@@ -79,13 +79,19 @@ function($scope, $location, Layout) {
 
 app.controller('RouteDetailsController', ['$scope', '$route', '$http', 'Layout',
 function($scope, $route, $http, Layout) {
+    var stopList = $route.current.params['stop_ids'];
+    var stopIds = stopList.split(',');
+
     $scope.loaded = false;
 
-    $http.get('/api/path-info', { params: { stop_ids: $route.current.params['stop_ids'] } })
+    $http.get('/api/path-info', { params: { stop_ids: stopList } })
         .success(function(data) {
             $scope.stats = data;
             $scope.loaded = true;
         });
+
+    $scope.origin = stopIds[0];
+    $scope.destination = stopIds[stopIds.length - 1];
 
     $scope.stopName = function(stopId) {
         var stop = Layout.findStop(stopId);
@@ -119,7 +125,7 @@ app.filter('duration', function() {
 
         if (negative)
             res = '-' + res;
-            
+
         return res;
     }
 });
