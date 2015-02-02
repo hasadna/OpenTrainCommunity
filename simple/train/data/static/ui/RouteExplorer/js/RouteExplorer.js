@@ -98,20 +98,28 @@ function($scope, $route, $http, Layout) {
 
 app.filter('duration', function() {
     return function(seconds) {
+        var negative = false;
         seconds = Math.trunc(seconds);
+        if (seconds < 0) {
+            negative = true;
+            seconds = -seconds;
+        }
 
         var minutes = Math.trunc(seconds / 60);
         seconds -= minutes * 60;
         var hours = Math.trunc(minutes / 60);
         minutes -= hours * 60;
 
-        var res = seconds + "s";
-        if (minutes != 0 || hours != 0)
-            res = minutes + "m " + res;
+        if (seconds < 10) seconds = '0' + seconds;
+        if (minutes < 10 && hours != 0) minutes = '0' + minutes;
 
+        var res = minutes + ':' + seconds;
         if (hours != 0)
-            res = hours + "h " + res;
+            res = hours + ':' + res;
 
+        if (negative)
+            res = '-' + res;
+            
         return res;
     }
 });

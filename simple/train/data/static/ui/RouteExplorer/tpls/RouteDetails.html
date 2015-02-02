@@ -42,13 +42,13 @@
                 </td>
                 <th>{{ stopName(stat.stop_id) }}</th>
 
-                <td>{{ stat.arrival_avg_delay | duration }}</td>
+                <td><span class="duration">{{ stat.arrival_avg_delay | duration }}</span></td>
                 <td><rex-percent-bar value="stat.arrival_early_pct" type="'info'"></rex-percent-bar></td>
                 <td><rex-percent-bar value="stat.arrival_on_time_pct" type="'success'"></rex-percent-bar></td>
                 <td><rex-percent-bar value="stat.arrival_short_delay_pct" type="'warning'"></rex-percent-bar></td>
                 <td><rex-percent-bar value="stat.arrival_long_delay_pct" type="'danger'"></rex-percent-bar></td>
 
-                <td>{{ stat.departure_avg_delay | duration }}</td>
+                <td><span class="duration">{{ stat.departure_avg_delay | duration }}</span></td>
                 <td><rex-percent-bar value="stat.departure_early_pct" type="'info'"></rex-percent-bar></td>
                 <td><rex-percent-bar value="stat.departure_on_time_pct" type="'success'"></rex-percent-bar></td>
                 <td><rex-percent-bar value="stat.departure_short_delay_pct" type="'warning'"></rex-percent-bar></td>

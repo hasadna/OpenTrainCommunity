@@ -3,3 +3,5 @@ $header-height: 50px;
 body {
     padding-top: $header-height;
 }
+
+.duration { direction: ltr; &::before { content: '\202d'; } &::after { content: '\202c'; } }
