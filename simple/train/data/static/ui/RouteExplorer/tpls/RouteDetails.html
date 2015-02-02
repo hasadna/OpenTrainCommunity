@@ -22,17 +22,35 @@
                 <th></th>
                 <th></th>
                 <th>איחור ממוצע</th>
-                <th>% הקדמה</th>
-                <th>% הגעה בזמן</th>
-                <th>% איחור קל</th>
-                <th>% איחור כבד</th>
+                <th tooltip="הגעה לפני הזמן המתוכנן" tooltip-append-to-body="true">
+                    הגעה מוקדמת
+                </th>
+                <th tooltip="הגעה עד 2 דקות אחרי הזמן המתוכנן" tooltip-append-to-body="true">
+                    הגעה בזמן
+                </th>
+                <th tooltip="הגעה בין 2 ל-5 דקות אחרי הזמן המתוכנן" tooltip-append-to-body="true">
+                    איחור קל
+                </th>
+                <th tooltip="הגעה מעבר ל-5 דקות אחרי הזמן המתוכנן" tooltip-append-to-body="true">
+                    איחור כבד
+                </th>
+
                 <th>איחור ממוצע</th>
-                <th>% הקדמה</th>
-                <th>% הגעה בזמן</th>
-                <th>% איחור קל</th>
-                <th>% איחור כבד</th>
+                <th tooltip="יציאה לפני הזמן המתוכנן" tooltip-append-to-body="true">
+                    יציאה מוקדמת
+                </th>
+                <th tooltip="יציאה עד 2 דקות אחרי הזמן המתוכנן" tooltip-append-to-body="true">
+                    יציאה בזמן
+                </th>
+                <th tooltip="יציאה בין 2 ל-5 דקות אחרי הזמן המתוכנן" tooltip-append-to-body="true">
+                    איחור קל
+                </th>
+                <th tooltip="יציאה מעבר ל-5 דקות אחרי הזמן המתוכנן" tooltip-append-to-body="true">
+                    איחור כבד
+                </th>
             </tr>
         </thead>
+
         <tbody>
             <tr ng-repeat="stat in stats">
                 <td class="stop-diagram" ng-class="{ 'stop-diagram-start': $first, 'stop-diagram-end': $last }">
@@ -40,7 +58,7 @@
                         {{ $index +1 }}
                     </div>
                 </td>
-                <th>{{ stopName(stat.stop_id) }}</th>
+                <th class="stop-name">{{ stopName(stat.stop_id) }}</th>
 
                 <td><span class="duration">{{ stat.arrival_avg_delay | duration }}</span></td>
                 <td><rex-percent-bar value="stat.arrival_early_pct" type="'info'"></rex-percent-bar></td>
