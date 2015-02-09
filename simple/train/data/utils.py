@@ -114,6 +114,8 @@ def build_current_routes(csv_file):
 
 @benchit
 def build_current_trips(csv_file):
+    print '=' * 50
+    print 'Building Trips and Routes from csv file %s' % csv_file
     trip_names = set()
     trips = []
     route_id_by_trip = build_current_routes(csv_file)
@@ -161,6 +163,7 @@ def csv_to_datetime(dt_str):
 
 @benchit
 def import_current_csv(csv_file):
+    build_current_trips(csv_file)
     with open(csv_file) as fh:
         reader = csv.DictReader(fh)
         cur_samples = []
@@ -183,13 +186,13 @@ def import_current_csv(csv_file):
                        data_file_line=csv_to_int(row['data_file_line']),
                        data_file_link=row['data_file_link'])
             cur_samples.append(s)
-            if len(cur_samples) == 10000:
+            if len(cur_samples) == 30000:
                 Sample.objects.bulk_create(cur_samples)
                 cur_samples = []
-                print 'processes %s lines' % idx+1
+                print 'processes %s lines' % (idx+1)
         if cur_samples:
             Sample.objects.bulk_create(cur_samples)
-            print 'processes %s lines' % idx+1
+            print 'processes %s lines' % (idx+1)
 
     print 'Read %s rows' % (1+idx)
 
