@@ -1,8 +1,8 @@
+var baseDir = '/static/ui/RouteExplorer';
 var app = angular.module('RouteExplorer', ['ngRoute', 'ui.bootstrap']);
 
 app.config(['$routeProvider',
 function($routeProvider) {
-    var baseDir = '/static/ui/RouteExplorer';
     $routeProvider
         .when('/', {
             templateUrl: baseDir + '/tpls/SelectRoute.html',
@@ -46,7 +46,7 @@ function($scope, $location, Layout) {
         if (!stop)
             return null;
 
-        return stop.name;
+        return stop.shortName;
     };
 
     $scope.barWidth = function(route) {
@@ -79,39 +79,64 @@ function($scope, $location, Layout) {
 
 app.controller('RouteDetailsController', ['$scope', '$route', '$http', 'Layout',
 function($scope, $route, $http, Layout) {
+    var stopList = $route.current.params['stop_ids'];
+    var stopIds = stopList.split(',');
+
     $scope.loaded = false;
 
-    $http.get('/api/path-info', { params: { stop_ids: $route.current.params['stop_ids'] } })
+    $http.get('/api/path-info', { params: { stop_ids: stopList } })
         .success(function(data) {
             $scope.stats = data;
             $scope.loaded = true;
         });
+
+    $scope.origin = stopIds[0];
+    $scope.destination = stopIds[stopIds.length - 1];
 
     $scope.stopName = function(stopId) {
         var stop = Layout.findStop(stopId);
         if (!stop)
             return null;
 
-            return stop.name;
+            return stop.shortName;
     }
 }]);
 
 app.filter('duration', function() {
     return function(seconds) {
+        var negative = false;
         seconds = Math.trunc(seconds);
+        if (seconds < 0) {
+            negative = true;
+            seconds = -seconds;
+        }
 
         var minutes = Math.trunc(seconds / 60);
         seconds -= minutes * 60;
         var hours = Math.trunc(minutes / 60);
         minutes -= hours * 60;
 
-        var res = seconds + "s";
-        if (minutes != 0 || hours != 0)
-            res = minutes + "m " + res;
+        if (seconds < 10) seconds = '0' + seconds;
+        if (minutes < 10 && hours != 0) minutes = '0' + minutes;
 
+        var res = minutes + ':' + seconds;
         if (hours != 0)
-            res = hours + "h " + res;
+            res = hours + ':' + res;
+
+        if (negative)
+            res = '-' + res;
 
         return res;
     }
+});
+
+app.directive("rexPercentBar", function() {
+    return {
+        restrict: 'E',
+        scope: {
+          value: '=value',
+          type: '=type'
+        },
+        templateUrl: baseDir + '/tpls/PercentBar.html'
+      };
 });

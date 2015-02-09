@@ -271,10 +271,18 @@ def get_path_info(req):
     cursor =  django.db.connection.cursor();
     cursor.execute('''
         SELECT  s.stop_id as stop_id,
-                avg(coalesce(delay_arrival, 0.0)) as avg_arrival_delay,
-                avg(coalesce(delay_departure, 0.0)) as avg_departure_delay,
-                avg(case when delay_departure >= 120 then 1.0 else 0.0 end)::float as delay_2min_pct,
-                avg(case when delay_departure >= 300 then 1.0 else 0.0 end)::float as delay_5min_pct
+                avg(coalesce(delay_arrival, 0.0)) as arrival_avg_delay,
+                avg(case when delay_arrival < 0 then 1.0 else 0.0 end)::float as arrival_early_pct,
+                avg(case when delay_arrival >= 0 and delay_arrival < 120 then 1.0 else 0.0 end)::float as arrival_on_time_pct,
+                avg(case when delay_arrival >= 120 and delay_arrival < 300 then 1.0 else 0.0 end)::float as arrival_short_delay_pct,
+                avg(case when delay_arrival >= 300 then 1.0 else 0.0 end)::float as arrival_long_delay_pct,
+
+                avg(coalesce(delay_departure, 0.0)) as departure_avg_delay,
+                avg(case when delay_departure < 0 then 1.0 else 0.0 end)::float as departure_early_pct,
+                avg(case when delay_departure >= 0 and delay_departure < 120 then 1.0 else 0.0 end)::float as departure_on_time_pct,
+                avg(case when delay_departure >= 120 and delay_departure < 300 then 1.0 else 0.0 end)::float as departure_short_delay_pct,
+                avg(case when delay_departure >= 300 then 1.0 else 0.0 end)::float as departure_long_delay_pct
+
         FROM    data_sample as s INNER JOIN data_trip as t ON s.trip_id = t.id
         WHERE   s.stop_id = ANY (%(stop_ids)s)
         AND     s.valid
@@ -283,7 +291,12 @@ def get_path_info(req):
         GROUP BY s.stop_id
     ''', { 'stop_ids': stop_ids, 'stop_ids_str': stop_ids_str })
 
-    cols = ['stop_id', 'avg_arrival_delay', 'avg_departure_delay', 'delay_2min_pct', 'delay_5min_pct']
+    cols = [
+        'stop_id',
+        'arrival_avg_delay', 'arrival_early_pct', 'arrival_on_time_pct', 'arrival_short_delay_pct', 'arrival_long_delay_pct',
+        'departure_avg_delay', 'departure_early_pct', 'departure_on_time_pct', 'departure_short_delay_pct', 'departure_long_delay_pct'
+    ]
+
     stats_map = {}
     for row in cursor:
         stat = dict(zip(cols, row))

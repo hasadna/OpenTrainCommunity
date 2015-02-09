@@ -1,26 +1,77 @@
-<div>
-    <h1>Route Details</h1>
-
+<div class="route-details">
+    <h1>{{ stopName(origin) }} - {{ stopName(destination) }}</h1>
     <div class="loading alert alert-info" ng-show="!loaded">
-        <span class="glyphicon glyphicon-refresh glyphicon-animate-spin"></span>
-        Loading data...
+        <i class="fa fa-spinner fa-pulse"></i>
+        טוען נתונים...
     </div>
 
     <table class="table table-striped" ng-show="loaded">
+        <colgroup span="2">
+        </colgroup>
+        <colgroup span="5">
+        </colgroup>
+        <colgroup span="5">
+        </colgroup>
         <thead>
-            <th>Station</th>
-            <th>Avg. arrival delay</th>
-            <th>Avg. departure delay</th>
-            <th>Delay > 2min %</th>
-            <th>Delay > 5min %</th>
+            <tr class="table-header-primary">
+                <th scope="colgroup" colspan="2">תחנות</th>
+                <th scope="colgroup" colspan="5">הגעה לתחנה</th>
+                <th scope="colgroup" colspan="5">יציאה מהתחנה</th>
+            </tr>
+            <tr class="table-header-secondary">
+                <th></th>
+                <th></th>
+                <th>איחור ממוצע</th>
+                <th tooltip="הגעה לפני הזמן המתוכנן" tooltip-append-to-body="true">
+                    הגעה מוקדמת
+                </th>
+                <th tooltip="הגעה עד 2 דקות אחרי הזמן המתוכנן" tooltip-append-to-body="true">
+                    הגעה בזמן
+                </th>
+                <th tooltip="הגעה בין 2 ל-5 דקות אחרי הזמן המתוכנן" tooltip-append-to-body="true">
+                    איחור קל
+                </th>
+                <th tooltip="הגעה מעבר ל-5 דקות אחרי הזמן המתוכנן" tooltip-append-to-body="true">
+                    איחור כבד
+                </th>
+
+                <th>איחור ממוצע</th>
+                <th tooltip="יציאה לפני הזמן המתוכנן" tooltip-append-to-body="true">
+                    יציאה מוקדמת
+                </th>
+                <th tooltip="יציאה עד 2 דקות אחרי הזמן המתוכנן" tooltip-append-to-body="true">
+                    יציאה בזמן
+                </th>
+                <th tooltip="יציאה בין 2 ל-5 דקות אחרי הזמן המתוכנן" tooltip-append-to-body="true">
+                    איחור קל
+                </th>
+                <th tooltip="יציאה מעבר ל-5 דקות אחרי הזמן המתוכנן" tooltip-append-to-body="true">
+                    איחור כבד
+                </th>
+            </tr>
         </thead>
+
         <tbody>
             <tr ng-repeat="stat in stats">
-                <td>{{ stopName(stat.stop_id) }}</td>
-                <td>{{ stat.avg_arrival_delay | duration }}</td>
-                <td>{{ stat.avg_departure_delay | duration }}</td>
-                <td>{{ stat.delay_2min_pct * 100 | number: 2 }}%</td>
-                <td>{{ stat.delay_5min_pct * 100 | number: 2 }}%</td>
+                <td class="stop-diagram" ng-class="{ 'stop-diagram-start': $first, 'stop-diagram-end': $last }">
+                    <div class="stop-diagram-number">
+                        {{ $index +1 }}
+                    </div>
+                </td>
+                <th class="stop-name">{{ stopName(stat.stop_id) }}</th>
+
+                <td><span class="duration">{{ stat.arrival_avg_delay | duration }}</span></td>
+                <td><rex-percent-bar value="stat.arrival_early_pct" type="'info'"></rex-percent-bar></td>
+                <td><rex-percent-bar value="stat.arrival_on_time_pct" type="'success'"></rex-percent-bar></td>
+                <td><rex-percent-bar value="stat.arrival_short_delay_pct" type="'warning'"></rex-percent-bar></td>
+                <td><rex-percent-bar value="stat.arrival_long_delay_pct" type="'danger'"></rex-percent-bar></td>
+
+                <td><span class="duration">{{ stat.departure_avg_delay | duration }}</span></td>
+                <td><rex-percent-bar value="stat.departure_early_pct" type="'info'"></rex-percent-bar></td>
+                <td><rex-percent-bar value="stat.departure_on_time_pct" type="'success'"></rex-percent-bar></td>
+                <td><rex-percent-bar value="stat.departure_short_delay_pct" type="'warning'"></rex-percent-bar></td>
+                <td><rex-percent-bar value="stat.departure_long_delay_pct" type="'danger'"></rex-percent-bar></td>
+
             </tr>
         </tbody>
     </table>

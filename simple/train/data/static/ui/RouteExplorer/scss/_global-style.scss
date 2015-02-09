@@ -1,0 +1,18 @@
+// Container width
+@media (min-width: 1600px) {
+    .container { width: 1570px; }
+}
+
+// Page layout
+$header-height: 50px;
+body {
+    padding-top: $header-height;
+}
+
+h1 { margin-bottom: 30px; }
+
+// Specific recurring components
+.duration {
+    // To make the direction display left-to-right, we wrap it in a left-to-right override 
+    direction: ltr; &::before { content: '\202d'; } &::after { content: '\202c'; }
+}

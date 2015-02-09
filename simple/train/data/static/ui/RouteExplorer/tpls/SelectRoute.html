@@ -1,32 +1,32 @@
 <div>
-    <h1>Select a Route</h3>
+    <h1>בחר מסלול</h3>
     <div class="container">
         <form>
             <div class="row">
                 <div class="col-sm-6">
-                    <label for="origin">From: </label>
-                    <input ng-model="origin" name="origin" class="form-control" type="text" placeholder="Start typing a station name..."
-                        typeahead="stop as stop.name for stop in stops | filter:$viewValue" typeahead-editable="false" />
+                    <label for="origin">מוצא: </label>
+                    <input ng-model="origin" name="origin" class="form-control" type="text" placeholder="הקלד שם תחנה..."
+                        typeahead="stop as stop.shortName for stop in stops | filter:$viewValue" typeahead-editable="false" />
                 </div>
                 <div class="col-sm-6">
-                    <label for="destination">To: </label>
-                    <input ng-model="destination" name="destination" class="form-control" type="text" placeholder="Start typing a station name..."
-                        typeahead="stop as stop.name for stop in stops | filter:$viewValue" typeahead-editable="false" />
+                    <label for="destination">יעד: </label>
+                    <input ng-model="destination" name="destination" class="form-control" type="text" placeholder="הקלד שם תחנה..."
+                        typeahead="stop as stop.shortName for stop in stops | filter:$viewValue" typeahead-editable="false" />
                 </div>
             </div>
         </form>
     </div>
 
     <div class="container" ng-show="stopsSelected()">
-        <h3>Paths</h3>
+        <h3>מסלולים</h3>
         <table class="paths table table-striped table-hover">
             <cols>
                 <col class="stops-col"/>
                 <col class="count-col"/>
             </cols>
             <thead>
-                <th>Stops</th>
-                <th>Trips</th>
+                <th>מסלול</th>
+                <th>נסיעות</th>
             </thead>
             <tr ng-repeat="route in routes" ng-click="goToRouteDetails(route)">
                 <td>

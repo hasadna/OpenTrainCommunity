@@ -1,0 +1,29 @@
+.route-details {
+    table {
+        $col-border-color: #C4C9D0;
+
+        thead th { font-weight: normal; }
+        tr.table-header-primary th { font-size: 15pt; text-align: center; }
+        tr.table-header-secondary th { font-size: 9pt; }
+
+        colgroup {
+            border-right: 2px solid $col-border-color;
+            &:first-child { border-right: none; }
+        }
+
+        tbody {
+            th { font-size: 9pt; }
+            td { font-size: 10pt; }
+            th, td { vertical-align: middle; }
+        }
+
+        td, th {
+            text-align: center;
+            &.stop-name, &.stop-diagram { text-align: right; }
+        }
+
+        .progress-inline { width: 80px; height: 15px; position: relative;
+            .progress-value { display: block; position: absolute; left: 2px; right: 2px; text-align: center; font-size: 8pt; }
+        }
+    }
+}
