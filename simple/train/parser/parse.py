@@ -2,6 +2,7 @@ import codecs
 import re
 import datetime
 import pytz
+import pytz
 import os
 from collections import defaultdict
 import stops_utils
@@ -140,7 +141,7 @@ class Trip(object):
         }
         result['data_file_link'] = 'http://localhost:8000/raw-data/?file={0}&line={1}'.format(result['data_file'],
                                                                                               result['data_file_line'])
-        result['trip_id'] = '%s_%s' % (result['train_num'],self.get_start_date().strftime('%Y%m%d'))
+        result['trip_name'] = '%s_%s' % (result['train_num'],self.get_start_date().strftime('%Y%m%d'))
         attrs = ['actual_arrival', 'exp_arrival', 'actual_departure', 'exp_departure']
         for attr in attrs:
             val = getattr(stop, attr)
@@ -387,7 +388,7 @@ class TrainParser():
         output_csv = self.get_file('output/%s.csv' % self.get_basename())
         fieldnames = ['train_num',
                       'start_date',
-                      'trip_id',
+                      'trip_name',
                       'index',
                       'stop_id',
                       'stop_name',

@@ -87,6 +87,8 @@ STATIC_ROOT = '/home/opentrain/public_html/static/'
 
 CORS_ORIGIN_ALLOW_ALL = True
 
+OT_LOG_DIR = '/var/log/opentrain'
+
 LOGGING = {
     'version' : 1,
     'disable_existing_loggers': False,
@@ -98,7 +100,7 @@ LOGGING = {
     'handlers': {
         'file': {
             'class': 'logging.FileHandler',
-            'filename': '/var/log/opentrain/error.log',
+            'filename': os.path.join(OT_LOG_DIR,'error.log'),
             'formatter' : 'simple',
         },
     },

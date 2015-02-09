@@ -9,7 +9,7 @@ from django.views.generic import RedirectView
 urlpatterns = patterns('',
                        # url(r'^$', 'train.views.home', name='home'),
                        # url(r'^blog/', include('blog.urls')),
-                       url(r'^$', RedirectView.as_view(url='/results/show-routes/', permanent=False)),
+                       url(r'^$', RedirectView.as_view(url='/ui/routes/', permanent=False)),
                        url(r'^admin/', include(admin.site.urls)),
                        url(r'^raw-data', 'data.views.show_raw_data'),
                        url(r'^api/routes/delays_over_duration', 'data.api.get_delay_over_total_duration'),
