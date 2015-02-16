@@ -7,10 +7,14 @@ $headings-font-family: "Alef Hebrew", "Helvetica Neue", Helvetica, Arial, sans-s
 
 // Colors
 $rex-background-color: #e8eaed;
+$rex-content-color: white;
+$rex-accent-color: #9aca41;
+
 $rex-btn-background-color: #f5f7f7;
 $rex-btn-text-color: #939599;
 $rex-btn-border-color: #dadddf;
-$rex-accent-color: #9aca41;
+
+$body-bg: $rex-background-color;
 
 // Tables
 $table-bg-hover: #e5e5e5;

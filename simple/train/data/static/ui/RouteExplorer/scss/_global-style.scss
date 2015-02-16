@@ -6,10 +6,12 @@
 // Page layout
 $header-height: 50px;
 body {
+    background-color: $rex-background-color;
     padding-top: $header-height;
 }
 
 h1 { margin-bottom: 30px; }
+.content { background-color: $rex-content-color; }
 
 // Specific recurring components
 .duration {
@@ -19,7 +21,7 @@ h1 { margin-bottom: 30px; }
 
 .btn {
     &:active, &.active {
-        background-color: white;
+        background-color: $rex-content-color;
         color: $rex-accent-color;
         border-top: 5px solid $rex-accent-color;
         @include box-shadow(none);
