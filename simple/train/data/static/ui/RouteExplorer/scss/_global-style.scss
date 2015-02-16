@@ -13,6 +13,21 @@ h1 { margin-bottom: 30px; }
 
 // Specific recurring components
 .duration {
-    // To make the direction display left-to-right, we wrap it in a left-to-right override 
+    // To make the direction display left-to-right, we wrap it in a left-to-right override
     direction: ltr; &::before { content: '\202d'; } &::after { content: '\202c'; }
+}
+
+.btn {
+    &:active, &.active {
+        background-color: white;
+        color: $rex-accent-color;
+        border-top: 5px solid $rex-accent-color;
+        @include box-shadow(none);
+    }
+
+    .btn-title {
+        font-family: $headings-font-family; font-size: 32px; font-weight: bold;
+        i.fa { font-size: 80%; }
+    }
+    .btn-text { font-size: 12px; font-weight: bold; }
 }

@@ -1,5 +1,5 @@
 var baseDir = '/static/ui/RouteExplorer';
-var app = angular.module('RouteExplorer', ['ngRoute', 'ui.bootstrap']);
+var app = angular.module('RouteExplorer', ['ngRoute', 'ui.bootstrap', 'ui.bootstrap.buttons']);
 
 app.config(['$routeProvider',
 function($routeProvider) {
@@ -92,6 +92,17 @@ function($scope, $route, $http, Layout) {
 
     $scope.origin = stopIds[0];
     $scope.destination = stopIds[stopIds.length - 1];
+
+    $scope.days = [
+        { abbr: 'א', title: 'ראשון', value: 1 },
+        { abbr: 'ב', title: 'שני', value: 2 },
+        { abbr: 'ג', title: 'שלישי', value: 3 },
+        { abbr: 'ד', title: 'רביעי', value: 4 },
+        { abbr: 'ה', title: 'חמישי', value: 5 },
+        { abbr: 'ו', title: 'שישי', value: 6 },
+        { abbr: 'ש', title: 'שבת', value: 7 }
+    ]
+    $scope.selectedDay = null;
 
     $scope.stopName = function(stopId) {
         var stop = Layout.findStop(stopId);

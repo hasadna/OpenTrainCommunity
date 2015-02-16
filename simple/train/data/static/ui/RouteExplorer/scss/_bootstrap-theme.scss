@@ -5,6 +5,13 @@
 $font-family-sans-serif: "Open Sans Hebrew", "Helvetica Neue", Helvetica, Arial, sans-serif;
 $headings-font-family: "Alef Hebrew", "Helvetica Neue", Helvetica, Arial, sans-serif;
 
+// Colors
+$rex-background-color: #e8eaed;
+$rex-btn-background-color: #f5f7f7;
+$rex-btn-text-color: #939599;
+$rex-btn-border-color: #dadddf;
+$rex-accent-color: #9aca41;
+
 // Tables
 $table-bg-hover: #e5e5e5;
 .table.table-striped {
@@ -29,3 +36,8 @@ $table-bg-hover: #e5e5e5;
     background-color: #e5e5e5;
     > .progress-bar { box-shadow: none; }
 }
+
+// Buttons
+$btn-default-color: $rex-btn-text-color;
+$btn-default-bg: $rex-btn-background-color;
+$btn-default-border: $rex-btn-border-color;
