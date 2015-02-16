@@ -3,6 +3,10 @@
         margin-bottom: 20px;
     }
 
+    .times-container {
+        .btn > .btn-text { min-height: 30px; }
+    }
+
     table {
         $col-border-color: #C4C9D0;
 

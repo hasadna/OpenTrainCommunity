@@ -33,3 +33,15 @@ h1 { margin-bottom: 30px; }
     }
     .btn-text { font-size: 12px; font-weight: bold; }
 }
+
+.btn-group.btn-group-tabs {
+    > .btn {
+        border-radius: 0 !important;
+        &.active {
+            border-bottom: 1px solid $rex-content-color;
+        }
+
+        &:first-child { border-right: none; }
+        &:last-child  { border-left: none; }
+    }
+}

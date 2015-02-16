@@ -93,6 +93,7 @@ function($scope, $route, $http, Layout) {
     $scope.origin = stopIds[0];
     $scope.destination = stopIds[stopIds.length - 1];
 
+    $scope.selectedDay = null;
     $scope.days = [
         { abbr: 'א', title: 'ראשון', value: 1 },
         { abbr: 'ב', title: 'שני', value: 2 },
@@ -101,8 +102,18 @@ function($scope, $route, $http, Layout) {
         { abbr: 'ה', title: 'חמישי', value: 5 },
         { abbr: 'ו', title: 'שישי', value: 6 },
         { abbr: 'ש', title: 'שבת', value: 7 }
-    ]
-    $scope.selectedDay = null;
+    ];
+
+    $scope.selectedTime = null;
+    $scope.times = [
+        { from: '07:00', to: '09:00' },
+        { from: '09:00', to: '12:00' },
+        { from: '12:00', to: '16:00' },
+        { from: '16:00', to: '18:00' },
+        { from: '18:00', to: '20:00' },
+        { from: '20:00', to: '22:00' },
+        { from: '22:00', to: '00:00' }
+    ];
 
     $scope.stopName = function(stopId) {
         var stop = Layout.findStop(stopId);

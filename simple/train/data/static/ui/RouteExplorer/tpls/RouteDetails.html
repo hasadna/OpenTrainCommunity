@@ -18,6 +18,15 @@
             </div>
         </div>
 
+        <div class="times-container btn-group btn-group-lg btn-group-justified btn-group-tabs">
+            <div class="btn btn-default" ng-model="selectedTime" btn-radio="null">
+                <div class="btn-text">הכל</div>
+            </div>
+            <div class="btn btn-default" ng-repeat="time in times" ng-model="$parent.selectedTime" btn-radio="time.from">
+                <div class="btn-text">{{ time.from }}<br/>{{ time.to }}</div>
+            </div>
+        </div>
+
         <table class="table table-striped content">
             <colgroup span="2">
             </colgroup>
