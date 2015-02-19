@@ -263,6 +263,29 @@ def get_route_info(req):
     t3 = time.time()
     return json_resp(result)
 
+def contains_stops(route,stop_ids):
+    route_stop_ids = route.stop_ids
+    try:
+        first_index = route_stop_ids.index(stop_ids[0])
+    except ValueError:
+        return False
+    return route_stop_ids[first_index:len(stop_ids)+first_index] == stop_ids
+
+def find_all_routes_with_stops(stop_ids):
+    routes = Route.objects.all()
+    result = [r for r in routes if contains_stops(r,stop_ids)]
+    return result
+
+def get_path_info2(req):
+    stop_ids = [int(s) for s in req.GET['stop_ids'].split(',')]
+    # find all routes whose contains these stop ids
+    routes = find_all_routes_with_stops(stop_ids)
+    trips = []
+    for r in routes:
+        trips.extend(list(r.trip_set.all()))
+    
+
+
 def get_path_info(req):
     import services
 
