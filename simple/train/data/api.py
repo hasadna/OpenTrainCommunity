@@ -1,4 +1,4 @@
-from models import Sample, Trip
+from models import Sample, Trip, Route
 from django.http import HttpResponse,Http404
 from django.core import serializers
 from django.db.models import Q
@@ -197,18 +197,19 @@ def get_routes_from_db():
 def get_all_routes(req):
     import services
     t1 = time.time()
-    routes = get_routes_from_db()
+    routes = list(Route.objects.all())
     if settings.DEBUG:
         print django.db.connection.queries[-1]
         t2 = time.time()
         print 't2 - t1 = %s' % (t2-t1)
     result = []
     for r in routes:
-        stop_ids = r[0]
+        stop_ids = r.stop_ids
+        count = r.trip_set.count()
         stops = [services.get_stop(sid) for sid in stop_ids]
         result.append(
             {'stops' : stops,
-             'count' : r[1]}
+             'count' : count}
         )
     return json_resp(result)
 import time
