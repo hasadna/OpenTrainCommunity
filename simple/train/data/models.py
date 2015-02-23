@@ -38,6 +38,11 @@ class Sample(models.Model):
     data_file_link = models.URLField(max_length=200) # link to show the snippet of the text file in browser
     trip = models.ForeignKey('Trip',blank=True,null=True)
 
+    def print_nice(self):
+        print '%2d) %-20s %s' % (self.index,
+                           self.stop_name,
+                           self.actual_arrival)
+
     def to_json(self):
         import services
         stop_name = services.get_stop_name(self.stop_id,self.stop_name)
@@ -79,6 +84,11 @@ class Trip(models.Model):
                 'is_to_north' : self.route.is_to_north()
                 }
 
+    def print_nice(self):
+        samples = self.sample_set.all().order_by('index')
+        for sample in samples:
+            sample.print_nice()
+
 class Route(models.Model):
     stop_ids = IntegerArrayField(db_index=True,unique=True)
     def is_to_north(self):
@@ -87,4 +97,7 @@ class Route(models.Model):
         last_stop = services.get_stop(self.stop_ids[-1])
         return first_stop['latlon'][0] < last_stop['latlon'][0]
 
-
+    def print_nice(self):
+        import services
+        for idx,stop_id in enumerate(self.stop_ids):
+            print '%2d %s' % (idx,services.get_stop_name(stop_id))

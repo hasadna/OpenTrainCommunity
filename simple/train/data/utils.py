@@ -105,7 +105,7 @@ def build_current_routes(csv_file):
         tuple_stop_ids = tuple(stop_ids)
         if tuple_stop_ids in found_routes:
             route_id = found_routes[tuple_stop_ids]
-            route_id_by_trip[trip_name] = r.id
+            route_id_by_trip[trip_name] = route_id
         else:
             r,_ = Route.objects.get_or_create(stop_ids=stop_ids)
             route_id_by_trip[trip_name] = r.id

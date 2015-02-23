@@ -15,12 +15,12 @@ def read_json():
             stop['stop_id'] = stop['gtfs_stop_id']
             STOPS[stop['stop_id']] = stop
 
-def get_stop_name(stop_id,defval):
+def get_stop_name(stop_id,defval=None):
     global STOPS
     read_json()
     if stop_id in STOPS:
         return STOPS[stop_id]['stop_name']
-    return defval
+    return defval or unicode(stop_id)
 
 def get_stops():
     read_json()

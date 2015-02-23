@@ -18,7 +18,7 @@ CSV_FILES = ['parser/output/01_2013.csv',
 
 def main():
     for csv in CSV_FILES:
-        res = os.system('python manage.py gensql %s' % csv)
+        res = os.system('python manage.py parsecsv %s' % csv)
         assert res == 0,'Failed in command'
 
 if __name__ == '__main__':

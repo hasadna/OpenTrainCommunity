@@ -277,20 +277,48 @@ def find_all_routes_with_stops(stop_ids):
     return result
 
 def get_path_info2(req):
+    #import pdb
+    #pdb.set_trace()
     stop_ids = [int(s) for s in req.GET['stop_ids'].split(',')]
     # find all routes whose contains these stop ids
     routes = find_all_routes_with_stops(stop_ids)
     trips = []
     for r in routes:
         trips.extend(list(r.trip_set.all()))
-    
+    print len(trips)
+    stats = []
+    for stop_id in stop_ids:
+        from django.db.models import Avg,Count
+        qr = Sample.objects.filter(valid=True,trip__in=trips).filter(stop_id=stop_id).aggregate(
+            Avg('delay_departure'),
+            Avg('delay_arrival'),
+            Count(delay_departure__ge=120)
+        )
+        print qr
+        stat = dict()
+        stat['stop_id'] = stop_id
+        stat['departure_avg_delay'] = qr['delay_departure__avg']
+        stat['arrival_avg_delay'] = qr['delay_arrival__avg']
+        stat['arrival_on_time'] = qr['arrival_on_time__count']
+        stats.append(stat)
+    return json_resp(stats)
+
 
 
 def get_path_info(req):
     import services
 
     stop_ids = [int(s) for s in req.GET['stop_ids'].split(',')]
+    # find all routes whose contains these stop ids
+    routes = find_all_routes_with_stops(stop_ids)
+    trips = []
+    for r in routes:
+        trips.extend(list(r.trip_set.all()))
+
+
+    stop_ids = [int(s) for s in req.GET['stop_ids'].split(',')]
     stop_ids_str = ','.join(str(stop_id) for stop_id in stop_ids)
+    trip_ids = [trip.id for trip in trips]
 
     cursor =  django.db.connection.cursor();
     cursor.execute('''
@@ -307,13 +335,12 @@ def get_path_info(req):
                 avg(case when delay_departure >= 120 and delay_departure < 300 then 1.0 else 0.0 end)::float as departure_short_delay_pct,
                 avg(case when delay_departure >= 300 then 1.0 else 0.0 end)::float as departure_long_delay_pct
 
-        FROM    data_sample as s INNER JOIN data_trip as t ON s.trip_id = t.id
+        FROM    data_sample as s
         WHERE   s.stop_id = ANY (%(stop_ids)s)
         AND     s.valid
-        AND     t.stop_ids @> %(stop_ids)s
-        AND     position(%(stop_ids_str)s in array_to_string(t.stop_ids, ',')) > 0
+        AND     s.trip_id = ANY (%(trip_ids)s)
         GROUP BY s.stop_id
-    ''', { 'stop_ids': stop_ids, 'stop_ids_str': stop_ids_str })
+    ''', { 'stop_ids': stop_ids, 'trip_ids': trip_ids })
 
     cols = [
         'stop_id',

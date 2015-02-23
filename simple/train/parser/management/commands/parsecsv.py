@@ -3,7 +3,7 @@ import data.utils
 
 class Command(BaseCommand):
     args = ''
-    help = 'gen sql'
+    help = 'parse csv'
 
     def handle(self, *args, **options):
         if not args:
