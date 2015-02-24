@@ -313,7 +313,7 @@ def get_path_info(req):
     routes = find_all_routes_with_stops(stop_ids)
     trips = []
     for r in routes:
-        trips.extend(list(r.trip_set.all()))
+        trips.extend(list(r.trip_set.filter(valid=True)))
 
 
     stop_ids = [int(s) for s in req.GET['stop_ids'].split(',')]
