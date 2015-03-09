@@ -276,36 +276,30 @@ def find_all_routes_with_stops(stop_ids):
     result = [r for r in routes if contains_stops(r,stop_ids)]
     return result
 
-def get_path_info2(req):
-    #import pdb
-    #pdb.set_trace()
-    stop_ids = [int(s) for s in req.GET['stop_ids'].split(',')]
-    # find all routes whose contains these stop ids
-    routes = find_all_routes_with_stops(stop_ids)
-    trips = []
-    for r in routes:
-        trips.extend(list(r.trip_set.all()))
-    print len(trips)
-    stats = []
-    for stop_id in stop_ids:
-        from django.db.models import Avg,Count
-        qr = Sample.objects.filter(valid=True,trip__in=trips).filter(stop_id=stop_id).aggregate(
-            Avg('delay_departure'),
-            Avg('delay_arrival'),
-            Count(delay_departure__ge=120)
-        )
-        print qr
-        stat = dict()
-        stat['stop_id'] = stop_id
-        stat['departure_avg_delay'] = qr['delay_departure__avg']
-        stat['arrival_avg_delay'] = qr['delay_arrival__avg']
-        stat['arrival_on_time'] = qr['arrival_on_time__count']
-        stats.append(stat)
-    return json_resp(stats)
+
+WEEK_DAYS = [1,2,3,4,5,6,7]
+HOURS = [(4,7),
+    (7,9),
+    (9,12),
+    (12,15),
+    (15,18),
+    (18,21),
+    (21,24),
+    (24,28),
+]
+
+def _check_hours():
+    for idx,(h1,h2) in enumerate(HOURS):
+        assert isinstance(h1,int)
+        assert isinstance(h2,int)
+        if idx > 0:
+            assert h1 == HOURS[idx-1][1]
+
+_check_hours()
 
 
 
-def get_path_info(req):
+def get_path_info(req,):
     import services
 
     stop_ids = [int(s) for s in req.GET['stop_ids'].split(',')]
@@ -317,12 +311,28 @@ def get_path_info(req):
 
 
     stop_ids = [int(s) for s in req.GET['stop_ids'].split(',')]
-    stop_ids_str = ','.join(str(stop_id) for stop_id in stop_ids)
-    trip_ids = [trip.id for trip in trips]
+    stats = []
+    for week_day in WEEK_DAYS + ['all']:
+        for hours in HOURS + ['all']:
+            stat = _get_path_info_partial(stop_ids,
+                                                routes=routes,
+                                                trips=trips,
+                                                week_day=week_day,
+                                                hours=hours)
+            stats.append(stat)
 
+    return json_resp(stats)
+
+def _get_path_info_partial(stop_ids, routes, trips, week_day, hours):
+    assert 1 <= week_day <=7 or week_day == 'all'
     early_threshold = -120
     late_threshold = 300
-
+    trip_ids = [trip.id for trip in trips]
+    if week_day != 'all':
+        relevant_trips = Trip.objects.filter(id__in=trip_ids,start_date__week_day=week_day)
+    else:
+        relevant_trips = trips
+    relevant_trip_ids = [t.id for t in relevant_trips]
     cursor =  django.db.connection.cursor();
     cursor.execute('''
         SELECT  s.stop_id as stop_id,
@@ -343,7 +353,7 @@ def get_path_info(req):
         'early_threshold': early_threshold,
         'late_threshold': late_threshold,
         'stop_ids': stop_ids,
-        'trip_ids': trip_ids
+        'trip_ids': relevant_trip_ids
     })
 
     cols = [
@@ -351,10 +361,17 @@ def get_path_info(req):
         'arrival_early_pct', 'arrival_on_time_pct', 'arrival_late_pct',
         'departure_early_pct', 'departure_on_time_pct', 'departure_late_pct'
     ]
-
     stats_map = {}
     for row in cursor:
         stat = dict(zip(cols, row))
         stats_map[stat['stop_id']] = stat
+    return {
+        'info': {
+            'num_trips': len(relevant_trips),
+            'week_day': week_day,
+            'hours': hours,
+        },
+        'stops': list(stats_map[stop_id] for stop_id in stop_ids)
+    }
 
-    return json_resp(list(stats_map[stop_id] for stop_id in stop_ids))
+
