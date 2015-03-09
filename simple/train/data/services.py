@@ -15,11 +15,11 @@ def read_json():
         stops = json.load(fh)
         for stop in stops:
             stop['stop_id'] = stop['gtfs_stop_id']
+            heb_names = heb_stop_names.HEB_NAMES.get(stop['gtfs_stop_id'],[])
             hn = trans_dict.get(stop['stop_name'])
-            stop['heb_stop_names'] = heb_stop_names.HEB_NAMES.get(stop['gtfs_stop_id'],[])
-            if hn:
-                stop['heb_stop_names'].append(hn)
-
+            if hn and hn not in heb_names:
+                heb_names.append(hn)
+            stop['heb_stop_names'] = heb_names
             STOPS[stop['stop_id']] = stop
 
 
