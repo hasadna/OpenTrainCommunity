@@ -30,45 +30,37 @@
         <table class="table table-striped content">
             <colgroup span="2">
             </colgroup>
-            <colgroup span="5">
+            <colgroup span="3">
             </colgroup>
-            <colgroup span="5">
+            <colgroup span="3">
             </colgroup>
             <thead>
                 <tr class="table-header-primary">
                     <th scope="colgroup" colspan="2">תחנות</th>
-                    <th scope="colgroup" colspan="5">הגעה לתחנה</th>
-                    <th scope="colgroup" colspan="5">יציאה מהתחנה</th>
+                    <th scope="colgroup" colspan="3">הגעה לתחנה</th>
+                    <th scope="colgroup" colspan="3">יציאה מהתחנה</th>
                 </tr>
                 <tr class="table-header-secondary">
                     <th></th>
                     <th></th>
-                    <th>איחור ממוצע</th>
-                    <th tooltip="הגעה לפני הזמן המתוכנן" tooltip-append-to-body="true">
+                    <th tooltip="הגעה יותר מ-2 דקות לפני הזמן המתוכנן" tooltip-append-to-body="true">
                         הגעה מוקדמת
                     </th>
-                    <th tooltip="הגעה עד 2 דקות אחרי הזמן המתוכנן" tooltip-append-to-body="true">
+                    <th tooltip="הגעה עד 5 דקות אחרי הזמן המתוכנן" tooltip-append-to-body="true">
                         הגעה בזמן
                     </th>
-                    <th tooltip="הגעה בין 2 ל-5 דקות אחרי הזמן המתוכנן" tooltip-append-to-body="true">
-                        איחור קל
-                    </th>
                     <th tooltip="הגעה מעבר ל-5 דקות אחרי הזמן המתוכנן" tooltip-append-to-body="true">
-                        איחור כבד
+                        הגעה באיחור
                     </th>
 
-                    <th>איחור ממוצע</th>
-                    <th tooltip="יציאה לפני הזמן המתוכנן" tooltip-append-to-body="true">
+                    <th tooltip="יציאה יותר מ-2 דקות לפני הזמן המתוכנן" tooltip-append-to-body="true">
                         יציאה מוקדמת
                     </th>
-                    <th tooltip="יציאה עד 2 דקות אחרי הזמן המתוכנן" tooltip-append-to-body="true">
+                    <th tooltip="יציאה עד 5 דקות אחרי הזמן המתוכנן" tooltip-append-to-body="true">
                         יציאה בזמן
                     </th>
-                    <th tooltip="יציאה בין 2 ל-5 דקות אחרי הזמן המתוכנן" tooltip-append-to-body="true">
-                        איחור קל
-                    </th>
                     <th tooltip="יציאה מעבר ל-5 דקות אחרי הזמן המתוכנן" tooltip-append-to-body="true">
-                        איחור כבד
+                        יציאה באיחור
                     </th>
                 </tr>
             </thead>
@@ -82,18 +74,13 @@
                     </td>
                     <th class="stop-name">{{ stopName(stat.stop_id) }}</th>
 
-                    <td><span class="duration">{{ stat.arrival_avg_delay | duration }}</span></td>
                     <td><rex-percent-bar value="stat.arrival_early_pct" type="'info'"></rex-percent-bar></td>
                     <td><rex-percent-bar value="stat.arrival_on_time_pct" type="'success'"></rex-percent-bar></td>
-                    <td><rex-percent-bar value="stat.arrival_short_delay_pct" type="'warning'"></rex-percent-bar></td>
-                    <td><rex-percent-bar value="stat.arrival_long_delay_pct" type="'danger'"></rex-percent-bar></td>
+                    <td><rex-percent-bar value="stat.arrival_late_pct" type="'warning'"></rex-percent-bar></td>
 
-                    <td><span class="duration">{{ stat.departure_avg_delay | duration }}</span></td>
                     <td><rex-percent-bar value="stat.departure_early_pct" type="'info'"></rex-percent-bar></td>
                     <td><rex-percent-bar value="stat.departure_on_time_pct" type="'success'"></rex-percent-bar></td>
-                    <td><rex-percent-bar value="stat.departure_short_delay_pct" type="'warning'"></rex-percent-bar></td>
-                    <td><rex-percent-bar value="stat.departure_long_delay_pct" type="'danger'"></rex-percent-bar></td>
-
+                    <td><rex-percent-bar value="stat.departure_late_pct" type="'warning'"></rex-percent-bar></td>
                 </tr>
             </tbody>
         </table>

@@ -39,7 +39,7 @@ INSTALLED_APPS = (
     'django_extensions',
     'train',
     'data',
-    'parser',
+    'csvparser',
     'corsheaders'
 )
 
