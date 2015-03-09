@@ -61,7 +61,7 @@ function($scope, $location, Layout) {
         if (!stop)
             return null;
 
-        return stop.shortName;
+        return stop.name;
     };
 
     $scope.goToRoutes = function() {
@@ -81,7 +81,7 @@ function($scope, $location, $route, Layout) {
         if (!stop)
             return null;
 
-        return stop.shortName;
+        return stop.name;
     };
 
     $scope.barWidth = function(route) {
@@ -141,7 +141,7 @@ function($scope, $route, $http, Layout) {
         if (!stop)
             return null;
 
-            return stop.shortName;
+            return stop.name;
     }
 }]);
 
