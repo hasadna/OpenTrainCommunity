@@ -3,18 +3,32 @@ var app = angular.module('RouteExplorer', ['ngRoute', 'ui.bootstrap', 'ui.bootst
 
 app.config(['$routeProvider',
 function($routeProvider) {
+
+    var templateUrl = function(templateName) {
+        return baseDir + '/tpls/' + templateName + '.html';
+    };
+
     $routeProvider
         .when('/', {
-            templateUrl: baseDir + '/tpls/SelectRoute.html',
-            controller: 'SelectRouteController',
+            templateUrl: templateUrl('SelectStops'),
+            controller: 'SelectStopsController',
             resolve: {
                 loaded: function(Layout) {
                     return Layout.loaded;
                 }
             }
         })
+        .when('/select-route/:origin/:destination', {
+            templateUrl: templateUrl('SelectRoute'),
+            controller: 'SelectRouteController',
+            resolve: {
+                loaded: function(Layout) {
+                return Layout.loaded;
+                }
+            }
+        })
         .when('/route-details/:stop_ids', {
-            templateUrl: baseDir + '/tpls/RouteDetails.html',
+            templateUrl: templateUrl('RouteDetails'),
             controller: 'RouteDetailsController',
             resolve: {
                 loaded: function(Layout) {
@@ -27,19 +41,40 @@ function($routeProvider) {
         });
 }]);
 
-app.controller('SelectRouteController', ['$scope', '$location', 'Layout',
+
+app.controller('SelectStopsController', ['$scope', '$location', 'Layout',
 function($scope, $location, Layout) {
     $scope.stops = Layout.getStops();
     $scope.origin = null;
     $scope.destination = null;
 
-    $scope.stopsSelected = function() {
+    $scope.formValid = function() {
         return (
             !!$scope.origin &&
             !!$scope.destination &&
             $scope.origin != $scope.destination
         );
     };
+
+    $scope.stopName = function(stopId) {
+        var stop = Layout.findStop(stopId);
+        if (!stop)
+            return null;
+
+        return stop.shortName;
+    };
+
+    $scope.goToRoutes = function() {
+        $location.path('/select-route/' + $scope.origin.id + '/' + $scope.destination.id)
+    }
+}]);
+
+app.controller('SelectRouteController', ['$scope', '$location', '$route', 'Layout',
+function($scope, $location, $route, Layout) {
+    $scope.stops = Layout.getStops();
+    var origin = Layout.findStop($route.current.params['origin']);
+    var destination = Layout.findStop($route.current.params['destination']);
+    $scope.routes = Layout.findRoutes(origin.id, destination.id);
 
     $scope.stopName = function(stopId) {
         var stop = Layout.findStop(stopId);
@@ -61,20 +96,6 @@ function($scope, $location, Layout) {
     $scope.goToRouteDetails = function(route) {
         $location.path('/route-details/' + route.stops.join(','));
     };
-
-    $scope.$watch('origin', updateMatchingRoutes);
-    $scope.$watch('destination', updateMatchingRoutes);
-
-    function updateMatchingRoutes() {
-        $scope.routes = findMatchingRoutes();
-    }
-
-    function findMatchingRoutes() {
-        if (!$scope.stopsSelected())
-            return null;
-
-        return Layout.findRoutes($scope.origin.id, $scope.destination.id);
-    }
 }]);
 
 app.controller('RouteDetailsController', ['$scope', '$route', '$http', 'Layout',
