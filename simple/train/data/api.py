@@ -320,32 +320,38 @@ def get_path_info(req):
     stop_ids_str = ','.join(str(stop_id) for stop_id in stop_ids)
     trip_ids = [trip.id for trip in trips]
 
+    early_threshold = -120
+    late_threshold = 300
+
     cursor =  django.db.connection.cursor();
     cursor.execute('''
         SELECT  s.stop_id as stop_id,
                 avg(coalesce(delay_arrival, 0.0)) as arrival_avg_delay,
-                avg(case when delay_arrival < 0 then 1.0 else 0.0 end)::float as arrival_early_pct,
-                avg(case when delay_arrival >= 0 and delay_arrival < 120 then 1.0 else 0.0 end)::float as arrival_on_time_pct,
-                avg(case when delay_arrival >= 120 and delay_arrival < 300 then 1.0 else 0.0 end)::float as arrival_short_delay_pct,
-                avg(case when delay_arrival >= 300 then 1.0 else 0.0 end)::float as arrival_long_delay_pct,
+                avg(case when delay_arrival <= %(early_threshold)s then 1.0 else 0.0 end)::float as arrival_early_pct,
+                avg(case when delay_arrival > %(early_threshold)s and delay_arrival < %(late_threshold)s then 1.0 else 0.0 end)::float as arrival_on_time_pct,
+                avg(case when delay_arrival >= %(late_threshold)s then 1.0 else 0.0 end)::float as arrival_late_pct,
 
                 avg(coalesce(delay_departure, 0.0)) as departure_avg_delay,
-                avg(case when delay_departure < 0 then 1.0 else 0.0 end)::float as departure_early_pct,
-                avg(case when delay_departure >= 0 and delay_departure < 120 then 1.0 else 0.0 end)::float as departure_on_time_pct,
-                avg(case when delay_departure >= 120 and delay_departure < 300 then 1.0 else 0.0 end)::float as departure_short_delay_pct,
-                avg(case when delay_departure >= 300 then 1.0 else 0.0 end)::float as departure_long_delay_pct
+                avg(case when delay_departure <= %(early_threshold)s then 1.0 else 0.0 end)::float as departure_early_pct,
+                avg(case when delay_departure > %(early_threshold)s and delay_departure < %(late_threshold)s then 1.0 else 0.0 end)::float as departure_on_time_pct,
+                avg(case when delay_departure >= %(late_threshold)s then 1.0 else 0.0 end)::float as departure_late_pct
 
         FROM    data_sample as s
         WHERE   s.stop_id = ANY (%(stop_ids)s)
         AND     s.valid
         AND     s.trip_id = ANY (%(trip_ids)s)
         GROUP BY s.stop_id
-    ''', { 'stop_ids': stop_ids, 'trip_ids': trip_ids })
+    ''', {
+        'early_threshold': early_threshold,
+        'late_threshold': late_threshold,
+        'stop_ids': stop_ids,
+        'trip_ids': trip_ids
+    })
 
     cols = [
         'stop_id',
-        'arrival_avg_delay', 'arrival_early_pct', 'arrival_on_time_pct', 'arrival_short_delay_pct', 'arrival_long_delay_pct',
-        'departure_avg_delay', 'departure_early_pct', 'departure_on_time_pct', 'departure_short_delay_pct', 'departure_long_delay_pct'
+        'arrival_avg_delay', 'arrival_early_pct', 'arrival_on_time_pct', 'arrival_late_pct',
+        'departure_avg_delay', 'departure_early_pct', 'departure_on_time_pct', 'departure_late_pct'
     ]
 
     stats_map = {}
