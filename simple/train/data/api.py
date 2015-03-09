@@ -326,12 +326,10 @@ def get_path_info(req):
     cursor =  django.db.connection.cursor();
     cursor.execute('''
         SELECT  s.stop_id as stop_id,
-                avg(coalesce(delay_arrival, 0.0)) as arrival_avg_delay,
                 avg(case when delay_arrival <= %(early_threshold)s then 1.0 else 0.0 end)::float as arrival_early_pct,
                 avg(case when delay_arrival > %(early_threshold)s and delay_arrival < %(late_threshold)s then 1.0 else 0.0 end)::float as arrival_on_time_pct,
                 avg(case when delay_arrival >= %(late_threshold)s then 1.0 else 0.0 end)::float as arrival_late_pct,
 
-                avg(coalesce(delay_departure, 0.0)) as departure_avg_delay,
                 avg(case when delay_departure <= %(early_threshold)s then 1.0 else 0.0 end)::float as departure_early_pct,
                 avg(case when delay_departure > %(early_threshold)s and delay_departure < %(late_threshold)s then 1.0 else 0.0 end)::float as departure_on_time_pct,
                 avg(case when delay_departure >= %(late_threshold)s then 1.0 else 0.0 end)::float as departure_late_pct
@@ -350,8 +348,8 @@ def get_path_info(req):
 
     cols = [
         'stop_id',
-        'arrival_avg_delay', 'arrival_early_pct', 'arrival_on_time_pct', 'arrival_late_pct',
-        'departure_avg_delay', 'departure_early_pct', 'departure_on_time_pct', 'departure_late_pct'
+        'arrival_early_pct', 'arrival_on_time_pct', 'arrival_late_pct',
+        'departure_early_pct', 'departure_on_time_pct', 'departure_late_pct'
     ]
 
     stats_map = {}

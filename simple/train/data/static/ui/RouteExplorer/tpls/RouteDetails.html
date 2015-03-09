@@ -30,20 +30,19 @@
         <table class="table table-striped content">
             <colgroup span="2">
             </colgroup>
-            <colgroup span="4">
+            <colgroup span="3">
             </colgroup>
-            <colgroup span="4">
+            <colgroup span="3">
             </colgroup>
             <thead>
                 <tr class="table-header-primary">
                     <th scope="colgroup" colspan="2">תחנות</th>
-                    <th scope="colgroup" colspan="4">הגעה לתחנה</th>
-                    <th scope="colgroup" colspan="4">יציאה מהתחנה</th>
+                    <th scope="colgroup" colspan="3">הגעה לתחנה</th>
+                    <th scope="colgroup" colspan="3">יציאה מהתחנה</th>
                 </tr>
                 <tr class="table-header-secondary">
                     <th></th>
                     <th></th>
-                    <th>איחור ממוצע</th>
                     <th tooltip="הגעה יותר מ-2 דקות לפני הזמן המתוכנן" tooltip-append-to-body="true">
                         הגעה מוקדמת
                     </th>
@@ -54,7 +53,6 @@
                         הגעה באיחור
                     </th>
 
-                    <th>איחור ממוצע</th>
                     <th tooltip="יציאה יותר מ-2 דקות לפני הזמן המתוכנן" tooltip-append-to-body="true">
                         יציאה מוקדמת
                     </th>
@@ -76,12 +74,10 @@
                     </td>
                     <th class="stop-name">{{ stopName(stat.stop_id) }}</th>
 
-                    <td><span class="duration">{{ stat.arrival_avg_delay | duration }}</span></td>
                     <td><rex-percent-bar value="stat.arrival_early_pct" type="'info'"></rex-percent-bar></td>
                     <td><rex-percent-bar value="stat.arrival_on_time_pct" type="'success'"></rex-percent-bar></td>
                     <td><rex-percent-bar value="stat.arrival_late_pct" type="'warning'"></rex-percent-bar></td>
 
-                    <td><span class="duration">{{ stat.departure_avg_delay | duration }}</span></td>
                     <td><rex-percent-bar value="stat.departure_early_pct" type="'info'"></rex-percent-bar></td>
                     <td><rex-percent-bar value="stat.departure_on_time_pct" type="'success'"></rex-percent-bar></td>
                     <td><rex-percent-bar value="stat.departure_late_pct" type="'warning'"></rex-percent-bar></td>
