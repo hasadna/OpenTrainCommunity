@@ -47,7 +47,7 @@ def csv_to_dicts(csv_file):
 
 def read_translations():
     trans_he = dict()
-    rows = csv_to_dicts('data/translations.txt')
+    rows = csv_to_dicts(os.path.join(settings.BASE_DIR,'data/translations.txt'))
     for row in rows:
         if row['lang'] == 'HE':
             trans_he[row['trans_id']] = row['translation']
