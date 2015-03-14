@@ -298,10 +298,22 @@ def _check_hours():
 _check_hours()
 
 
+def get_path_info(req):
+    stop_ids = [int(s) for s in req.GET['stop_ids'].split(',')]
+    routes = find_all_routes_with_stops(stop_ids)
+    trips = []
+    for r in routes:
+        trips.extend(list(r.trip_set.filter(valid=True)))
+    stat = _get_path_info_partial(stop_ids,
+                                                routes=routes,
+                                                trips=trips,
+                                                week_day='all',
+                                                hours='all')
 
-def get_path_info(req,):
-    import services
+    return json_resp(stat['stops'])
 
+
+def get_path_info_full(req):
     stop_ids = [int(s) for s in req.GET['stop_ids'].split(',')]
     # find all routes whose contains these stop ids
     routes = find_all_routes_with_stops(stop_ids)
@@ -310,7 +322,6 @@ def get_path_info(req,):
         trips.extend(list(r.trip_set.filter(valid=True)))
 
 
-    stop_ids = [int(s) for s in req.GET['stop_ids'].split(',')]
     stats = []
     for week_day in WEEK_DAYS + ['all']:
         for hours in HOURS + ['all']:
