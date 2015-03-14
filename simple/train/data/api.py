@@ -373,18 +373,18 @@ def _get_path_info_partial(stop_ids, routes, all_trips, week_day, hours):
     cursor = django.db.connection.cursor();
     first_stop_id = stop_ids[0]
     if hours != 'all':
+        # find the trips that the first stop_id ***exp*** departure in between the hours range ***
         qs = Sample.objects.filter(trip_id__in=trip_ids,
                                    stop_id=first_stop_id)
         hour_or_query = None
-        for hour in range(hours):
-            if hour_or_query:
-                hour_or_query = Q(actual_departure__hour=hour)
+        for hour in range(*hours):
+            if hour_or_query is None:
+                hour_or_query = Q(exp_departure__hour=hour)
             else:
-                hour_or_query = hour_or_query | Q(actual_departure__hour=hour)
+                hour_or_query = hour_or_query | Q(exp_departure__hour=hour)
         qs = qs.filter(hour_or_query)
-        import pdb
-        pdb.set_trace()
-
+        trip_ids = list(qs.values_list('trip_id',flat=True))
+        trips = [t for t in  trips if t.id in trip_ids]
 
     cursor.execute('''
         SELECT  s.stop_id as stop_id,
@@ -419,11 +419,11 @@ def _get_path_info_partial(stop_ids, routes, all_trips, week_day, hours):
         stats_map[stat['stop_id']] = stat
     return {
         'info': {
-            'num_trips': len(relevant_trips),
+            'num_trips': len(trips),
             'week_day': week_day,
             'hours': hours,
         },
-        'stops': list(stats_map[stop_id] for stop_id in stop_ids)
+        'stops': list(stats_map.get(stop_id,{}) for stop_id in stop_ids)
     }
 
 
