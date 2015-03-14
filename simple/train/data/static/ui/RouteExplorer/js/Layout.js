@@ -9,7 +9,7 @@ function($http, $q) {
     var loaded = $q.all([
         $http.get('/api/stops')
             .success(function(data) {
-                stops = data.map(function(s) { return { id: s.stop_id, name: s.stop_name, shortName: s.stop_short_name }; });
+                stops = data.map(function(s) { return { id: s.stop_id, name: s.heb_stop_names[0], names: s.heb_stop_names }; });
                 stops.forEach(function(s) { stopsMap[s.id] = s; });
             }),
 

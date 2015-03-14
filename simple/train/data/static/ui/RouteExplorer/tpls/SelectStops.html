@@ -1,0 +1,19 @@
+<div class="select-stops-page">
+    <h1>בחר מוצא ויעד</h3>
+    <div class="container">
+        <form ng-submit="goToRoutes()">
+            <div class="row">
+                <input ng-model="origin" name="origin" class="form-control" type="text" placeholder="מוצא"
+                    typeahead="stop as stop.name for stop in stops | filter:$viewValue" typeahead-editable="false" />
+            </div>
+            <div class="row">
+                <input ng-model="destination" name="destination" class="form-control" type="text" placeholder="יעד"
+                    typeahead="stop as stop.name for stop in stops | filter:$viewValue" typeahead-editable="false" />
+            </div>
+            <div class="row">
+                <button type="submit" class="btn btn-primary" ng-disabled="!formValid()">סע</input>
+            </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -7526,36 +7526,36 @@ h1 {
 .paths tbody > tr {
   cursor: pointer; }
 
-.route-details .days-container {
+.route-details-page .days-container {
   margin-bottom: 20px; }
-.route-details .times-container .btn > .btn-text {
+.route-details-page .times-container .btn > .btn-text {
   min-height: 30px; }
-.route-details table thead th {
+.route-details-page table thead th {
   font-weight: normal; }
-.route-details table tr.table-header-primary th {
+.route-details-page table tr.table-header-primary th {
   font-size: 15pt;
   text-align: center; }
-.route-details table tr.table-header-secondary th {
+.route-details-page table tr.table-header-secondary th {
   font-size: 9pt; }
-.route-details table colgroup {
+.route-details-page table colgroup {
   border-right: 2px solid #C4C9D0; }
-  .route-details table colgroup:first-child {
+  .route-details-page table colgroup:first-child {
     border-right: none; }
-.route-details table tbody th {
+.route-details-page table tbody th {
   font-size: 9pt; }
-.route-details table tbody td {
+.route-details-page table tbody td {
   font-size: 10pt; }
-.route-details table tbody th, .route-details table tbody td {
+.route-details-page table tbody th, .route-details-page table tbody td {
   vertical-align: middle; }
-.route-details table td, .route-details table th {
+.route-details-page table td, .route-details-page table th {
   text-align: center; }
-  .route-details table td.stop-name, .route-details table td.stop-diagram, .route-details table th.stop-name, .route-details table th.stop-diagram {
+  .route-details-page table td.stop-name, .route-details-page table td.stop-diagram, .route-details-page table th.stop-name, .route-details-page table th.stop-diagram {
     text-align: right; }
-.route-details table .progress-inline {
+.route-details-page table .progress-inline {
   width: 115px;
   height: 15px;
   position: relative; }
-  .route-details table .progress-inline .progress-value {
+  .route-details-page table .progress-inline .progress-value {
     display: block;
     position: absolute;
     left: 2px;
