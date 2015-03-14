@@ -378,10 +378,11 @@ def _get_path_info_partial(stop_ids, routes, all_trips, week_day, hours):
                                    stop_id=first_stop_id)
         hour_or_query = None
         for hour in range(*hours):
+            new_query = Q(exp_departure__hour=(hour%24))
             if hour_or_query is None:
-                hour_or_query = Q(exp_departure__hour=hour)
+                hour_or_query = new_query
             else:
-                hour_or_query = hour_or_query | Q(exp_departure__hour=hour)
+                hour_or_query = hour_or_query | new_query
         qs = qs.filter(hour_or_query)
         trip_ids = list(qs.values_list('trip_id',flat=True))
         trips = [t for t in  trips if t.id in trip_ids]
