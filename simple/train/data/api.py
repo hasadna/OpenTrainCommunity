@@ -352,7 +352,7 @@ def get_path_info_full(req):
         for hours in HOURS + ['all']:
             stat = _get_path_info_partial(stop_ids,
                                           routes=routes,
-                                          trips=trips,
+                                          all_trips=trips,
                                           week_day=week_day,
                                           hours=hours)
             stats.append(stat)
