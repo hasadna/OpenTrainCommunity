@@ -208,16 +208,12 @@ def get_routes_from_db():
         routes = c.fetchall()
         return routes
 
-
+@cache_utils.cacheit
 def get_all_routes(req):
     import services
 
     t1 = time.time()
     routes = list(Route.objects.all())
-    if settings.DEBUG:
-        print django.db.connection.queries[-1]
-        t2 = time.time()
-        print 't2 - t1 = %s' % (t2 - t1)
     result = []
     for r in routes:
         stop_ids = r.stop_ids
