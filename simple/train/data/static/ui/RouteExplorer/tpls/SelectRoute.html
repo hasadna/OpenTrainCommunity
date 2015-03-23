@@ -1,30 +1,34 @@
 <div class="select-route-page">
-    <h1>בחר מסלול</h3>
-
-    <div class="container">
-        <h3>מסלולים</h3>
-        <table class="paths table table-striped table-hover">
+    <h3>בחירת מסלול</h3>
+    <div class="container content">
+        <table class="table table-striped table-hover paths-list">
             <cols>
+                <col class="index-col"/>
                 <col class="stops-col"/>
                 <col class="count-col"/>
             </cols>
-            <thead>
-                <th>מסלול</th>
-                <th>נסיעות</th>
+            <thead class="table-header-primary">
+                <th/>
+                <th>מסלולים</th>
+                <th>מספר נסיעות</th>
             </thead>
-            <tr ng-repeat="route in routes" ng-click="goToRouteDetails(route)">
-                <td>
-                    <span class="stop-list">
-                        <span class="stop" ng-repeat="stop in route.stops track by $index">{{ stopName(stop) }} </span>
-                    </span>
-                </td>
-                <td>
-                    <div class="count-bar">
-                        <div class="count-bar-value" ng-style="{ width: barWidth(route) }"></div>
-                        {{ route.count }}
-                    </div>
-                </td>
-            </tr>
+            <tbody>
+                <tr ng-repeat="route in routes" ng-click="goToRouteDetails(route)">
+                    <td class="row-index-cell">
+                        <span class="row-index">{{ $index + 1 | number }}</span>
+                    <td>
+                        <span class="stop-list">
+                            <span class="stop" ng-repeat="stop in route.stops track by $index">{{ stopName(stop) }} </span>
+                        </span>
+                    </td>
+                    <td>
+                        <div class="count-bar">
+                            <div class="count-bar-value" ng-style="{ width: barWidth(route) }"></div>
+                            {{ route.count | number }}
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
         </table>
     </div>
 </div>
