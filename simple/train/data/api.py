@@ -8,8 +8,10 @@ from collections import Counter
 from django.conf import settings
 import cache_utils
 
+
 def json_resp(obj, status=200):
     import json
+
     dumped_content = json.dumps(obj)
     return HttpResponse(content=dumped_content, content_type='application/json')
 
@@ -209,6 +211,7 @@ def get_routes_from_db():
         routes = c.fetchall()
         return routes
 
+
 @cache_utils.cacheit
 def get_all_routes(req):
     import services
@@ -238,7 +241,7 @@ def fill_stop_info(stop, stop_ids):
                                          stop_id=stop['gtfs_stop_id'],
                                          valid=True).values('delay_arrival', 'delay_departure'))
     # print django.db.connection.queries[-1]
-    #print len(samples)
+    # print len(samples)
     t4 = time.time()
     print 't4 - t3 = %.3f' % (t4 - t3)
     samples_len = float(len(samples))
@@ -376,14 +379,14 @@ def _get_path_info_partial(stop_ids, routes, all_trips, week_day, hours):
                                    stop_id=first_stop_id)
         hour_or_query = None
         for hour in range(*hours):
-            new_query = Q(exp_departure__hour=(hour%24))
+            new_query = Q(exp_departure__hour=(hour % 24))
             if hour_or_query is None:
                 hour_or_query = new_query
             else:
                 hour_or_query = hour_or_query | new_query
         qs = qs.filter(hour_or_query)
-        trip_ids = list(qs.values_list('trip_id',flat=True))
-        trips = [t for t in  trips if t.id in trip_ids]
+        trip_ids = list(qs.values_list('trip_id', flat=True))
+        trips = [t for t in trips if t.id in trip_ids]
 
     cursor.execute('''
         SELECT  s.stop_id as stop_id,
@@ -422,7 +425,7 @@ def _get_path_info_partial(stop_ids, routes, all_trips, week_day, hours):
             'week_day': week_day,
             'hours': hours,
         },
-        'stops': list(stats_map.get(stop_id,{}) for stop_id in stop_ids)
+        'stops': list(stats_map.get(stop_id, {}) for stop_id in stop_ids)
     }
 
 

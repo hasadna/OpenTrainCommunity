@@ -1,35 +1,33 @@
 try:
     import redis
-    cache_enabled = True
+
+    CACHE_ENABLED = True
     CLIENT = redis.StrictRedis()
-    TTL = 30*24*60*60
+    TTL = 30 * 24 * 60 * 60
 
 except ImportError:
-    cache_enabled = False
+    CACHE_ENABLED = False
 
-print '********* cache_enabled = %s' % cache_enabled
+print '********* cache_enabled = %s' % CACHE_ENABLED
 from django.http import HttpResponse
+
 
 def _build_key(req):
     return req.get_full_path()
 
+
 def cacheit(func):
-    def wrap(req,*args,**kwargs):
-        if cache_enabled:
+    def wrap(req, *args, **kwargs):
+        if CACHE_ENABLED:
             key = _build_key(req)
-            cc = get_cache(key)
+            cc = CLIENT.get(key)
             if cc:
                 print 'Return cached version of %s' % req.get_full_path()
-                return HttpResponse(status=200,content=cc,content_type='application/json')
-        result = func(req,*args,**kwargs)
-        if cache_enabled:
-            set_cache(key,result.content)
+                return HttpResponse(status=200, content=cc, content_type='application/json')
+        result = func(req, *args, **kwargs)
+        if CACHE_ENABLED:
+            CLIENT.setex(key, TTL, result.content)
         return result
+
     return wrap
-
-def get_cache(key):
-    return CLIENT.get(key)
-
-def set_cache(key,content):
-    return CLIENT.setex(key,TTL,content)
 
