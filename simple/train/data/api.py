@@ -29,6 +29,7 @@ def get_departure_hour(sample):
     return make_naive(sample.exp_departure, get_current_timezone()).hour
 
 
+@cache_utils.cacheit
 def get_stops(req):
     import services
 
