@@ -19,7 +19,7 @@ def cacheit(func):
             key = _build_key(req)
             cc = get_cache(key)
             if cc:
-                print 'Cached %s' % req.get_full_path()
+                print 'Return cached version of %s' % req.get_full_path()
                 return HttpResponse(status=200,content=cc,content_type='application/json')
         result = func(req,*args,**kwargs)
         if cache_enabled:
