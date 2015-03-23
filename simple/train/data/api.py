@@ -6,12 +6,12 @@ import itertools, datetime, json
 from django.utils.timezone import make_naive, get_current_timezone
 from collections import Counter
 from django.conf import settings
-
+import cache_utils
 
 def json_resp(obj, status=200):
     import json
-
-    return HttpResponse(content=json.dumps(obj), content_type='application/json')
+    dumped_content = json.dumps(obj)
+    return HttpResponse(content=dumped_content, content_type='application/json')
 
 
 def show_sample(req):
@@ -332,13 +332,14 @@ def get_path_info(req):
         trips.extend(list(r.trip_set.filter(valid=True)))
     stat = _get_path_info_partial(stop_ids,
                                   routes=routes,
-                                  trips=trips,
+                                  all_trips=trips,
                                   week_day='all',
                                   hours='all')
 
     return json_resp(stat['stops'])
 
 
+@cache_utils.cacheit
 def get_path_info_full(req):
     stop_ids = [int(s) for s in req.GET['stop_ids'].split(',')]
     # find all routes whose contains these stop ids
@@ -356,7 +357,6 @@ def get_path_info_full(req):
                                           week_day=week_day,
                                           hours=hours)
             stats.append(stat)
-
     return json_resp(stats)
 
 
