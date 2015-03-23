@@ -2,7 +2,7 @@ try:
     import redis
     cache_enabled = True
     CLIENT = redis.StrictRedis()
-    TTL = 7*24*60*60
+    TTL = 30*24*60*60
 
 except ImportError:
     cache_enabled = False
