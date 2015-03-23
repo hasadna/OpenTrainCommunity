@@ -324,6 +324,7 @@ def _check_hours():
 _check_hours()
 
 
+@cache_utils.cacheit
 def get_path_info(req):
     stop_ids = [int(s) for s in req.GET['stop_ids'].split(',')]
     routes = find_all_routes_with_stops(stop_ids)
