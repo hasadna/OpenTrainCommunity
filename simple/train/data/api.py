@@ -43,14 +43,12 @@ def get_trip(req, trip_id):
 @cache_utils.cacheit
 def get_all_routes(req):
     import services
-
-    t1 = time.time()
     routes = list(Route.objects.all())
     result = []
     for r in routes:
         stop_ids = r.stop_ids
         count = r.trip_set.count()
-        stops = [services.get_stop(sid) for sid in stop_ids]
+        stops = [{'stop_id': stop_id} for stop_id in stop_ids]
         result.append(
             {'stops': stops,
              'count': count}
