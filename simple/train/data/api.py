@@ -104,11 +104,12 @@ def get_path_info(req):
     return json_resp(stat['stops'])
 
 
-USE_THREADING = False
-
-
 @cache_utils.cacheit
 def get_path_info_full(req):
+    if req.GET.get('use_threading',None) is not None:
+        use_threading = bool(int(req.GET['use_threading']))
+    else:
+        use_threading = False
     stop_ids = [int(s) for s in req.GET['stop_ids'].split(',')]
     # find all routes whose contains these stop ids
     routes = find_all_routes_with_stops(stop_ids)
@@ -129,14 +130,14 @@ def get_path_info_full(req):
                           all_trips=trips,
                           week_day=week_day,
                           hours=hours)
-            if USE_THREADING:
+            if use_threading:
                 t = threading.Thread(target=_start_get_path_info_partial,
                                      args=args, kwargs=kwargs)
                 threads.append(t)
                 t.start()
             else:
                 _start_get_path_info_partial(*args, **kwargs)
-    if USE_THREADING:
+    if use_threading:
         for t in threads:
             t.join()
     return json_resp(stats)
