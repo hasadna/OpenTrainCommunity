@@ -42,15 +42,15 @@ def get_trip(req, trip_id):
 
 @cache_utils.cacheit
 def get_all_routes(req):
-    routes = list(Route.objects.all().order_by('id'))
+    from django.db.models import Count
+    routes = list(Route.objects.all().order_by('id').annotate(trips_count=Count('trip')))
     result = []
     for r in routes:
         stop_ids = r.stop_ids
-        count = r.trip_set.count()
         stops = [{'stop_id': stop_id} for stop_id in stop_ids]
         result.append(
             {'stops': stops,
-             'count': count}
+             'count': r.trips_count}
         )
     return json_resp(result)
 
