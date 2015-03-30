@@ -1,39 +1,50 @@
 table.paths-list {
-    > tbody > tr > td.row-index-cell {
-        background-color: $rex-background-color;
-        color: #939599;
-        font-size: 30pt;
-        vertical-align: middle;
-        border: solid transparent;
-        border-width: 2px 5px 2px 2px;
-    }
+    > tbody > tr {
+        cursor: pointer; border: 1px solid #ebedec;
+        background-color: $table-bg-accent;
 
-    > tbody > tr:hover > td.row-index-cell {
-        background-color: $table-bg-hover;
-        color: $rex-accent-color;
-        border-color: #bcbcbc $rex-accent-color #bcbcbc #bcbcbc;
-        @include box-shadow(3px 3px 8px rgba(0, 0, 0, 0.25));
-        position: relative;
+        > td { padding: 40px; }
 
-        :after {
-            $triangle-size: 20px;
-            content: "";
-            display: block;
-            height: $triangle-size; width: $triangle-size;
-            background-color: #fff;
-            border: 2px solid #bcbcbc;
-            border-color: #bcbcbc transparent transparent #bcbcbc;
-            position: absolute;
-            top: 50%;
-            left: 0;
-            margin-top: (-$triangle-size / 2);
-            margin-left: (-$triangle-size / 2);
-            @include rotate(-45deg);
+        > td.row-index-cell {
+            background-color: $rex-background-color;
+            color: #939599;
+            font-size: 30pt;
+            vertical-align: middle;
+        }
+
+        &:hover > td.row-index-cell {
+            $table-highlight-border-color: #bcbcbc;
+
+            background-color: $table-bg-hover;
+            color: $rex-accent-color;
+            @include box-shadow(3px 3px 8px rgba(0, 0, 0, 0.25));
+            position: relative;
+
+            :before {
+                content: "";
+                position: absolute;
+                top: -1px; bottom: -1px; right: -1px; left: -1px;
+                border: 2px solid $table-highlight-border-color;
+                border-right: 5px solid $rex-accent-color;
+            }
+
+            :after {
+                $triangle-size: 20px;
+                content: "";
+                display: block;
+                height: $triangle-size; width: $triangle-size;
+                background-color: #fff;
+                border-width: 2px; border-style: solid;
+                border-color: $table-highlight-border-color transparent transparent $table-highlight-border-color;
+                position: absolute;
+                top: 50%;
+                left: 0;
+                margin-top: (-$triangle-size / 2);
+                margin-left: (-$triangle-size / 2 + 1);
+                @include rotate(-45deg);
+            }
         }
     }
-
-    > tbody > tr > td { padding: 40px; }
-    > tbody > tr { cursor: pointer; border: 1px solid #ebedec; }
 
     .count-bar { width: 100px; height: 5px; }
     .count-bar-value { background-color: #b3b3b3; height: 100%; }
