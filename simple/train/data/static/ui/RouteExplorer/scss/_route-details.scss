@@ -8,14 +8,8 @@
     }
 
     table {
-        $col-border-color: #C4C9D0;
-
-        thead th { font-weight: normal; }
-        tr.table-header-primary th { font-size: 15pt; text-align: center; }
-        tr.table-header-secondary th { font-size: 9pt; }
-
         colgroup {
-            border-right: 2px solid $col-border-color;
+            border-right: 2px solid $table-column-border-color;
             &:first-child { border-right: none; }
         }
 

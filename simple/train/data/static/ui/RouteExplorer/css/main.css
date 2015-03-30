@@ -2244,7 +2244,7 @@ th {
   background-color: #f9f9f9; }
 
 .table-hover > tbody > tr:hover {
-  background-color: #e5e5e5; }
+  background-color: #fff; }
 
 table col[class*="col-"] {
   position: static;
@@ -2267,11 +2267,11 @@ table th[class*="col-"] {
 .table > tfoot > tr > th.active,
 .table > tfoot > tr.active > td,
 .table > tfoot > tr.active > th {
-  background-color: #e5e5e5; }
+  background-color: #fff; }
 
 .table-hover > tbody > tr > td.active:hover,
 .table-hover > tbody > tr > th.active:hover, .table-hover > tbody > tr.active:hover > td, .table-hover > tbody > tr:hover > .active, .table-hover > tbody > tr.active:hover > th {
-  background-color: #d8d8d8; }
+  background-color: #f2f2f2; }
 
 .table > thead > tr > td.success,
 .table > thead > tr > th.success, .table > thead > tr.success > td, .table > thead > tr.success > th,
@@ -7475,19 +7475,23 @@ h1 {
   .btn-group.btn-group-tabs > .btn:last-child {
     border-left: none; }
 
+table.table thead th {
+  font-weight: normal; }
+table.table .table-header-primary th {
+  font-size: 15pt; }
+table.table .table-header-secondary th {
+  font-size: 10pt; }
+
 .stop-list .stop {
   display: inline-block;
-  margin: 2px;
-  padding: 2px 5px;
-  background-color: #337ab7;
-  color: white;
-  border-radius: 5px/50%; }
-  .stop-list .stop:first-child {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0; }
-  .stop-list .stop:last-child {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0; }
+  margin: 5px 3px;
+  padding: 6px 17px;
+  border: 2px solid #d2d2d2;
+  border-radius: 17px;
+  background-color: #e8e9ed;
+  color: #8d8d8d;
+  font-size: 14px;
+  font-weight: bold; }
 
 .stop-diagram {
   position: relative; }
@@ -7517,26 +7521,61 @@ h1 {
   .stop-diagram.stop-diagram-end::before {
     bottom: 8px; }
 
-.paths .count-bar {
+table.paths-list > tbody > tr {
+  cursor: pointer;
+  border: 1px solid #ebedec;
+  background-color: #f9f9f9; }
+  table.paths-list > tbody > tr > td {
+    padding: 40px; }
+  table.paths-list > tbody > tr > td.row-index-cell {
+    background-color: #e8eaed;
+    color: #939599;
+    font-size: 30pt;
+    vertical-align: middle; }
+  table.paths-list > tbody > tr:hover > td.row-index-cell {
+    background-color: #fff;
+    color: #9aca41;
+    -webkit-box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.25);
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.25);
+    position: relative; }
+    table.paths-list > tbody > tr:hover > td.row-index-cell :before {
+      content: "";
+      position: absolute;
+      top: -1px;
+      bottom: -1px;
+      right: -1px;
+      left: -1px;
+      border: 2px solid #bcbcbc;
+      border-right: 5px solid #9aca41; }
+    table.paths-list > tbody > tr:hover > td.row-index-cell :after {
+      content: "";
+      display: block;
+      height: 20px;
+      width: 20px;
+      background-color: #fff;
+      border-width: 2px;
+      border-style: solid;
+      border-color: #bcbcbc transparent transparent #bcbcbc;
+      position: absolute;
+      top: 50%;
+      left: 0;
+      margin-top: -10px;
+      margin-left: -9px;
+      -webkit-transform: rotate(-45deg);
+      -ms-transform: rotate(-45deg);
+      -o-transform: rotate(-45deg);
+      transform: rotate(-45deg); }
+table.paths-list .count-bar {
   width: 100px;
   height: 5px; }
-.paths .count-bar-value {
-  background-color: #337ab7;
+table.paths-list .count-bar-value {
+  background-color: #b3b3b3;
   height: 100%; }
-.paths tbody > tr {
-  cursor: pointer; }
 
 .route-details-page .days-container {
   margin-bottom: 20px; }
 .route-details-page .times-container .btn > .btn-text {
   min-height: 30px; }
-.route-details-page table thead th {
-  font-weight: normal; }
-.route-details-page table tr.table-header-primary th {
-  font-size: 15pt;
-  text-align: center; }
-.route-details-page table tr.table-header-secondary th {
-  font-size: 9pt; }
 .route-details-page table colgroup {
   border-right: 2px solid #C4C9D0; }
   .route-details-page table colgroup:first-child {

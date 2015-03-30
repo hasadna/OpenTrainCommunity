@@ -45,3 +45,10 @@ h1 { margin-bottom: 30px; }
         &:last-child  { border-left: none; }
     }
 }
+
+$table-column-border-color: #C4C9D0;
+table.table {
+    thead th { font-weight: normal; }
+    .table-header-primary th { font-size: 15pt; }
+    .table-header-secondary th { font-size: 10pt; }
+}

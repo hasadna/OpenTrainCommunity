@@ -23,7 +23,7 @@ function($routeProvider) {
             controller: 'SelectRouteController',
             resolve: {
                 loaded: function(Layout) {
-                return Layout.loaded;
+                    return Layout.loaded;
                 }
             }
         })
