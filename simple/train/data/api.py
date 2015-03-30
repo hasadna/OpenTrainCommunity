@@ -3,10 +3,12 @@ from django.http import HttpResponse, Http404
 from django.db.models import Q
 import cache_utils
 import django.db
+import threading
 
 
 def json_resp(obj, status=200):
     import json
+
     dumped_content = json.dumps(obj)
     return HttpResponse(content=dumped_content, content_type='application/json')
 
@@ -32,15 +34,15 @@ def get_trip(req, trip_id):
     return json_resp(trip.to_json());
 
 
-
 @cache_utils.cacheit
 def get_all_routes(req):
     from django.db.models import Count
+
     routes = list(Route.objects.all().order_by('id').annotate(trips_count=Count('trip')))
     result = []
     for r in routes:
-        #stop_ids = r.stop_ids
-        #stops = [{'stop_id': stop_id} for stop_id in stop_ids]
+        # stop_ids = r.stop_ids
+        # stops = [{'stop_id': stop_id} for stop_id in stop_ids]
         result.append(
             {'stop_ids': r.stop_ids,
              'count': r.trips_count}
@@ -102,6 +104,9 @@ def get_path_info(req):
     return json_resp(stat['stops'])
 
 
+USE_THREADING = True
+
+
 @cache_utils.cacheit
 def get_path_info_full(req):
     stop_ids = [int(s) for s in req.GET['stop_ids'].split(',')]
@@ -111,20 +116,39 @@ def get_path_info_full(req):
     for r in routes:
         trips.extend(list(r.trip_set.filter(valid=True)))
 
-    stats = []
-    for week_day in WEEK_DAYS + ['all']:
-        for hours in HOURS + ['all']:
-            stat = _get_path_info_partial(stop_ids,
-                                          routes=routes,
-                                          all_trips=trips,
-                                          week_day=week_day,
-                                          hours=hours)
-            stats.append(stat)
+    threads = []
+    hours_len = len(HOURS) + 1
+    days_len = len(WEEK_DAYS) + 1
+    stats = [None] * hours_len * days_len
+    for idx1, week_day in enumerate(WEEK_DAYS + ['all']):
+        for idx2, hours in enumerate(HOURS + ['all']):
+            index = idx1 * hours_len + idx2
+            args = (stats, index)
+            kwargs = dict(stop_ids=stop_ids,
+                          routes=routes,
+                          all_trips=trips,
+                          week_day=week_day,
+                          hours=hours)
+            if USE_THREADING:
+                t = threading.Thread(target=_start_get_path_info_partial,
+                                     args=args, kwargs=kwargs)
+                threads.append(t)
+                t.start()
+            else:
+                _start_get_path_info_partial(*args, **kwargs)
+    if USE_THREADING:
+        for t in threads:
+            t.join()
     return json_resp(stats)
 
 
+def _start_get_path_info_partial(stats, index, **kwargs):
+    stat = _get_path_info_partial(**kwargs)
+    stats[index] = stat
+
+
 def _get_path_info_partial(stop_ids, routes, all_trips, week_day, hours):
-    assert 1 <= week_day <= 7 or week_day == 'all'
+    assert 1 <= week_day <= 7 or week_day == 'all', 'Illegal week_day %s' % (week_day,)
     early_threshold = -120
     late_threshold = 300
     all_trip_ids = [trip.id for trip in all_trips]
