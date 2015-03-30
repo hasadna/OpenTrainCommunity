@@ -104,7 +104,7 @@ def get_path_info(req):
     return json_resp(stat['stops'])
 
 
-USE_THREADING = True
+USE_THREADING = False
 
 
 @cache_utils.cacheit
