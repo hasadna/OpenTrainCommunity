@@ -1,21 +1,14 @@
 from models import Sample, Trip, Route
 from django.http import HttpResponse, Http404
 from django.db.models import Q
-from django.utils.timezone import make_naive, get_current_timezone
 import cache_utils
-import time
 import django.db
 
 
 def json_resp(obj, status=200):
     import json
-
     dumped_content = json.dumps(obj)
     return HttpResponse(content=dumped_content, content_type='application/json')
-
-
-def get_departure_hour(sample):
-    return make_naive(sample.exp_departure, get_current_timezone()).hour
 
 
 @cache_utils.cacheit
@@ -46,10 +39,10 @@ def get_all_routes(req):
     routes = list(Route.objects.all().order_by('id').annotate(trips_count=Count('trip')))
     result = []
     for r in routes:
-        stop_ids = r.stop_ids
-        stops = [{'stop_id': stop_id} for stop_id in stop_ids]
+        #stop_ids = r.stop_ids
+        #stops = [{'stop_id': stop_id} for stop_id in stop_ids]
         result.append(
-            {'stops': stops,
+            {'stop_ids': r.stop_ids,
              'count': r.trips_count}
         )
     return json_resp(result)

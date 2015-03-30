@@ -16,7 +16,7 @@ function($http, $q) {
         $http.get('/api/all-routes')
             .success(function(data) {
                 routes = data.map(function(r) { return {
-                    stops: r.stops.map(function(s) { return s.stop_id; }),
+                    stops: r.stop_ids, //r.stops.map(function(s) { return s.stop_id; }),
                     count: r.count
                 }});
             })
