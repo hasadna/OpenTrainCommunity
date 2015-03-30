@@ -113,7 +113,6 @@ def get_path_info_full(req):
     for r in routes:
         trips.extend(list(r.trip_set.filter(valid=True)))
 
-    threads = []
     hours_len = len(HOURS) + 1
     days_len = len(WEEK_DAYS) + 1
     stats = [None] * hours_len * days_len
