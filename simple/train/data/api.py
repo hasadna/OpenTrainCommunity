@@ -94,7 +94,8 @@ def get_path_info(req):
     trips = []
     for r in routes:
         trips.extend(list(r.trip_set.filter(valid=True)))
-    stat = _get_path_info_partial(stop_ids,
+    stat = _get_path_info_partial(0,
+                                  stop_ids,
                                   routes=routes,
                                   all_trips=trips,
                                   week_day='all',
@@ -112,28 +113,31 @@ def get_path_info_full(req):
     for r in routes:
         trips.extend(list(r.trip_set.filter(valid=True)))
 
-    hours_len = len(HOURS) + 1
-    days_len = len(WEEK_DAYS) + 1
-    stats = [None] * hours_len * days_len
+    stmts = []
+    stats = []
+    index = 0
     for idx1, week_day in enumerate(WEEK_DAYS + ['all']):
         for idx2, hours in enumerate(HOURS + ['all']):
-            index = idx1 * hours_len + idx2
-            args = (stats, index)
             kwargs = dict(stop_ids=stop_ids,
                           routes=routes,
                           all_trips=trips,
                           week_day=week_day,
                           hours=hours)
-            _start_get_path_info_partial(*args, **kwargs)
+            select_stmt, select_kwargs, info = _get_select_stmt(index,**kwargs)
+            stmts.append((select_stmt, select_kwargs, info))
+            index+=1
+    for select_stmt, select_kwargs, info in stmts:
+        stat = _execute_select_stmt(select_stmt, select_kwargs, info, stop_ids)
+        stats.append(stat)
     return json_resp(stats)
 
 
-def _start_get_path_info_partial(stats, index, **kwargs):
-    stat = _get_path_info_partial(**kwargs)
-    stats[index] = stat
+def _get_path_info_partial(index,stop_ids, routes, all_trips, week_day, hours):
+    select_stmt, select_kwargs, info = _get_select_stmt(index,stop_ids, routes, all_trips, week_day, hours)
+    return _execute_select_stmt(select_stmt, select_kwargs, info, stop_ids)
 
 
-def _get_path_info_partial(stop_ids, routes, all_trips, week_day, hours):
+def _get_select_stmt(index, stop_ids, routes, all_trips, week_day, hours):
     assert 1 <= week_day <= 7 or week_day == 'all', 'Illegal week_day %s' % (week_day,)
     early_threshold = -120
     late_threshold = 300
@@ -143,7 +147,6 @@ def _get_path_info_partial(stop_ids, routes, all_trips, week_day, hours):
     else:
         trips = all_trips
     trip_ids = [t.id for t in trips]
-    cursor = django.db.connection.cursor()
     first_stop_id = stop_ids[0]
     if hours != 'all':
         # find the trips that the first stop_id ***exp*** departure in between the hours range ***
@@ -159,29 +162,40 @@ def _get_path_info_partial(stop_ids, routes, all_trips, week_day, hours):
         qs = qs.filter(hour_or_query)
         trip_ids = list(qs.values_list('trip_id', flat=True))
         trips = [t for t in trips if t.id in trip_ids]
-
-    cursor.execute('''
+    index_prefix = '%s_' % index
+    select_stmt = '''
         SELECT  s.stop_id as stop_id,
-                avg(case when delay_arrival <= %(early_threshold)s then 1.0 else 0.0 end)::float as arrival_early_pct,
-                avg(case when delay_arrival > %(early_threshold)s and delay_arrival < %(late_threshold)s then 1.0 else 0.0 end)::float as arrival_on_time_pct,
-                avg(case when delay_arrival >= %(late_threshold)s then 1.0 else 0.0 end)::float as arrival_late_pct,
+                avg(case when delay_arrival <= %(<index>early_threshold)s then 1.0 else 0.0 end)::float as arrival_early_pct,
+                avg(case when delay_arrival > %(<index>early_threshold)s and delay_arrival < %(<index>late_threshold)s then 1.0 else 0.0 end)::float as arrival_on_time_pct,
+                avg(case when delay_arrival >= %(<index>late_threshold)s then 1.0 else 0.0 end)::float as arrival_late_pct,
 
-                avg(case when delay_departure <= %(early_threshold)s then 1.0 else 0.0 end)::float as departure_early_pct,
-                avg(case when delay_departure > %(early_threshold)s and delay_departure < %(late_threshold)s then 1.0 else 0.0 end)::float as departure_on_time_pct,
-                avg(case when delay_departure >= %(late_threshold)s then 1.0 else 0.0 end)::float as departure_late_pct
+                avg(case when delay_departure <= %(<index>early_threshold)s then 1.0 else 0.0 end)::float as departure_early_pct,
+                avg(case when delay_departure > %(<index>early_threshold)s and delay_departure < %(<index>late_threshold)s then 1.0 else 0.0 end)::float as departure_on_time_pct,
+                avg(case when delay_departure >= %(<index>late_threshold)s then 1.0 else 0.0 end)::float as departure_late_pct
 
         FROM    data_sample as s
-        WHERE   s.stop_id = ANY (%(stop_ids)s)
+        WHERE   s.stop_id = ANY (ARRAY[%(<index>stop_ids)s])
         AND     s.valid
-        AND     s.trip_id = ANY (%(trip_ids)s)
+        AND     s.trip_id = ANY (ARRAY[%(<index>trip_ids)s])
         GROUP BY s.stop_id
-    ''', {
-        'early_threshold': early_threshold,
-        'late_threshold': late_threshold,
-        'stop_ids': stop_ids,
-        'trip_ids': trip_ids
-    })
+    '''.replace('<index>',index_prefix)
+    select_kwargs = {
+        index_prefix + 'early_threshold': early_threshold,
+        index_prefix + 'late_threshold': late_threshold,
+        index_prefix + 'stop_ids': stop_ids,
+        index_prefix + 'trip_ids': trip_ids,
+    }
+    info = {
+        'num_trips': len(trips),
+        'week_day': week_day,
+        'hours': hours,
+    }
+    return select_stmt, select_kwargs, info
 
+
+def _execute_select_stmt(select_stmt, select_kwargs, info, stop_ids):
+    cursor = django.db.connection.cursor()
+    cursor.execute(select_stmt,select_kwargs)
     cols = [
         'stop_id',
         'arrival_early_pct', 'arrival_on_time_pct', 'arrival_late_pct',
@@ -192,11 +206,7 @@ def _get_path_info_partial(stop_ids, routes, all_trips, week_day, hours):
         stat = dict(zip(cols, row))
         stats_map[stat['stop_id']] = stat
     return {
-        'info': {
-            'num_trips': len(trips),
-            'week_day': week_day,
-            'hours': hours,
-        },
+        'info': info,
         'stops': list(stats_map.get(stop_id, {}) for stop_id in stop_ids)
     }
 
