@@ -3,7 +3,6 @@ from django.http import HttpResponse, Http404
 from django.db.models import Q
 import cache_utils
 import django.db
-import threading
 
 
 def json_resp(obj, status=200):
@@ -144,7 +143,7 @@ def _get_path_info_partial(stop_ids, routes, all_trips, week_day, hours):
     else:
         trips = all_trips
     trip_ids = [t.id for t in trips]
-    cursor = django.db.connection.cursor();
+    cursor = django.db.connection.cursor()
     first_stop_id = stop_ids[0]
     if hours != 'all':
         # find the trips that the first stop_id ***exp*** departure in between the hours range ***
