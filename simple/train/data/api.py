@@ -196,76 +196,89 @@ def _get_path_info_per_weekdays(stop_ids, routes, all_trips, hours):
         'stops': list(stats_map.get(stop_id, {}) for stop_id in stop_ids)
     })
 
+    trips = all_trips[:]
+    trip_ids = [t.id for t in trips]
+    if hours != 'all':
+        # find the trips that the first stop_id ***exp*** departure in between the hours range ***
+        qs = Sample.objects.filter(trip_id__in=trip_ids,
+                                   stop_id=first_stop_id)
+        hour_or_query = None
+        for hour in range(*hours):
+            new_query = Q(exp_departure__hour=(hour % 24))
+            if hour_or_query is None:
+                hour_or_query = new_query
+            else:
+                hour_or_query = hour_or_query | new_query
+        qs = qs.filter(hour_or_query)
+        trip_ids = list(qs.values_list('trip_id', flat=True))
+        trips = [t for t in trips if t.id in trip_ids]
+    select_stmt = '''
+        SELECT  s.stop_id as stop_id,
+                extract(dow from t.start_date) as week_day_pg,
+                avg(case when delay_arrival <= %(early_threshold)s then 1.0 else 0.0 end)::float as arrival_early_pct,
+                avg(case when delay_arrival > %(early_threshold)s and delay_arrival < %(late_threshold)s then 1.0 else 0.0 end)::float as arrival_on_time_pct,
+                avg(case when delay_arrival >= %(late_threshold)s then 1.0 else 0.0 end)::float as arrival_late_pct,
+
+                avg(case when delay_departure <= %(early_threshold)s then 1.0 else 0.0 end)::float as departure_early_pct,
+                avg(case when delay_departure > %(early_threshold)s and delay_departure < %(late_threshold)s then 1.0 else 0.0 end)::float as departure_on_time_pct,
+                avg(case when delay_departure >= %(late_threshold)s then 1.0 else 0.0 end)::float as departure_late_pct,
+                count(s.stop_id) as num_trips
+
+        FROM    data_sample as s JOIN data_trip as t
+        ON s.trip_id = t.id
+        WHERE   s.stop_id = ANY (ARRAY[%(stop_ids)s])
+        AND     s.valid
+        AND     s.trip_id = ANY (ARRAY[%(trip_ids)s])
+        GROUP BY s.stop_id,week_day_pg
+    '''
+    select_kwargs = {
+        'early_threshold': early_threshold,
+        'late_threshold': late_threshold,
+        'stop_ids': stop_ids,
+        'trip_ids': trip_ids,
+    }
+
+    cursor = django.db.connection.cursor()
+    cursor.execute(select_stmt,select_kwargs)
+
+    cols = [
+        'stop_id',
+        'week_day_pg',
+        'arrival_early_pct', 'arrival_on_time_pct', 'arrival_late_pct',
+        'departure_early_pct', 'departure_on_time_pct', 'departure_late_pct',
+        'num_trips'
+    ]
+
+    stats_map = {}
+    num_trips = None
+    from collections import defaultdict
+    all_stats = defaultdict(dict)
+    for row in cursor:
+        stat = dict(zip(cols, row))
+        all_stats[int(stat['week_day_pg']) + 1][stat['stop_id']] = stat
+
     for week_day in WEEK_DAYS:
-        trips = all_trips[:]
-        trip_ids = [t.id for t in trips]
-        if hours != 'all':
-            # find the trips that the first stop_id ***exp*** departure in between the hours range ***
-            qs = Sample.objects.filter(trip_id__in=trip_ids,
-                                       stop_id=first_stop_id)
-            hour_or_query = None
-            for hour in range(*hours):
-                new_query = Q(exp_departure__hour=(hour % 24))
-                if hour_or_query is None:
-                    hour_or_query = new_query
-                else:
-                    hour_or_query = hour_or_query | new_query
-            qs = qs.filter(hour_or_query)
-            trip_ids = list(qs.values_list('trip_id', flat=True))
-            trips = [t for t in trips if t.id in trip_ids]
-        select_stmt = '''
-            SELECT  s.stop_id as stop_id,
-                    avg(case when delay_arrival <= %(early_threshold)s then 1.0 else 0.0 end)::float as arrival_early_pct,
-                    avg(case when delay_arrival > %(early_threshold)s and delay_arrival < %(late_threshold)s then 1.0 else 0.0 end)::float as arrival_on_time_pct,
-                    avg(case when delay_arrival >= %(late_threshold)s then 1.0 else 0.0 end)::float as arrival_late_pct,
-
-                    avg(case when delay_departure <= %(early_threshold)s then 1.0 else 0.0 end)::float as departure_early_pct,
-                    avg(case when delay_departure > %(early_threshold)s and delay_departure < %(late_threshold)s then 1.0 else 0.0 end)::float as departure_on_time_pct,
-                    avg(case when delay_departure >= %(late_threshold)s then 1.0 else 0.0 end)::float as departure_late_pct,
-                    count(s.stop_id) as num_trips
-
-            FROM    data_sample as s JOIN data_trip as t
-            ON s.trip_id = t.id
-            WHERE   s.stop_id = ANY (ARRAY[%(stop_ids)s])
-            AND     s.valid
-            AND     s.trip_id = ANY (ARRAY[%(trip_ids)s])
-            AND extract(dow from t.start_date) = %(week_day_fixed)s
-            GROUP BY s.stop_id
-        '''
-        select_kwargs = {
-            'early_threshold': early_threshold,
-            'late_threshold': late_threshold,
-            'stop_ids': stop_ids,
-            'trip_ids': trip_ids,
-            'week_day_fixed': week_day - 1 # in postgres 0-6
-        }
-        cursor = django.db.connection.cursor()
-        cursor.execute(select_stmt,select_kwargs)
-        cols = [
-            'stop_id',
-            'arrival_early_pct', 'arrival_on_time_pct', 'arrival_late_pct',
-            'departure_early_pct', 'departure_on_time_pct', 'departure_late_pct',
-            'num_trips'
-        ]
-        stats_map = {}
+        stats_map = all_stats[week_day]
         num_trips = None
-        for row in cursor:
-            stat = dict(zip(cols, row))
+        for k,v in stats_map.iteritems():
             old_num_trips = num_trips
-            num_trips = stat.pop('num_trips')
+            num_trips = v['num_trips']
             if old_num_trips is not None:
                 assert num_trips == old_num_trips,'Inconsistent num trips'
-            stats_map[stat['stop_id']] = stat
-
         info = {
             'num_trips': num_trips or 0,
             'week_day': week_day,
-            'hours': hours,
+            'hours': hours
         }
-        result.append({
+        entry = {
             'info': info,
             'stops': list(stats_map.get(stop_id, {}) for stop_id in stop_ids)
-        })
+        }
+        for stop in entry['stops']:
+            stop.pop('week_day_pg',0)
+            stop.pop('num_trips',0)
+        result.append(entry)
+
     return result
 
 
