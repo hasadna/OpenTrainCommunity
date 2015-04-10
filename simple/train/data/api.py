@@ -126,6 +126,7 @@ def get_path_info_full(req):
             select_stmt, select_kwargs, info = _get_select_stmt(index,**kwargs)
             stmts.append((select_stmt, select_kwargs, info))
             index+=1
+
     for select_stmt, select_kwargs, info in stmts:
         stat = _execute_select_stmt(select_stmt, select_kwargs, info, stop_ids)
         stats.append(stat)
