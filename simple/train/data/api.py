@@ -94,8 +94,7 @@ def get_path_info(req):
     trips = []
     for r in routes:
         trips.extend(list(r.trip_set.filter(valid=True)))
-    stat = _get_path_info_partial(0,
-                                  stop_ids,
+    stat = _get_path_info_partial(stop_ids,
                                   routes=routes,
                                   all_trips=trips,
                                   week_day='all',
