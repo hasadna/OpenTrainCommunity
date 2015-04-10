@@ -116,8 +116,8 @@ def get_path_info_full(req):
     stmts = []
     stats = []
     index = 0
-    for idx1, week_day in enumerate(WEEK_DAYS + ['all']):
-        for idx2, hours in enumerate(HOURS + ['all']):
+    for week_day in WEEK_DAYS + ['all']:
+        for hours in HOURS + ['all']:
             kwargs = dict(stop_ids=stop_ids,
                           routes=routes,
                           all_trips=trips,
@@ -174,7 +174,8 @@ def _get_select_stmt(index, stop_ids, routes, all_trips, week_day, hours):
                 avg(case when delay_departure > %(<index>early_threshold)s and delay_departure < %(<index>late_threshold)s then 1.0 else 0.0 end)::float as departure_on_time_pct,
                 avg(case when delay_departure >= %(<index>late_threshold)s then 1.0 else 0.0 end)::float as departure_late_pct
 
-        FROM    data_sample as s
+        FROM    data_sample as s join data_trip as t
+        ON   s.trip_id = t.id
         WHERE   s.stop_id = ANY (ARRAY[%(<index>stop_ids)s])
         AND     s.valid
         AND     s.trip_id = ANY (ARRAY[%(<index>trip_ids)s])
