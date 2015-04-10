@@ -127,11 +127,6 @@ def get_path_info_full(req):
 
 
 def _get_path_info_partial(stop_ids, routes, all_trips, week_day, hours):
-    select_stmt, select_kwargs, info = _get_select_stmt(stop_ids, routes, all_trips, week_day, hours)
-    return _execute_select_stmt(select_stmt, select_kwargs, info, stop_ids)
-
-
-def _get_select_stmt(stop_ids, routes, all_trips, week_day, hours):
     assert 1 <= week_day <= 7 or week_day == 'all', 'Illegal week_day %s' % (week_day,)
     early_threshold = -120
     late_threshold = 300
@@ -184,10 +179,7 @@ def _get_select_stmt(stop_ids, routes, all_trips, week_day, hours):
         'week_day': week_day,
         'hours': hours,
     }
-    return select_stmt, select_kwargs, info
 
-
-def _execute_select_stmt(select_stmt, select_kwargs, info, stop_ids):
     cursor = django.db.connection.cursor()
     cursor.execute(select_stmt,select_kwargs)
     cols = [
@@ -199,6 +191,7 @@ def _execute_select_stmt(select_stmt, select_kwargs, info, stop_ids):
     for row in cursor:
         stat = dict(zip(cols, row))
         stats_map[stat['stop_id']] = stat
+
     return {
         'info': info,
         'stops': list(stats_map.get(stop_id, {}) for stop_id in stop_ids)
