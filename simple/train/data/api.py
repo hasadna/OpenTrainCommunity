@@ -113,9 +113,7 @@ def get_path_info_full(req):
     for r in routes:
         trips.extend(list(r.trip_set.filter(valid=True)))
 
-    stmts = []
     stats = []
-    index = 0
     for week_day in WEEK_DAYS + ['all']:
         for hours in HOURS + ['all']:
             kwargs = dict(stop_ids=stop_ids,
@@ -123,22 +121,17 @@ def get_path_info_full(req):
                           all_trips=trips,
                           week_day=week_day,
                           hours=hours)
-            select_stmt, select_kwargs, info = _get_select_stmt(index,**kwargs)
-            stmts.append((select_stmt, select_kwargs, info))
-            index+=1
-
-    for select_stmt, select_kwargs, info in stmts:
-        stat = _execute_select_stmt(select_stmt, select_kwargs, info, stop_ids)
-        stats.append(stat)
+            stat = _get_path_info_partial(**kwargs)
+            stats.append(stat)
     return json_resp(stats)
 
 
-def _get_path_info_partial(index,stop_ids, routes, all_trips, week_day, hours):
-    select_stmt, select_kwargs, info = _get_select_stmt(index,stop_ids, routes, all_trips, week_day, hours)
+def _get_path_info_partial(stop_ids, routes, all_trips, week_day, hours):
+    select_stmt, select_kwargs, info = _get_select_stmt(stop_ids, routes, all_trips, week_day, hours)
     return _execute_select_stmt(select_stmt, select_kwargs, info, stop_ids)
 
 
-def _get_select_stmt(index, stop_ids, routes, all_trips, week_day, hours):
+def _get_select_stmt(stop_ids, routes, all_trips, week_day, hours):
     assert 1 <= week_day <= 7 or week_day == 'all', 'Illegal week_day %s' % (week_day,)
     early_threshold = -120
     late_threshold = 300
@@ -163,29 +156,28 @@ def _get_select_stmt(index, stop_ids, routes, all_trips, week_day, hours):
         qs = qs.filter(hour_or_query)
         trip_ids = list(qs.values_list('trip_id', flat=True))
         trips = [t for t in trips if t.id in trip_ids]
-    index_prefix = '%s_' % index
     select_stmt = '''
         SELECT  s.stop_id as stop_id,
-                avg(case when delay_arrival <= %(<index>early_threshold)s then 1.0 else 0.0 end)::float as arrival_early_pct,
-                avg(case when delay_arrival > %(<index>early_threshold)s and delay_arrival < %(<index>late_threshold)s then 1.0 else 0.0 end)::float as arrival_on_time_pct,
-                avg(case when delay_arrival >= %(<index>late_threshold)s then 1.0 else 0.0 end)::float as arrival_late_pct,
+                avg(case when delay_arrival <= %(early_threshold)s then 1.0 else 0.0 end)::float as arrival_early_pct,
+                avg(case when delay_arrival > %(early_threshold)s and delay_arrival < %(late_threshold)s then 1.0 else 0.0 end)::float as arrival_on_time_pct,
+                avg(case when delay_arrival >= %(late_threshold)s then 1.0 else 0.0 end)::float as arrival_late_pct,
 
-                avg(case when delay_departure <= %(<index>early_threshold)s then 1.0 else 0.0 end)::float as departure_early_pct,
-                avg(case when delay_departure > %(<index>early_threshold)s and delay_departure < %(<index>late_threshold)s then 1.0 else 0.0 end)::float as departure_on_time_pct,
-                avg(case when delay_departure >= %(<index>late_threshold)s then 1.0 else 0.0 end)::float as departure_late_pct
+                avg(case when delay_departure <= %(early_threshold)s then 1.0 else 0.0 end)::float as departure_early_pct,
+                avg(case when delay_departure > %(early_threshold)s and delay_departure < %(late_threshold)s then 1.0 else 0.0 end)::float as departure_on_time_pct,
+                avg(case when delay_departure >= %(late_threshold)s then 1.0 else 0.0 end)::float as departure_late_pct
 
         FROM    data_sample as s join data_trip as t
         ON   s.trip_id = t.id
-        WHERE   s.stop_id = ANY (ARRAY[%(<index>stop_ids)s])
+        WHERE   s.stop_id = ANY (ARRAY[%(stop_ids)s])
         AND     s.valid
-        AND     s.trip_id = ANY (ARRAY[%(<index>trip_ids)s])
+        AND     s.trip_id = ANY (ARRAY[%(trip_ids)s])
         GROUP BY s.stop_id
-    '''.replace('<index>',index_prefix)
+    '''
     select_kwargs = {
-        index_prefix + 'early_threshold': early_threshold,
-        index_prefix + 'late_threshold': late_threshold,
-        index_prefix + 'stop_ids': stop_ids,
-        index_prefix + 'trip_ids': trip_ids,
+        'early_threshold': early_threshold,
+        'late_threshold': late_threshold,
+        'stop_ids': stop_ids,
+        'trip_ids': trip_ids,
     }
     info = {
         'num_trips': len(trips),
