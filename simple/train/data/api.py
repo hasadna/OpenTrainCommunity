@@ -211,22 +211,24 @@ def _get_path_info_per_weekdays(stop_ids, routes, all_trips, hours):
                 hour_or_query = hour_or_query | new_query
         qs = qs.filter(hour_or_query)
         trip_ids = list(qs.values_list('trip_id', flat=True))
-        trips = [t for t in trips if t.id in trip_ids]
     select_stmt = '''
         SELECT  s.stop_id as stop_id,
                 extract(dow from t.start_date) as week_day_pg,
-                avg(case when delay_arrival <= %(early_threshold)s then 1.0 else 0.0 end)::float as arrival_early_pct,
-                avg(case when delay_arrival > %(early_threshold)s and delay_arrival < %(late_threshold)s then 1.0 else 0.0 end)::float as arrival_on_time_pct,
-                avg(case when delay_arrival >= %(late_threshold)s then 1.0 else 0.0 end)::float as arrival_late_pct,
+                avg(case when s.delay_arrival <= %(early_threshold)s then 1.0 else 0.0 end)::float as arrival_early_pct,
+                avg(case when s.delay_arrival > %(early_threshold)s and s.delay_arrival < %(late_threshold)s then 1.0 else 0.0 end)::float as arrival_on_time_pct,
+                avg(case when s.delay_arrival >= %(late_threshold)s then 1.0 else 0.0 end)::float as arrival_late_pct,
 
-                avg(case when delay_departure <= %(early_threshold)s then 1.0 else 0.0 end)::float as departure_early_pct,
-                avg(case when delay_departure > %(early_threshold)s and delay_departure < %(late_threshold)s then 1.0 else 0.0 end)::float as departure_on_time_pct,
-                avg(case when delay_departure >= %(late_threshold)s then 1.0 else 0.0 end)::float as departure_late_pct,
+                avg(case when s.delay_departure <= %(early_threshold)s then 1.0 else 0.0 end)::float as departure_early_pct,
+                avg(case when s.delay_departure > %(early_threshold)s and s.delay_departure < %(late_threshold)s then 1.0 else 0.0 end)::float as departure_on_time_pct,
+                avg(case when s.delay_departure >= %(late_threshold)s then 1.0 else 0.0 end)::float as departure_late_pct,
                 count(s.stop_id) as num_trips
 
         FROM    data_sample as s JOIN data_trip as t
         ON s.trip_id = t.id
-        WHERE   s.stop_id = ANY (ARRAY[%(stop_ids)s])
+        JOIN data_sample as s1
+        ON s1.trip_id = t.id
+        WHERE s1.stop_id = %(first_stop_id)s
+        AND   s.stop_id = ANY (ARRAY[%(stop_ids)s])
         AND     s.valid
         AND     s.trip_id = ANY (ARRAY[%(trip_ids)s])
         GROUP BY s.stop_id,week_day_pg
@@ -236,6 +238,7 @@ def _get_path_info_per_weekdays(stop_ids, routes, all_trips, hours):
         'late_threshold': late_threshold,
         'stop_ids': stop_ids,
         'trip_ids': trip_ids,
+        'first_stop_id': first_stop_id
     }
 
     cursor = django.db.connection.cursor()
