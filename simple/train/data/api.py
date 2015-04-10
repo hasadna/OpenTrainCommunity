@@ -103,6 +103,11 @@ def get_path_info(req):
     return json_resp(stat['stops'])
 
 
+def _get_info_sort_key(info):
+    hours = info['hours'] if info['hours'] != 'all' else (1000,1000)
+    week_day = info['week_day'] if info['week_day'] != 'all' else 1000
+    return week_day,hours
+
 @cache_utils.cacheit
 def get_path_info_full(req):
     stop_ids = [int(s) for s in req.GET['stop_ids'].split(',')]
@@ -113,8 +118,8 @@ def get_path_info_full(req):
         trips.extend(list(r.trip_set.filter(valid=True)))
 
     stats = []
-    for week_day in WEEK_DAYS + ['all']:
-        for hours in HOURS + ['all']:
+    for hours in HOURS + ['all']:
+        for week_day in WEEK_DAYS + ['all']:
             kwargs = dict(stop_ids=stop_ids,
                           routes=routes,
                           all_trips=trips,
@@ -122,6 +127,7 @@ def get_path_info_full(req):
                           hours=hours)
             stat = _get_path_info_partial(**kwargs)
             stats.append(stat)
+    stats.sort(key=lambda x: _get_info_sort_key(x['info']))
     return json_resp(stats)
 
 
