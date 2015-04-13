@@ -20,6 +20,7 @@ def main(url):
     fname = '%s_%s_%.2f.json' % (fname,timestamp,took)
     with open(fname,'w') as fh:
         json.dump(j,fh,indent=4)
+    os.system('cp %s output/%s' % (fname,'last_call.json'))
     print 'Took: %.2f Wrote to %s' % (took,fname)
 
 if __name__ == '__main__':
