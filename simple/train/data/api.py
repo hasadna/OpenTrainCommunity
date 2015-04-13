@@ -90,24 +90,10 @@ _check_hours()
 @cache_utils.cacheit
 def get_path_info(req):
     stop_ids = [int(s) for s in req.GET['stop_ids'].split(',')]
-    routes = find_all_routes_with_stops(stop_ids)
-    trips = []
-    for r in routes:
-        trips.extend(list(r.trip_set.filter(valid=True)))
-    stat = _get_path_info_partial(stop_ids,
-                                  routes=routes,
-                                  all_trips=trips,
-                                  week_day='all',
-                                  hours='all')
+    stats = _get_path_info_full(stop_ids)
+    stat = [stat for stat in stats if stat['info']['hours'] == 'all' and stat['info']['week_day'] == 'all'][0]['stops']
+    return json_resp(stat)
 
-    return json_resp(stat['stops'])
-
-
-def _get_info_sort_key(stat):
-    info = stat['info']
-    hours = info['hours'] if info['hours'] != 'all' else (1000,1000)
-    week_day = info['week_day'] if info['week_day'] != 'all' else 1000
-    return week_day,hours
 
 @cache_utils.cacheit
 def get_path_info_full(req):
@@ -115,6 +101,12 @@ def get_path_info_full(req):
     stats = _get_path_info_full(stop_ids)
     stats.sort(key=_get_info_sort_key)
     return json_resp(stats)
+
+def _get_info_sort_key(stat):
+    info = stat['info']
+    hours = info['hours'] if info['hours'] != 'all' else (1000,1000)
+    week_day = info['week_day'] if info['week_day'] != 'all' else 1000
+    return week_day,hours
 
 
 def _get_path_info_full(stop_ids):
