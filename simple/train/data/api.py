@@ -209,14 +209,17 @@ def _get_stats_table(stop_ids, routes):
                 sum(case when s.delay_departure >= %(late_threshold)s then 1 else 0 end) as departure_late_count
 
         FROM
-        data_route as r JOIN data_trip as t
-        ON r.id = t.route_id
-        JOIN data_sample_with_hour as fs
-        ON fs.trip_id = t.id
-        JOIN data_sample as s
-        ON s.trip_id = t.id
+        data_route as r,
+        data_trip as t,
+        data_sample_with_hour as fs,
+        data_sample as s
 
-        WHERE fs.stop_id = %(first_stop_id)s
+        WHERE
+        r.id = t.route_id
+        AND fs.trip_id = t.id
+        AND s.trip_id = t.id
+
+        AND fs.stop_id = %(first_stop_id)s
         AND   s.stop_id = ANY (ARRAY[%(stop_ids)s])
         AND     t.valid
         AND     r.id = ANY (ARRAY[%(route_ids)s])
