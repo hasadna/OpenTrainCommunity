@@ -121,11 +121,11 @@ def _get_info_sort_key(stat):
 def _get_path_info_full(stop_ids):
     # find all routes whose contains these stop ids
     routes = find_all_routes_with_stops(stop_ids)
-    trips = []
-    for r in routes:
-        trips.extend(list(r.trip_set.filter(valid=True)))
+    #trips = []
+    #for r in routes:
+    #    trips.extend(list(r.trip_set.filter(valid=True)))
 
-    table = _get_stats_table(stop_ids, trips)
+    table = _get_stats_table(stop_ids, routes)
 
     stats = _complete_table(table,stop_ids)
 
@@ -189,12 +189,12 @@ def _complete_table(table,stop_ids):
     return result
 
 @benchit
-def _get_stats_table(stop_ids, trips):
+def _get_stats_table(stop_ids, routes):
     early_threshold = -120
     late_threshold = 300
-    trip_ids = [t.id for t in trips]
-    first_stop_id = stop_ids[0]
 
+    first_stop_id = stop_ids[0]
+    route_ids = [r.id for r in routes]
     select_stmt = '''
         SELECT  count(s.stop_id) as num_trips,
                 s.stop_id as stop_id,
@@ -213,17 +213,19 @@ def _get_stats_table(stop_ids, trips):
         ON t.id = s.trip_id
         JOIN data_sample_with_hour as fs
         ON fs.trip_id = t.id
+        JOIN data_route as r
+        ON t.route_id = r.id
         WHERE fs.stop_id = %(first_stop_id)s
         AND   s.stop_id = ANY (ARRAY[%(stop_ids)s])
         AND     t.valid
-        AND     t.id = ANY (ARRAY[%(trip_ids)s])
+        AND     t.route_id = ANY (ARRAY[%(route_ids)s])
         GROUP BY s.stop_id,week_day_pg,hour_pg
     '''
     select_kwargs = {
         'early_threshold': early_threshold,
         'late_threshold': late_threshold,
         'stop_ids': stop_ids,
-        'trip_ids': trip_ids,
+        'route_ids': route_ids,
         'first_stop_id': first_stop_id
     }
 
