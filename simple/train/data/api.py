@@ -200,13 +200,13 @@ def _get_stats_table(stop_ids, trips):
                 s.stop_id as stop_id,
                 extract(dow from t.start_date) as week_day_pg,
                 extract(hour from timezone('Asia/Jerusalem',s1.exp_departure)) as hour_pg,
-                sum(case when s.delay_arrival <= %(early_threshold)s then 1.0 else 0.0 end)::float as arrival_early_count,
-                sum(case when s.delay_arrival > %(early_threshold)s and s.delay_arrival < %(late_threshold)s then 1.0 else 0.0 end)::float as arrival_on_time_count,
-                sum(case when s.delay_arrival >= %(late_threshold)s then 1.0 else 0.0 end)::float as arrival_late_count,
+                sum(case when s.delay_arrival <= %(early_threshold)s then 1 else 0 end) as arrival_early_count,
+                sum(case when s.delay_arrival > %(early_threshold)s and s.delay_arrival < %(late_threshold)s then 1 else 0 end) as arrival_on_time_count,
+                sum(case when s.delay_arrival >= %(late_threshold)s then 1 else 0 end) as arrival_late_count,
 
-                sum(case when s.delay_departure <= %(early_threshold)s then 1.0 else 0.0 end)::float as departure_early_count,
-                sum(case when s.delay_departure > %(early_threshold)s and s.delay_departure < %(late_threshold)s then 1.0 else 0.0 end)::float as departure_on_time_count,
-                sum(case when s.delay_departure >= %(late_threshold)s then 1.0 else 0.0 end)::float as departure_late_count
+                sum(case when s.delay_departure <= %(early_threshold)s then 1 else 0 end) as departure_early_count,
+                sum(case when s.delay_departure > %(early_threshold)s and s.delay_departure < %(late_threshold)s then 1 else 0 end) as departure_on_time_count,
+                sum(case when s.delay_departure >= %(late_threshold)s then 1 else 0 end) as departure_late_count
 
         FROM    data_sample as s JOIN data_trip as t
         ON s.trip_id = t.id
