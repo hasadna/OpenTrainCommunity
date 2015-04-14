@@ -199,7 +199,7 @@ def _get_stats_table(stop_ids, trips):
         SELECT  count(s.stop_id) as num_trips,
                 s.stop_id as stop_id,
                 extract(dow from t.start_date) as week_day_pg,
-                extract(hour from timezone('Asia/Jerusalem',s1.exp_departure)) as hour_pg,
+                s1.hour_pg as hour_pg,
                 sum(case when s.delay_arrival <= %(early_threshold)s then 1 else 0 end) as arrival_early_count,
                 sum(case when s.delay_arrival > %(early_threshold)s and s.delay_arrival < %(late_threshold)s then 1 else 0 end) as arrival_on_time_count,
                 sum(case when s.delay_arrival >= %(late_threshold)s then 1 else 0 end) as arrival_late_count,
@@ -210,7 +210,7 @@ def _get_stats_table(stop_ids, trips):
 
         FROM    data_sample as s JOIN data_trip as t
         ON s.trip_id = t.id
-        JOIN data_sample as s1
+        JOIN data_sample_with_hour as s1
         ON s1.trip_id = t.id
         WHERE s1.stop_id = %(first_stop_id)s
         AND   s.stop_id = ANY (ARRAY[%(stop_ids)s])
