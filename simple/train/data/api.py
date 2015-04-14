@@ -198,8 +198,8 @@ def _get_stats_table(stop_ids, trips):
     select_stmt = '''
         SELECT  count(s.stop_id) as num_trips,
                 s.stop_id as stop_id,
-                extract(dow from t.start_date) as week_day_pg,
-                s1.hour_pg as hour_pg,
+                fs.week_day_pg,
+                fs.hour_pg as hour_pg,
                 sum(case when s.delay_arrival <= %(early_threshold)s then 1 else 0 end) as arrival_early_count,
                 sum(case when s.delay_arrival > %(early_threshold)s and s.delay_arrival < %(late_threshold)s then 1 else 0 end) as arrival_on_time_count,
                 sum(case when s.delay_arrival >= %(late_threshold)s then 1 else 0 end) as arrival_late_count,
@@ -208,14 +208,13 @@ def _get_stats_table(stop_ids, trips):
                 sum(case when s.delay_departure > %(early_threshold)s and s.delay_departure < %(late_threshold)s then 1 else 0 end) as departure_on_time_count,
                 sum(case when s.delay_departure >= %(late_threshold)s then 1 else 0 end) as departure_late_count
 
-        FROM    data_sample as s JOIN data_trip as t
-        ON s.trip_id = t.id
-        JOIN data_sample_with_hour as s1
-        ON s1.trip_id = t.id
-        WHERE s1.stop_id = %(first_stop_id)s
+        FROM    data_sample as s
+        JOIN data_sample_with_hour as fs
+        ON fs.trip_id = s.trip_id
+        WHERE fs.stop_id = %(first_stop_id)s
         AND   s.stop_id = ANY (ARRAY[%(stop_ids)s])
         AND     s.valid
-        AND     t.id = ANY (ARRAY[%(trip_ids)s])
+        AND     s.trip_id = ANY (ARRAY[%(trip_ids)s])
         GROUP BY s.stop_id,week_day_pg,hour_pg
     '''
     select_kwargs = {
