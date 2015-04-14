@@ -215,7 +215,6 @@ def _get_stats_table(stop_ids, trips):
         ON fs.trip_id = t.id
         WHERE fs.stop_id = %(first_stop_id)s
         AND   s.stop_id = ANY (ARRAY[%(stop_ids)s])
-        AND     s.valid
         AND     t.id = ANY (ARRAY[%(trip_ids)s])
         GROUP BY s.stop_id,week_day_pg,hour_pg
     '''
