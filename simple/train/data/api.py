@@ -218,7 +218,7 @@ def _get_stats_table(stop_ids, routes):
         WHERE fs.stop_id = %(first_stop_id)s
         AND   s.stop_id = ANY (ARRAY[%(stop_ids)s])
         AND     t.valid
-        AND     t.route_id = ANY (ARRAY[%(route_ids)s])
+        AND     r.id = ANY (ARRAY[%(route_ids)s])
         GROUP BY s.stop_id,week_day_pg,hour_pg
     '''
     select_kwargs = {
