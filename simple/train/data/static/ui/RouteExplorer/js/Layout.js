@@ -16,9 +16,9 @@ function($http, $q) {
         $http.get('/api/all-routes')
             .success(function(data) {
                 routes = data.map(function(r) { return {
-                    stops: r.stop_ids, //r.stops.map(function(s) { return s.stop_id; }),
+                    stops: r.stop_ids,
                     count: r.count
-                }});
+                }; });
             })
     ]);
 
@@ -52,7 +52,7 @@ function($http, $q) {
             }
         });
 
-        matchingRoutes = Object.keys(matchingRoutes).map(function(routeId) { return matchingRoutes[routeId] });
+        matchingRoutes = Object.keys(matchingRoutes).map(function(routeId) { return matchingRoutes[routeId]; });
         matchingRoutes.sort(function(r1, r2) { return r2.count - r1.count; });
         return matchingRoutes;
     };
@@ -63,5 +63,5 @@ function($http, $q) {
         findStop: findStop,
         findRoutes: findRoutes,
         loaded: loaded
-    }
+    };
 }]);

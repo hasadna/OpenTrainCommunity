@@ -65,15 +65,15 @@ function($scope, $location, Layout) {
     };
 
     $scope.goToRoutes = function() {
-        $location.path('/select-route/' + $scope.origin.id + '/' + $scope.destination.id)
-    }
+        $location.path('/select-route/' + $scope.origin.id + '/' + $scope.destination.id);
+    };
 }]);
 
 app.controller('SelectRouteController', ['$scope', '$location', '$route', 'Layout',
 function($scope, $location, $route, Layout) {
     $scope.stops = Layout.getStops();
-    var origin = Layout.findStop($route.current.params['origin']);
-    var destination = Layout.findStop($route.current.params['destination']);
+    var origin = Layout.findStop($route.current.params.origin);
+    var destination = Layout.findStop($route.current.params.destination);
     $scope.routes = Layout.findRoutes(origin.id, destination.id);
 
     $scope.stopName = function(stopId) {
@@ -100,7 +100,7 @@ function($scope, $location, $route, Layout) {
 
 app.controller('RouteDetailsController', ['$scope', '$route', '$http', 'Layout',
 function($scope, $route, $http, Layout) {
-    var stopList = $route.current.params['stop_ids'];
+    var stopList = $route.current.params.stop_ids;
     var stopIds = stopList.split(',');
     var statsMap = {};
 
@@ -172,17 +172,6 @@ function($scope, $route, $http, Layout) {
         function formatHour(hour) {
             return ('0' + hour % 24 + '').slice(-2) + ':00';
         }
-/*
-        $scope.times = [
-            { from: '04:00', to: '07:00', id: '4-7' },
-            { from: '07:00', to: '09:00', id: '7-9' },
-            { from: '09:00', to: '12:00', id: '9-12' },
-            { from: '12:00', to: '15:00', id: '12-15' },
-            { from: '15:00', to: '18:00', id: '15-18' },
-            { from: '18:00', to: '21:00', id: '18-21' },
-            { from: '21:00', to: '00:00', id: '21-24' },
-            { from: '00:00', to: '04:00', id: '24-28' }
-        ];*/
     }
 }]);
 
@@ -201,17 +190,17 @@ app.filter('duration', function() {
         minutes -= hours * 60;
 
         if (seconds < 10) seconds = '0' + seconds;
-        if (minutes < 10 && hours != 0) minutes = '0' + minutes;
+        if (minutes < 10 && hours !== 0) minutes = '0' + minutes;
 
         var res = minutes + ':' + seconds;
-        if (hours != 0)
+        if (hours !== 0)
             res = hours + ':' + res;
 
         if (negative)
             res = '-' + res;
 
         return res;
-    }
+    };
 });
 
 app.directive("rexPercentBar", function() {
