@@ -3,11 +3,11 @@
     <div class="container">
         <form ng-submit="goToRoutes()">
             <div class="row">
-                <input ng-model="origin" name="origin" class="form-control" type="text" placeholder="מוצא"
+                <input ng-model="origin" name="origin" class="form-control" type="text" placeholder="מוצא" autocomplete="off"
                     typeahead="stop as stop.name for stop in stops | filter:$viewValue" typeahead-editable="false" />
             </div>
             <div class="row">
-                <input ng-model="destination" name="destination" class="form-control" type="text" placeholder="יעד"
+                <input ng-model="destination" name="destination" class="form-control" type="text" placeholder="יעד" autocomplete="off"
                     typeahead="stop as stop.name for stop in stops | filter:$viewValue" typeahead-editable="false" />
             </div>
             <div class="row">
