@@ -102,12 +102,13 @@ app.controller('RouteDetailsController', ['$scope', '$route', '$http', 'Layout',
 function($scope, $route, $http, Layout) {
     var stopList = $route.current.params['stop_ids'];
     var stopIds = stopList.split(',');
+    var statsMap = {};
 
     $scope.loaded = false;
 
-    $http.get('/api/path-info', { params: { stop_ids: stopList } })
+    $http.get('/api/path-info-full', { params: { stop_ids: stopList } })
         .success(function(data) {
-            $scope.stats = data;
+            loadStats(data);
             $scope.loaded = true;
         });
 
@@ -116,25 +117,17 @@ function($scope, $route, $http, Layout) {
 
     $scope.selectedDay = null;
     $scope.days = [
-        { abbr: 'א', title: 'ראשון', value: 1 },
-        { abbr: 'ב', title: 'שני', value: 2 },
-        { abbr: 'ג', title: 'שלישי', value: 3 },
-        { abbr: 'ד', title: 'רביעי', value: 4 },
-        { abbr: 'ה', title: 'חמישי', value: 5 },
-        { abbr: 'ו', title: 'שישי', value: 6 },
-        { abbr: 'ש', title: 'שבת', value: 7 }
+        { abbr: 'א', title: 'ראשון', id: 1 },
+        { abbr: 'ב', title: 'שני', id: 2 },
+        { abbr: 'ג', title: 'שלישי', id: 3 },
+        { abbr: 'ד', title: 'רביעי', id: 4 },
+        { abbr: 'ה', title: 'חמישי', id: 5 },
+        { abbr: 'ו', title: 'שישי', id: 6 },
+        { abbr: 'ש', title: 'שבת', id: 7 }
     ];
 
     $scope.selectedTime = null;
-    $scope.times = [
-        { from: '07:00', to: '09:00' },
-        { from: '09:00', to: '12:00' },
-        { from: '12:00', to: '16:00' },
-        { from: '16:00', to: '18:00' },
-        { from: '18:00', to: '20:00' },
-        { from: '20:00', to: '22:00' },
-        { from: '22:00', to: '00:00' }
-    ];
+    $scope.times = [];
 
     $scope.stopName = function(stopId) {
         var stop = Layout.findStop(stopId);
@@ -142,6 +135,54 @@ function($scope, $route, $http, Layout) {
             return null;
 
             return stop.name;
+    };
+
+    $scope.selectedStats = function() {
+        var dayId = $scope.selectedDay ? $scope.selectedDay.id : 'all';
+        var timeId = $scope.selectedTime ? $scope.selectedTime.id : 'all';
+
+        return statsMap[dayId] && statsMap[dayId][timeId] ? statsMap[dayId][timeId].stops : [];
+    };
+
+    function loadStats(data) {
+        $scope.times = [];
+        var timesMap = {};
+
+        for (var i in data) {
+            var statGroup = data[i];
+            var timeId = statGroup.info.hours == 'all' ? 'all' : statGroup.info.hours[0] + '-' + statGroup.info.hours[1];
+            var dayId = statGroup.info.week_day;
+
+            if (!statsMap[dayId])
+                statsMap[dayId] = {};
+
+            statsMap[dayId][timeId] = statGroup;
+
+            if (timeId != 'all' && !timesMap[timeId]) {
+                var time = {
+                    id: timeId,
+                    from: formatHour(statGroup.info.hours[0]),
+                    to: formatHour(statGroup.info.hours[1])
+                };
+                timesMap[timeId] = time;
+                $scope.times.push(time);
+            }
+        }
+
+        function formatHour(hour) {
+            return ('0' + hour % 24 + '').slice(-2) + ':00';
+        }
+/*
+        $scope.times = [
+            { from: '04:00', to: '07:00', id: '4-7' },
+            { from: '07:00', to: '09:00', id: '7-9' },
+            { from: '09:00', to: '12:00', id: '9-12' },
+            { from: '12:00', to: '15:00', id: '12-15' },
+            { from: '15:00', to: '18:00', id: '15-18' },
+            { from: '18:00', to: '21:00', id: '18-21' },
+            { from: '21:00', to: '00:00', id: '21-24' },
+            { from: '00:00', to: '04:00', id: '24-28' }
+        ];*/
     }
 }]);
 
