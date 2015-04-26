@@ -7590,12 +7590,20 @@ table.paths-list .count-bar-value {
   text-align: center; }
   .route-details-page table td.stop-name, .route-details-page table td.stop-diagram, .route-details-page table th.stop-name, .route-details-page table th.stop-diagram {
     text-align: right; }
-.route-details-page table .progress-novalue {
-  visibility: hidden; }
 .route-details-page table .progress-inline {
   width: 115px;
   height: 15px;
-  position: relative; }
+  position: relative;
+  -webkit-transition-property: opacity;
+  transition-property: opacity;
+  -webkit-transition-duration: 150ms;
+  transition-duration: 150ms; }
+  .route-details-page table .progress-inline.progress-novalue {
+    visibility: hidden;
+    opacity: 0;
+    filter: alpha(opacity=0);
+    -webkit-transition-property: opacity, visibility;
+    transition-property: opacity, visibility; }
   .route-details-page table .progress-inline .progress-value {
     display: block;
     position: absolute;

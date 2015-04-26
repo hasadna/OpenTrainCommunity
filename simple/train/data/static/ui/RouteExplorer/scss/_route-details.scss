@@ -24,8 +24,12 @@
             &.stop-name, &.stop-diagram { text-align: right; }
         }
 
-        .progress-novalue { visibility: hidden; }
-        .progress-inline { width: 115px; height: 15px; position: relative;
+        .progress-inline {
+            width: 115px; height: 15px; position: relative;
+            @include transition-property(opacity);
+            @include transition-duration(150ms);
+            &.progress-novalue { visibility: hidden; @include opacity(0); @include transition-property(opacity, visibility); }
+
             .progress-value { display: block; position: absolute; left: 2px; right: 2px; text-align: center; font-size: 8pt; }
         }
     }
