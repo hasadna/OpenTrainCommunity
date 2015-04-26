@@ -7590,6 +7590,8 @@ table.paths-list .count-bar-value {
   text-align: center; }
   .route-details-page table td.stop-name, .route-details-page table td.stop-diagram, .route-details-page table th.stop-name, .route-details-page table th.stop-diagram {
     text-align: right; }
+.route-details-page table .progress-novalue {
+  visibility: hidden; }
 .route-details-page table .progress-inline {
   width: 115px;
   height: 15px;

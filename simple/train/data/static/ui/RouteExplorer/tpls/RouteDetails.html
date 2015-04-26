@@ -66,21 +66,21 @@
             </thead>
 
             <tbody>
-                <tr ng-repeat="stat in selectedStats()">
+                <tr ng-repeat="stopId in stopIds">
                     <td class="stop-diagram" ng-class="{ 'stop-diagram-start': $first, 'stop-diagram-end': $last }">
                         <div class="stop-diagram-number">
                             {{ $index +1 }}
                         </div>
                     </td>
-                    <th class="stop-name">{{ stopName(stat.stop_id) }}</th>
+                    <th class="stop-name">{{ stopName(stopId) }}</th>
 
-                    <td><rex-percent-bar value="stat.arrival_early_pct" type="'info'"></rex-percent-bar></td>
-                    <td><rex-percent-bar value="stat.arrival_on_time_pct" type="'success'"></rex-percent-bar></td>
-                    <td><rex-percent-bar value="stat.arrival_late_pct" type="'warning'"></rex-percent-bar></td>
+                    <td><rex-percent-bar value="stopStats(stopId).arrival_early_pct" type="'info'"></rex-percent-bar></td>
+                    <td><rex-percent-bar value="stopStats(stopId).arrival_on_time_pct" type="'success'"></rex-percent-bar></td>
+                    <td><rex-percent-bar value="stopStats(stopId).arrival_late_pct" type="'warning'"></rex-percent-bar></td>
 
-                    <td><rex-percent-bar value="stat.departure_early_pct" type="'info'"></rex-percent-bar></td>
-                    <td><rex-percent-bar value="stat.departure_on_time_pct" type="'success'"></rex-percent-bar></td>
-                    <td><rex-percent-bar value="stat.departure_late_pct" type="'warning'"></rex-percent-bar></td>
+                    <td><rex-percent-bar value="stopStats(stopId).departure_early_pct" type="'info'"></rex-percent-bar></td>
+                    <td><rex-percent-bar value="stopStats(stopId).departure_on_time_pct" type="'success'"></rex-percent-bar></td>
+                    <td><rex-percent-bar value="stopStats(stopId).departure_late_pct" type="'warning'"></rex-percent-bar></td>
                 </tr>
             </tbody>
         </table>

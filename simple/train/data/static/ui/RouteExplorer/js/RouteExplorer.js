@@ -105,13 +105,7 @@ function($scope, $route, $http, Layout) {
     var statsMap = {};
 
     $scope.loaded = false;
-
-    $http.get('/api/path-info-full', { params: { stop_ids: stopList } })
-        .success(function(data) {
-            loadStats(data);
-            $scope.loaded = true;
-        });
-
+    $scope.stopIds = stopIds;
     $scope.origin = stopIds[0];
     $scope.destination = stopIds[stopIds.length - 1];
 
@@ -129,6 +123,21 @@ function($scope, $route, $http, Layout) {
     $scope.selectedTime = null;
     $scope.times = [];
 
+    $http.get('/api/path-info-full', { params: { stop_ids: stopList } })
+        .success(function(data) {
+            loadStats(data);
+            $scope.loaded = true;
+        });
+
+    $scope.stopStats = function(stopId) {
+        var stats = selectedStats();
+        for (var i in stats) {
+            if (stats[i].stop_id == stopId)
+                return stats[i];
+        }
+        return null;
+    };
+
     $scope.stopName = function(stopId) {
         var stop = Layout.findStop(stopId);
         if (!stop)
@@ -137,12 +146,13 @@ function($scope, $route, $http, Layout) {
             return stop.name;
     };
 
-    $scope.selectedStats = function() {
+    function selectedStats() {
         var dayId = $scope.selectedDay ? $scope.selectedDay.id : 'all';
         var timeId = $scope.selectedTime ? $scope.selectedTime.id : 'all';
 
-        return statsMap[dayId] && statsMap[dayId][timeId] ? statsMap[dayId][timeId].stops : [];
-    };
+        var stats = statsMap[dayId] && statsMap[dayId][timeId] ? statsMap[dayId][timeId].stops : [];
+        return stats;
+    }
 
     function loadStats(data) {
         $scope.times = [];
