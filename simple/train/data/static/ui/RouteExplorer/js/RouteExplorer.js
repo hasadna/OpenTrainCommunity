@@ -34,7 +34,8 @@ function($routeProvider) {
                 loaded: function(Layout) {
                     return Layout.loaded;
                 }
-            }
+            },
+            reloadOnSearch: false
         })
         .otherwise({
             redirectTo: '/'
@@ -98,8 +99,8 @@ function($scope, $location, $route, Layout) {
     };
 }]);
 
-app.controller('RouteDetailsController', ['$scope', '$route', '$http', 'Layout',
-function($scope, $route, $http, Layout) {
+app.controller('RouteDetailsController', ['$scope', '$route', '$http', '$location', 'LocationBinder', 'Layout',
+function($scope, $route, $http, $location, LocationBinder, Layout) {
     var stopList = $route.current.params.stop_ids;
     var stopIds = stopList.split(',');
     var statsMap = {};
@@ -128,6 +129,9 @@ function($scope, $route, $http, Layout) {
             loadStats(data);
             $scope.loaded = true;
         });
+
+    LocationBinder.bind($scope, 'selectedDay', 'day', function(val) { return val ? Number(val) : null; });
+    LocationBinder.bind($scope, 'selectedTime', 'time');
 
     $scope.stopStats = function(stopId) {
         var stats = selectedStats();
@@ -247,4 +251,26 @@ app.directive("rexPercentBar", function() {
         },
         templateUrl: baseDir + '/tpls/PercentBar.html'
       };
+});
+
+app.factory('LocationBinder', function($location) {
+    return {
+        bind: function(scope, scopeProperty, locationProperty, parser, formatter) {
+            scope[scopeProperty] = $location.search()[locationProperty] || null;
+
+            scope.$watch(scopeProperty, function(value) {
+                if (formatter)
+                    value = formatter(value);
+
+                $location.search(locationProperty, value);
+            });
+
+            scope.$watch(function() { return $location.search()[locationProperty] || null; }, function(value) {
+                if (parser)
+                    value = parser(value);
+
+                scope[scopeProperty] = value;
+            });
+        }
+    };
 });
