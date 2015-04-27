@@ -146,9 +146,34 @@ function($scope, $route, $http, Layout) {
             return stop.name;
     };
 
+    $scope.isDayEmpty = function(day) {
+        var dayId = day.id;
+        var dayTimes = statsMap[dayId];
+
+        if (!dayTimes)
+            return true;
+
+        for (var time in dayTimes)
+            if (dayTimes[time].info.num_trips > 0)
+                return false;
+
+        return true;
+    };
+
+    $scope.isTimeEmpty = function(time) {
+        var dayId = $scope.selectedDay || 'all';
+        var timeId = time.id;
+
+        var timeStats = statsMap[dayId] && statsMap[dayId][timeId];
+        if (timeStats && timeStats.info.num_trips > 0)
+            return false;
+
+        return true;
+    };
+
     function selectedStats() {
-        var dayId = $scope.selectedDay ? $scope.selectedDay.id : 'all';
-        var timeId = $scope.selectedTime ? $scope.selectedTime.id : 'all';
+        var dayId = $scope.selectedDay || 'all';
+        var timeId = $scope.selectedTime || 'all';
 
         var stats = statsMap[dayId] && statsMap[dayId][timeId] ? statsMap[dayId][timeId].stops : [];
         return stats;

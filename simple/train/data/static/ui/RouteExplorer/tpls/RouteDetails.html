@@ -12,7 +12,7 @@
                 <div class="btn-title">&zwnj;<i class="fa fa-calendar"></i></div>
                 <div class="btn-text">הכל</div>
             </div>
-            <div class="btn btn-default" ng-repeat="day in days" ng-model="$parent.selectedDay" btn-radio="day">
+            <div class="btn btn-default" ng-repeat="day in days" ng-class="{ disabled: isDayEmpty(day) }" ng-model="$parent.selectedDay" btn-radio="day.id">
                 <div class="btn-title">{{ day.abbr }}</div>
                 <div class="btn-text">{{ day.title }}</div>
             </div>
@@ -22,7 +22,7 @@
             <div class="btn btn-default" ng-model="selectedTime" btn-radio="null">
                 <div class="btn-text">הכל</div>
             </div>
-            <div class="btn btn-default" ng-repeat="time in times" ng-model="$parent.selectedTime" btn-radio="time">
+            <div class="btn btn-default" ng-repeat="time in times" ng-class="{ disabled: isTimeEmpty(time) }" ng-model="$parent.selectedTime" btn-radio="time.id">
                 <div class="btn-text">{{ time.from }}<br/>{{ time.to }}</div>
             </div>
         </div>
