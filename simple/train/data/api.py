@@ -112,7 +112,7 @@ def _parse_date(dt_str):
         return None
     try:
         d,m,y = [int(x) for x in dt_str.split('/')]
-        if y < 2014:
+        if y < 2013:
             raise errors.InputError('Wrong year %s for param %s' % (y,dt_str))
         return datetime.date(year=y,month=m,day=d)
     except ValueError,e:
@@ -126,6 +126,8 @@ def get_path_info_full(req):
     stop_ids = [int(s) for s in req.GET['stop_ids'].split(',')]
     from_date = _parse_date(req.GET.get('from_date'))
     to_date = _parse_date(req.GET.get('to_date'))
+    if from_date and to_date and from_date > to_date:
+        raise errors.InputError('from_date %s cannot be after to_date %s' % (from_date,to_date))
     filters = Filters(from_date=from_date,to_date=to_date)
     stats = _get_path_info_full(stop_ids,filters)
     stats.sort(key=_get_info_sort_key)
@@ -210,7 +212,7 @@ def _get_stats_table(stop_ids, routes, filters):
 
     first_stop_id = stop_ids[0]
     route_ids = [r.id for r in routes]
-    select_stmt = '''
+    select_stmt = ('''
         SELECT  count(s.stop_id) as num_trips,
                 s.stop_id as stop_id,
                 fs.week_day_pg,
@@ -235,19 +237,26 @@ def _get_stats_table(stop_ids, routes, filters):
         AND s.trip_id = t.id
 
         AND fs.stop_id = %(first_stop_id)s
-        AND   s.stop_id = ANY (ARRAY[%(stop_ids)s])
-        AND     t.valid
-        AND     r.id = ANY (ARRAY[%(route_ids)s])
-        GROUP BY s.stop_id,week_day_pg,hour_pg
+        AND s.stop_id = ANY (ARRAY[%(stop_ids)s])
+        AND t.valid
+        AND r.id = ANY (ARRAY[%(route_ids)s])'''
+    +
+    (' AND t.start_date >= %(start_date)s' if filters.from_date else '')
+    +
+    (' AND t.start_date <= %(to_date)s' if filters.to_date else '')
+    +
     '''
+        GROUP BY s.stop_id,week_day_pg,hour_pg
+    ''')
     select_kwargs = {
         'early_threshold': early_threshold,
         'late_threshold': late_threshold,
         'stop_ids': stop_ids,
         'route_ids': route_ids,
-        'first_stop_id': first_stop_id
+        'first_stop_id': first_stop_id,
+        'start_date': filters.from_date,
+        'to_date': filters.to_date
     }
-
     cursor = django.db.connection.cursor()
     cursor.execute(select_stmt,select_kwargs)
 
