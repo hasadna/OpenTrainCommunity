@@ -18,7 +18,9 @@
                         <span class="row-index">{{ $index + 1 | number }}</span>
                     <td>
                         <span class="stop-list">
-                            <span class="stop" ng-repeat="stop in route.stops track by $index">{{ stopName(stop) }} </span>
+                            <span class="stop" ng-repeat="stop in route.stops track by $index" ng-class="{ 'stop-collapsed': isCollapsed(stop) }" >
+                                {{ isCollapsed(stop) ? collapsedText(stop) : stopName(stop) }}
+                            </span>
                         </span>
                     </td>
                     <td>

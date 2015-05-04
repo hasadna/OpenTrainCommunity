@@ -75,7 +75,15 @@ function($scope, $location, $route, Layout) {
     $scope.stops = Layout.getStops();
     var origin = Layout.findStop($route.current.params.origin);
     var destination = Layout.findStop($route.current.params.destination);
-    $scope.routes = Layout.findRoutes(origin.id, destination.id);
+
+    var routes = Layout.findRoutes(origin.id, destination.id);
+    if (routes.length > 1)
+        collapseRoutes(routes);
+    $scope.routes = routes;
+
+    $scope.isCollapsed = function(value) {
+        return angular.isArray(value);
+    };
 
     $scope.stopName = function(stopId) {
         var stop = Layout.findStop(stopId);
@@ -83,6 +91,10 @@ function($scope, $location, $route, Layout) {
             return null;
 
         return stop.name;
+    };
+
+    $scope.collapsedText = function(stops) {
+        return "\u2022".repeat(stops.length);
     };
 
     $scope.barWidth = function(route) {
@@ -97,6 +109,59 @@ function($scope, $location, $route, Layout) {
     $scope.goToRouteDetails = function(route) {
         $location.path('/route-details/' + route.stops.join(','));
     };
+
+    function collapseRoutes(routes) {
+        var commonStops = findCommonStops(countStopFrequencies(routes), routes.length);
+
+        for (var routeIndex in routes) {
+            routes[routeIndex].stops = collapseStops(routes[routeIndex].stops, commonStops);
+        }
+
+        function countStopFrequencies(routes) {
+            var stopFrequencies = {};
+            for (var routeIndex in routes) {
+                var route = routes[routeIndex];
+                for (var i in route.stops) {
+                    var stopId = route.stops[i];
+                    if (!stopFrequencies[stopId])
+                        stopFrequencies[stopId] = 0;
+                    stopFrequencies[stopId]++;
+                }
+            }
+
+            return stopFrequencies;
+        }
+
+        function findCommonStops(stopFrequencies, routesCount) {
+            var commonStops = {};
+            for (var stopId in stopFrequencies)
+                if (stopFrequencies[stopId] == routesCount)
+                    commonStops[stopId] = true;
+
+            return commonStops;
+        }
+
+        function collapseStops(stops, commonStops) {
+            var collapsed = [];
+            var accumulator;
+
+            for (var i in stops) {
+                var stopId = stops[i];
+                if (i > 0 && i < stops.length - 1 && commonStops[stopId]) {
+                    if (!accumulator) {
+                        accumulator = [];
+                        collapsed.push(accumulator);
+                    }
+                    accumulator.push(stopId);
+                } else {
+                    accumulator = null;
+                    collapsed.push(stopId);
+                }
+            }
+
+            return collapsed;
+        }
+    }
 }]);
 
 app.controller('RouteDetailsController', ['$scope', '$route', '$http', '$location', 'LocationBinder', 'Layout',

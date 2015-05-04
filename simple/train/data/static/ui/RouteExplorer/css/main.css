@@ -7492,6 +7492,10 @@ table.table .table-header-secondary th {
   color: #8d8d8d;
   font-size: 14px;
   font-weight: bold; }
+  .stop-list .stop.stop-collapsed {
+    padding: 6px 0;
+    background: none;
+    border: none; }
 
 .stop-diagram {
   position: relative; }
