@@ -3,6 +3,11 @@ from django.http import HttpResponse, Http404
 import cache_utils
 import django.db
 import time
+from collections import namedtuple
+import datetime
+import errors
+
+Filters = namedtuple('Filters',['from_date','to_date'])
 
 def json_resp(obj, status=200):
     import json
@@ -102,12 +107,27 @@ def get_path_info(req):
     stat = [stat for stat in stats if stat['info']['hours'] == 'all' and stat['info']['week_day'] == 'all'][0]['stops']
     return json_resp(stat)
 
+def _parse_date(dt_str):
+    if dt_str is None:
+        return None
+    try:
+        d,m,y = [int(x) for x in dt_str.split('/')]
+        if y < 2014:
+            raise errors.InputError('Wrong year %s for param %s' % (y,dt_str))
+        return datetime.date(year=y,month=m,day=d)
+    except ValueError,e:
+        raise errors.InputError('Wrong date param %s: %s' % (dt_str,unicode(e)))
+
+
 
 @cache_utils.cacheit
 @benchit
 def get_path_info_full(req):
     stop_ids = [int(s) for s in req.GET['stop_ids'].split(',')]
-    stats = _get_path_info_full(stop_ids)
+    from_date = _parse_date(req.GET.get('from_date'))
+    to_date = _parse_date(req.GET.get('to_date'))
+    filters = Filters(from_date=from_date,to_date=to_date)
+    stats = _get_path_info_full(stop_ids,filters)
     stats.sort(key=_get_info_sort_key)
     return json_resp(stats)
 
@@ -118,15 +138,10 @@ def _get_info_sort_key(stat):
     return week_day,hours
 
 
-def _get_path_info_full(stop_ids):
+def _get_path_info_full(stop_ids, filters):
     # find all routes whose contains these stop ids
     routes = find_all_routes_with_stops(stop_ids)
-    #trips = []
-    #for r in routes:
-    #    trips.extend(list(r.trip_set.filter(valid=True)))
-
-    table = _get_stats_table(stop_ids, routes)
-
+    table = _get_stats_table(stop_ids, routes, filters)
     stats = _complete_table(table,stop_ids)
 
     return stats
@@ -189,7 +204,7 @@ def _complete_table(table,stop_ids):
     return result
 
 @benchit
-def _get_stats_table(stop_ids, routes):
+def _get_stats_table(stop_ids, routes, filters):
     early_threshold = -120
     late_threshold = 300
 
