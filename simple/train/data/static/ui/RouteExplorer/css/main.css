@@ -7535,8 +7535,6 @@ table.paths-list > tbody > tr {
   table.paths-list > tbody > tr:hover > td.row-index-cell {
     background-color: #fff;
     color: #9aca41;
-    -webkit-box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.25);
-    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.25);
     position: relative; }
     table.paths-list > tbody > tr:hover > td.row-index-cell :before {
       content: "";
