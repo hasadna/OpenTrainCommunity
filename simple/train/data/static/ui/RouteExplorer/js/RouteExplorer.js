@@ -27,7 +27,7 @@ function($routeProvider) {
                 }
             }
         })
-        .when('/route-details/:stop_ids', {
+        .when('/route-details/:routeId', {
             templateUrl: templateUrl('RouteDetails'),
             controller: 'RouteDetailsController',
             resolve: {
@@ -75,7 +75,23 @@ function($scope, $location, $route, Layout) {
     $scope.stops = Layout.getStops();
     var origin = Layout.findStop($route.current.params.origin);
     var destination = Layout.findStop($route.current.params.destination);
-    $scope.routes = Layout.findRoutes(origin.id, destination.id);
+
+    var routes = Layout.findRoutes(origin.id, destination.id);
+    if (routes.length > 1)
+        collapseRoutes(routes);
+    $scope.routes = routes;
+
+    $scope.isCollapsed = function(value) {
+        return angular.isArray(value);
+    };
+
+    $scope.isOrigin = function(stopId) {
+        return stopId == origin.id;
+    };
+
+    $scope.isDestination = function(stopId) {
+        return stopId == destination.id;
+    };
 
     $scope.stopName = function(stopId) {
         var stop = Layout.findStop(stopId);
@@ -83,6 +99,14 @@ function($scope, $location, $route, Layout) {
             return null;
 
         return stop.name;
+    };
+
+    $scope.collapsedText = function(stops) {
+        return "\u2022".repeat(stops.length);
+    };
+
+    $scope.expandedText = function(stops) {
+        return stops.map($scope.stopName).join(", ");
     };
 
     $scope.barWidth = function(route) {
@@ -95,14 +119,69 @@ function($scope, $location, $route, Layout) {
     };
 
     $scope.goToRouteDetails = function(route) {
-        $location.path('/route-details/' + route.stops.join(','));
+        $location.path('/route-details/' + route.id);
     };
+
+    function collapseRoutes(routes) {
+        var collapsibleStops = findCommonStops(countStopFrequencies(routes), routes.length);
+        delete collapsibleStops[origin.id];
+        delete collapsibleStops[destination.id];
+
+        for (var routeIndex in routes) {
+            routes[routeIndex].stops = collapseStops(routes[routeIndex].stops, collapsibleStops);
+        }
+
+        function countStopFrequencies(routes) {
+            var stopFrequencies = {};
+            for (var routeIndex in routes) {
+                var route = routes[routeIndex];
+                for (var i in route.stops) {
+                    var stopId = route.stops[i];
+                    if (!stopFrequencies[stopId])
+                        stopFrequencies[stopId] = 0;
+                    stopFrequencies[stopId]++;
+                }
+            }
+
+            return stopFrequencies;
+        }
+
+        function findCommonStops(stopFrequencies, routesCount) {
+            var commonStops = {};
+            for (var stopId in stopFrequencies)
+                if (stopFrequencies[stopId] == routesCount)
+                    commonStops[stopId] = true;
+
+            return commonStops;
+        }
+
+        function collapseStops(stops, collapsibleStops) {
+            var collapsed = [];
+            var accumulator;
+
+            for (var i in stops) {
+                var stopId = stops[i];
+                if (i > 0 && i < stops.length - 1 && collapsibleStops[stopId]) {
+                    if (!accumulator) {
+                        accumulator = [];
+                        collapsed.push(accumulator);
+                    }
+                    accumulator.push(stopId);
+                } else {
+                    accumulator = null;
+                    collapsed.push(stopId);
+                }
+            }
+
+            return collapsed;
+        }
+    }
 }]);
 
 app.controller('RouteDetailsController', ['$scope', '$route', '$http', '$location', 'LocationBinder', 'Layout',
 function($scope, $route, $http, $location, LocationBinder, Layout) {
-    var stopList = $route.current.params.stop_ids;
-    var stopIds = stopList.split(',');
+    var routeId = $route.current.params.routeId;
+    var stopIds = Layout.findRoute(routeId).stops;
     var statsMap = {};
 
     $scope.loaded = false;
@@ -124,7 +203,7 @@ function($scope, $route, $http, $location, LocationBinder, Layout) {
     $scope.selectedTime = null;
     $scope.times = [];
 
-    $http.get('/api/path-info-full', { params: { stop_ids: stopList } })
+    $http.get('/api/route-info-full', { params: { route_id: routeId } })
         .success(function(data) {
             loadStats(data);
             $scope.loaded = true;

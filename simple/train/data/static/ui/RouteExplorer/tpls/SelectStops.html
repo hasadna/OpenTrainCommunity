@@ -1,19 +1,20 @@
 <div class="select-stops-page">
-    <h1>בחר מוצא ויעד</h3>
+    <h1>בחר מוצא ויעד</h1>
     <div class="container">
-        <form ng-submit="goToRoutes()">
-            <div class="row">
-                <input ng-model="origin" name="origin" class="form-control" type="text" placeholder="מוצא" autocomplete="off"
-                    typeahead="stop as stop.name for stop in stops | filter:$viewValue" typeahead-editable="false" />
-            </div>
-            <div class="row">
-                <input ng-model="destination" name="destination" class="form-control" type="text" placeholder="יעד" autocomplete="off"
-                    typeahead="stop as stop.name for stop in stops | filter:$viewValue" typeahead-editable="false" />
-            </div>
-            <div class="row">
-                <button type="submit" class="btn btn-primary" ng-disabled="!formValid()">סע</input>
-            </div>
-            </div>
-        </form>
+        <div class="row">
+            <form ng-submit="goToRoutes()">
+                <div class="col-sm-4">
+                    <input ng-model="origin" name="origin" class="form-control" type="text" placeholder="מוצא" autocomplete="off"
+                        typeahead="stop as stop.name for stop in stops | filter:$viewValue" typeahead-editable="false" />
+                </div>
+                <div class="col-sm-4">
+                    <input ng-model="destination" name="destination" class="form-control" type="text" placeholder="יעד" autocomplete="off"
+                        typeahead="stop as stop.name for stop in stops | filter:$viewValue" typeahead-editable="false" />
+                </div>
+                <div class="col-sm-4">
+                    <button type="submit" class="btn btn-primary" ng-disabled="!formValid()">סע</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>

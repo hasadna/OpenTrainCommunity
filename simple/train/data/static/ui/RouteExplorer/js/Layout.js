@@ -5,6 +5,7 @@ function($http, $q) {
     var stops = [];
     var stopsMap = {};
     var routes = [];
+    var routesMap = {};
 
     var loaded = $q.all([
         $http.get('/api/stops')
@@ -16,9 +17,12 @@ function($http, $q) {
         $http.get('/api/all-routes')
             .success(function(data) {
                 routes = data.map(function(r) { return {
+                    id: r.id,
                     stops: r.stop_ids,
                     count: r.count
                 }; });
+
+                routesMap = routes.reduce(function(m, r) { m[r.id] = r; return m; }, {});
             })
     ]);
 
@@ -39,13 +43,14 @@ function($http, $q) {
             if (originIndex > destinationIndex)
                 return;
 
-            var routeStops = r.stops.slice(originIndex, destinationIndex + 1);
-            var routeId = routeStops.join(',');
+            var routeStops = r.stops;
+            var routeId = r.id;
 
             if (routeId in matchingRoutes)
                 matchingRoutes[routeId].count += r.count;
             else {
                 matchingRoutes[routeId] = {
+                    id: routeId,
                     stops: routeStops,
                     count: r.count
                 };
@@ -57,9 +62,14 @@ function($http, $q) {
         return matchingRoutes;
     };
 
+    var findRoute = function(routeId) {
+        return routesMap[routeId] || null;
+    };
+
     return {
         getStops: function() { return stops; },
         getRoutes: function() { return routes; },
+        findRoute: findRoute,
         findStop: findStop,
         findRoutes: findRoutes,
         loaded: loaded

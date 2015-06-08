@@ -17,7 +17,6 @@ table.paths-list {
 
             background-color: $table-bg-hover;
             color: $rex-accent-color;
-            @include box-shadow(3px 3px 8px rgba(0, 0, 0, 0.25));
             position: relative;
 
             :before {
@@ -44,6 +43,10 @@ table.paths-list {
                 @include rotate(-45deg);
             }
         }
+    }
+
+    .stop-list {
+        .stop-origin, .stop-destination { background-color: white; }
     }
 
     .count-bar { width: 100px; height: 5px; }

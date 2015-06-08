@@ -7492,6 +7492,10 @@ table.table .table-header-secondary th {
   color: #8d8d8d;
   font-size: 14px;
   font-weight: bold; }
+  .stop-list .stop.stop-collapsed {
+    padding: 6px 0;
+    background: none;
+    border: none; }
 
 .stop-diagram {
   position: relative; }
@@ -7535,8 +7539,6 @@ table.paths-list > tbody > tr {
   table.paths-list > tbody > tr:hover > td.row-index-cell {
     background-color: #fff;
     color: #9aca41;
-    -webkit-box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.25);
-    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.25);
     position: relative; }
     table.paths-list > tbody > tr:hover > td.row-index-cell :before {
       content: "";
@@ -7565,6 +7567,8 @@ table.paths-list > tbody > tr {
       -ms-transform: rotate(-45deg);
       -o-transform: rotate(-45deg);
       transform: rotate(-45deg); }
+table.paths-list .stop-list .stop-origin, table.paths-list .stop-list .stop-destination {
+  background-color: white; }
 table.paths-list .count-bar {
   width: 100px;
   height: 5px; }

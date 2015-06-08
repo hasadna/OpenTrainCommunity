@@ -55,10 +55,11 @@ def get_all_routes(req):
     for r in routes:
         # stop_ids = r.stop_ids
         # stops = [{'stop_id': stop_id} for stop_id in stop_ids]
-        result.append(
-            {'stop_ids': r.stop_ids,
-             'count': r.trips_count}
-        )
+        result.append({
+            'id': r.id,
+            'stop_ids': r.stop_ids,
+             'count': r.trips_count
+        })
     return json_resp(result)
 
 
@@ -133,6 +134,20 @@ def get_path_info_full(req):
     stats.sort(key=_get_info_sort_key)
     return json_resp(stats)
 
+
+@cache_utils.cacheit
+@benchit
+def get_route_info_full(req):
+    route_id = req.GET['route_id'];
+    from_date = _parse_date(req.GET.get('from_date'))
+    to_date = _parse_date(req.GET.get('to_date'))
+    if from_date and to_date and from_date > to_date:
+        raise errors.InputError('from_date %s cannot be after to_date %s' % (from_date,to_date))
+    filters = Filters(from_date=from_date,to_date=to_date)
+    stats = _get_route_info_full(route_id, filters)
+    stats.sort(key=_get_info_sort_key)
+    return json_resp(stats)
+
 def _get_info_sort_key(stat):
     info = stat['info']
     hours = info['hours'] if info['hours'] != 'all' else (1000,1000)
@@ -145,6 +160,13 @@ def _get_path_info_full(stop_ids, filters):
     routes = find_all_routes_with_stops(stop_ids)
     table = _get_stats_table(stop_ids, routes, filters)
     stats = _complete_table(table,stop_ids)
+
+    return stats
+
+def _get_route_info_full(route_id, filters):
+    route = Route.objects.get(id = route_id);
+    table = _get_stats_table(route.stop_ids, [route], filters)
+    stats = _complete_table(table, route.stop_ids);
 
     return stats
 
@@ -278,5 +300,3 @@ def _get_stats_table(stop_ids, routes, filters):
         stat = dict(zip(cols, row))
         result.append(stat)
     return result
-
-
