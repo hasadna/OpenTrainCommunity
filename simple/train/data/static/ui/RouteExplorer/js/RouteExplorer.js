@@ -105,6 +105,10 @@ function($scope, $location, $route, Layout) {
         return "\u2022".repeat(stops.length);
     };
 
+    $scope.expandedText = function(stops) {
+        return stops.map($scope.stopName).join(", ");
+    };
+
     $scope.barWidth = function(route) {
         var percentWidth = route.count * 100.0 / $scope.routes[0].count;
 
