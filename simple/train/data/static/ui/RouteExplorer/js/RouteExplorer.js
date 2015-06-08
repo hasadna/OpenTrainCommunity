@@ -27,7 +27,7 @@ function($routeProvider) {
                 }
             }
         })
-        .when('/route-details/:stop_ids', {
+        .when('/route-details/:routeId', {
             templateUrl: templateUrl('RouteDetails'),
             controller: 'RouteDetailsController',
             resolve: {
@@ -119,7 +119,7 @@ function($scope, $location, $route, Layout) {
     };
 
     $scope.goToRouteDetails = function(route) {
-        $location.path('/route-details/' + route.stops.join(','));
+        $location.path('/route-details/' + route.id);
     };
 
     function collapseRoutes(routes) {
@@ -180,8 +180,8 @@ function($scope, $location, $route, Layout) {
 
 app.controller('RouteDetailsController', ['$scope', '$route', '$http', '$location', 'LocationBinder', 'Layout',
 function($scope, $route, $http, $location, LocationBinder, Layout) {
-    var stopList = $route.current.params.stop_ids;
-    var stopIds = stopList.split(',');
+    var routeId = $route.current.params.routeId;
+    var stopIds = Layout.findRoute(routeId).stops;
     var statsMap = {};
 
     $scope.loaded = false;
@@ -203,7 +203,7 @@ function($scope, $route, $http, $location, LocationBinder, Layout) {
     $scope.selectedTime = null;
     $scope.times = [];
 
-    $http.get('/api/path-info-full', { params: { stop_ids: stopList } })
+    $http.get('/api/path-info-full', { params: { stop_ids: stopIds.join(',') } })
         .success(function(data) {
             loadStats(data);
             $scope.loaded = true;
