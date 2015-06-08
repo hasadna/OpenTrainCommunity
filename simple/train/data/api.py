@@ -55,10 +55,11 @@ def get_all_routes(req):
     for r in routes:
         # stop_ids = r.stop_ids
         # stops = [{'stop_id': stop_id} for stop_id in stop_ids]
-        result.append(
-            {'stop_ids': r.stop_ids,
-             'count': r.trips_count}
-        )
+        result.append({
+            'id': r.id,
+            'stop_ids': r.stop_ids,
+             'count': r.trips_count
+        })
     return json_resp(result)
 
 
@@ -278,5 +279,3 @@ def _get_stats_table(stop_ids, routes, filters):
         stat = dict(zip(cols, row))
         result.append(stat)
     return result
-
-
