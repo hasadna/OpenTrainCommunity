@@ -7567,6 +7567,8 @@ table.paths-list > tbody > tr {
       -ms-transform: rotate(-45deg);
       -o-transform: rotate(-45deg);
       transform: rotate(-45deg); }
+table.paths-list .stop-list .stop-origin, table.paths-list .stop-list .stop-destination {
+  background-color: white; }
 table.paths-list .count-bar {
   width: 100px;
   height: 5px; }

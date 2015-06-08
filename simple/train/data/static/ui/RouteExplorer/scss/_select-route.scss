@@ -45,6 +45,10 @@ table.paths-list {
         }
     }
 
+    .stop-list {
+        .stop-origin, .stop-destination { background-color: white; }
+    }
+
     .count-bar { width: 100px; height: 5px; }
     .count-bar-value { background-color: #b3b3b3; height: 100%; }
 }

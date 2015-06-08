@@ -85,6 +85,14 @@ function($scope, $location, $route, Layout) {
         return angular.isArray(value);
     };
 
+    $scope.isOrigin = function(stopId) {
+        return stopId == origin.id;
+    };
+
+    $scope.isDestination = function(stopId) {
+        return stopId == destination.id;
+    };
+
     $scope.stopName = function(stopId) {
         var stop = Layout.findStop(stopId);
         if (!stop)
@@ -111,10 +119,12 @@ function($scope, $location, $route, Layout) {
     };
 
     function collapseRoutes(routes) {
-        var commonStops = findCommonStops(countStopFrequencies(routes), routes.length);
+        var collapsibleStops = findCommonStops(countStopFrequencies(routes), routes.length);
+        delete collapsibleStops[origin.id];
+        delete collapsibleStops[destination.id];
 
         for (var routeIndex in routes) {
-            routes[routeIndex].stops = collapseStops(routes[routeIndex].stops, commonStops);
+            routes[routeIndex].stops = collapseStops(routes[routeIndex].stops, collapsibleStops);
         }
 
         function countStopFrequencies(routes) {
@@ -141,13 +151,13 @@ function($scope, $location, $route, Layout) {
             return commonStops;
         }
 
-        function collapseStops(stops, commonStops) {
+        function collapseStops(stops, collapsibleStops) {
             var collapsed = [];
             var accumulator;
 
             for (var i in stops) {
                 var stopId = stops[i];
-                if (i > 0 && i < stops.length - 1 && commonStops[stopId]) {
+                if (i > 0 && i < stops.length - 1 && collapsibleStops[stopId]) {
                     if (!accumulator) {
                         accumulator = [];
                         collapsed.push(accumulator);

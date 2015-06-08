@@ -39,13 +39,14 @@ function($http, $q) {
             if (originIndex > destinationIndex)
                 return;
 
-            var routeStops = r.stops.slice(originIndex, destinationIndex + 1);
+            var routeStops = r.stops;
             var routeId = routeStops.join(',');
 
             if (routeId in matchingRoutes)
                 matchingRoutes[routeId].count += r.count;
             else {
                 matchingRoutes[routeId] = {
+                    id: routeId,
                     stops: routeStops,
                     count: r.count
                 };
