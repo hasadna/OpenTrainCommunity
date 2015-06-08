@@ -203,7 +203,7 @@ function($scope, $route, $http, $location, LocationBinder, Layout) {
     $scope.selectedTime = null;
     $scope.times = [];
 
-    $http.get('/api/path-info-full', { params: { stop_ids: stopIds.join(',') } })
+    $http.get('/api/route-info-full', { params: { route_id: routeId } })
         .success(function(data) {
             loadStats(data);
             $scope.loaded = true;
