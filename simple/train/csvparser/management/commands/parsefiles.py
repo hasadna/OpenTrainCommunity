@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-import parser.parse
+import csvparser.parse
 
 class Command(BaseCommand):
     args = ''
@@ -9,6 +9,6 @@ class Command(BaseCommand):
         if not args:
             raise CommandError('must give filename')
         for filename in args:
-            parser.parse.run(filename)
+            csvparser.parse.run(filename)
 
 
