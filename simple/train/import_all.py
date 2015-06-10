@@ -31,9 +31,9 @@ def main(csv_files):
         res = os.system('python manage.py parsecsv %s' % fullcsv)
         assert res == 0,'Failed in command'
 
-    print 'Creating materialied views'
+    print 'Creating materialized views'
     res = os.system('cat create_views.sql | python manage.py dbshell')
-    assret res == 0,'failed in create_view'
+    assert res == 0,'failed in create_view'
 
 if __name__ == '__main__':
     import argparse
