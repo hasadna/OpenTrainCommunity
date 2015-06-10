@@ -120,7 +120,7 @@ def _parse_date(dt_str):
         raise errors.InputError('Wrong date param %s: %s' % (dt_str,unicode(e)))
 
 
-
+"""
 @cache_utils.cacheit
 @benchit
 def get_path_info_full(req):
@@ -133,7 +133,7 @@ def get_path_info_full(req):
     stats = _get_path_info_full(stop_ids,filters)
     stats.sort(key=_get_info_sort_key)
     return json_resp(stats)
-
+"""
 
 @cache_utils.cacheit
 @benchit
@@ -154,7 +154,7 @@ def _get_info_sort_key(stat):
     week_day = info['week_day'] if info['week_day'] != 'all' else 1000
     return week_day,hours
 
-
+"""
 def _get_path_info_full(stop_ids, filters):
     # find all routes whose contains these stop ids
     routes = find_all_routes_with_stops(stop_ids)
@@ -162,10 +162,10 @@ def _get_path_info_full(stop_ids, filters):
     stats = _complete_table(table,stop_ids)
 
     return stats
-
+"""
 def _get_route_info_full(route_id, filters):
     route = Route.objects.get(id = route_id);
-    table = _get_stats_table(route.stop_ids, [route], filters)
+    table = _get_stats_table(route, filters)
     stats = _complete_table(table, route.stop_ids);
 
     return stats
@@ -228,17 +228,16 @@ def _complete_table(table,stop_ids):
     return result
 
 @benchit
-def _get_stats_table(stop_ids, routes, filters):
+def _get_stats_table(route, filters):
     early_threshold = -120
     late_threshold = 300
 
-    first_stop_id = stop_ids[0]
-    route_ids = [r.id for r in routes]
+    first_stop_id = route.stop_ids[0]
     select_stmt = ('''
         SELECT  count(s.stop_id) as num_trips,
                 s.stop_id as stop_id,
-                fs.week_day_pg,
-                fs.hour_pg as hour_pg,
+                th.week_day_pg,
+                th.hour_pg as hour_pg,
                 sum(case when s.delay_arrival <= %(early_threshold)s then 1 else 0 end) as arrival_early_count,
                 sum(case when s.delay_arrival > %(early_threshold)s and s.delay_arrival < %(late_threshold)s then 1 else 0 end) as arrival_on_time_count,
                 sum(case when s.delay_arrival >= %(late_threshold)s then 1 else 0 end) as arrival_late_count,
@@ -249,33 +248,28 @@ def _get_stats_table(stop_ids, routes, filters):
 
         FROM
         data_route as r,
-        data_trip as t,
-        data_sample_with_hour as fs,
+        trip_with_hour as th,
         data_sample as s
 
         WHERE
-        r.id = t.route_id
-        AND fs.trip_id = t.id
-        AND s.trip_id = t.id
-
-        AND fs.stop_id = %(first_stop_id)s
-        AND s.stop_id = ANY (ARRAY[%(stop_ids)s])
-        AND t.valid
-        AND r.id = ANY (ARRAY[%(route_ids)s])'''
+        r.id = %(route_id)s
+        AND th.route_id = r.id
+        AND th.valid
+        AND s.trip_id = th.id
+        '''
     +
-    (' AND t.start_date >= %(start_date)s' if filters.from_date else '')
+    (' AND th.start_date >= %(start_date)s' if filters.from_date else '')
     +
-    (' AND t.start_date <= %(to_date)s' if filters.to_date else '')
+    (' AND th.start_date <= %(to_date)s' if filters.to_date else '')
     +
     '''
         GROUP BY s.stop_id,week_day_pg,hour_pg
     ''')
     select_kwargs = {
+        'route_id': route.id,
         'early_threshold': early_threshold,
         'late_threshold': late_threshold,
-        'stop_ids': stop_ids,
-        'route_ids': route_ids,
-        'first_stop_id': first_stop_id,
+        'stop_ids': route.stop_ids,
         'start_date': filters.from_date,
         'to_date': filters.to_date
     }
