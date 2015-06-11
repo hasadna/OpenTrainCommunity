@@ -100,14 +100,14 @@ def _check_hours():
 
 _check_hours()
 
-
+"""
 @cache_utils.cacheit
 def get_path_info(req):
     stop_ids = [int(s) for s in req.GET['stop_ids'].split(',')]
     stats = _get_path_info_full(stop_ids)
     stat = [stat for stat in stats if stat['info']['hours'] == 'all' and stat['info']['week_day'] == 'all'][0]['stops']
     return json_resp(stat)
-
+"""
 def _parse_date(dt_str):
     if dt_str is None:
         return None
@@ -118,7 +118,6 @@ def _parse_date(dt_str):
         return datetime.date(year=y,month=m,day=d)
     except ValueError,e:
         raise errors.InputError('Wrong date param %s: %s' % (dt_str,unicode(e)))
-
 
 """
 @cache_utils.cacheit
