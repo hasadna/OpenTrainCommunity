@@ -173,3 +173,12 @@ def gen_sql(csv_file):
     print 'Read %s rows' % (1+idx)
 
 
+def build_all_services():
+    routes = Route.objects.all()
+    print 'Found %s routes' % len(routes)
+    for idx,route in enumerate(routes):
+        route.group_into_services()
+        if (1+idx) % 10 == 0:
+            print 'Completed %s/%s routes' % (idx+1,len(routes))
+
+
