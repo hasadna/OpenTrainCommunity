@@ -1,7 +1,9 @@
 from django.db import models
 from django.conf import settings
 from djorm_pgarray.fields import IntegerArrayField
+import pytz
 
+ISRAEL_TIMEZONE = pytz.timezone(settings.TIME_ZONE)
 
 class Sample(models.Model):
     """
@@ -43,6 +45,19 @@ class Sample(models.Model):
                            self.stop_name,
                            self.actual_arrival)
 
+    def to_local_str_hm(self,dt):
+        if not dt:
+            return '----'
+        ldt = dt.astimezone(ISRAEL_TIMEZONE)
+        return ldt.strftime('%H%M')
+
+    def get_exp_time_string(self):
+        """
+        :return: HHMMHHMM of exp arrival and exp departure (or ----)
+        """
+        return '%s%s' % (self.to_local_str_hm(self.exp_arrival),
+                         self.to_local_str_hm(self.exp_departure))
+
     def to_json(self):
         import services
         stop_name = services.get_stop_name(self.stop_id,self.stop_name)
@@ -63,6 +78,11 @@ class Sample(models.Model):
                 'link' : remove_site(self.data_file_link)
         }
 
+class Service(models.Model):
+    route = models.ForeignKey('Route')
+    trips = models.ManyToManyField('Trip')
+    local_time_str = models.TextField(default=None)
+
 class Trip(models.Model):
     id = models.CharField(primary_key=True,max_length=30,db_index=True,unique=True)
     train_num = models.IntegerField(db_index=True)
@@ -73,6 +93,13 @@ class Trip(models.Model):
     train_num = models.IntegerField(db_index=True) # the train num as given in the text files
     start_date = models.DateField(db_index=True) # the start date of the trip (note that trip can be spanned over two days)
 
+
+    def get_exp_time_strings(self):
+        """
+        :return: common separated string of all exp time in local time
+        """
+        samples = self.sample_set.filter(valid=True).order_by('index')
+        return ','.join(s.get_exp_time_string() for s in samples)
 
     def to_json(self):
         stops = [stop.to_json() for stop in self.sample_set.filter(is_real_stop=True).order_by('index')]
@@ -101,3 +128,17 @@ class Route(models.Model):
         import services
         for idx,stop_id in enumerate(self.stop_ids):
             print '%2d %s' % (idx,services.get_stop_name(stop_id))
+
+
+    def group_into_services(self):
+        from itertools import groupby
+        trips = self.trip_set.all()
+        group_it = groupby(trips, key=lambda t:t.get_exp_time_strings())
+        for k, trips_it in group_it:
+            s = Service.objects.get_or_create(route=self,
+                                              local_time_str=k
+                                              )[0]
+            s.trips.add(*list(trips_it))
+
+
+
