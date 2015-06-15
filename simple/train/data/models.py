@@ -112,7 +112,7 @@ class Trip(models.Model):
                 }
 
     def print_nice(self):
-        samples = self.sample_set.all().order_by('index')
+        samples = self.sample_set.filter(is_real_stop=True).order_by('index')
         for sample in samples:
             sample.print_nice()
 
