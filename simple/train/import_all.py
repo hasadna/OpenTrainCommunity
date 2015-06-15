@@ -18,6 +18,11 @@ CSV_FILES = ['01_2013.csv',
              '12_2013.csv',
              '2014.csv']
 
+def run_command(cmd):
+    res = os.system(cmd)
+    assert res == 0,'Failed in command %s' % cmd
+        
+
 def main(csv_files):
     if not csv_files:
         csv_files = []
@@ -28,12 +33,13 @@ def main(csv_files):
     for idx,fullcsv in enumerate(csv_files):
         print '%2d) %s' % (idx,fullcsv)
     for fullcsv in csv_files:
-        res = os.system('python manage.py parsecsv %s' % fullcsv)
-        assert res == 0,'Failed in command'
+        run_command('python manage.py parsecsv %s' % fullcsv)
 
     print 'Creating materialized views'
-    res = os.system('cat create_views.sql | python manage.py dbshell')
-    assert res == 0,'failed in create_view'
+    run_command('cat create_views.sql | python manage.py dbshell')
+
+    print 'Building routes - takes long time'
+    run_command('python manage.py build_services')
 
 if __name__ == '__main__':
     import argparse

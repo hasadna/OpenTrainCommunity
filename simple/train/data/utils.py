@@ -128,6 +128,7 @@ def import_current_csv(csv_file):
     print 'Read %s rows' % (1+idx)
 
 def build_all_services():
+    print 'In build_all_services'
     routes = Route.objects.all()
     print 'Found %s routes' % len(routes)
     for idx,route in enumerate(routes):
