@@ -127,52 +127,6 @@ def import_current_csv(csv_file):
 
     print 'Read %s rows' % (1+idx)
 
-@benchit
-def gen_sql(csv_file):
-    keys = ['train_num',
-            'start_date',
-            'trip_name',
-            'index',
-            'stop_id',
-            'stop_name',
-            'is_real_stop',
-            'valid',
-            'is_first',
-            'is_last',
-            'actual_arrival',
-            'exp_arrival',
-            'delay_arrival',
-            'actual_departure',
-            'exp_departure',
-            'delay_departure',
-            'data_file',
-            'data_file_line',
-            'data_file_link']
-    keys_str = ','.join('"%s"' % k for k in keys)
-    sql_file = csv_file.replace('.csv', '.sql')
-    chunk_size = 10000
-    build_current_trips(csv_file)
-
-    with open(sql_file, 'w') as sh:
-        with open(csv_file) as fh:
-            reader = csv.DictReader(fh)
-            for idx, row in enumerate(reader):
-                if idx % chunk_size == 0:
-                    sh.write('INSERT INTO data_sample(%s) VALUES ' % keys_str)
-                values = ["'%s'" % row[k] if row[k] != '' else 'NULL' for k in keys]
-                if idx % chunk_size > 0:
-                    sh.write(',');
-                sh.write('(%s)' % ','.join(values))
-                if idx % chunk_size == chunk_size - 1:
-                    sh.write(';\n')
-                else:
-                    sh.write('\n')
-                if idx % 10000 == 0:
-                    print 'Read %s rows' % (1+idx)
-        sh.write(';\n')
-    print 'Read %s rows' % (1+idx)
-
-
 def build_all_services():
     routes = Route.objects.all()
     print 'Found %s routes' % len(routes)
