@@ -146,9 +146,9 @@ class Route(models.Model):
         last_stop_name = services.get_heb_stop_name(self.stop_ids[-1])
 
         result = '%s: %s stops from %s to %s' % (self.id,
-                                                 len(self.stop_ids),
-                                                 first_stop_name,
-                                                 last_stop_name
+                                                len(self.stop_ids),
+                                                first_stop_name,
+                                                last_stop_name,
                                                )
         return unicode(result)
 
