@@ -13,6 +13,6 @@ urlpatterns = patterns('',
                        url(r'^admin/', include(admin.site.urls)),
                        url(r'^raw-data', 'data.views.show_raw_data'),
                        url(r'api/',include('data.urls')),
-                       url(r'^ui/routes/?$', 'data.views.route_explorer')
+                       url(r'^ui/routes/?$', 'data.views.route_explorer'),
 )
 

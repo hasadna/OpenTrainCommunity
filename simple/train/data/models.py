@@ -140,6 +140,12 @@ class Route(models.Model):
                                               )[0]
             s.trips.add(*list(trips_it))
 
+    def admin_unicode(self):
+        import services
+        return '%s: %s stops from %s to %s' % (self.id,
+                                               len(self.stop_ids),
+                                               services.get_stop_name(self.stop_ids[0]),
+                                               services.get_stop_name(self.stop_ids[-1]))
 
 
 
