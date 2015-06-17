@@ -140,6 +140,15 @@ class Route(models.Model):
                                               )[0]
             s.trips.add(*list(trips_it))
 
+
+    def first_stop_heb_name(self):
+        import services
+        return services.get_heb_stop_name(self.stop_ids[0])
+
+    def last_stop_heb_name(self):
+        import services
+        return services.get_heb_stop_name(self.stop_ids[-1])
+
     def admin_unicode(self):
         import services
         first_stop_name = services.get_heb_stop_name(self.stop_ids[0])

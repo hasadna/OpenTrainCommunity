@@ -4,13 +4,17 @@ from models import Route, Service, Trip, Sample
 from django.db.models import Count
 # Register your models here.
 
+admin.site.disable_action('delete_selected')
+
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
     pass
+    #list_display = ('start_hour','end_hour')
+    #def start_hour(self,obj):
+    #    return obj.trip_set.all
 
 class ServiceInline(admin.TabularInline):
     model = Service
-
 
 @admin.register(Route)
 class RouteAdmin(admin.ModelAdmin):
@@ -19,7 +23,7 @@ class RouteAdmin(admin.ModelAdmin):
         ServiceInline,
     ]
 
-    def queryset(self, request):
+    def get_queryset(self, request):
         qs = super(RouteAdmin, self).queryset(request)
         return qs.annotate(service_count=Count('service'))
 

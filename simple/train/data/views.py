@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 import codecs
 import os.path
 from django.conf import settings
@@ -41,3 +41,14 @@ def show_routes(req):
                                                 'app': 'ShowRoutes'})
 def route_explorer(req):
     return render(req, 'ui/RouteExplorer.html')
+
+def browse_routes(req):
+    from models import Route
+    routes = Route.objects.all()
+    return render(req,'browse/browse_routes.html',{'routes':routes})
+
+def browse_route(req,route_id):
+    from models import Route
+    route = get_object_or_404(Route,pk=route_id)
+    return render(req,'browse/browse_route.html',{'route':route})
+
