@@ -13,7 +13,7 @@ def show_raw_data(req):
     ctx = dict()
     cur_lineno = 1
     lines = []
-    file_path = os.path.join(settings.BASE_DIR, 'csvparser/unzip_data/%s' % filename)
+    file_path = os.path.join(settings.CSV_FOLDER,filename)
     with codecs.open(file_path, encoding="windows-1255") as fh:
         for line in fh:
             if cur_lineno >= from_lineno and cur_lineno <= to_lineno:
