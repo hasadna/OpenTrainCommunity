@@ -1,8 +1,24 @@
 <h2>Route {{route.id}}</h2>
-<h3>Stops</h3>
+<h3> {{route.stop_ids | length}} Stops</h3>
 <ul>
 {% for stop in route.get_stops %}
 <li>{{stop.heb_stop_names.0}}</li>
 {% endfor %}
 </ul>
-<h3>Services</h3>
+<h3>{{route.service_set.count}} Services</h3>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Departure Time (local)</th>
+        <th>Arrival Time (local)</th>
+        <th># trips</th>
+    </tr>
+{% for service in route.service_set.all %}
+   <tr>
+       <td><a href="/browse/services/{{service.id}}/">{{service.id}}</a></td>
+       <td>{{service.get_departure_time_str}}</td>
+       <td>{{service.get_arrival_time_str}}</td>
+       <td>{{service.trips.count}}</td>
+   </tr>
+{% endfor %}
+</table>

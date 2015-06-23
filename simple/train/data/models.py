@@ -83,6 +83,18 @@ class Service(models.Model):
     trips = models.ManyToManyField('Trip')
     local_time_str = models.TextField(default=None)
 
+    def get_departure_time_str(self):
+        trip = self.trips.all()[0]
+        first_sample = trip.sample_set.filter(valid=True).earliest('index')
+        return first_sample.exp_departure.astimezone(ISRAEL_TIMEZONE).time().strftime('%H:%M')
+
+    def get_arrival_time_str(self):
+        trip = self.trips.all()[0]
+        first_sample = trip.sample_set.filter(valid=True).latest('index')
+        return first_sample.exp_arrival.astimezone(ISRAEL_TIMEZONE).time().strftime('%H:%M')
+
+
+
 class Trip(models.Model):
     id = models.CharField(primary_key=True,max_length=30,db_index=True,unique=True)
     train_num = models.IntegerField(db_index=True)

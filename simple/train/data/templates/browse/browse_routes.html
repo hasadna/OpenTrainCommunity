@@ -7,6 +7,9 @@
         From &#8605; To
     </th>
     <th>
+        Number of Stops
+    </th>
+    <th>
         Number of Services
     </th>
 </tr>
@@ -19,6 +22,9 @@
         {{route.first_stop_heb_name}}
         &#8605;
         {{route.last_stop_heb_name}}
+    </td>
+    <td>
+        {{route.stop_ids | length}}
     </td>
     <td>
         {{route.service_set.count}}
