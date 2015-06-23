@@ -112,7 +112,7 @@ LOGGING = {
     },
 }
 
-CSV_FOLDER = os.path.join(BASE_DIR, 'csvparser/unzip_data')
+TXT_FOLDER = os.path.join(BASE_DIR, 'csvparser/unzip_data')
 
 try:
     from local_settings import *
