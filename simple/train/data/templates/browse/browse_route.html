@@ -1,10 +1,15 @@
 <h2>Route {{route.id}}</h2>
 <h3> {{route.stop_ids | length}} Stops</h3>
-<ul>
+<table>
+<tr>
+    <th>Stop Name</th>
+</tr>
 {% for stop in route.get_stops %}
-<li>{{stop.heb_stop_names.0}}</li>
+<tr>
+    <td>{{stop.heb_stop_names.0}}</td>
+</tr>
 {% endfor %}
-</ul>
+</table>
 <h3>{{route.service_set.count}} Services</h3>
 <table>
     <tr>
