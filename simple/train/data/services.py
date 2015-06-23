@@ -68,10 +68,13 @@ def get_heb_stop_name(stop_id,defval=None):
         return STOPS[stop_id]['heb_stop_names'][0]
     return defval or unicode(stop_id)
 
-def get_stops():
+def get_stops(stop_ids=None):
     read_json()
     global STOPS
-    return STOPS.values()[:]
+    if stop_ids is None:
+        return STOPS.values()[:]
+    return [STOPS[stop_id] for stop_id in stop_ids]
+
 
 def get_stop(stop_id):
     global STOPS

@@ -1,2 +1,8 @@
-{{route.id}}
-        
+<h2>Route {{route.id}}</h2>
+<h3>Stops</h3>
+<ul>
+{% for stop in route.get_stops %}
+<li>{{stop.heb_stop_names.0}}</li>
+{% endfor %}
+</ul>
+<h3>Services</h3>

@@ -130,6 +130,7 @@ class Route(models.Model):
             print '%2d %s' % (idx,services.get_stop_name(stop_id))
 
 
+
     def group_into_services(self):
         from itertools import groupby
         trips = self.trip_set.all()
@@ -141,6 +142,10 @@ class Route(models.Model):
             s.trips.add(*list(trips_it))
 
 
+    def get_stops(self):
+        import services
+        return services.get_stops(self.stop_ids)
+
     def first_stop_heb_name(self):
         import services
         return services.get_heb_stop_name(self.stop_ids[0])
@@ -148,6 +153,7 @@ class Route(models.Model):
     def last_stop_heb_name(self):
         import services
         return services.get_heb_stop_name(self.stop_ids[-1])
+
 
     def admin_unicode(self):
         import services
