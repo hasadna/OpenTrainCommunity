@@ -45,11 +45,11 @@ class Sample(models.Model):
                            self.stop_name,
                            self.actual_arrival)
 
-    def to_local_str_hm(self,dt):
+    def to_local_str_hm(self,dt,sep=''):
         if not dt:
             return '----'
         ldt = dt.astimezone(ISRAEL_TIMEZONE)
-        return ldt.strftime('%H%M')
+        return ldt.strftime('%H' + sep + '%M')
 
     def get_exp_time_string(self):
         """
@@ -85,14 +85,27 @@ class Service(models.Model):
 
     def get_departure_time_str(self):
         trip = self.trips.all()[0]
-        first_sample = trip.sample_set.filter(valid=True).earliest('index')
-        return first_sample.exp_departure.astimezone(ISRAEL_TIMEZONE).time().strftime('%H:%M')
+        first_sample = trip.sample_set.filter(valid=True,is_real_stop=True).earliest('index')
+        return first_sample.to_local_str_hm(first_sample.exp_departure,':')
 
     def get_arrival_time_str(self):
         trip = self.trips.all()[0]
-        first_sample = trip.sample_set.filter(valid=True).latest('index')
-        return first_sample.exp_arrival.astimezone(ISRAEL_TIMEZONE).time().strftime('%H:%M')
+        last_sample = trip.sample_set.filter(valid=True,is_real_stop=True).latest('index')
+        return last_sample.to_local_str_hm(last_sample.exp_arrival,':')
 
+    def get_stops(self):
+        import services
+        trip = self.trips.first()
+        samples = trip.get_real_stop_samples()
+        result = []
+        for sample in samples:
+            result.append({
+                'stop_id' : sample.stop_id,
+                'stop_name' : services.get_heb_stop_name(sample.stop_id),
+                    'exp_arrival': sample.to_local_str_hm(sample.exp_arrival,':'),
+                    'exp_departure': sample.to_local_str_hm(sample.exp_departure,':'),
+                    })
+        return result
 
 
 class Trip(models.Model):
@@ -110,8 +123,11 @@ class Trip(models.Model):
         """
         :return: common separated string of all exp time in local time
         """
-        samples = self.sample_set.filter(valid=True).order_by('index')
+        samples = self.get_real_stop_samples()
         return ','.join(s.get_exp_time_string() for s in samples)
+
+    def get_real_stop_samples(self):
+        return self.sample_set.filter(valid=True,is_real_stop=True).order_by('index')
 
     def to_json(self):
         stops = [stop.to_json() for stop in self.sample_set.filter(is_real_stop=True).order_by('index')]
@@ -142,6 +158,8 @@ class Route(models.Model):
             print '%2d %s' % (idx,services.get_stop_name(stop_id))
 
 
+    def get_services(self):
+        return self.service_set.all().order_by('id')
 
     def group_into_services(self):
         from itertools import groupby

@@ -18,7 +18,7 @@
         <th>Arrival Time (local)</th>
         <th># trips</th>
     </tr>
-{% for service in route.service_set.all %}
+{% for service in route.get_services %}
    <tr>
        <td><a href="/browse/services/{{service.id}}/">{{service.id}}</a></td>
        <td>{{service.get_departure_time_str}}</td>
