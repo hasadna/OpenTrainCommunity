@@ -1,5 +1,4 @@
 {% load staticfiles %}
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -13,6 +12,11 @@
     <link href="{% static 'bs/css/bootstrap.min.css' %}" rel="stylesheet">
   </head>
   <body>
+  <ol class="breadcrumb">
+    {% for bc in breadcrumbs %}
+        <li><a href="{{bc.link}}">{{bc.name}}</a></li>
+    {% endfor %}
+   </ol>
     {% block content %}
     {% endblock %}
 

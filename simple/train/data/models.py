@@ -40,6 +40,12 @@ class Sample(models.Model):
     data_file_link = models.URLField(max_length=200) # link to show the snippet of the text file in browser
     trip = models.ForeignKey('Trip',blank=True,null=True)
 
+    def get_parent(self):
+        return self.trip
+
+    def get_short_name(self):
+        return 'Sample %s' % self.id
+
     def print_nice(self):
         print '%2d) %-20s %s' % (self.index,
                            self.stop_name,
@@ -83,6 +89,17 @@ class Service(models.Model):
     trips = models.ManyToManyField('Trip')
     local_time_str = models.TextField(default=None)
 
+    def get_parent(self):
+        return self.route
+
+    def get_short_name(self):
+        return 'Service %s' % self.id
+
+    def get_short_name(self):
+        return 'Service %s: %s to %s' % (self.id,
+                                         self.get_departure_time_str(),
+                                         self.get_arrival_time_str())
+
     def get_departure_time_str(self):
         trip = self.trips.all()[0]
         first_sample = trip.sample_set.filter(valid=True,is_real_stop=True).earliest('index')
@@ -119,6 +136,12 @@ class Trip(models.Model):
     start_date = models.DateField(db_index=True) # the start date of the trip (note that trip can be spanned over two days)
 
 
+    def get_parent(self):
+        return self.service_set.all()[0]
+
+    def get_short_name(self):
+        return 'Trip %s on %s' % (self.id,self.start_date.strftime('%d/%m/%Y'))
+
     def get_exp_time_strings(self):
         """
         :return: common separated string of all exp time in local time
@@ -152,6 +175,15 @@ class Route(models.Model):
         last_stop = services.get_stop(self.stop_ids[-1])
         return first_stop['latlon'][0] < last_stop['latlon'][0]
 
+    def get_parent(self):
+        return None
+
+    def get_short_name(self):
+        import services
+        return 'Route %s: %s to %s' % (self.id,
+                                       services.get_stop_name(self.stop_ids[0]),
+                                       services.get_stop_name(self.stop_ids[-1]))
+
     def print_nice(self):
         import services
         for idx,stop_id in enumerate(self.stop_ids):
@@ -179,7 +211,7 @@ class Route(models.Model):
     def first_stop_id(self):
         return self.stop_ids[0]
 
-    def last_stop_heb_name(self):
+    def last_stop_id(self):
         return self.stop_ids[-1]
 
     def admin_unicode(self):
