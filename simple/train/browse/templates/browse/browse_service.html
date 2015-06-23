@@ -1,6 +1,9 @@
+{% extends "base.html" %}
+{% load ot_filters %}
+{% block content %}
 <h2>Service {{service.id}}</h2>
 <h3> {{service.route.stop_ids | length}} Stops</h3>
-<table>
+<table class="table">
 <tr>
     <th>GTFS id</th>
     <th>Stop Name</th>
@@ -10,22 +13,26 @@
 {% for stop in service.get_stops %}
 <tr>
     <td>{{stop.stop_id}}</td>
-    <td>{{stop.stop_name}}</td>
+    <td>{{stop.stop_id | heb_stop_name}}</td>
     <td>{{stop.exp_arrival}}</td>
     <td>{{stop.exp_departure}}</td>
 </tr>
 {% endfor %}
 </table>
 <h3>{{service.trips.count}} Trips</h3>
-<table>
+<table class="table">
     <tr>
         <th>ID</th>
         <th>Date</th>
         <th>Train Num</th>
     </tr>
     {% for trip in service.trips.all %}
+    <tr>
         <td><a href="/browse/trips/{{trip.id}}/">{{trip.id}}</a></td>
         <td>{{trip.start_date | date:"d/m/Y"}}</td>
         <td>{{trip.train_num}}</td>
+     </tr>
     {% endfor %}
 </table>
+{% endblock %}
+

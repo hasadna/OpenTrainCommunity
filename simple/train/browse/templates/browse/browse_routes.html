@@ -1,4 +1,7 @@
-<table>
+{% extends "base.html" %}
+{% load ot_filters %}
+{% block content %}
+<table class="table">
 <tr>
     <th>
         Id
@@ -22,10 +25,10 @@
         <a href="/browse/routes/{{route.id}}/">{{route.id}}</a>
     </td>
     <td>
-        {{route.first_stop_heb_name}}
+        {{route.first_stop_id | heb_stop_name}}
     </td>
     <td>
-        {{route.last_stop_heb_name}}
+        {{route.last_stop_id | heb_stop_name}}
     </td>
     <td>
         {{route.stop_ids | length}}
@@ -36,3 +39,4 @@
 </tr>
 {% endfor %}
 </table>
+ {% endblock %}

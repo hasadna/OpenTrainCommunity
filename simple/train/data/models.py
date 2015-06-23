@@ -176,14 +176,11 @@ class Route(models.Model):
         import services
         return services.get_stops(self.stop_ids)
 
-    def first_stop_heb_name(self):
-        import services
-        return services.get_heb_stop_name(self.stop_ids[0])
+    def first_stop_id(self):
+        return self.stop_ids[0]
 
     def last_stop_heb_name(self):
-        import services
-        return services.get_heb_stop_name(self.stop_ids[-1])
-
+        return self.stop_ids[-1]
 
     def admin_unicode(self):
         import services

@@ -13,7 +13,7 @@ def show_raw_data(req):
     ctx = dict()
     cur_lineno = 1
     lines = []
-    file_path = os.path.join(settings.BASE_DIR, 'parser/unzip_data/%s' % filename)
+    file_path = os.path.join(settings.BASE_DIR, 'csvparser/unzip_data/%s' % filename)
     with codecs.open(file_path, encoding="windows-1255") as fh:
         for line in fh:
             if cur_lineno >= from_lineno and cur_lineno <= to_lineno:
@@ -41,24 +41,4 @@ def show_routes(req):
                                                 'app': 'ShowRoutes'})
 def route_explorer(req):
     return render(req, 'ui/RouteExplorer.html')
-
-def browse_routes(req):
-    from models import Route
-    routes = Route.objects.all()
-    return render(req,'browse/browse_routes.html',{'routes':routes})
-
-def browse_route(req,route_id):
-    from models import Route
-    route = get_object_or_404(Route,pk=route_id)
-    return render(req,'browse/browse_route.html',{'route':route})
-
-def browse_service(req,service_id):
-    from models import Service
-    service = get_object_or_404(Service,pk=service_id)
-    return render(req,'browse/browse_service.html',{'service':service})
-
-def browse_trip(req,trip_id):
-    from models import Trip
-    trip = get_object_or_404(Trip,pk=trip_id)
-    return render(req,'browse/browse_trip.html',{'trip':trip})
 

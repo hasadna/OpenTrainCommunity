@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load ot_filters %}
+{% block content %}
+<h2>Trip {{trip.id}} in {{trip.start_date | date:"D, d/m/Y"}}</h2>
+
+<h3>{{samples | length }} Samples</h3>
+<table class="table">
+    <tr>
+        <th>
+            Stop Name
+        </th>
+        <th>
+            Exp Arrival
+        </th>
+        <th>
+            Actual Arrival
+        </th>
+        <th>
+            Exp Departure
+        </th>
+        <th>
+            Actual Departure
+        </th>
+        <th>
+            Link
+        </th>
+    </tr>
+{% for sample in samples %}
+    {% if sample.is_real_stop %}
+    <tr>
+        <td>{{sample.stop_id | heb_stop_name }}</td>
+        <td>{{sample.exp_arrival | stop_time}}</td>
+        <td>{{sample.actual_arrival | stop_time}}</td>
+        <td>{{sample.exp_departure | stop_time}}</td>
+        <td>{{sample.actual_departure | stop_time}}</td>
+        <td><a href="{{sample.data_file_link}}#{{sample.data_file_line}}">line #{{sample.data_file_line}}</a></td>
+    </tr>
+    {% endif %}
+{% endfor %}
+</table>
+{% endblock %}
