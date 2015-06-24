@@ -3,7 +3,7 @@
 {% block content %}
 <h2>{% trans 'File'%} {{filename}}</a></h2>
 <h3><a href="{{prev}}">{%trans 'prev' %}</a> <a href="{{next}}">{% trans 'next' %}</a></h3>
-<table>
+<table class="table table-hover">
     <thead>
     <tr>
         <th>{% trans 'Line No' %}</th>
@@ -13,7 +13,11 @@
     </thead>
     <tbody>
 {%for line in lines%}
-<tr>
+<tr
+    {% if line.lineno == lineno %}
+    class = "success"
+    {%endif %}
+        >
     <td>
         <samp><a name="{{line.lineno}}">#{{line.lineno}}</a></samp>
     </td>
