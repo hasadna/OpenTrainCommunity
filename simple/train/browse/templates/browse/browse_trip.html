@@ -13,7 +13,7 @@
             {% trans 'Stop Name' %}
         </th>
         <th>
-            {% trans 'Expexcted Arrival' %}
+            {% trans 'Expected Arrival' %}
         </th>
         <th>
             {% trans 'Actual Arrival' %}
@@ -36,7 +36,7 @@
         <td>{{sample.actual_arrival | stop_time}}</td>
         <td>{{sample.exp_departure | stop_time}}</td>
         <td>{{sample.actual_departure | stop_time}}</td>
-        <td><a href="{{sample.data_file_link}}#{{sample.data_file_line}}">{% trans 'line' %} #{{sample.data_file_line}}</a></td>
+        <td><a href="{{sample.get_text_link}}">{% trans 'line' %} #{{sample.data_file_line}}</a></td>
     </tr>
     {% endif %}
 {% endfor %}

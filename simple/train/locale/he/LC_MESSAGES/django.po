@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-24 09:52+0300\n"
+"POT-Creation-Date: 2015-06-24 12:04+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,7 +29,6 @@ msgid "Stops"
 msgstr "תחנות"
 
 #: browse/templates/browse/browse_route.html:10
-#: browse/templates/browse/browse_service.html:10
 #: browse/templates/browse/browse_trip.html:13
 msgid "Stop Name"
 msgstr "שם תחנה"
@@ -40,8 +39,7 @@ msgid "Services"
 msgstr "שירותים"
 
 #: browse/templates/browse/browse_route.html:21
-#: browse/templates/browse/browse_service.html:9
-#: browse/templates/browse/browse_service.html:26
+#: browse/templates/browse/browse_service.html:18
 msgid "ID"
 msgstr "מזהה"
 
@@ -73,24 +71,15 @@ msgstr "יעד"
 msgid "Service"
 msgstr "שירות"
 
-#: browse/templates/browse/browse_service.html:11
-msgid "Expected Arrival"
-msgstr "הגעה מתוכננת"
-
-#: browse/templates/browse/browse_service.html:12
-#: browse/templates/browse/browse_trip.html:22
-msgid "Expected Departure"
-msgstr "יציאה מתוכננת"
-
-#: browse/templates/browse/browse_service.html:23
+#: browse/templates/browse/browse_service.html:15
 msgid "Trips"
 msgstr "נסיעות"
 
-#: browse/templates/browse/browse_service.html:27
+#: browse/templates/browse/browse_service.html:19
 msgid "Date"
 msgstr "תאריך"
 
-#: browse/templates/browse/browse_service.html:28
+#: browse/templates/browse/browse_service.html:20
 msgid "Train Num"
 msgstr "מספר רכבת"
 
@@ -107,12 +96,16 @@ msgid "Samples"
 msgstr "דגימות"
 
 #: browse/templates/browse/browse_trip.html:16
-msgid "Expexcted Arrival"
+msgid "Expected Arrival"
 msgstr "הגעה מתוכננת"
 
 #: browse/templates/browse/browse_trip.html:19
 msgid "Actual Arrival"
 msgstr "הגעה בפועל"
+
+#: browse/templates/browse/browse_trip.html:22
+msgid "Expected Departure"
+msgstr "יציאה מתוכננת"
 
 #: browse/templates/browse/browse_trip.html:25
 msgid "Actual Departure"

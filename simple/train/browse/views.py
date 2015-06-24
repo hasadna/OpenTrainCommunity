@@ -1,6 +1,7 @@
 from data.models import Route,Service,Trip
 from django.shortcuts import render, get_object_or_404
 from django.utils.translation import ugettext as _
+from django.conf import settings
 
 def _build_breadcrumbs(obj=None):
     if obj is None:
@@ -38,3 +39,27 @@ def browse_trip(req,trip_id):
                                                  'samples': samples,
                                                   'breadcrumbs': _build_breadcrumbs(trip)})
 
+def show_raw_data(req):
+    import codecs
+    import os.path
+    OFFSET = 20
+    filename = req.GET['file']
+    lineno = int(req.GET['line'])
+    from_lineno = max(0, lineno - OFFSET)
+    to_lineno = (lineno + OFFSET)
+    ctx = dict()
+    cur_lineno = 1
+    lines = []
+    file_path = os.path.join(settings.TXT_FOLDER,filename)
+    with codecs.open(file_path, encoding="windows-1255") as fh:
+        for line in fh:
+            if cur_lineno >= from_lineno and cur_lineno <= to_lineno:
+                lines.append({'lineno': cur_lineno,
+                              'line': line.strip().encode('utf-8', errors='ignore')})
+            cur_lineno += 1
+    ctx['lines'] = lines
+    ctx['filename'] = filename
+    ctx['lineno'] = lineno
+    ctx['prev'] = '/raw-data?file=%s&line=%s' % (filename, lineno - OFFSET * 2 - 1)
+    ctx['next'] = '/raw-data?file=%s&line=%s' % (filename, lineno + OFFSET * 2 + 1)
+    return render(req, 'browse/browse_raw_data.html', ctx)
