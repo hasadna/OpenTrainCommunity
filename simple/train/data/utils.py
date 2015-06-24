@@ -138,14 +138,16 @@ def build_all_services():
     check_services()
 
 def check_services():
-    for idx,trip in enumerate(Trip.objects.all()):
-        count = Trip.objects.count()
+    from django.db.models import Count
+    count = Trip.objects.count()
+    trips = Trip.objects.all().annotate(service_count=Count('service'))
+    for idx,trip in enumerate(trips):
         if trip.valid:
-            assert trip.service_set.count() == 1,'Trip %s has more than one service' % trip.id
+            assert trip.service_count == 1,'Trip %s has more than one service' % trip.id
         else:
-            assert trip.service_set.count() == 0,'Trip %s is not valid but has services' % trip.id
+            assert trip.service_count == 0,'Trip %s is not valid but has services' % trip.id
         if (1+idx)%100 == 0:
-            print 'Completed %s/%s routes' % (idx+1,count)
+            print 'Completed %s/%s trips' % (idx+1,count)
 
 
 
