@@ -17,4 +17,9 @@ def heb_stop_name(stop_id):
     import data.services
     return data.services.get_heb_stop_name(stop_id)
 
+@register.filter(name="modelname")
+def modelname(obj):
+    return obj.__class__.__name__.lower()
+
+
 

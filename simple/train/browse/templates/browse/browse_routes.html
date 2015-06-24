@@ -1,22 +1,23 @@
 {% extends "base.html" %}
 {% load ot_filters %}
+{% load i18n %}
 {% block content %}
 <table class="table">
 <tr>
     <th>
-        Id
+        {% trans 'Id' %}
     </th>
     <th>
-        From
+        {% trans 'origin' %}
     </th>
     <th>
-        To
+        {% trans 'destination' %}
     </th>
     <th>
-        Number of Stops
+        # {% trans 'Stops' %}
     </th>
     <th>
-        Number of Services
+        # {% trans 'Services' %}
     </th>
 </tr>
 {% for route in routes %}

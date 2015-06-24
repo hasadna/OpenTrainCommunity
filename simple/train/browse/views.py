@@ -1,14 +1,17 @@
 from data.models import Route,Service,Trip
 from django.shortcuts import render, get_object_or_404
+from django.utils.translation import ugettext as _
 
 def _build_breadcrumbs(obj=None):
     if obj is None:
         return  [{
-        'name': 'Routes',
+        'obj': None,
+        'name': _('Routes'),
         'link': '/browse/routes/'
     }]
     parent = obj.get_parent()
     return _build_breadcrumbs(parent) + [{
+        'obj': obj,
         'name': obj.get_short_name(),
         'link': '/browse/%ss/%s' % (obj.__class__.__name__.lower(),obj.id)
     }]
@@ -33,5 +36,5 @@ def browse_trip(req,trip_id):
     samples = list(trip.sample_set.filter(is_real_stop=True).order_by('index'))
     return render(req,'browse/browse_trip.html',{'trip':trip,
                                                  'samples': samples,
-                                                    'breadcrumbs': _build_breadcrumbs(trip)})
+                                                  'breadcrumbs': _build_breadcrumbs(trip)})
 

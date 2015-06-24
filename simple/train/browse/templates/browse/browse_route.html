@@ -1,11 +1,13 @@
 {% extends "base.html" %}
 {% load ot_filters %}
+{% load i18n %}
 {% block content %}
-<h2>Route {{route.id}}</h2>
-<h3> {{route.stop_ids | length}} Stops</h3>
+
+<h2>{% trans 'Route' %} {{route.id}}</h2>
+<h3> {{route.stop_ids | length}} {% trans 'Stops' %}</h3>
 <table class="table">
 <tr>
-    <th>Stop Name</th>
+    <th>{% trans 'Stop Name' %}</th>
 </tr>
 {% for stop in route.get_stops %}
 <tr>
@@ -13,13 +15,13 @@
 </tr>
 {% endfor %}
 </table>
-<h3>{{route.service_set.count}} Services</h3>
+<h3>{{route.service_set.count}} {% trans 'Services' %}</h3>
 <table class="table">
     <tr>
-        <th>ID</th>
-        <th>Departure Time (local)</th>
-        <th>Arrival Time (local)</th>
-        <th># trips</th>
+        <th>{% trans 'ID' %}</th>
+        <th>{% trans 'Departure Time' %}</th>
+        <th>%{ trans 'Arrival Time' %}</th>
+        <th># {% trans 'trips' %}</th>
     </tr>
 {% for service in route.get_services %}
    <tr>

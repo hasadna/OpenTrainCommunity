@@ -1,14 +1,15 @@
 {% extends "base.html" %}
 {% load ot_filters %}
 {% block content %}
-<h2>Service {{service.id}}</h2>
-<h3> {{service.route.stop_ids | length}} Stops</h3>
+{% load i18n %}
+<h2>{% trans 'Service' %} {{service.id}}</h2>
+<h3> {{service.route.stop_ids | length}} {% trans 'Stops' %}</h3>
 <table class="table">
 <tr>
-    <th>GTFS id</th>
-    <th>Stop Name</th>
-    <th>Exp Arrival</th>
-    <th>Exp Departure</th>
+    <th>{% trans 'ID' %}</th>
+    <th>{% trans 'Stop Name' %}</th>
+    <th>{% trans 'Expected Arrival' %}</th>
+    <th>{% trans 'Expected Departure' %}</th>
 </tr>
 {% for stop in service.get_stops %}
 <tr>
@@ -19,12 +20,12 @@
 </tr>
 {% endfor %}
 </table>
-<h3>{{service.trips.count}} Trips</h3>
+<h3>{{service.trips.count}} {% trans 'Trips' %}</h3>
 <table class="table">
     <tr>
-        <th>ID</th>
-        <th>Date</th>
-        <th>Train Num</th>
+        <th>{% trans 'ID' %}</th>
+        <th>{% trans 'Date' %}</th>
+        <th>{% trans 'Train Num' %}</th>
     </tr>
     {% for trip in service.trips.all %}
     <tr>

@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from djorm_pgarray.fields import IntegerArrayField
 import pytz
+from django.utils.translation import ugettext as _
 
 ISRAEL_TIMEZONE = pytz.timezone(settings.TIME_ZONE)
 
@@ -44,7 +45,7 @@ class Sample(models.Model):
         return self.trip
 
     def get_short_name(self):
-        return 'Sample %s' % self.id
+        return _('Sample') +  unicode(self.id)
 
     def print_nice(self):
         print '%2d) %-20s %s' % (self.index,
@@ -93,12 +94,11 @@ class Service(models.Model):
         return self.route
 
     def get_short_name(self):
-        return 'Service %s' % self.id
-
-    def get_short_name(self):
-        return 'Service %s: %s to %s' % (self.id,
-                                         self.get_departure_time_str(),
-                                         self.get_arrival_time_str())
+        return '%s %s: %s %s %s' % (_('Service'),
+                                    self.id,
+                                    self.get_departure_time_str(),
+                                    _('to'),
+                                    self.get_arrival_time_str())
 
     def get_departure_time_str(self):
         trip = self.trips.all()[0]
@@ -140,7 +140,11 @@ class Trip(models.Model):
         return self.service_set.all()[0]
 
     def get_short_name(self):
-        return 'Trip %s on %s' % (self.id,self.start_date.strftime('%d/%m/%Y'))
+        return '%s %s %s %s' % (
+            _('Trip'),
+            self.id,
+            _('on'),
+            self.start_date.strftime('%d/%m/%Y'))
 
     def get_exp_time_strings(self):
         """
@@ -180,9 +184,11 @@ class Route(models.Model):
 
     def get_short_name(self):
         import services
-        return 'Route %s: %s to %s' % (self.id,
-                                       services.get_stop_name(self.stop_ids[0]),
-                                       services.get_stop_name(self.stop_ids[-1]))
+        return '%s %s: %s %s %s' % (_('Route'),
+                                     self.id,
+                                       services.get_heb_stop_name(self.stop_ids[0]),
+                                       '&#8604;',
+                                       services.get_heb_stop_name(self.stop_ids[-1]))
 
     def print_nice(self):
         import services
