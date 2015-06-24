@@ -135,9 +135,14 @@ def build_all_services():
         route.group_into_services()
         if (1+idx) % 10 == 0:
             print 'Completed %s/%s routes' % (idx+1,len(routes))
+    check_services()
 
+def check_services():
     for trip in Trip.objects.all():
-        assert trip.service_set.count() == 1,'Trip %s has more than one service' % (trip.id)
+        if trip.valid:
+            assert trip.service_set.count() == 1,'Trip %s has more than one service' % trip.id
+        else:
+            assert trip.service_set.count() == 0,'Trip %s is not valid but has services' % trip.id
 
 
 
