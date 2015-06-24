@@ -20,6 +20,9 @@
     <th>
         # {% trans 'Services' %}
     </th>
+    <th>
+        # {% trans 'Trips' %}
+    </th>
 </tr>
     </thead>
     <tbody>
@@ -40,6 +43,9 @@
     <td>
         {{route.service_set.count}}
     </td>
+    <tr>
+        {{route.trip_set.count}}
+    </tr>
 </tr>
 {% endfor %}
 </tbody>
