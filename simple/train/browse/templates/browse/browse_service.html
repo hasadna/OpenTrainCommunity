@@ -4,21 +4,23 @@
 {% load i18n %}
 <h2>{% trans 'Service' %} {{service.id}}</h2>
 <h3> {{service.route.stop_ids | length}} {% trans 'Stops' %}</h3>
-<table class="table">
+<div class="row">
 <ul>
     {% for stop in service.get_stops %}
         <li class="stop_in_list">{{stop.stop_id | heb_stop_name}} {{stop.exp_arrival}} {{stop.exp_departure}}</li>
     {% endfor %}
 </ul>
-
-</table>
+</div>
 <h3>{{service.trips.count}} {% trans 'Trips' %}</h3>
-<table class="table">
+<table class="table" id="tripsTable">
+    <thead>
     <tr>
         <th>{% trans 'ID' %}</th>
         <th>{% trans 'Date' %}</th>
         <th>{% trans 'Train Num' %}</th>
     </tr>
+    </thead>
+    <tbody>
     {% for trip in service.trips.all %}
     <tr>
         <td><a href="/browse/trips/{{trip.id}}/">{{trip.id}}</a></td>
@@ -26,6 +28,18 @@
         <td>{{trip.train_num}}</td>
      </tr>
     {% endfor %}
+    </tbody>
 </table>
 {% endblock %}
 
+{% block post_scripts %}
+<script>
+$(document).ready(function(){
+    $('#tripsTable').dataTable({
+        paging: false,
+        searching: false,
+        bInfo: false,
+    });
+});
+</script>
+{% endblock %}

@@ -4,11 +4,14 @@
 <h2>{% trans 'File'%} {{filename}}</a></h2>
 <h3><a href="{{prev}}">{%trans 'prev' %}</a> <a href="{{next}}">{% trans 'next' %}</a></h3>
 <table>
+    <thead>
     <tr>
         <th>{% trans 'Line No' %}</th>
         <th></th>
         <th>{% trans 'Line' %}</th>
     </tr>
+    </thead>
+    <tbody>
 {%for line in lines%}
 <tr>
     <td>
@@ -20,6 +23,7 @@
     <td dir="ltr">
         <samp>{{line.line}}</samp>
     </td>
+    </tbody>
 </tr>
 
 {%endfor%}

@@ -8,6 +8,7 @@
 
 <h3>{{samples | length }} {% trans 'Samples' %}</h3>
 <table class="table">
+    <thead>
     <tr>
         <th>
             {% trans 'Stop Name' %}
@@ -28,6 +29,8 @@
             {% trans 'Link' %}
         </th>
     </tr>
+    </thead>
+    <tbody>
 {% for sample in samples %}
     {% if sample.is_real_stop %}
     <tr>
@@ -40,5 +43,6 @@
     </tr>
     {% endif %}
 {% endfor %}
+    </tbody>
 </table>
 {% endblock %}

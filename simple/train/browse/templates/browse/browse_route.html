@@ -5,24 +5,24 @@
 
 <h2>{% trans 'Route' %} {{route.id}}</h2>
 <h3> {{route.stop_ids | length}} {% trans 'Stops' %}</h3>
-<table class="table">
-<tr>
-    <th>{% trans 'Stop Name' %}</th>
-</tr>
+<div class="row">
 <ul class="list-inline">
 {% for stop in route.get_stops %}
     <li class="stop_in_list">{{stop.stop_id | heb_stop_name}}</li>
 {% endfor %}
 </ul>
-</table>
+</div>
 <h3>{{route.service_set.count}} {% trans 'Services' %}</h3>
-<table class="table">
+<table class="table" id="servicesTable">
+    <thead>
     <tr>
         <th>{% trans 'ID' %}</th>
         <th>{% trans 'Departure Time' %}</th>
         <th>{% trans 'Arrival Time' %}</th>
         <th># {% trans 'trips' %}</th>
     </tr>
+    </thead>
+    <tbody>
 {% for service in route.get_services %}
    <tr>
        <td><a href="/browse/services/{{service.id}}/">{{service.id}}</a></td>
@@ -31,5 +31,19 @@
        <td>{{service.trips.count}}</td>
    </tr>
 {% endfor %}
+    </tbody>
 </table>
+{% endblock %}
+
+
+{% block post_scripts %}
+<script>
+$(document).ready(function(){
+    $('#servicesTable').dataTable({
+        paging: false,
+        searching: false,
+        bInfo: false,
+    });
+});
+</script>
 {% endblock %}

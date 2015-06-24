@@ -3,6 +3,7 @@
 {% load i18n %}
 {% block content %}
 <table class="table">
+    <thead>
 <tr>
     <th>
         {% trans 'Id' %}
@@ -20,6 +21,8 @@
         # {% trans 'Services' %}
     </th>
 </tr>
+    </thead>
+    <tbody>
 {% for route in routes %}
 <tr>
     <td>
@@ -39,5 +42,6 @@
     </td>
 </tr>
 {% endfor %}
+</tbody>
 </table>
  {% endblock %}
