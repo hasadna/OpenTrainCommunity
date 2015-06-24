@@ -1,4 +1,4 @@
-from data.models import Route,Service,Trip
+from data.models import Route,Service,Trip, Sample
 from django.shortcuts import render, get_object_or_404
 from django.utils.translation import ugettext as _
 from django.conf import settings
@@ -6,38 +6,46 @@ from django.conf import settings
 def _build_breadcrumbs(obj=None):
     if obj is None:
         return  [{
-        'obj': None,
         'name': _('Routes'),
         'link': '/browse/routes/'
     }]
     parent = obj.get_parent()
-    return _build_breadcrumbs(parent) + [{
-        'obj': obj,
-        'name': obj.get_short_name(),
-        'link': '/browse/%ss/%s' % (obj.__class__.__name__.lower(),obj.id)
-    }]
+    if isinstance(obj,Sample):
+        cur = {
+            'name': '%s %s' % (_('File'),obj.data_file),
+            'link': obj.get_text_link()
+        }
+    else:
+        cur = {
+            'name': obj.get_short_name(),
+            'link': '/browse/%ss/%s' % (obj.__class__.__name__.lower(),obj.id)
+        }
+    return _build_breadcrumbs(parent) + [cur]
+
+def _bc(obj,ctx):
+    ctx['breadcrumbs'] = _build_breadcrumbs(obj)
+    ctx['title'] = ctx['breadcrumbs'][-1]['name']
+    return ctx
 
 def browse_routes(req):
     routes = Route.objects.all()
-    return render(req,'browse/browse_routes.html',{'routes':routes,
-                                                   'breadcrumbs': _build_breadcrumbs()})
+
+    return render(req,'browse/browse_routes.html',_bc(None,{'routes':routes}))
+
 
 def browse_route(req,route_id):
     route = get_object_or_404(Route,pk=route_id)
-    return render(req,'browse/browse_route.html',{'route':route,
-                                                  'breadcrumbs': _build_breadcrumbs(route)})
+    return render(req,'browse/browse_route.html',_bc(route,{'route':route}))
 
 def browse_service(req,service_id):
     service = get_object_or_404(Service,pk=service_id)
-    return render(req,'browse/browse_service.html',{'service':service,
-                                                    'breadcrumbs': _build_breadcrumbs(service)})
+    return render(req,'browse/browse_service.html',_bc(service,{'service':service}))
 
 def browse_trip(req,trip_id):
     trip = get_object_or_404(Trip,pk=trip_id)
     samples = list(trip.sample_set.filter(is_real_stop=True).order_by('index'))
-    return render(req,'browse/browse_trip.html',{'trip':trip,
-                                                 'samples': samples,
-                                                  'breadcrumbs': _build_breadcrumbs(trip)})
+    return render(req,'browse/browse_trip.html',_bc(trip,{'trip':trip,
+                                                 'samples': samples}))
 
 def show_raw_data(req):
     import codecs
@@ -45,6 +53,8 @@ def show_raw_data(req):
     OFFSET = 20
     filename = req.GET['file']
     lineno = int(req.GET['line'])
+    sample_id = int(req.GET['sample_id'])
+    sample = get_object_or_404(Sample,pk=sample_id)
     from_lineno = max(0, lineno - OFFSET)
     to_lineno = (lineno + OFFSET)
     ctx = dict()
@@ -60,6 +70,6 @@ def show_raw_data(req):
     ctx['lines'] = lines
     ctx['filename'] = filename
     ctx['lineno'] = lineno
-    ctx['prev'] = '/raw-data?file=%s&line=%s' % (filename, lineno - OFFSET * 2 - 1)
-    ctx['next'] = '/raw-data?file=%s&line=%s' % (filename, lineno + OFFSET * 2 + 1)
-    return render(req, 'browse/browse_raw_data.html', ctx)
+    ctx['prev'] =  sample.get_text_link(line=lineno - OFFSET * 2 - 1)
+    ctx['next'] = sample.get_text_link(line=lineno + OFFSET * 2 - 1)
+    return render(req, 'browse/browse_raw_data.html', _bc(sample,ctx))

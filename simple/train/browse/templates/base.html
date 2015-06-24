@@ -7,11 +7,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>Routes</title>
+    <title>{{title | safe}}</title>
 
     <!-- Bootstrap -->
     <link href="{% static 'bs/css/bootstrap.min.css' %}" rel="stylesheet">
-    <link rel="stylesheet" href="//cdn.rawgit.com/morteza/bootstrap-rtl/master/dist/cdnjs/3.3.1/css/bootstrap-rtl.min.css">
+    {% if not ltr %}
+        <link rel="stylesheet" href="//cdn.rawgit.com/morteza/bootstrap-rtl/master/dist/cdnjs/3.3.1/css/bootstrap-rtl.min.css">
+    {% endif %}
     <link rel="stylesheet" href="{% static 'browse/ot.css' %}">
     <!-- Load Bootstrap RTL theme from CDNJS -->
 

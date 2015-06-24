@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-24 12:04+0300\n"
+"POT-Creation-Date: 2015-06-24 12:51+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,27 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: browse/templates/browse/browse_route.html:6 data/models.py:187
+#: browse/templates/browse/browse_raw_data.html:4 browse/views.py:15
+msgid "File"
+msgstr "קובץ"
+
+#: browse/templates/browse/browse_raw_data.html:5
+msgid "prev"
+msgstr "הקודם"
+
+#: browse/templates/browse/browse_raw_data.html:5
+msgid "next"
+msgstr "הבא"
+
+#: browse/templates/browse/browse_raw_data.html:8
+msgid "Line No"
+msgstr "מספר שורה"
+
+#: browse/templates/browse/browse_raw_data.html:10
+msgid "Line"
+msgstr "שורה"
+
+#: browse/templates/browse/browse_route.html:6 data/models.py:216
 msgid "Route"
 msgstr "מסלול"
 
@@ -67,7 +87,7 @@ msgstr "מוצא"
 msgid "destination"
 msgstr "יעד"
 
-#: browse/templates/browse/browse_service.html:5 data/models.py:97
+#: browse/templates/browse/browse_service.html:5 data/models.py:119
 msgid "Service"
 msgstr "שירות"
 
@@ -83,7 +103,7 @@ msgstr "תאריך"
 msgid "Train Num"
 msgstr "מספר רכבת"
 
-#: browse/templates/browse/browse_trip.html:7 data/models.py:144
+#: browse/templates/browse/browse_trip.html:7 data/models.py:169
 msgid "Trip"
 msgstr "נסיעה"
 
@@ -123,14 +143,14 @@ msgstr "שורה"
 msgid "Routes"
 msgstr "מסלולים"
 
-#: data/models.py:48
+#: data/models.py:55
 msgid "Sample"
 msgstr "דגימה"
 
-#: data/models.py:100
+#: data/models.py:122
 msgid "to"
 msgstr "ל"
 
-#: data/models.py:146
+#: data/models.py:171
 msgid "on"
 msgstr "ב"

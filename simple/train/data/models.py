@@ -54,10 +54,16 @@ class Sample(models.Model):
     def get_short_name(self):
         return _('Sample') + unicode(self.id)
 
-    def get_text_link(self):
-        return '/browse/raw-data/?file=%s&line=%s#%s' % (self.data_file,
-                                                           self.data_file_line,
-                                                           self.data_file_line)
+    def get_text_link(self,line=None):
+        if line is None:
+            line = self.data_file_line
+            anchor = '#%s' % line
+        else:
+            anchor = ''
+        return '/browse/raw-data/?file=%s&line=%s&sample_id=%s%s' % (self.data_file,
+                                                                      line,
+                                                                      self.id,
+                                                                      anchor)
 
     def print_nice(self):
         print '%2d) %-20s %s' % (self.index,

@@ -1,24 +1,27 @@
-<h1>Raw Data</h1>
-<h2>Location {{filename}} <a href="#{{lineno}}">{{lineno}}</a></h2>
-<h3><a href="{{prev}}">prev</a> <a href="{{next}}">next</a></h3>
+{% extends "base.html" %}
+{% load i18n %}
+{% block content %}
+<h2>{% trans 'File'%} {{filename}}</a></h2>
+<h3><a href="{{prev}}">{%trans 'prev' %}</a> <a href="{{next}}">{% trans 'next' %}</a></h3>
 <table>
     <tr>
-        <th>Line No</th>
+        <th>{% trans 'Line No' %}</th>
         <th></th>
-        <th>Line</th>
+        <th>{% trans 'Line' %}</th>
     </tr>
 {%for line in lines%}
 <tr>
     <td>
-        <pre><a name="{{line.lineno}}">#{{line.lineno}}</a></pre>
+        <samp><a name="{{line.lineno}}">#{{line.lineno}}</a></samp>
     </td>
     <td>
         &nbsp;&nbsp;&nbsp;&nbsp;
     </td>
-    <td>
-        <pre>{{line.line}}</pre>
+    <td dir="ltr">
+        <samp>{{line.line}}</samp>
     </td>
 </tr>
 
 {%endfor%}
 </table>
+{% endblock %}
