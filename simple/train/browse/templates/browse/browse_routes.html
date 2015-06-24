@@ -2,7 +2,7 @@
 {% load ot_filters %}
 {% load i18n %}
 {% block content %}
-<table class="table">
+<table class="table" id="routesTable">
     <thead>
 <tr>
     <th>
@@ -45,3 +45,16 @@
 </tbody>
 </table>
  {% endblock %}
+
+
+{% block post_scripts %}
+<script>
+$(document).ready(function(){
+    $('#routesTable').dataTable({
+        paging: false,
+        searching: false,
+        bInfo: false,
+    });
+});
+</script>
+{% endblock %}
