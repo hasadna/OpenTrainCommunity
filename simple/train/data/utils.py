@@ -144,7 +144,7 @@ def check_services():
             assert trip.service_set.count() == 1,'Trip %s has more than one service' % trip.id
         else:
             assert trip.service_set.count() == 0,'Trip %s is not valid but has services' % trip.id
-        if (1+idx)%10 == 0:
+        if (1+idx)%100 == 0:
             print 'Completed %s/%s routes' % (idx+1,count)
 
 
