@@ -9,18 +9,18 @@
 <tr>
     <th>{% trans 'Stop Name' %}</th>
 </tr>
+<ul class="list-inline">
 {% for stop in route.get_stops %}
-<tr>
-    <td>{{stop.stop_id | heb_stop_name}}</td>
-</tr>
+    <li class="stop_in_list">{{stop.stop_id | heb_stop_name}}</li>
 {% endfor %}
+</ul>
 </table>
 <h3>{{route.service_set.count}} {% trans 'Services' %}</h3>
 <table class="table">
     <tr>
         <th>{% trans 'ID' %}</th>
         <th>{% trans 'Departure Time' %}</th>
-        <th>%{ trans 'Arrival Time' %}</th>
+        <th>{% trans 'Arrival Time' %}</th>
         <th># {% trans 'trips' %}</th>
     </tr>
 {% for service in route.get_services %}

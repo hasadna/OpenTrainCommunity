@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-24 09:41+0300\n"
+"POT-Creation-Date: 2015-06-24 09:52+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -48,6 +48,10 @@ msgstr "מזהה"
 #: browse/templates/browse/browse_route.html:22
 msgid "Departure Time"
 msgstr "זמן יציאה"
+
+#: browse/templates/browse/browse_route.html:23
+msgid "Arrival Time"
+msgstr "זמן הגעה"
 
 #: browse/templates/browse/browse_route.html:24
 msgid "trips"

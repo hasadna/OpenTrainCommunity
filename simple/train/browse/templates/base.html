@@ -12,15 +12,19 @@
     <!-- Bootstrap -->
     <link href="{% static 'bs/css/bootstrap.min.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="//cdn.rawgit.com/morteza/bootstrap-rtl/master/dist/cdnjs/3.3.1/css/bootstrap-rtl.min.css">
+    <link rel="stylesheet" href="{% static 'browse/ot.css' %}">
     <!-- Load Bootstrap RTL theme from CDNJS -->
 
   </head>
   <body>
-  <ol class="breadcrumb">
+  <ul>
     {% for bc in breadcrumbs %}
-        <li><a href="{{bc.link}}">{{ bc.name | safe }}</a></li>
+        <li class="breadcrumb"><a href="{{bc.link}}">{{ bc.name | safe }}</a></li>
+        {% if not forloop.last %}
+        <b>/</b>
+        {% endif %}
     {% endfor %}
-   </ol>
+   </ul>
     {% block content %}
     {% endblock %}
 
