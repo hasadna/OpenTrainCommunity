@@ -38,23 +38,23 @@ HEB_NAMES = {
     5300: [u'באר יעקוב', u'באר יעקב', u'באר-יעקוב', u'באר-יעקב'], #  Be'er Ya'akov
     5410: [u'יבנה'], #  Yavne
     5800: [u'אשדוד', u'עד הלום', u'עד-הלום', u'אשדוד עד-הלום', u'אשדוד עד הלום'], #  Ashdod Ad Halom
-    5900: [u''], #  Ashkelon
-    6300: [u''], #  Bet Shemesh
-    6500: [u'', u'', u'', u''], #  Jerusalem Biblical Zoo
-    6700: [u'', u''], #  Jerusalem Malha
-    7000: [u''], #  Kiryat Gat
-    7300: [u'', u'', u'', u''], #  Be'er Sheva North University
-    7320: [u''], #  Be'er Sheva Center
-    7500: [u''], #  Dimona
-    8550: [u'', u'', u''], #  Lehavim - Rahat
-    8600: [u'נתב"ג', u'נמל תעופה בן-גוריון', u''], #  Ben Gurion Airport
-    8700: [u''], #  Kfar Sava
-    8800: [u'', u''], #  Rosh Ha'Ayin North
-    9000: [u''], #  Yavne - West
-    9100: [u'', u'', u''], #  Rishon LeTsiyyon HaRishonim
-    9200: [u''], #  Hod HaSharon
-    9600: [u''], #  Sderot
-    9800: [u'', u'', u''], #  Rishon LeTsiyyon - Moshe Dayan
+    5900: [u'אשקלון'], #  Ashkelon
+    6300: [u'בית שמש'], #  Bet Shemesh
+    6500: [u'ירושלים גן החיות התנכי', u'גן החיות התנכי', u'ירושלים גן החיות', u'גן החיות', u'ירושלים גן החיות התנכ"י', u'גן החיות התנכ"י'], #  Jerusalem Biblical Zoo
+    6700: [u'ירושלים מלחה', u'מלחה'], #  Jerusalem Malha
+    7000: [u'קרית גת', u'קריית גת'], #  Kiryat Gat
+    7300: [u'באר שבע צפון אוניברסיטה', u'באר שבע צפון', u'באר שבע אוניברסיטה', u'אוניברסיטת באר שבע', u'ב"ש צפון אוניברסיטה', u'ב"ש צפון', u'ב"ש אוניברסיטה', u'אוניברסיטת ב"ש', u'באר-שבע צפון אוניברסיטה', u'באר-שבע צפון', u'באר-שבע אוניברסיטה', u'אוניברסיטת באר-שבע'], #  Be'er Sheva North University
+    7320: [u'באר שבע מרכז', u'באר-שבע מרכז', u'ב"ש מרכז'], #  Be'er Sheva Center
+    7500: [u'דימונה'], #  Dimona
+    8550: [u'להבים רהט', u'להבים', u'רהט'], #  Lehavim - Rahat
+    8600: [u'נתב"ג', u'נמל תעופה בן-גוריון', u'נמל תעופה'], #  Ben Gurion Airport
+    8700: [u'כפר סבא', u'כפ"ס'], #  Kfar Sava
+    8800: [u'ראש העין צפון', u'ראש העין'], #  Rosh Ha'Ayin North
+    9000: [u'יבנה מערב'], #  Yavne - West
+    9100: [u'ראשון לציון הראשונים', u'הראשונים', u'ראשל"צ הראשונים'], #  Rishon LeTsiyyon HaRishonim
+    9200: [u'הוד השרון'], #  Hod HaSharon
+    9600: [u'שדרות'], #  Sderot
+    9800: [u'ראשון לציון משה דיין', u'ראשל"צ משה דיין', u'משה דיין'], #  Rishon LeTsiyyon - Moshe Dayan
 }
 
 
