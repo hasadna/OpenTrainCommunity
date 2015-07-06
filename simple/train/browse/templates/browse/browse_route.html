@@ -4,7 +4,7 @@
 {% block content %}
 
 <h2>{% trans 'Route' %} {{route.id}}</h2>
-<h3> {{route.stop_ids | length}} {% trans 'Stops' %}</h3>
+<h3> {{route.stop_ids | length}} {% trans 'Stops' %} (<a href="/browse/routes/{{route.id}}/edit-stops/">{% trans 'edit' %}<a/> ) </h3>
 <div class="row">
 <ul class="list-inline">
 {% for stop in route.get_stops %}
