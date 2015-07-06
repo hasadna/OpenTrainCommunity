@@ -7525,56 +7525,73 @@ table.table .table-header-secondary th {
   .stop-diagram.stop-diagram-end::before {
     bottom: 8px; }
 
-table.paths-list > tbody > tr {
-  cursor: pointer;
-  border: 1px solid #ebedec;
-  background-color: #f9f9f9; }
-  table.paths-list > tbody > tr > td {
-    padding: 40px; }
-  table.paths-list > tbody > tr > td.row-index-cell {
-    background-color: #e8eaed;
-    color: #939599;
-    font-size: 30pt;
-    vertical-align: middle; }
-  table.paths-list > tbody > tr:hover > td.row-index-cell {
-    background-color: #fff;
-    color: #9aca41;
-    position: relative; }
-    table.paths-list > tbody > tr:hover > td.row-index-cell :before {
-      content: "";
-      position: absolute;
-      top: -1px;
-      bottom: -1px;
-      right: -1px;
-      left: -1px;
-      border: 2px solid #bcbcbc;
-      border-right: 5px solid #9aca41; }
-    table.paths-list > tbody > tr:hover > td.row-index-cell :after {
-      content: "";
-      display: block;
-      height: 20px;
-      width: 20px;
-      background-color: #fff;
-      border-width: 2px;
-      border-style: solid;
-      border-color: #bcbcbc transparent transparent #bcbcbc;
-      position: absolute;
-      top: 50%;
-      left: 0;
-      margin-top: -10px;
-      margin-left: -9px;
-      -webkit-transform: rotate(-45deg);
-      -ms-transform: rotate(-45deg);
-      -o-transform: rotate(-45deg);
-      transform: rotate(-45deg); }
-table.paths-list .stop-list .stop-origin, table.paths-list .stop-list .stop-destination {
-  background-color: white; }
-table.paths-list .count-bar {
-  width: 100px;
-  height: 5px; }
-table.paths-list .count-bar-value {
-  background-color: #b3b3b3;
-  height: 100%; }
+div.paths-list {
+  display: table;
+  border-collapse: collapse;
+  margin: 10px 0 20px; }
+  div.paths-list > .list-header {
+    display: table-row;
+    font-size: 15pt; }
+  div.paths-list > .list-body {
+    display: table-row-group; }
+  div.paths-list > .list-body > .list-item {
+    display: table-row; }
+  div.paths-list .index-cell, div.paths-list .path-cell, div.paths-list .count-cell {
+    display: table-cell; }
+  div.paths-list > .list-body > .list-item {
+    cursor: pointer;
+    color: #333333;
+    text-decoration: none;
+    background-color: #f9f9f9;
+    border: 1px solid #ebedec; }
+    div.paths-list > .list-body > .list-item > div {
+      padding: 40px; }
+    div.paths-list > .list-body > .list-item > div.index-cell {
+      background-color: #e8eaed;
+      color: #939599;
+      font-size: 30pt;
+      vertical-align: middle; }
+    div.paths-list > .list-body > .list-item:hover {
+      background-color: #fff; }
+      div.paths-list > .list-body > .list-item:hover > div.index-cell {
+        background-color: #fff;
+        color: #9aca41;
+        position: relative; }
+        div.paths-list > .list-body > .list-item:hover > div.index-cell :before {
+          content: "";
+          position: absolute;
+          top: -1px;
+          bottom: -1px;
+          right: -1px;
+          left: -1px;
+          border: 2px solid #bcbcbc;
+          border-right: 5px solid #9aca41; }
+        div.paths-list > .list-body > .list-item:hover > div.index-cell :after {
+          content: "";
+          display: block;
+          height: 20px;
+          width: 20px;
+          background-color: #fff;
+          border-width: 2px;
+          border-style: solid;
+          border-color: #bcbcbc transparent transparent #bcbcbc;
+          position: absolute;
+          top: 50%;
+          left: 0;
+          margin-top: -10px;
+          margin-left: -9px;
+          -webkit-transform: rotate(-45deg);
+          -ms-transform: rotate(-45deg);
+          -o-transform: rotate(-45deg);
+          transform: rotate(-45deg); }
+  div.paths-list .stop-list .stop-origin, div.paths-list .stop-list .stop-destination {
+    background-color: white; }
+  div.paths-list .count-bar {
+    width: 100px;
+    height: 5px; }
+  div.paths-list .count-bar-value {
+    background-color: #b3b3b3;
+    height: 100%; }
 
 .route-details-page .days-container {
   margin-bottom: 20px; }

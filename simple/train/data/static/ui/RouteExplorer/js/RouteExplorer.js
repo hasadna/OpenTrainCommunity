@@ -118,8 +118,8 @@ function($scope, $location, $route, Layout) {
         return percentWidth + "%";
     };
 
-    $scope.goToRouteDetails = function(route) {
-        $location.path('/route-details/' + route.id);
+    $scope.routeUrl = function(route) {
+        return '/#/route-details/' + route.id;
     };
 
     function collapseRoutes(routes) {
