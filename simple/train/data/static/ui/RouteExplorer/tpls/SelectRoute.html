@@ -17,8 +17,8 @@
                             <span class="stop"
                                 ng-repeat="stop in route.stops track by $index"
                                 ng-class="{ 'stop-collapsed': isCollapsed(stop), 'stop-origin': isOrigin(stop), 'stop-destination': isDestination(stop) }"
-                                tooltip="{{ isCollapsed(stop) ? expandedText(stop) : null }}" >
-                                {{ isCollapsed(stop) ? collapsedText(stop) : stopName(stop) }}
+                                tooltip="{{ stopTooltip(stop) }}" >
+                                {{ stopText(stop) }}
                             </span>
                         </span>
                     </div>
