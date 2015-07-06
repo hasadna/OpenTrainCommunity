@@ -81,6 +81,14 @@ function($scope, $location, $route, Layout) {
         collapseRoutes(routes);
     $scope.routes = routes;
 
+    function stopName(stopId) {
+        var stop = Layout.findStop(stopId);
+        if (!stop)
+            return null;
+
+        return stop.name;
+    }
+
     $scope.isCollapsed = function(value) {
         return angular.isArray(value);
     };
@@ -93,20 +101,18 @@ function($scope, $location, $route, Layout) {
         return stopId == destination.id;
     };
 
-    $scope.stopName = function(stopId) {
-        var stop = Layout.findStop(stopId);
-        if (!stop)
+    $scope.stopText = function(stopId) {
+        if ($scope.isCollapsed(stopId))
+            return "\u2022".repeat(stopId.length);
+
+        return stopName(stopId);
+    };
+
+    $scope.stopTooltip = function(stopId) {
+        if (!$scope.isCollapsed(stopId))
             return null;
 
-        return stop.name;
-    };
-
-    $scope.collapsedText = function(stops) {
-        return "\u2022".repeat(stops.length);
-    };
-
-    $scope.expandedText = function(stops) {
-        return stops.map($scope.stopName).join(", ");
+        return stopId.map(stopName).join(", ");
     };
 
     $scope.barWidth = function(route) {
@@ -118,8 +124,8 @@ function($scope, $location, $route, Layout) {
         return percentWidth + "%";
     };
 
-    $scope.goToRouteDetails = function(route) {
-        $location.path('/route-details/' + route.id);
+    $scope.routeUrl = function(route) {
+        return '/#/route-details/' + route.id;
     };
 
     function collapseRoutes(routes) {

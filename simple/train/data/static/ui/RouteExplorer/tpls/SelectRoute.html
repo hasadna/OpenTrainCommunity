@@ -1,39 +1,35 @@
 <div class="select-route-page">
     <h3>בחירת מסלול</h3>
     <div class="container content">
-        <table class="table table-hover paths-list">
-            <cols>
-                <col class="index-col"/>
-                <col class="stops-col"/>
-                <col class="count-col"/>
-            </cols>
-            <thead class="table-header-primary">
-                <th/>
-                <th>מסלולים</th>
-                <th>מספר נסיעות</th>
-            </thead>
-            <tbody>
-                <tr ng-repeat="route in routes" ng-click="goToRouteDetails(route)">
-                    <td class="row-index-cell">
+        <div class="paths-list">
+            <div class="list-header">
+                <div class="index-cell"></div>
+                <div class="path-cell">מסלולים</div>
+                <div class="count-cell">נסיעות</div>
+            </div>
+            <div class="list-body">
+                <a class="list-item" ng-repeat="route in routes" ng-href="{{ routeUrl(route) }}">
+                    <div class="index-cell">
                         <span class="row-index">{{ $index + 1 | number }}</span>
-                    <td>
+                    </div>
+                    <div class="path-cell">
                         <span class="stop-list">
                             <span class="stop"
                                 ng-repeat="stop in route.stops track by $index"
                                 ng-class="{ 'stop-collapsed': isCollapsed(stop), 'stop-origin': isOrigin(stop), 'stop-destination': isDestination(stop) }"
-                                tooltip="{{ isCollapsed(stop) ? expandedText(stop) : null }}" >
-                                {{ isCollapsed(stop) ? collapsedText(stop) : stopName(stop) }}
+                                tooltip="{{ stopTooltip(stop) }}" >
+                                {{ stopText(stop) }}
                             </span>
                         </span>
-                    </td>
-                    <td>
+                    </div>
+                    <div class="count-cell">
                         <div class="count-bar">
                             <div class="count-bar-value" ng-style="{ width: barWidth(route) }"></div>
                             {{ route.count | number }}
                         </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+                    </div>
+                </a>
+            </div>
+        </div>
     </div>
 </div>
