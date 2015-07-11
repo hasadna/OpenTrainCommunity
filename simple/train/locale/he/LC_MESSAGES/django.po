@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-11 17:37+0300\n"
+"POT-Creation-Date: 2015-07-11 18:08+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -148,6 +148,14 @@ msgstr "שורה"
 #: browse/templates/browse/edit_route.html:6
 msgid "editing"
 msgstr "עריכה"
+
+#: browse/templates/browse/edit_route.html:10
+msgid "Real Stops"
+msgstr "תחנות אמיתיות"
+
+#: browse/templates/browse/edit_route.html:16
+msgid "Skipped Stops"
+msgstr "תחנות שמדלגים עליהן"
 
 #: browse/views.py:9
 msgid "Routes"
