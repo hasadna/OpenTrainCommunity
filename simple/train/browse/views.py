@@ -2,6 +2,9 @@ from data.models import Route,Service,Trip, Sample
 from django.shortcuts import render, get_object_or_404
 from django.utils.translation import ugettext as _
 from django.conf import settings
+from django.http import HttpResponseNotAllowed, HttpResponseRedirect
+
+from django.views.decorators.csrf import csrf_exempt
 
 def _build_breadcrumbs(obj=None):
     if obj is None:
@@ -40,6 +43,20 @@ def browse_route(req,route_id):
 def edit_route(req,route_id):
     route = get_object_or_404(Route,pk=route_id)
     return render(req,'browse/edit_route.html',_bc(route,{'route':route}))
+
+@csrf_exempt
+def skip_unskip_stops(req,route_id,skip=None):
+    if req.method != 'POST':
+        return HttpResponseNotAllowed('POST')
+    assert skip is not None,'skip must be boolean'
+    route = get_object_or_404(Route,pk=route_id)
+    stop_ids = [int(k[5:]) for k in req.POST.keys() if k.startswith('stop_')]
+    if skip:
+        route.skip_stop_ids(stop_ids)
+    else:
+        route.unskip_stop_ids(stop_ids)
+    return HttpResponseRedirect('/browse/routes/%s/edit/' % route_id)
+
 
 def browse_service(req,service_id):
     service = get_object_or_404(Service,pk=service_id)

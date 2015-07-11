@@ -200,17 +200,18 @@ class Trip(models.Model):
 
 class Route(models.Model):
     stop_ids = IntegerArrayField(db_index=True, unique=True)
-    #full_stop_ids = IntegerArrayField()
 
-    def remove_stop_ids(self, stop_ids):
-        if not isinstance(stop_ids,list):
-            raise Exception('stop_ids should be list, but got %s' % type(stop_ids))
+    def skip_stop_ids(self, stop_ids):
         for stop_id in stop_ids:
             if stop_id not in self.stop_ids:
                 raise Exception('Stop %s is not part of the stop ids' % stop_id)
         for stop_id in stop_ids:
             self.stop_ids.remove(stop_id)
             self.save()
+
+    def unskip_stop_ids(self,stop_ids):
+        assert False,'not yet'
+
 
     def is_to_north(self):
         import services
