@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-06 22:18+0300\n"
+"POT-Creation-Date: 2015-07-11 17:37+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -38,13 +38,15 @@ msgstr "מספר שורה"
 msgid "Line"
 msgstr "שורה"
 
-#: browse/templates/browse/browse_route.html:6 data/models.py:216
+#: browse/templates/browse/browse_route.html:6
+#: browse/templates/browse/edit_route.html:6 data/models.py:216
 msgid "Route"
 msgstr "מסלול"
 
 #: browse/templates/browse/browse_route.html:7
 #: browse/templates/browse/browse_routes.html:18
 #: browse/templates/browse/browse_service.html:6
+#: browse/templates/browse/edit_route.html:7
 msgid "Stops"
 msgstr "תחנות"
 
@@ -142,6 +144,10 @@ msgstr "קישור"
 #: browse/templates/browse/browse_trip.html:42
 msgid "line"
 msgstr "שורה"
+
+#: browse/templates/browse/edit_route.html:6
+msgid "editing"
+msgstr "עריכה"
 
 #: browse/views.py:9
 msgid "Routes"

@@ -37,6 +37,10 @@ def browse_route(req,route_id):
     route = get_object_or_404(Route,pk=route_id)
     return render(req,'browse/browse_route.html',_bc(route,{'route':route}))
 
+def edit_route(req,route_id):
+    route = get_object_or_404(Route,pk=route_id)
+    return render(req,'browse/edit_route.html',_bc(route,{'route':route}))
+
 def browse_service(req,service_id):
     service = get_object_or_404(Service,pk=service_id)
     return render(req,'browse/browse_service.html',_bc(service,{'service':service}))
