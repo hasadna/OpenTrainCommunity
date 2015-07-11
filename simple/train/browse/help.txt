@@ -1,0 +1,6 @@
+to generate the messages
+
+% python manage.py makemessages --locale he --ext py,html
+# edit the .po file
+% python manage.py compilemessages
+

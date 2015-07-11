@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load ot_filters %}
+{% load i18n %}
+{% block content %}
+
+<h2>{% trans 'Route' %} {{route.id}} - {%trans 'editing' %}</h2>
+<h3> {{route.stop_ids | length}} {% trans 'Stops' %}</h3>
+<div>
+    <div class="col-md-3">
+        <h2>{% trans 'Real Stops' %}</h2>
+         {% for stop in route.get_stops %}
+            <p>{{stop.stop_id | heb_stop_name}}</p>
+         {% endfor %}
+    </div>
+    <div class="col-md-3">
+        <h2>{% trans 'Skipped Stops' %}</h2>
+        {% for stop in route.get_stops %}
+            <p>{{stop.stop_id | heb_stop_name}}</p>
+         {% endfor %}
+    </div>
+
+</div>
+{% endblock %}
+
+
