@@ -64,7 +64,7 @@ def browse_service(req,service_id):
 
 def browse_trip(req,trip_id):
     trip = get_object_or_404(Trip,pk=trip_id)
-    samples = list(trip.sample_set.filter(is_real_stop=True).order_by('index'))
+    samples = list(trip.get_real_stop_samples())
     return render(req,'browse/browse_trip.html',_bc(trip,{'trip':trip,
                                                  'samples': samples}))
 

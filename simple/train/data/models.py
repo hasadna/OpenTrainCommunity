@@ -180,10 +180,11 @@ class Trip(models.Model):
         return ','.join(s.get_exp_time_string() for s in samples)
 
     def get_real_stop_samples(self):
-        return self.sample_set.filter(valid=True, is_real_stop=True).order_by('index')
+        stop_ids = self.route.stop_ids
+        return self.sample_set.filter(valid=True, is_real_stop=True,stop_id__in=stop_ids).order_by('index')
 
     def to_json(self):
-        stops = [stop.to_json() for stop in self.sample_set.filter(is_real_stop=True).order_by('index')]
+        stops = self.get_real_stop_samples()
         return {'id': self.id,
                 'train_num': self.train_num,
                 'start_date': self.start_date.isoformat(),

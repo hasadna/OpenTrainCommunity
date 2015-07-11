@@ -32,7 +32,6 @@
     </thead>
     <tbody>
 {% for sample in samples %}
-    {% if sample.is_real_stop %}
     <tr>
         <td>{{sample.stop_id | heb_stop_name }}</td>
         <td>{{sample.exp_arrival | stop_time}}</td>
@@ -41,7 +40,6 @@
         <td>{{sample.actual_departure | stop_time}}</td>
         <td><a href="{{sample.get_text_link}}">{% trans 'line' %} #{{sample.data_file_line}}</a></td>
     </tr>
-    {% endif %}
 {% endfor %}
     </tbody>
 </table>
