@@ -29,7 +29,7 @@ class Sample(models.Model):
     stop_name = models.CharField(
         max_length=100)  # the stop name in english - not formal name, if this is not real stop will be prefixed with -
     is_real_stop = models.BooleanField(default=False)  # true is this is real stop
-    is_skipped_stop = models.BooleanField(default=False) # true if this is skipped stop
+    #is_skipped_stop = models.BooleanField(default=False) # true if this is skipped stop
     valid = models.BooleanField(default=False,
                                 db_index=True)  # true if this is stop in valid trip (e.g. with no errros)
     is_first = models.BooleanField(default=False)  # true if this is the first stop of the trip (index = 0)
@@ -200,7 +200,7 @@ class Trip(models.Model):
 
 class Route(models.Model):
     stop_ids = IntegerArrayField(db_index=True, unique=True)
-    full_stop_ids = IntegerArrayField()
+    #full_stop_ids = IntegerArrayField()
 
     def remove_stop_ids(self, stop_ids):
         if not isinstance(stop_ids,list):
