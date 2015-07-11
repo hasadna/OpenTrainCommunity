@@ -58,7 +58,7 @@ def get_all_routes(req):
         result.append({
             'id': r.id,
             'stop_ids': r.stop_ids,
-             'count': r.trips_count
+            'count': r.trips_count
         })
     return json_resp(result)
 
