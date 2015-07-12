@@ -32,7 +32,7 @@
       {% if user.is_authenticated %}
       {% trans 'hello' %} {{user.get_short_name}} <a href="/browse/logout">({%  trans 'logout' %})</a>
       {% else %}
-      <a href="/browse/login/">{% trans 'login'%}</a>
+      {% include "browse/login_modal.html" %}
       {% endif %}
     </li> 
    </ul>
