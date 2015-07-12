@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-12 16:05+0300\n"
+"POT-Creation-Date: 2015-07-12 16:20+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,13 +18,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: browse/templates/base.html:32
+#: browse/templates/base.html:33
 msgid "hello"
 msgstr "שלום"
 
-#: browse/templates/base.html:32
-msgid "change"
-msgstr "שנה"
+#: browse/templates/base.html:33
+msgid "logout"
+msgstr "התנתק"
+
+#: browse/templates/base.html:35
+msgid "login"
+msgstr "התחבר"
 
 #: browse/templates/browse/browse_raw_data.html:4 browse/views.py:17
 msgid "File"
@@ -188,6 +192,9 @@ msgstr "ל"
 #: data/models.py:172
 msgid "on"
 msgstr "ב"
+
+#~ msgid "change"
+#~ msgstr "שנה"
 
 #~ msgid "Name"
 #~ msgstr "שם"
