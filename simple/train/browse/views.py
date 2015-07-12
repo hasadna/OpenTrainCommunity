@@ -44,7 +44,7 @@ def edit_route(req,route_id):
     route = get_object_or_404(Route,pk=route_id)
     return render(req,'browse/edit_route.html',_bc(route,{'route':route}))
 
-#@login_required
+@login_required
 def skip_unskip_stops(req,route_id,skip=None):
     if req.method != 'POST':
         return HttpResponseNotAllowed('POST')

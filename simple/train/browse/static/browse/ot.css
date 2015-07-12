@@ -32,5 +32,5 @@ body {
 }
 
 .hideit {
-	visibility: hidden;
+	display: none;
 }

@@ -19,6 +19,7 @@
     <div class="well col-md-3">
         <h3>{% trans 'Skipped Stops' %}</h3>
          <form method="POST" action="/browse/routes/{{route.id}}/unskip-stops/">
+             {% csrf_token %}
              {% for stop in route.get_skipped_stops %}
                 <p><input type="checkbox" name="stop_{{stop.stop_id}}">{{stop.stop_id | heb_stop_name}}</p>
              {% endfor %}

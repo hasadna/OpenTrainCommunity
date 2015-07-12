@@ -11,12 +11,15 @@ $("#logout_link").click(function() {
 });
 
 $("#login_form").submit(function() {
+    $('#login_error').addClass('hideit');
     $.post('/browse/api/login/',{
         name: $("#name").val(),
         password: $("#password").val(),
     }).done(function(d) {
         refresh_login(d);
+        $('#myModal').modal('hide');
     }).fail(function(d) {
+        $('#login_error').removeClass('hideit');
     });
     return false;
 });

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-12 16:20+0300\n"
+"POT-Creation-Date: 2015-07-12 21:34+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,19 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: browse/templates/base.html:33
-msgid "hello"
-msgstr "שלום"
-
-#: browse/templates/base.html:33
-msgid "logout"
-msgstr "התנתק"
-
-#: browse/templates/base.html:35
-msgid "login"
-msgstr "התחבר"
-
-#: browse/templates/browse/browse_raw_data.html:4 browse/views.py:17
+#: browse/templates/browse/browse_raw_data.html:4 browse/views.py:18
 msgid "File"
 msgstr "קובץ"
 
@@ -177,7 +165,36 @@ msgstr "תחנות מדולגות"
 msgid "unskip"
 msgstr "בטל דילוג"
 
-#: browse/views.py:11
+#: browse/templates/browse/login_modal.html:4
+msgid "hello"
+msgstr "שלום"
+
+#: browse/templates/browse/login_modal.html:4
+msgid "logout"
+msgstr "התנתק"
+
+#: browse/templates/browse/login_modal.html:8
+#: browse/templates/browse/login_modal.html:18
+#: browse/templates/browse/login_modal.html:31
+msgid "login"
+msgstr "התחבר"
+
+#: browse/templates/browse/login_modal.html:20
+msgid "authentication failed"
+msgstr "התחברות נכשלה"
+
+#: browse/templates/browse/login_modal.html:24
+#: browse/templates/browse/login_modal.html:25
+msgid "name"
+msgstr "שם"
+
+#: browse/templates/browse/login_modal.html:28
+#, fuzzy
+#| msgid "Password"
+msgid "password"
+msgstr "ססמא"
+
+#: browse/views.py:12
 msgid "Routes"
 msgstr "מסלולים"
 
@@ -198,9 +215,3 @@ msgstr "ב"
 
 #~ msgid "Name"
 #~ msgstr "שם"
-
-#~ msgid "name"
-#~ msgstr "שם"
-
-#~ msgid "Password"
-#~ msgstr "ססמא"
