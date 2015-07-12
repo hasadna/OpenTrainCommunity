@@ -4,8 +4,6 @@ from django.utils.translation import ugettext as _
 from django.conf import settings
 from django.http import HttpResponseNotAllowed, HttpResponseRedirect
 
-from django.views.decorators.csrf import csrf_exempt
-
 def _build_breadcrumbs(obj=None):
     if obj is None:
         return  [{
@@ -44,7 +42,6 @@ def edit_route(req,route_id):
     route = get_object_or_404(Route,pk=route_id)
     return render(req,'browse/edit_route.html',_bc(route,{'route':route}))
 
-@csrf_exempt
 def skip_unskip_stops(req,route_id,skip=None):
     if req.method != 'POST':
         return HttpResponseNotAllowed('POST')

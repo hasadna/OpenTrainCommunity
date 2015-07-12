@@ -9,6 +9,7 @@
     <div class="well col-md-3">
         <h3>{% trans 'Real Stops' %}</h3>
          <form method="POST" action="/browse/routes/{{route.id}}/skip-stops/">
+	   {% csrf_token %}
              {% for stop in route.get_stops %}
                 <p><input type="checkbox" name="stop_{{stop.stop_id}}">{{stop.stop_id | heb_stop_name}}</p>
              {% endfor %}
