@@ -1,8 +1,9 @@
+from django.views.decorators.csrf import csrf_exempt
 from data.models import Route,Service,Trip, Sample
 from django.shortcuts import render, get_object_or_404
 from django.utils.translation import ugettext as _
 from django.conf import settings
-from django.http import HttpResponseNotAllowed, HttpResponseRedirect
+from django.http import HttpResponseNotAllowed, HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 
 def _build_breadcrumbs(obj=None):
@@ -97,3 +98,47 @@ def show_raw_data(req):
     ctx['prev'] =  sample.get_text_link(line=lineno - OFFSET * 2 - 1)
     ctx['next'] = sample.get_text_link(line=lineno + OFFSET * 2 - 1)
     return render(req, 'browse/browse_raw_data.html', _bc(sample,ctx))
+
+def resp_json(d,status):
+    import json
+    return HttpResponse(content=json.dumps(d),status=status,content_type='application/json');
+
+@csrf_exempt
+def login(req):
+    import django.contrib.auth
+    username = req.POST['name']
+    password = req.POST['password']
+    user = django.contrib.auth.authenticate(username=username, password=password)
+    if user is not None:
+        if user.is_active:
+            django.contrib.auth.login(req, user)
+            error = None
+            status = 201
+        else:
+            error = 'Disabled account'
+            status = 401
+    else:
+        error = 'Invalid Login'
+        status = 401
+    d = user_to_auth_json(user)
+    d['error'] = error
+    return resp_json(d,status)
+
+
+def user_to_auth_json(user):
+    result = dict()
+    result['logged_in'] = user and user.is_authenticated()
+    if result['logged_in']:
+        result['username'] = user.first_name or user.username
+    else:
+        result['username'] = ''
+    return result
+
+@csrf_exempt
+def logout(req):
+    import django.contrib.auth
+    django.contrib.auth.logout(req)
+    return resp_json(user_to_auth_json(req.user),status=201)
+
+def logged_in(req):
+    return resp_json(user_to_auth_json(req.user),status=200)

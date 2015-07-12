@@ -29,4 +29,8 @@ body {
 
 .breadcrumb-left {
     float: left;
-}    
+}
+
+.hideit {
+	visibility: hidden;
+}

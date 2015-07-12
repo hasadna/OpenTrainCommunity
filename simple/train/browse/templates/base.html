@@ -28,14 +28,7 @@
         <b>/</b>
         {% endif %}
     {% endfor %}
-      {% if user.is_authenticated %}
-        <li class="breadcrumb breadcrumb-left">
-            {% trans 'hello' %} {{user.get_short_name}} <a href="/browse/logout">({%  trans 'logout' %})</a>
-         </li>
-      {% else %}
-        {% include "browse/login_modal.html" %}
-      {% endif %}
-    </li> 
+    {% include "browse/login_modal.html" %}
    </ul>
     {% block content %}
     {% endblock %}
@@ -46,6 +39,7 @@
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="{% static 'bs/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'dataTables/1.10.2/js/dataTables.bootstrap.js' %}"></script>
+    <script src="{% static 'app/app.js' %}"></script>
     {% block post_scripts %}
     {% endblock %}
   </body>
