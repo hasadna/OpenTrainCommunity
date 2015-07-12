@@ -28,6 +28,9 @@
         <b>/</b>
         {% endif %}
     {% endfor %}
+    <li class="breadcrumb breadcrumb-left">
+      {% trans 'hello' %} <a href="login.html">{%  trans 'change' %}</a>
+    </li> 
    </ul>
     {% block content %}
     {% endblock %}
