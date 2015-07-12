@@ -28,11 +28,12 @@
         <b>/</b>
         {% endif %}
     {% endfor %}
-    <li class="breadcrumb breadcrumb-left">
       {% if user.is_authenticated %}
-      {% trans 'hello' %} {{user.get_short_name}} <a href="/browse/logout">({%  trans 'logout' %})</a>
+        <li class="breadcrumb breadcrumb-left">
+            {% trans 'hello' %} {{user.get_short_name}} <a href="/browse/logout">({%  trans 'logout' %})</a>
+         </li>
       {% else %}
-      {% include "browse/login_modal.html" %}
+        {% include "browse/login_modal.html" %}
       {% endif %}
     </li> 
    </ul>

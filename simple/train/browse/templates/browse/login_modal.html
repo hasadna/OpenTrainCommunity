@@ -1,7 +1,8 @@
 {% load i18n %}
-<button type="button" data-toggle="modal" data-target="#myModal">
-  {% trans 'login' %}
-</button>
+
+<li class="breadcrumb breadcrumb-left" data-toggle="modal" data-target="#myModal">
+     <a>{% trans 'login' %}</a>
+</li>
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
