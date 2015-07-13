@@ -99,11 +99,13 @@ def import_current_csv(csv_file):
         reader = csv.DictReader(fh)
         cur_samples = []
         for idx, row in enumerate(reader):
+            is_real_stop=csv_to_bool(row['is_real_stop'])
+            if not is_real_stop:
+                continue
             s = Sample(trip_id=row['trip_name'],
+                       is_skipped=False, # to be updated later
                        index=csv_to_int(row['index']),
                        stop_id=csv_to_int(row['stop_id']),
-                       stop_name=row['stop_name'],
-                       is_real_stop=csv_to_bool(row['is_real_stop']),
                        valid=csv_to_bool(row['valid']),
                        is_first=csv_to_bool(row['is_first']),
                        is_last=csv_to_bool(row['is_last']),
@@ -114,8 +116,7 @@ def import_current_csv(csv_file):
                        delay_departure=csv_to_float(row['delay_departure']),
                        delay_arrival=csv_to_float(row['delay_arrival']),
                        data_file=row['data_file'],
-                       data_file_line=csv_to_int(row['data_file_line']),
-                       data_file_link=row['data_file_link'])
+                       data_file_line=csv_to_int(row['data_file_line']))
             cur_samples.append(s)
             if len(cur_samples) == 30000:
                 Sample.objects.bulk_create(cur_samples)
