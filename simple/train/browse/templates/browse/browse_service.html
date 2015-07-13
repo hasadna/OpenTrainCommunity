@@ -7,7 +7,11 @@
 <div class="row">
 <ul>
     {% for stop in service.get_stops %}
-        <li class="stop_in_list">{{stop.stop_id | heb_stop_name}} {{stop.exp_arrival}} {{stop.exp_departure}}</li>
+        <li class="stop_in_list">{{stop.stop_id | heb_stop_name}}
+                                 {{stop.exp_arrival}}
+                                 {{stop.exp_departure}}
+                                 {{stop.avg_delay}}
+        </li>
     {% endfor %}
 </ul>
 </div>

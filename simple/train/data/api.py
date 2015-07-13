@@ -162,6 +162,7 @@ def _get_path_info_full(stop_ids, filters):
 
     return stats
 """
+
 def _get_route_info_full(route_id, filters):
     route = Route.objects.get(id = route_id);
     table = _get_stats_table(route, filters)
@@ -226,12 +227,27 @@ def _complete_table(table,stop_ids):
             result.append(stat)
     return result
 
+def get_service_stat(service):
+    select_stmt = '''
+        SELECT s.stop_id as stop_id,
+        count(s.stop_id) as num_trips,
+        avg(s.delay_arrival) as avg_delay_arrival,
+        avg(s.delay_departure) as avg_delay_departure
+        FROM
+        data_sample as s
+        where s.trip_id = ANY(%(trip_ids)s)
+        GROUP by s.stop_id
+    '''
+    trip_ids = list(service.trips.all().values_list('id',flat=True))
+    select_kwargs = {'trip_ids': trip_ids}
+    cursor = django.db.connection.cursor()
+    cursor.execute(select_stmt,select_kwargs)
+
 @benchit
 def _get_stats_table(route, filters):
     early_threshold = -120
     late_threshold = 300
 
-    first_stop_id = route.stop_ids[0]
     select_stmt = ('''
         SELECT  count(s.stop_id) as num_trips,
                 s.stop_id as stop_id,
