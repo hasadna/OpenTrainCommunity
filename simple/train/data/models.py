@@ -133,11 +133,17 @@ class Service(models.Model):
         last_sample = trip.sample_set.filter(valid=True, is_real_stop=True).latest('index')
         return last_sample.to_local_str_hm(last_sample.exp_arrival, ':')
 
-    def get_stats(self):
-        Service.trips.all()
+    def get_stats_dict(self):
+        import data.api
+        stats = data.api.get_service_stat(self)
+        stats_by_stop_id = dict()
+        for stat in stats:
+            stats_by_stop_id[stat['stop_id']] = stat
+        return stats_by_stop_id
+
     def get_stops(self):
         import services
-        stats = get_stats()
+        stats = self.get_stats_dict()
         trip = self.trips.first()
         samples = trip.get_real_stop_samples()
         result = []
@@ -147,7 +153,7 @@ class Service(models.Model):
                 'stop_name': services.get_heb_stop_name(sample.stop_id),
                 'exp_arrival': sample.to_local_str_hm(sample.exp_arrival, ':'),
                 'exp_departure': sample.to_local_str_hm(sample.exp_departure, ':'),
-                'avg_delay': stats['stop_id'].avg_delay
+                'stat': stats[sample.stop_id]
             })
         return result
 

@@ -21,5 +21,11 @@ def heb_stop_name(stop_id):
 def modelname(obj):
     return obj.__class__.__name__.lower()
 
+@register.filter(name="secondsOrNA")
+def secondsOrNA(d):
+    if d is None:
+        return '--'
+    return d
+
 
 

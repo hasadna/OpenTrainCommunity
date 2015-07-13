@@ -232,7 +232,8 @@ def get_service_stat(service):
         SELECT s.stop_id as stop_id,
         count(s.stop_id) as num_trips,
         avg(s.delay_arrival) as avg_delay_arrival,
-        avg(s.delay_departure) as avg_delay_departure
+        avg(s.delay_departure) as avg_delay_departure,
+        avg(s.actual_departure-s.exp_departure) as time_in_stop
         FROM
         data_sample as s
         where s.trip_id = ANY(%(trip_ids)s)
@@ -242,6 +243,13 @@ def get_service_stat(service):
     select_kwargs = {'trip_ids': trip_ids}
     cursor = django.db.connection.cursor()
     cursor.execute(select_stmt,select_kwargs)
+    cols = ['stop_id','num_trips','avg_delay_arrival','avg_delay_departure','time_in_stop']
+    result = []
+    for row in cursor:
+        row_dict = dict(zip(cols,row))
+        row_dict['time_in_stop'] = row_dict['time_in_stop'].total_seconds() if row_dict['time_in_stop'] else None
+        result.append(row_dict)
+    return result
 
 @benchit
 def _get_stats_table(route, filters):

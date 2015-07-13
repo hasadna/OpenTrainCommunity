@@ -5,14 +5,18 @@
 <h2>{% trans 'Service' %} {{service.id}}</h2>
 <h3> {{service.route.stop_ids | length}} {% trans 'Stops' %}</h3>
 <div class="row">
-<ul>
+<table class="table">
     {% for stop in service.get_stops %}
-        <li class="stop_in_list">{{stop.stop_id | heb_stop_name}}
-                                 {{stop.exp_arrival}}
-                                 {{stop.exp_departure}}
-                                 {{stop.avg_delay}}
-        </li>
+    <tr>
+        <td>{{stop.stop_id | heb_stop_name}}</td>
+        <td>{{stop.exp_arrival}}</td>
+        <td>{{stop.exp_departure}}</td>
+        <td>
+                {{stop.stat.time_in_stop | secondsOrNA}}
+        </td>
+    </tr>
     {% endfor %}
+</table>
 </ul>
 </div>
 <h3>{{service.trips.count}} {% trans 'Trips' %}</h3>
