@@ -2,4 +2,5 @@ bower_components/
 .sass-cache/
 css/
 !browse/static/bs/css
+!browse/static/bs_rtl/css
 error.log
