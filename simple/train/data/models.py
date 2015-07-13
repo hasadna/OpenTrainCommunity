@@ -20,7 +20,7 @@ class Sample(models.Model):
     The actual arrival and actual departure should be None in first/last stop respectively, but can be also None if the sample is missing
     If there is no actual arrival or actual departure, then the delay is None also.
 
-    Note that there are samples for real stops and for midpoints in the way, as given by the train. Non real stops have is_real_stop = False
+    Note that there are samples for real stops and for midpoints in the way, as given by the train. 
     and their name is prefixed with -
 
     """
@@ -124,12 +124,12 @@ class Service(models.Model):
 
     def get_departure_time_str(self):
         trip = self.trips.all()[0]
-        first_sample = trip.sample_set.filter(valid=True, is_real_stop=True).earliest('index')
+        first_sample = trip.sample_set.filter(valid=True).earliest('index')
         return first_sample.to_local_str_hm(first_sample.exp_departure, ':')
 
     def get_arrival_time_str(self):
         trip = self.trips.all()[0]
-        last_sample = trip.sample_set.filter(valid=True, is_real_stop=True).latest('index')
+        last_sample = trip.sample_set.filter(valid=True).latest('index')
         return last_sample.to_local_str_hm(last_sample.exp_arrival, ':')
 
     def get_stats_dict(self):
@@ -189,7 +189,7 @@ class Trip(models.Model):
 
     def get_real_stop_samples(self):
         stop_ids = self.route.stop_ids
-        return self.sample_set.filter(valid=True, is_real_stop=True,stop_id__in=stop_ids).order_by('index')
+        return self.sample_set.filter(valid=True, stop_id__in=stop_ids).order_by('index')
 
     def to_json(self):
         stops = self.get_real_stop_samples()
