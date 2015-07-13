@@ -28,8 +28,8 @@ class Sample(models.Model):
     stop_id = models.IntegerField(db_index=True)  # the stop id
     stop_name = models.CharField(
         max_length=100)  # the stop name in english - not formal name, if this is not real stop will be prefixed with -
-    is_real_stop = models.BooleanField(default=False)  # true is this is real stop
-    #is_skipped_stop = models.BooleanField(default=False) # true if this is skipped stop
+    #is_real_stop = models.BooleanField(default=False)  # true is this is real stop
+    is_skipped = models.BooleanField(default=False) # true if this is skipped stop
     valid = models.BooleanField(default=False,
                                 db_index=True)  # true if this is stop in valid trip (e.g. with no errros)
     is_first = models.BooleanField(default=False)  # true if this is the first stop of the trip (index = 0)
@@ -46,7 +46,6 @@ class Sample(models.Model):
     delay_departure = models.FloatField(blank=True, null=True)  # the delay in the departure in seconds
     data_file = models.CharField(max_length=100)  # the name of the data file (text file)
     data_file_line = models.IntegerField()  # the line number in the data file (text file)
-    data_file_link = models.URLField(max_length=200)  # link to show the snippet of the text file in browser
     trip = models.ForeignKey('Trip', blank=True, null=True)
 
     def get_parent(self):
