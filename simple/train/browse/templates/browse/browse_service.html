@@ -7,7 +7,12 @@
 <div class="row">
 <table class="table">
     {% for stop in service.get_stops %}
-    <tr>
+    <tr
+
+        {% if stop.stat.time_in_stop != None and stop.stat.time_in_stop < 10 %}
+            class="danger"
+        {% endif %}
+        >
         <td>{{stop.stop_id | heb_stop_name}}</td>
         <td>{{stop.exp_arrival}}</td>
         <td>{{stop.exp_departure}}</td>

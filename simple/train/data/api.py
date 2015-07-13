@@ -233,7 +233,7 @@ def get_service_stat(service):
         count(s.stop_id) as num_trips,
         avg(s.delay_arrival) as avg_delay_arrival,
         avg(s.delay_departure) as avg_delay_departure,
-        avg(s.actual_departure-s.exp_departure) as time_in_stop
+        avg(s.actual_departure-s.actual_arrival) as time_in_stop
         FROM
         data_sample as s
         where s.trip_id = ANY(%(trip_ids)s)
@@ -247,7 +247,7 @@ def get_service_stat(service):
     result = []
     for row in cursor:
         row_dict = dict(zip(cols,row))
-        row_dict['time_in_stop'] = row_dict['time_in_stop'].total_seconds() if row_dict['time_in_stop'] else None
+        row_dict['time_in_stop'] = row_dict['time_in_stop'].total_seconds() if row_dict['time_in_stop'] is not None else None
         result.append(row_dict)
     return result
 

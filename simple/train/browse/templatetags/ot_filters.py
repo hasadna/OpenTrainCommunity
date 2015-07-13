@@ -25,7 +25,7 @@ def modelname(obj):
 def secondsOrNA(d):
     if d is None:
         return '--'
-    return d
+    return '%.2f' % d
 
 
 
