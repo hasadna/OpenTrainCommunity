@@ -40,27 +40,6 @@ def browse_route(req,route_id):
     route = get_object_or_404(Route,pk=route_id)
     return render(req,'browse/browse_route.html',_bc(route,{'route':route}))
 
-def edit_route(req,route_id):
-    route = get_object_or_404(Route,pk=route_id)
-    return render(req,'browse/edit_route.html',_bc(route,{'route':route}))
-
-@login_required
-def skip_unskip_stops(req,route_id,skip=None):
-    if req.method != 'POST':
-        return HttpResponseNotAllowed('POST')
-    assert skip is not None,'skip must be boolean'
-    route = get_object_or_404(Route,pk=route_id)
-    stop_ids = [int(k[5:]) for k in req.POST.keys() if k.startswith('stop_')]
-    if skip:
-        for stop_id in stop_ids:
-            if stop_id == route.stop_ids[0] or stop_id == route.stop_ids[-1]:
-                raise Exception('Cannot delete first or last stop')
-    if skip:
-        route.skip_stop_ids(stop_ids)
-    else:
-        route.unskip_stop_ids(stop_ids)
-    return HttpResponseRedirect('/browse/routes/%s/edit/' % route_id)
-
 
 def browse_service(req,service_id):
     service = get_object_or_404(Service,pk=service_id)
