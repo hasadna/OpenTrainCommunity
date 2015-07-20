@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="RouteExplorer">
+<html ng-app="RouteExplorer" ng-controller="AppController">
     <head>
         <title>רכבת פתוחה</title>
         <meta property="og:title" content="רכבת פתוחה" />
@@ -19,6 +19,10 @@
                 <div class="navbar-header">
                     <a class="navbar-brand" href="/">רכבת פתוחה</a>
                 </div>
+
+                <a class="nav navbar-link navbar-text navbar-left" ng-click="share('http://www.facebook.com/sharer.php?u=')">
+                    <i class="fa fa-2x fa-facebook-square"></i>
+                </a>
             </div>
         </nav>
 
