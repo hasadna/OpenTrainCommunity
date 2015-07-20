@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 import pytz
 from django.utils.translation import ugettext as _
+from data import cache_utils
 
 ISRAEL_TIMEZONE = pytz.timezone(settings.TIME_ZONE)
 
@@ -132,6 +133,7 @@ class Service(models.Model):
         last_sample = trip.sample_set.filter(valid=True).latest('index')
         return last_sample.to_local_str_hm(last_sample.exp_arrival, ':')
 
+    @cache_utils.cache_obj_method
     def get_stats_dict(self):
         import data.api
         stats = data.api.get_service_stat(self)
@@ -147,12 +149,14 @@ class Service(models.Model):
         samples = trip.get_real_stop_samples()
         result = []
         for sample in samples:
+            stop_stat = stats[sample.stop_id]
             result.append({
                 'stop_id': sample.stop_id,
                 'stop_name': services.get_heb_stop_name(sample.stop_id),
                 'exp_arrival': sample.to_local_str_hm(sample.exp_arrival, ':'),
                 'exp_departure': sample.to_local_str_hm(sample.exp_departure, ':'),
-                'stat': stats[sample.stop_id]
+                'stat': stop_stat,
+                'can_be_skipped': stop_stat['time_in_stop'] is not None and stop_stat['time_in_stop'] < 5
             })
         return result
 

@@ -9,7 +9,7 @@
     {% for stop in service.get_stops %}
     <tr
 
-        {% if stop.stat.time_in_stop != None and stop.stat.time_in_stop < 10 %}
+        {% if stop.can_be_skipped %}
             class="danger"
         {% endif %}
         >
@@ -17,7 +17,7 @@
         <td>{{stop.exp_arrival}}</td>
         <td>{{stop.exp_departure}}</td>
         <td>
-                {{stop.stat.time_in_stop | secondsOrNA}}
+            {{stop.stat.time_in_stop | secondsOrNA}}
         </td>
     </tr>
     {% endfor %}
