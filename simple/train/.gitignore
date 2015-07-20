@@ -3,4 +3,5 @@ bower_components/
 css/
 !browse/static/bs/css
 !browse/static/bs_rtl/css
+!browse/.../css
 error.log

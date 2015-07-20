@@ -21,7 +21,7 @@
         <th>{% trans 'Arrival Time' %}</th>
         <th>{% trans 'Total Time' %}</th>
         <th># {% trans 'trips' %}</th>
-        <th>{% trans 'skipped stops' %}</th>
+        <th>{% trans 'Skipped Stops' %}</th>
     </tr>
     </thead>
     <tbody>
@@ -33,10 +33,12 @@
        <td>{{service.get_total_time_str}}</td>
        <td>{{service.trips.count}}</td>
        <td>
+          [{{ service.get_skipped_stop_ids | length }}]
+           <ul>
           {% for stop_id in service.get_skipped_stop_ids %}
-              {{stop_id | heb_stop_name }}
+              <li class="stop_in_list_small">{{stop_id | heb_stop_name }}</li>
           {% endfor %}
-       
+          </ul>
    </tr>
 {% endfor %}
     </tbody>
