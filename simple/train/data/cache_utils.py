@@ -10,13 +10,16 @@ except ImportError:
 
 print '********* cache_enabled = %s' % CACHE_ENABLED
 from django.http import HttpResponse
-
+import json
 
 def _build_key(req):
     return req.get_full_path()
 
 
-def cacheit(func):
+def cachereq(func):
+    """
+    decorator to cache request call, returns HTTP response
+    """
     def wrap(req, *args, **kwargs):
         use_cache = req.GET.get('no_cache',None) != '1' and CACHE_ENABLED
         if use_cache:
@@ -28,6 +31,21 @@ def cacheit(func):
         result = func(req, *args, **kwargs)
         if use_cache:
             CLIENT.setex(key, TTL, result.content)
+        return result
+
+    return wrap
+
+def cache_obj_method(func):
+    """
+    decorator for function that returns json-able object
+    """
+    def wrap(obj, *args, **kwargs):
+        key = '%s:%s' % (func.__name__ ,obj.id)
+        cc = CLIENT.get(key)
+        if cc:
+            return json.loads(cc)
+        result = func(obj, *args, **kwargs)
+        CLIENT.setex(key, TTL, json.dumps(result))
         return result
 
     return wrap

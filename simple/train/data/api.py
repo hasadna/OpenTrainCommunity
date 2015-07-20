@@ -25,7 +25,7 @@ def benchit(func):
         return result
     return wrap
 
-@cache_utils.cacheit
+@cache_utils.cachereq
 def get_stops(req):
     import services
 
@@ -46,7 +46,7 @@ def get_trip(req, trip_id):
     return json_resp(trip.to_json());
 
 
-@cache_utils.cacheit
+@cache_utils.cachereq
 def get_all_routes(req):
     from django.db.models import Count
 
@@ -134,7 +134,7 @@ def get_path_info_full(req):
     return json_resp(stats)
 """
 
-@cache_utils.cacheit
+@cache_utils.cachereq
 @benchit
 def get_route_info_full(req):
     route_id = req.GET['route_id'];
@@ -226,6 +226,7 @@ def _complete_table(table,stop_ids):
             }
             result.append(stat)
     return result
+
 
 def get_service_stat(service):
     select_stmt = '''
