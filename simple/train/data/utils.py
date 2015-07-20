@@ -30,7 +30,7 @@ def build_current_routes(csv_file):
         reader = csv.DictReader(fh)
         for idx,row in enumerate(reader):
             if csv_to_bool(row['is_real_stop']):
-                stop_ids_by_trip[row['trip_name']].append(row['stop_id'])
+                stop_ids_by_trip[row['trip_name']].append(int(row['stop_id']))
     route_id_by_trip = dict()
     for trip_name,stop_ids in stop_ids_by_trip.iteritems():
         tuple_stop_ids = tuple(stop_ids)
