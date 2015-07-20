@@ -184,7 +184,8 @@ class Trip(models.Model):
         """
         :return: common separated string of all exp time in local time
         """
-        samples = self.get_real_stop_samples()
+        samples = list(self.get_real_stop_samples())
+        samples = [samples[0],samples[-1]]
         return ','.join(s.get_exp_time_string() for s in samples)
 
     def get_real_stop_samples(self):
