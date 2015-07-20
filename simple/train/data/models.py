@@ -138,16 +138,19 @@ class Service(models.Model):
         stop_ids = self.route.stop_ids
         result = []
         for stop_id in stop_ids:
-            stop_stat = stats[unicode(stop_id)]
+            stop_stat = stats[stop_id]
             if stop_stat['time_in_stop'] is not None and stop_stat['time_in_stop'] < 5:
                 result.append(stop_id)
         return result
 
 
     @cache_utils.cache_obj_method
-    def get_stats_dict(self):
+    def get_stats_list(self):
         import data.api
-        stats = data.api.get_service_stat(self)
+        return data.api.get_service_stat(self)
+
+    def get_stats_dict(self):
+        stats = self.get_stats_list()
         stats_by_stop_id = dict()
         for stat in stats:
             stats_by_stop_id[stat['stop_id']] = stat
