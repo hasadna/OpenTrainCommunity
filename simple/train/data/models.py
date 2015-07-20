@@ -1,6 +1,6 @@
 from django.db import models
 from django.conf import settings
-from djorm_pgarray.fields import IntegerArrayField
+from django.contrib.postgres.fields import ArrayField
 import pytz
 from django.utils.translation import ugettext as _
 
@@ -208,7 +208,7 @@ class Trip(models.Model):
 
 
 class Route(models.Model):
-    stop_ids = IntegerArrayField(db_index=True, unique=True)
+    stop_ids = ArrayField(base_field=models.IntegerField(),db_index=True, unique=True)
 
     def skip_stop_ids(self, stop_ids):
         for stop_id in stop_ids:
