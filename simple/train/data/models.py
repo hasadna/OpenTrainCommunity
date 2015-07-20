@@ -133,6 +133,17 @@ class Service(models.Model):
         last_sample = trip.sample_set.filter(valid=True).latest('index')
         return last_sample.to_local_str_hm(last_sample.exp_arrival, ':')
 
+    def get_skipped_stop_ids(self):
+        stats = self.get_stats_dict()
+        stop_ids = self.route.stop_ids
+        result = []
+        for stop_id in stop_ids:
+            stop_stat = stats[unicode(stop_id)]
+            if stop_stat['time_in_stop'] is not None and stop_stat['time_in_stop'] < 5:
+                result.append(stop_id)
+        return result
+
+
     @cache_utils.cache_obj_method
     def get_stats_dict(self):
         import data.api
