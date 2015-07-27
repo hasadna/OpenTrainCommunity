@@ -6,6 +6,9 @@ $font-family-sans-serif: "Open Sans Hebrew", "Helvetica Neue", Helvetica, Arial,
 $headings-font-family: "Alef Hebrew", "Helvetica Neue", Helvetica, Arial, sans-serif;
 
 // Colors
+$rex-brand-color: #3495c1;
+$rex-brand-dark-color: #165775;
+
 $rex-background-color: #e8eaed;
 $rex-content-color: white;
 $rex-accent-color: #9aca41;
@@ -15,6 +18,14 @@ $rex-btn-text-color: #939599;
 $rex-btn-border-color: #dadddf;
 
 $body-bg: $rex-background-color;
+
+// Navbar
+$navbar-default-bg: $rex-brand-dark-color;
+$navbar-default-color: white;
+$navbar-default-brand-color: $rex-brand-color;
+$navbar-default-link-color: $rex-brand-color;
+$navbar-default-brand-hover-color: white;
+$navbar-default-link-hover-color: white;
 
 // Tables
 $table-bg-hover: #fff;

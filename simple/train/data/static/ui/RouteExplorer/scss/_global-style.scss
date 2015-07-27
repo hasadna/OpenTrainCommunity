@@ -13,6 +13,12 @@ body {
 h1 { margin-bottom: 30px; }
 .content { background-color: $rex-content-color; }
 
+// Header
+.navbar-brand {
+    font-family: $headings-font-family;
+    font-size: 28px;
+}
+
 // Specific recurring components
 .duration {
     // To make the direction display left-to-right, we wrap it in a left-to-right override
