@@ -10,6 +10,7 @@ function($routeProvider) {
 
     $routeProvider
         .when('/', {
+            pageId: 'welcome',
             templateUrl: templateUrl('SelectStops'),
             controller: 'SelectStopsController',
             resolve: {
@@ -48,13 +49,36 @@ function($scope, $location) {
         var url = prefix + encodeURIComponent('http://otrain.org/ui/routes/#' + $location.url());
         window.open(url, 'sharePopup', 'width=600,height=550,top=100,left=100,location=no,scrollbar=no,status=no,menubar=no');
     };
+
+    $scope.$on('$routeChangeSuccess', function(e, route) {
+        $scope.bodyClass = route.pageId ? 'rex-page-' + route.pageId : null;
+    });
 }]);
 
-app.controller('SelectStopsController', ['$scope', '$location', 'Layout',
-function($scope, $location, Layout) {
+app.controller('SelectStopsController', ['$scope', '$rootScope', '$location', 'Layout',
+function($scope, $rootScope, $location, Layout) {
     $scope.stops = Layout.getStops();
     $scope.origin = null;
     $scope.destination = null;
+    $scope.months = [
+        'ינואר',
+        'פברואר',
+        'מרץ',
+        'אפריל',
+        'מאי',
+        'יוני',
+        'יולי',
+        'אוגוסט',
+        'ספטמבר',
+        'אוקטובר',
+        'נובמבר',
+        'דצמבר'
+    ];
+
+    $scope.month = new Date().getMonth() + "";
+    $scope.year = new Date().getFullYear();
+    $scope.minYear = 2013;
+    $scope.maxYear = $scope.year;
 
     $scope.formValid = function() {
         return (

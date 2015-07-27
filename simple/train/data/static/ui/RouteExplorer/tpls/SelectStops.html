@@ -1,20 +1,36 @@
-<div class="select-stops-page">
-    <h1>בחר מוצא ויעד</h1>
+<div class="select-stops-form">
+    <h1>רכבת<strong>פתוחה</strong></h1>
     <div class="container">
-        <div class="row">
-            <form ng-submit="goToRoutes()">
-                <div class="col-sm-4">
-                    <input ng-model="origin" name="origin" class="form-control" type="text" placeholder="מוצא" autocomplete="off"
+        <form ng-submit="goToRoutes()">
+            <div class="row">
+                <div class="col-sm-12">
+                    <input ng-model="origin" name="origin" class="form-control" type="text" placeholder="בחרו תחנת מוצא" autocomplete="off"
                         typeahead="stop as stop.name for stop in stops | filter:$viewValue" typeahead-editable="false" />
                 </div>
-                <div class="col-sm-4">
-                    <input ng-model="destination" name="destination" class="form-control" type="text" placeholder="יעד" autocomplete="off"
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <input ng-model="destination" name="destination" class="form-control" type="text" placeholder="בחרו תחנת יעד" autocomplete="off"
                         typeahead="stop as stop.name for stop in stops | filter:$viewValue" typeahead-editable="false" />
                 </div>
-                <div class="col-sm-4">
-                    <button type="submit" class="btn btn-primary" ng-disabled="!formValid()">סע</button>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <select name="month" class="form-control" placeholder="חודש"
+                        ng-model="month"
+                        ng-options="index as name for (index, name) in months">
+                    </select>
                 </div>
-            </form>
-        </div>
+                <div class="col-sm-6">
+                    <input name="year" class="form-control" type="number" min="{{ minYear }}" max="{{ maxYear }}" placeholder="שנה"
+                        ng-model="year" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <button type="submit" class="btn btn-primary btn-block" ng-disabled="!formValid()">סע</button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>

@@ -25,7 +25,7 @@ h1 { margin-bottom: 30px; }
     direction: ltr; &::before { content: '\202d'; } &::after { content: '\202c'; }
 }
 
-.btn {
+.btn.btn-default {
     &:active, &.active {
         background-color: $rex-content-color;
         color: $rex-accent-color;

@@ -1,0 +1,23 @@
+body.rex-page-welcome {
+    .navbar {
+        background-color: white;
+        .navbar-brand, .navbar-link { color: $rex-brand-color; &:hover { color: $rex-brand-dark-color; } }
+    }
+
+    .select-stops-form {
+        padding-top: 50px;
+        background-color: white;
+
+        h1 { text-align: center; font-size: 36px; color: $rex-brand-color; font-family: $font-family-sans-serif; }
+
+        .container {
+            max-width: 600px;
+            .row { height: 60px; margin-bottom: 25px; }
+        }
+
+        form {
+            .form-control, .btn-primary { height: 60px; border-radius: 0; font-size: 18px; border: none; }
+            .form-control { background-color: $rex-light-gray-color; }
+        }
+    }
+}
