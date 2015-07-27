@@ -7569,6 +7569,9 @@ div.paths-list {
     display: table-row; }
   div.paths-list .index-cell, div.paths-list .path-cell, div.paths-list .count-cell {
     display: table-cell; }
+  div.paths-list > .list-header > div {
+    padding: 15px 40px;
+    font-weight: bold; }
   div.paths-list > .list-body > .list-item {
     cursor: pointer;
     color: #333333;

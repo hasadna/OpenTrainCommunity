@@ -5,6 +5,7 @@ div.paths-list {
     > .list-body > .list-item { display: table-row; }
     .index-cell, .path-cell, .count-cell { display: table-cell; }
 
+    > .list-header > div { padding: 15px 40px; font-weight: bold; }
     > .list-body > .list-item {
         cursor: pointer;
         color: $text-color; text-decoration: none;
