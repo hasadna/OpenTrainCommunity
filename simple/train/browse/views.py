@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 from django.views.decorators.csrf import csrf_exempt
 from data.models import Route,Service,Trip, Sample
 from django.shortcuts import render, get_object_or_404
@@ -41,9 +42,18 @@ def browse_route(req,route_id):
     return render(req,'browse/browse_route.html',_bc(route,{'route':route}))
 
 
+def browse_bad_services(req):
+    import data.utils
+    sr = data.utils.analyze_services()
+    bad_services = sr.bad
+    bc = {'name': _('Bad Services',reverse('browse:bad_services'))}
+    return render(req,'browse/bad_services.html',[bc])
+
+
 def browse_service(req,service_id):
     service = get_object_or_404(Service,pk=service_id)
     return render(req,'browse/browse_service.html',_bc(service,{'service':service}))
+
 
 def browse_trip(req,trip_id):
     trip = get_object_or_404(Trip,pk=trip_id)
@@ -78,9 +88,11 @@ def show_raw_data(req):
     ctx['next'] = sample.get_text_link(line=lineno + OFFSET * 2 - 1)
     return render(req, 'browse/browse_raw_data.html', _bc(sample,ctx))
 
+
 def resp_json(d,status):
     import json
     return HttpResponse(content=json.dumps(d),status=status,content_type='application/json');
+
 
 @csrf_exempt
 def login(req):
@@ -112,6 +124,7 @@ def user_to_auth_json(user):
     else:
         result['username'] = ''
     return result
+
 
 @csrf_exempt
 def logout(req):

@@ -1,6 +1,7 @@
-from data.models import Sample, Trip, Route
+from data.models import Sample, Trip, Route, Service
 import csv
 import datetime
+from collections import namedtuple
 
 def benchit(func):
     def _wrap(*args, **kwargs):
@@ -138,6 +139,7 @@ def build_all_services():
             print 'Completed %s/%s routes' % (idx+1,len(routes))
     check_services()
 
+
 def check_services():
     from django.db.models import Count
     count = Trip.objects.count()
@@ -149,6 +151,39 @@ def check_services():
             assert trip.service_count == 0,'Trip %s is not valid but has services' % trip.id
         if (1+idx)%100 == 0:
             print 'Completed %s/%s trips' % (idx+1,count)
+
+ServicesResult = namedtuple('ServicesResult',['bad','unreliable','good'])
+def analyze_services():
+    services = list(Service.objects.all())
+    print 'Fond %s services' % len(services)
+    bad_services = []
+    unreliable_services = []
+    good_services = []
+    for idx,service in enumerate(services):
+        skipped_stop_ids = service.get_skipped_stop_ids()
+        if service.trips.count() <= 2:
+            unreliable_services.append(service)
+        elif len(skipped_stop_ids) > 0:
+            bad_services.append(service)
+        else:
+            good_services.append(service)
+    return ServicesResult(bad=bad_services,
+                          unreliable=unreliable_services,
+                          good=good_services)
+
+def find_skip_stops():
+    sr = analyze_services()
+    print 'bad_services: %s' % len(sr.bad)
+    print 'unreliable_services : %s' % len(sr.unreliable)
+    print 'good_services: %s' % len(sr.good)
+    route_ids = {s.route_id for s in sr.bad}
+    print 'bad routes: %s' % (len(route_ids))
+    bad_routes = Route.objects.filter(id__in=route_ids)
+    for br in bad_routes:
+        print unicode(br)
+
+
+
 
 
 
