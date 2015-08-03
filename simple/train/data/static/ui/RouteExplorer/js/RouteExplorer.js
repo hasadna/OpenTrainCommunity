@@ -56,7 +56,7 @@ function($routeProvider) {
 app.controller('AppController', ['$scope', '$location',
 function($scope, $location) {
     $scope.share = function(prefix) {
-        var url = prefix + encodeURIComponent('http://otrain.org/ui/routes/#' + $location.url());
+        var url = prefix + encodeURIComponent('http://otrain.org/#' + $location.url());
         window.open(url, 'sharePopup', 'width=600,height=550,top=100,left=100,location=no,scrollbar=no,status=no,menubar=no');
     };
 
