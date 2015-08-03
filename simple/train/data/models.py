@@ -303,7 +303,7 @@ class Route(models.Model):
     def last_stop_id(self):
         return self.stop_ids[-1]
 
-    def admin_unicode(self):
+    def __unicode__(self):
         import services
 
         first_stop_name = services.get_heb_stop_name(self.stop_ids[0])
