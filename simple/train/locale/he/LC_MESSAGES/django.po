@@ -3,22 +3,65 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-20 23:52+0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"POT-Creation-Date: 2015-08-03 21:30+0300\n"
+"PO-Revision-Date: 2015-08-03 21:31+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.5.4\n"
 
-#: browse/templates/browse/browse_raw_data.html:4 browse/views.py:18
+#: browse/templates/browse/bad_services.html:6
+#: browse/templates/browse/browse_route.html:6 browse/views.py:49
+msgid "Bad Services"
+msgstr "שירותים חשודים"
+
+#: browse/templates/browse/bad_services.html:7
+#: browse/templates/browse/browse_route.html:7
+#: browse/templates/browse/browse_routes.html:21
+msgid "Services"
+msgstr "שירותים"
+
+#: browse/templates/browse/bad_services.html:11
+#: browse/templates/browse/browse_route.html:11
+#: browse/templates/browse/browse_service.html:31
+msgid "ID"
+msgstr "מזהה"
+
+#: browse/templates/browse/bad_services.html:12
+#: browse/templates/browse/browse_route.html:12
+msgid "Departure Time"
+msgstr "זמן יציאה"
+
+#: browse/templates/browse/bad_services.html:13
+#: browse/templates/browse/browse_route.html:13
+msgid "Arrival Time"
+msgstr "זמן הגעה"
+
+#: browse/templates/browse/bad_services.html:14
+#: browse/templates/browse/browse_route.html:14
+#| msgid "Arrival Time"
+msgid "Total Time"
+msgstr "זמן כולל"
+
+#: browse/templates/browse/bad_services.html:15
+#: browse/templates/browse/browse_route.html:15
+msgid "trips"
+msgstr "נסיעות"
+
+#: browse/templates/browse/bad_services.html:16
+#: browse/templates/browse/browse_route.html:16
+#: browse/templates/browse/edit_route.html:20
+msgid "Skipped Stops"
+msgstr "תחנות מדולגות"
+
+#: browse/templates/browse/browse_raw_data.html:4 browse/views.py:19
 msgid "File"
 msgstr "קובץ"
 
@@ -38,51 +81,6 @@ msgstr "מספר שורה"
 msgid "Line"
 msgstr "שורה"
 
-#: browse/templates/browse/browse_route.html:6
-#: browse/templates/browse/edit_route.html:6 data/models.py:267
-msgid "Route"
-msgstr "מסלול"
-
-#: browse/templates/browse/browse_route.html:7
-#: browse/templates/browse/browse_routes.html:18
-#: browse/templates/browse/browse_service.html:6
-#: browse/templates/browse/edit_route.html:7
-msgid "Stops"
-msgstr "תחנות"
-
-#: browse/templates/browse/browse_route.html:15
-#: browse/templates/browse/browse_routes.html:21
-msgid "Services"
-msgstr "שירותים"
-
-#: browse/templates/browse/browse_route.html:19
-#: browse/templates/browse/browse_service.html:31
-msgid "ID"
-msgstr "מזהה"
-
-#: browse/templates/browse/browse_route.html:20
-msgid "Departure Time"
-msgstr "זמן יציאה"
-
-#: browse/templates/browse/browse_route.html:21
-msgid "Arrival Time"
-msgstr "זמן הגעה"
-
-#: browse/templates/browse/browse_route.html:22
-#, fuzzy
-#| msgid "Arrival Time"
-msgid "Total Time"
-msgstr "זמן הגעה"
-
-#: browse/templates/browse/browse_route.html:23
-msgid "trips"
-msgstr "נסיעות"
-
-#: browse/templates/browse/browse_route.html:24
-#: browse/templates/browse/edit_route.html:20
-msgid "Skipped Stops"
-msgstr "תחנות מדולגות"
-
 #: browse/templates/browse/browse_routes.html:9
 msgid "Id"
 msgstr "מזהה"
@@ -94,6 +92,12 @@ msgstr "מוצא"
 #: browse/templates/browse/browse_routes.html:15
 msgid "destination"
 msgstr "יעד"
+
+#: browse/templates/browse/browse_routes.html:18
+#: browse/templates/browse/browse_service.html:6
+#: browse/templates/browse/edit_route.html:7
+msgid "Stops"
+msgstr "תחנות"
 
 #: browse/templates/browse/browse_routes.html:24
 #: browse/templates/browse/browse_service.html:27
@@ -152,6 +156,10 @@ msgstr "קישור"
 msgid "line"
 msgstr "שורה"
 
+#: browse/templates/browse/edit_route.html:6 data/models.py:267
+msgid "Route"
+msgstr "מסלול"
+
 #: browse/templates/browse/edit_route.html:6
 msgid "editing"
 msgstr "עריכה"
@@ -192,12 +200,11 @@ msgid "name"
 msgstr "שם"
 
 #: browse/templates/browse/login_modal.html:28
-#, fuzzy
 #| msgid "Password"
 msgid "password"
 msgstr "ססמא"
 
-#: browse/views.py:12
+#: browse/views.py:13
 msgid "Routes"
 msgstr "מסלולים"
 
@@ -212,16 +219,3 @@ msgstr "ל"
 #: data/models.py:208
 msgid "on"
 msgstr "ב"
-
-#~| msgid "Skipped Stops"
-#~ msgid "skipped stops"
-#~ msgstr "תחנות מדולגות"
-
-#~ msgid "edit"
-#~ msgstr "ערוך"
-
-#~ msgid "change"
-#~ msgstr "שנה"
-
-#~ msgid "Name"
-#~ msgstr "שם"

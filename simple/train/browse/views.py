@@ -33,7 +33,6 @@ def _bc(obj,ctx):
 
 def browse_routes(req):
     routes = Route.objects.all()
-
     return render(req,'browse/browse_routes.html',_bc(None,{'routes':routes}))
 
 
@@ -46,8 +45,15 @@ def browse_bad_services(req):
     import data.utils
     sr = data.utils.analyze_services()
     bad_services = sr.bad
-    bc = {'name': _('Bad Services',reverse('browse:bad_services'))}
-    return render(req,'browse/bad_services.html',[bc])
+    bc = {
+        'name': _('Bad Services'),
+        'link':reverse('browse:bad_services')
+    }
+    ctx = {}
+    ctx['title'] = 'bad services'
+    ctx['breadcrumbs'] = [bc]
+    ctx['services'] = bad_services
+    return render(req,'browse/bad_services.html',ctx)
 
 
 def browse_service(req,service_id):

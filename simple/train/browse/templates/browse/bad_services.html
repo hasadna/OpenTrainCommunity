@@ -3,8 +3,7 @@
 {% load i18n %}
 {% block content %}
 
-<h2>{% trans 'Bad Services' %}</h2>
-<h3>{{route.service_set.count}} {% trans 'Services' %}</h3>
+<h2>{{services | length}} {% trans 'Bad Services' %}</h2>
 <table class="table" id="servicesTable">
     <thead>
     <tr>
@@ -17,7 +16,7 @@
     </tr>
     </thead>
     <tbody>
-{% for service in route.get_services %}
+{% for service in services %}
    <tr>
        <td><a href="/browse/services/{{service.id}}/">{{service.id}}</a></td>
        <td>{{service.get_departure_time_str}}</td>
@@ -25,12 +24,17 @@
        <td>{{service.get_total_time_str}}</td>
        <td>{{service.trips.count}}</td>
        <td>
-          [{{ service.get_skipped_stop_ids | length }}]
+          [{{ service.get_skipped_stop_ids | length }} / {{service.get_stops | length}}]
            <ul>
-          {% for stop_id in service.get_skipped_stop_ids %}
-              <li class="stop_in_list_small">{{stop_id | heb_stop_name }}</li>
+          {% for stop in service.get_stops %}
+               {% if stop.stop_id in service.get_skipped_stop_ids %}
+               <li class="stop_in_list_small stop_bad">{{stop.stop_id | heb_stop_name }}</li>
+               {% else %}
+               <li class="stop_in_list_small">{{stop.stop_id | heb_stop_name }}</li>
+               {% endif %}
           {% endfor %}
           </ul>
+       </td>
    </tr>
 {% endfor %}
     </tbody>
