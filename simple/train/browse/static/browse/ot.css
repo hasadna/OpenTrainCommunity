@@ -26,6 +26,9 @@ body {
     font-size: 10px;
 }
 
+.stop_bad {
+    background-color: red;
+}
 
 .breadcrumb {
     display: inline-block;

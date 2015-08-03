@@ -50,3 +50,17 @@ def cache_obj_method(func):
 
     return wrap
 
+
+def cache_result(func):
+    """
+    decorator for function that returns json-able object
+    """
+    def wrap():
+        key = '%s' % (func.__name__)
+        cc = CLIENT.get(key)
+        if cc:
+            return json.loads(cc)
+        result = func()
+        CLIENT.setex(key, TTL, json.dumps(result))
+        return result
+    return wrap

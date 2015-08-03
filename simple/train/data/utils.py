@@ -2,6 +2,7 @@ from data.models import Sample, Trip, Route, Service
 import csv
 import datetime
 from collections import namedtuple
+import cache_utils
 
 def benchit(func):
     def _wrap(*args, **kwargs):
@@ -153,7 +154,10 @@ def check_services():
             print 'Completed %s/%s trips' % (idx+1,count)
 
 ServicesResult = namedtuple('ServicesResult',['bad','unreliable','good'])
-def analyze_services():
+
+
+@cache_utils.cache_result
+def _analyze_services_impl():
     services = list(Service.objects.all())
     print 'Fond %s services' % len(services)
     bad_services = []
@@ -162,14 +166,20 @@ def analyze_services():
     for idx,service in enumerate(services):
         skipped_stop_ids = service.get_skipped_stop_ids()
         if service.trips.count() <= 2:
-            unreliable_services.append(service)
+            unreliable_services.append(service.id)
         elif len(skipped_stop_ids) > 0:
-            bad_services.append(service)
+            bad_services.append(service.id)
         else:
-            good_services.append(service)
-    return ServicesResult(bad=bad_services,
-                          unreliable=unreliable_services,
-                          good=good_services)
+            good_services.append(service.id)
+    return {'bad':bad_services,
+            'good':good_services,
+            'unreliable':unreliable_services}
+
+def analyze_services():
+    d = _analyze_services_impl()
+    return ServicesResult(bad=Service.objects.filter(id__in=d['bad']),
+                          unreliable=Service.objects.filter(id__in=d['unreliable']),
+                          good=Service.objects.filter(id__in=d['good']))
 
 def find_skip_stops():
     sr = analyze_services()
