@@ -118,12 +118,14 @@ class Service(models.Model):
         return self.route
 
     def remove_skip_stops(self):
-        skip_stops = self.get_skipped_stop_ids()
+        skip_stop_ids = self.get_skipped_stop_ids()
         cur_stop_ids = self.route.stop_ids
         new_stop_ids = [stop_id for stop_id in cur_stop_ids if stop_id not in skip_stop_ids]
-        created, new_route = Route.objects.get_or_create(stop_ids=new_stop_ids)
-        service.trips.update(route=new_route)
-        samples = Sample.objects.filter(trip__in=service.trips,stop_id__in=skip_stop_ids)
+        new_route, created = Route.objects.get_or_create(stop_ids=new_stop_ids)
+        self.route = new_route
+        self.save()
+        self.trips.update(route=new_route)
+        samples = Sample.objects.filter(trip__in=self.trips.all(),stop_id__in=skip_stop_ids)
         samples.update(is_skipped=True)
 
     def get_short_name(self):

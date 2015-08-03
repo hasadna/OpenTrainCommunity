@@ -156,7 +156,6 @@ def check_services():
 ServicesResult = namedtuple('ServicesResult',['bad','unreliable','good'])
 
 
-@cache_utils.cache_result
 def _analyze_services_impl():
     services = list(Service.objects.all())
     print 'Fond %s services' % len(services)
@@ -181,16 +180,17 @@ def analyze_services():
                           unreliable=Service.objects.filter(id__in=d['unreliable']),
                           good=Service.objects.filter(id__in=d['good']))
 
-def find_skip_stops():
+def remove_skip_stops():
     sr = analyze_services()
     route_ids = {s.route_id for s in sr.bad}
-    bad_routes = Route.objects.filter(id__in=route_ids)
+    #bad_routes = Route.objects.filter(id__in=route_ids)
     print 'bad_services: %s' % len(sr.bad)
     print 'unreliable_services : %s' % len(sr.unreliable)
     print 'good_services: %s' % len(sr.good)
     print 'bad routes: %s' % (len(route_ids))
-    for service in bad_services:
-    	service.remove_skip_stops()
+    for idx,service in enumerate(sr.bad):
+        service.remove_skip_stops()
+        print '%s/%s completed' % (idx,len(sr.bad))
 
 
 

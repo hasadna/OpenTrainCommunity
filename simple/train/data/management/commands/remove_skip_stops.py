@@ -6,5 +6,5 @@ class Command(BaseCommand):
     help = 'build services'
 
     def handle(self, *args, **options):
-        data.utils.find_skip_stops()
+        data.utils.remove_skip_stops()
 
