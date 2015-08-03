@@ -183,15 +183,14 @@ def analyze_services():
 
 def find_skip_stops():
     sr = analyze_services()
+    route_ids = {s.route_id for s in sr.bad}
+    bad_routes = Route.objects.filter(id__in=route_ids)
     print 'bad_services: %s' % len(sr.bad)
     print 'unreliable_services : %s' % len(sr.unreliable)
     print 'good_services: %s' % len(sr.good)
-    route_ids = {s.route_id for s in sr.bad}
     print 'bad routes: %s' % (len(route_ids))
-    bad_routes = Route.objects.filter(id__in=route_ids)
-    for br in bad_routes:
-        print unicode(br)
-
+    for service in bad_services:
+    	service.remove_skip_stops()
 
 
 

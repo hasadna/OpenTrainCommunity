@@ -1,3 +1,4 @@
+
 from django.db import models
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
@@ -115,6 +116,15 @@ class Service(models.Model):
 
     def get_parent(self):
         return self.route
+
+    def remove_skip_stops(self):
+        skip_stops = self.get_skipped_stop_ids()
+        cur_stop_ids = self.route.stop_ids
+        new_stop_ids = [stop_id for stop_id in cur_stop_ids if stop_id not in skip_stop_ids]
+        created, new_route = Route.objects.get_or_create(stop_ids=new_stop_ids)
+        service.trips.update(route=new_route)
+        samples = Sample.objects.filter(trip__in=service.trips,stop_id__in=skip_stop_ids)
+        samples.update(is_skipped=True)
 
     def get_short_name(self):
         return '%s %s: %s %s %s' % (_('Service'),
@@ -239,21 +249,8 @@ class Trip(models.Model):
 class Route(models.Model):
     stop_ids = ArrayField(base_field=models.IntegerField(),db_index=True, unique=True)
 
-    def skip_stop_ids(self, stop_ids):
-        for stop_id in stop_ids:
-            if stop_id not in self.stop_ids:
-                raise Exception('Stop %s is not part of the stop ids' % stop_id)
-        for stop_id in stop_ids:
-            self.stop_ids.remove(stop_id)
-            self.save()
-
-    def unskip_stop_ids(self,stop_ids):
-        assert False,'not yet'
-
-
     def is_to_north(self):
         import services
-
         first_stop = services.get_stop(self.stop_ids[0])
         last_stop = services.get_stop(self.stop_ids[-1])
         return first_stop['latlon'][0] < last_stop['latlon'][0]
