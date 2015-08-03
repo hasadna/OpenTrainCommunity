@@ -8,7 +8,7 @@ try:
 except ImportError:
     CACHE_ENABLED = False
 
-print '********* cache_enabled = %s' % CACHE_ENABLED
+#print '********* cache_enabled = %s' % CACHE_ENABLED
 from django.http import HttpResponse
 import json
 
