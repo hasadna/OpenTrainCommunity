@@ -19,7 +19,7 @@ function($routeProvider) {
                 }
             }
         })
-        .when('/select-route/:origin/:destination', {
+        .when('/:year/:month/routes/:origin/:destination', {
             templateUrl: templateUrl('SelectRoute'),
             controller: 'SelectRouteController',
             resolve: {
@@ -28,7 +28,7 @@ function($routeProvider) {
                 }
             }
         })
-        .when('/route-details/:routeId', {
+        .when('/:year/:month/route/:routeId', {
             templateUrl: templateUrl('RouteDetails'),
             controller: 'RouteDetailsController',
             resolve: {
@@ -85,7 +85,7 @@ function($scope, $rootScope, $location, Layout) {
         'דצמבר'
     ];
 
-    $scope.month = new Date().getMonth() + "";
+    $scope.month = new Date().getMonth() + 1; // JS months are zero-based
     $scope.year = new Date().getFullYear();
     $scope.minYear = 2013;
     $scope.maxYear = $scope.year;
@@ -107,13 +107,15 @@ function($scope, $rootScope, $location, Layout) {
     };
 
     $scope.goToRoutes = function() {
-        $location.path('/select-route/' + $scope.origin.id + '/' + $scope.destination.id);
+        $location.path('/' + $scope.year + '/' + $scope.month + '/routes/' + $scope.origin.id + '/' + $scope.destination.id);
     };
 }]);
 
 app.controller('SelectRouteController', ['$scope', '$location', '$route', 'Layout',
 function($scope, $location, $route, Layout) {
     $scope.stops = Layout.getStops();
+    var year = $route.current.params.year;
+    var month = $route.current.params.month;
     var origin = Layout.findStop($route.current.params.origin);
     var destination = Layout.findStop($route.current.params.destination);
 
@@ -166,7 +168,7 @@ function($scope, $location, $route, Layout) {
     };
 
     $scope.routeUrl = function(route) {
-        return '/#/routes/' + route.id;
+        return '/#/' + year + '/' + month + '/routes/' + route.id;
     };
 
     function collapseRoutes(routes) {
