@@ -38,6 +38,16 @@ function($routeProvider) {
             },
             reloadOnSearch: false
         })
+        .when('/routes/:routeId', {
+            templateUrl: templateUrl('RouteDetails'),
+            controller: 'RouteDetailsController',
+            resolve: {
+                loaded: function(Layout) {
+                    return Layout.loaded;
+                }
+            },
+            reloadOnSearch: false
+        })
         .otherwise({
             redirectTo: '/'
         });
@@ -156,7 +166,7 @@ function($scope, $location, $route, Layout) {
     };
 
     $scope.routeUrl = function(route) {
-        return '/#/route-details/' + route.id;
+        return '/#/routes/' + route.id;
     };
 
     function collapseRoutes(routes) {
