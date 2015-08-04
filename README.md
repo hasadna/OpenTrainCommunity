@@ -12,7 +12,7 @@ Opentrain community data analysis
 To clean everything and refresh the data to the following steps
 
 * Verify that you are not running the project in any shell or runserver
-* source the script clean_all.sh. This will clean your DB and will rebuild it (e.g. it runs python manage.py migrate). Note this needs *sudo* permissions
+* source the script clean_all.sh. This will clean your DB and will rebuild it (e.g. it runs python manage.py migrate). Note this needs **sudo** permissions
 ```
 % cd /home/eran/work/pkw/OpenTrainCommunity/simple/train
 % source clean_all.sh
