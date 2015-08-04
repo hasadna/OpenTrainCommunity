@@ -113,7 +113,10 @@ def _parse_date(dt_str):
         return None
 
     if dt_str.isdigit():
-        return datetime.datetime.fromtimestamp(long(dt_str) / 1000)
+        timestamp = long(dt_str)
+        if timestamp > 1e12: # java time, with milliseconds
+            timestamp = timestamp / 1000
+        return datetime.datetime.fromtimestamp(timestamp)
 
     try:
         d,m,y = [int(x) for x in dt_str.split('/')]
