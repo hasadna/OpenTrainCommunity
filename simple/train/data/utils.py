@@ -181,6 +181,7 @@ def analyze_services():
                           good=Service.objects.filter(id__in=d['good']))
 
 def remove_skip_stops():
+    print 'Removing Skipped Stops'
     sr = analyze_services()
     route_ids = {s.route_id for s in sr.bad}
     #bad_routes = Route.objects.filter(id__in=route_ids)
@@ -190,7 +191,8 @@ def remove_skip_stops():
     print 'bad routes: %s' % (len(route_ids))
     for idx,service in enumerate(sr.bad):
         service.remove_skip_stops()
-        print '%s/%s completed' % (idx,len(sr.bad))
+        if (idx + 1 % 100 == 0):
+            print '%s/%s completed' % (1+idx,len(sr.bad))
 
 
 
