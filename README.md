@@ -46,3 +46,26 @@ Running migrations:
   Applying data.0001_initial... OK
   Applying sessions.0001_initial... OK
 
+3. Next step is to import the csv files. If you don't have them locally, you copy them from the server.
+The url is: http://otrain.org/files/csv/
+
+To make things faster (much faster), copy the .gz files of the monthes that you want. There are 12 files for 2013 01_2013.csv.gz to 12_2013.csv.gz, and one for 2014 - 2014.csv.gz.
+
+If you develop locally, it is usually better just to download 1 or 2 months of 2013...
+
+```
+% mkdir /tmp/csv_data
+% cd /tmp/csv_data
+wget http://otrain.org/files/csv/01_2013.csv.gz
+wget http://otrain.org/files/csv/02_2013.csv.gz
+wget http://otrain.org/files/csv/03_2013.csv.gz
+wget http://otrain.org/files/csv/04_2013.csv.gz
+wget http://otrain.org/files/csv/05_2013.csv.gz
+wget http://otrain.org/files/csv/06_2013.csv.gz
+wget http://otrain.org/files/csv/07_2013.csv.gz
+wget http://otrain.org/files/csv/08_2013.csv.gz
+wget http://otrain.org/files/csv/09_2013.csv.gz
+wget http://otrain.org/files/csv/10_2013.csv.gz
+wget http://otrain.org/files/csv/11_2013.csv.gz
+wget http://otrain.org/files/csv/12_2013.csv.gz
+wget http://otrain.org/files/csv/2014.csv.gz
