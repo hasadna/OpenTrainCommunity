@@ -7,7 +7,7 @@ Opentrain community data analysis
 אנו מזמינים אתכם להשתמש בקוד הנ"ל ולספר לקהילה על הדבר הכי משמח ומרגיז שגיליתם בנתונים, או כל דבר אחר שאתם מוצאים.
 
 
-== Fresh install (on linux)
+= Fresh install (on linux)
 
 To clean everything and refresh the data to the following steps
 
@@ -89,6 +89,7 @@ After you donwload gunzip
 ```
 If you have any errors, during the process, you can rerun it again.
 In this case, since you already copied the csv files, you just need to run:
+```
 % source clean_all.sh
 % ./import_all.py tmp/csv_data/*.csv
-
+```
