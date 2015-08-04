@@ -81,7 +81,7 @@ After you donwload gunzip
 * last step is to import all the files. If you choose to import everything, this might take long time (1-2 hours). If you chose to import 1-2 2013 files, this iwll take several minutes
 *Note* cd back from the tmp folder
 ```
-% 
-```
 % cd /home/eran/work/pkw/OpenTrainCommunity/simple/train
 % ./import_all.py /tmp/csv_data/*.csv
+```
+
