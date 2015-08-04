@@ -61,8 +61,8 @@ If you develop locally, it is usually better just to download 1 or 2 months of 2
 After you donwload gunzip 
 
 ```
-% mkdir /tmp/csv_data # or any other location...
-% cd /tmp/csv_data
+% mkdir tmp/csv_data # or any other location...
+% cd tmp/csv_data
 % wget http://otrain.org/files/csv/01_2013.csv.gz
 % wget http://otrain.org/files/csv/02_2013.csv.gz
 % wget http://otrain.org/files/csv/03_2013.csv.gz
@@ -84,11 +84,11 @@ After you donwload gunzip
 **Note** cd back from the tmp folder
 ```
 % cd /home/eran/work/pkw/OpenTrainCommunity/simple/train
-% ./import_all.py /tmp/csv_data/*.csv
+% ./import_all.py tmp/csv_data/*.csv
 # GO DRINK COFFEE OR HAVE (LONG) LUNCH...
 ```
 If you have any errors, during the process, you can rerun it again.
 In this case, since you already copied the csv files, you just need to run:
 % source clean_all.sh
-% ./import_all.py /tmp/csv_dat/*.csv
+% ./import_all.py tmp/csv_data/*.csv
 
