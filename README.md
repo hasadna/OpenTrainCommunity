@@ -11,8 +11,8 @@ Opentrain community data analysis
 
 To clean everything and refresh the data to the following steps
 
-1. Verify that you are not running the project in any shell or runserver
-2. source the script clean_all.sh. This will clean your DB and will rebuild it (e.g. it runs python manage.py migrate). Note this needs sudo permissions
+* Verify that you are not running the project in any shell or runserver
+* source the script clean_all.sh. This will clean your DB and will rebuild it (e.g. it runs python manage.py migrate). Note this needs sudo permissions
 ```
 % pwd
 home/eran/work/pkw/OpenTrainCommunity/simple/train
@@ -48,7 +48,7 @@ Running migrations:
 
 ```
 
-3. Next step is to import the csv files. If you don't have them locally, you copy them from the server.
+* Next step is to import the csv files. If you don't have them locally, you copy them from the server.
 The url is: http://otrain.org/files/csv/
 
 To make things faster (much faster), copy the .gz files of the monthes that you want. There are 12 files for 2013 01_2013.csv.gz to 12_2013.csv.gz, and one for 2014 - 2014.csv.gz.
