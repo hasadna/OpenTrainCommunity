@@ -83,5 +83,6 @@ After you donwload gunzip
 ```
 % cd /home/eran/work/pkw/OpenTrainCommunity/simple/train
 % ./import_all.py /tmp/csv_data/*.csv
+# GO DRINK COFFEE OR HAVE (LONG) LUNCH...
 ```
 
