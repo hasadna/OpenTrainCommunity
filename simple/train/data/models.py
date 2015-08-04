@@ -1,5 +1,6 @@
 
 from django.db import models
+from django.db import transaction
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 import pytz
@@ -48,7 +49,7 @@ class Sample(models.Model):
     delay_departure = models.FloatField(blank=True, null=True)  # the delay in the departure in seconds
     data_file = models.CharField(max_length=100)  # the name of the data file (text file)
     data_file_line = models.IntegerField()  # the line number in the data file (text file)
-    trip = models.ForeignKey('Trip', blank=True, null=True)
+    trip = models.ForeignKey('Trip', blank=True, null=True,related_name='samples')
 
     def get_parent(self):
         return self.trip
@@ -110,23 +111,23 @@ class Sample(models.Model):
 
 
 class Service(models.Model):
-    route = models.ForeignKey('Route')
-    trips = models.ManyToManyField('Trip')
+    route = models.ForeignKey('Route',related_name='services')
     local_time_str = models.TextField(default=None)
 
     def get_parent(self):
         return self.route
 
     def remove_skip_stops(self):
-        skip_stop_ids = self.get_skipped_stop_ids()
-        cur_stop_ids = self.route.stop_ids
-        new_stop_ids = [stop_id for stop_id in cur_stop_ids if stop_id not in skip_stop_ids]
-        new_route, created = Route.objects.get_or_create(stop_ids=new_stop_ids)
-        self.route = new_route
-        self.save()
-        self.trips.update(route=new_route)
-        samples = Sample.objects.filter(trip__in=self.trips.all(),stop_id__in=skip_stop_ids)
-        samples.update(is_skipped=True)
+        with transaction.atomic():
+            skip_stop_ids = self.get_skipped_stop_ids()
+            cur_stop_ids = self.route.stop_ids
+            new_stop_ids = [stop_id for stop_id in cur_stop_ids if stop_id not in skip_stop_ids]
+            new_route, created = Route.objects.get_or_create(stop_ids=new_stop_ids)
+            self.route = new_route
+            self.save()
+            self.trips.update(route=new_route)
+            samples = Sample.objects.filter(trip__in=self.trips.all(),stop_id__in=skip_stop_ids)
+            samples.update(is_skipped=True)
 
     def get_short_name(self):
         return '%s %s: %s %s %s' % (_('Service'),
@@ -137,18 +138,18 @@ class Service(models.Model):
 
     def get_departure_time_str(self):
         trip = self.trips.all()[0]
-        first_sample = trip.sample_set.filter(valid=True).earliest('index')
+        first_sample = trip.samples.filter(valid=True).earliest('index')
         return first_sample.to_local_str_hm(first_sample.exp_departure, ':')
 
     def get_arrival_time_str(self):
         trip = self.trips.all()[0]
-        last_sample = trip.sample_set.filter(valid=True).latest('index')
+        last_sample = trip.samples.filter(valid=True).latest('index')
         return last_sample.to_local_str_hm(last_sample.exp_arrival, ':')
 
     def get_total_time_str(self):
         trip = self.trips.all()[0]
-        first_sample = trip.sample_set.filter(valid=True).earliest('index')
-        last_sample = trip.sample_set.filter(valid=True).latest('index')
+        first_sample = trip.samples.filter(valid=True).earliest('index')
+        last_sample = trip.samples.filter(valid=True).latest('index')
         total_secs = (last_sample.exp_arrival - first_sample.exp_departure).total_seconds()
         total_minutes = total_secs / 60
         hours,minutes = divmod(total_minutes,60)
@@ -202,16 +203,17 @@ class Trip(models.Model):
     train_num = models.IntegerField(db_index=True)
     start_date = models.DateField(db_index=True)
     valid = models.BooleanField(default=False)
-    route = models.ForeignKey('Route')
+    route = models.ForeignKey('Route',related_name='trips')
     trip_name = models.CharField(max_length=30,
                                  db_index=True)  # generated id for the given trip (combination of train num and date)
     train_num = models.IntegerField(db_index=True)  # the train num as given in the text files
     start_date = models.DateField(
         db_index=True)  # the start date of the trip (note that trip can be spanned over two days)
+    service=models.ForeignKey('Service',related_name='trips',null=True)
 
 
     def get_parent(self):
-        return self.service_set.all()[0]
+        return self.services.all()[0]
 
     def get_short_name(self):
         return '%s %s %s %s' % (
@@ -230,7 +232,7 @@ class Trip(models.Model):
 
     def get_real_stop_samples(self):
         stop_ids = self.route.stop_ids
-        return self.sample_set.filter(valid=True, stop_id__in=stop_ids).order_by('index')
+        return self.samples.filter(valid=True, stop_id__in=stop_ids).order_by('index')
 
     def to_json(self):
         stops = self.get_real_stop_samples()
@@ -243,7 +245,7 @@ class Trip(models.Model):
         }
 
     def print_nice(self):
-        samples = self.sample_set.filter(is_real_stop=True).order_by('index')
+        samples = self.samples.filter(is_real_stop=True).order_by('index')
         for sample in samples:
             sample.print_nice()
 
@@ -277,12 +279,12 @@ class Route(models.Model):
 
 
     def get_services(self):
-        return self.service_set.all().order_by('id')
+        return self.services.all().order_by('id')
 
     def group_into_services(self):
         from itertools import groupby
 
-        trips = self.trip_set.filter(valid=True)
+        trips = self.trips.filter(valid=True)
         group_it = groupby(trips, key=lambda t: t.get_exp_time_strings())
         for k, trips_it in group_it:
             s = Service.objects.get_or_create(route=self,

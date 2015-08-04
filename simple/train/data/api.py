@@ -50,7 +50,7 @@ def get_trip(req, trip_id):
 def get_all_routes(req):
     from django.db.models import Count
 
-    routes = list(Route.objects.all().order_by('id').annotate(trips_count=Count('trip')))
+    routes = list(Route.objects.all().order_by('id').annotate(trips_count=Count('trips')))
     result = []
     for r in routes:
         # stop_ids = r.stop_ids

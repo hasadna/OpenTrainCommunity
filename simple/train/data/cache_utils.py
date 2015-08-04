@@ -12,6 +12,11 @@ except ImportError:
 from django.http import HttpResponse
 import json
 
+def invalidate_cache():
+    if CACHE_ENABLED:
+        CLIENT.flushdb()
+        print 'Flushed db'
+
 def _build_key(req):
     return req.get_full_path()
 
