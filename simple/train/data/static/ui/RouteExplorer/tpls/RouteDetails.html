@@ -1,5 +1,11 @@
 <div class="container route-details-page">
-    <h1>{{ stopName(origin) }} - {{ stopName(destination) }}</h1>
+    <div class="page-header">
+        <h1>
+            {{ stopName(origin) }} - {{ stopName(destination) }}
+            <small>{{ month }}/{{ year }}</small>
+        </h1>
+    </div>
+
     <div class="loading alert alert-info" ng-show="!loaded">
         <i class="fa fa-spinner fa-pulse"></i>
         טוען נתונים...

@@ -229,6 +229,8 @@ function($scope, $location, $route, Layout) {
 
 app.controller('RouteDetailsController', ['$scope', '$route', '$http', '$location', 'LocationBinder', 'Layout',
 function($scope, $route, $http, $location, LocationBinder, Layout) {
+    var year = $route.current.params.year;
+    var month = $route.current.params.month;
     var routeId = $route.current.params.routeId;
     var stopIds = Layout.findRoute(routeId).stops;
     var statsMap = {};
@@ -237,6 +239,8 @@ function($scope, $route, $http, $location, LocationBinder, Layout) {
     $scope.stopIds = stopIds;
     $scope.origin = stopIds[0];
     $scope.destination = stopIds[stopIds.length - 1];
+    $scope.year = year;
+    $scope.month = month; 
 
     $scope.selectedDay = null;
     $scope.days = [
@@ -252,7 +256,10 @@ function($scope, $route, $http, $location, LocationBinder, Layout) {
     $scope.selectedTime = null;
     $scope.times = [];
 
-    $http.get('/api/route-info-full', { params: { route_id: routeId } })
+    var fromDate = new Date(year, month, 1);
+    var toDate = new Date(year, month + 1, 1); // Date constructor wraps around so this works on December as well
+
+    $http.get('/api/route-info-full', { params: { route_id: routeId, from_date: fromDate.getTime(), to_date: toDate.getTime() } })
         .success(function(data) {
             loadStats(data);
             $scope.loaded = true;

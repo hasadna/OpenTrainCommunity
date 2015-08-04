@@ -111,6 +111,10 @@ def get_path_info(req):
 def _parse_date(dt_str):
     if dt_str is None:
         return None
+
+    if dt_str.isdigit():
+        return datetime.datetime.fromtimestamp(long(dt_str) / 1000)
+
     try:
         d,m,y = [int(x) for x in dt_str.split('/')]
         if y < 2013:
