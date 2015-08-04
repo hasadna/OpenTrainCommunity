@@ -18,8 +18,6 @@ To clean everything and refresh the data to the following steps
 home/eran/work/pkw/OpenTrainCommunity/simple/train
 
 % source clean_all.sh
-
-
 [sudo] password for eran: 
 DROP DATABASE
 DROP ROLE
