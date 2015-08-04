@@ -46,6 +46,8 @@ Running migrations:
   Applying data.0001_initial... OK
   Applying sessions.0001_initial... OK
 
+```
+
 3. Next step is to import the csv files. If you don't have them locally, you copy them from the server.
 The url is: http://otrain.org/files/csv/
 
