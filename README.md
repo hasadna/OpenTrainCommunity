@@ -7,3 +7,4 @@ Opentrain community data analysis
 אנו מזמינים אתכם להשתמש בקוד הנ"ל ולספר לקהילה על הדבר הכי משמח ומרגיז שגיליתם בנתונים, או כל דבר אחר שאתם מוצאים.
 
 
+לפרטים טכנים נוספים: https://github.com/hasadna/OpenTrainCommunity/tree/master/simple/train
