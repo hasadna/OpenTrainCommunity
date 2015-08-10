@@ -1,6 +1,8 @@
-from data.models import Sample, Trip, Route
+from data.models import Sample, Trip, Route, Service
 import csv
 import datetime
+from collections import namedtuple
+import cache_utils
 
 def benchit(func):
     def _wrap(*args, **kwargs):
@@ -30,7 +32,7 @@ def build_current_routes(csv_file):
         reader = csv.DictReader(fh)
         for idx,row in enumerate(reader):
             if csv_to_bool(row['is_real_stop']):
-                stop_ids_by_trip[row['trip_name']].append(row['stop_id'])
+                stop_ids_by_trip[row['trip_name']].append(int(row['stop_id']))
     route_id_by_trip = dict()
     for trip_name,stop_ids in stop_ids_by_trip.iteritems():
         tuple_stop_ids = tuple(stop_ids)
@@ -99,11 +101,13 @@ def import_current_csv(csv_file):
         reader = csv.DictReader(fh)
         cur_samples = []
         for idx, row in enumerate(reader):
+            is_real_stop=csv_to_bool(row['is_real_stop'])
+            if not is_real_stop:
+                continue
             s = Sample(trip_id=row['trip_name'],
+                       is_skipped=False, # to be updated later
                        index=csv_to_int(row['index']),
                        stop_id=csv_to_int(row['stop_id']),
-                       stop_name=row['stop_name'],
-                       is_real_stop=csv_to_bool(row['is_real_stop']),
                        valid=csv_to_bool(row['valid']),
                        is_first=csv_to_bool(row['is_first']),
                        is_last=csv_to_bool(row['is_last']),
@@ -114,8 +118,7 @@ def import_current_csv(csv_file):
                        delay_departure=csv_to_float(row['delay_departure']),
                        delay_arrival=csv_to_float(row['delay_arrival']),
                        data_file=row['data_file'],
-                       data_file_line=csv_to_int(row['data_file_line']),
-                       data_file_link=row['data_file_link'])
+                       data_file_line=csv_to_int(row['data_file_line']))
             cur_samples.append(s)
             if len(cur_samples) == 30000:
                 Sample.objects.bulk_create(cur_samples)
@@ -137,6 +140,7 @@ def build_all_services():
             print 'Completed %s/%s routes' % (idx+1,len(routes))
     check_services()
 
+
 def check_services():
     from django.db.models import Count
     count = Trip.objects.count()
@@ -148,6 +152,51 @@ def check_services():
             assert trip.service_count == 0,'Trip %s is not valid but has services' % trip.id
         if (1+idx)%100 == 0:
             print 'Completed %s/%s trips' % (idx+1,count)
+
+ServicesResult = namedtuple('ServicesResult',['bad','unreliable','good'])
+
+
+def _analyze_services_impl():
+    services = list(Service.objects.all())
+    print 'Fond %s services' % len(services)
+    bad_services = []
+    unreliable_services = []
+    good_services = []
+    for idx,service in enumerate(services):
+        skipped_stop_ids = service.get_skipped_stop_ids()
+        if service.trips.count() <= 2:
+            unreliable_services.append(service.id)
+        elif len(skipped_stop_ids) > 0:
+            bad_services.append(service.id)
+        else:
+            good_services.append(service.id)
+    return {'bad':bad_services,
+            'good':good_services,
+            'unreliable':unreliable_services}
+
+def analyze_services():
+    d = _analyze_services_impl()
+    return ServicesResult(bad=Service.objects.filter(id__in=d['bad']),
+                          unreliable=Service.objects.filter(id__in=d['unreliable']),
+                          good=Service.objects.filter(id__in=d['good']))
+
+def remove_skip_stops():
+    print 'Removing Skipped Stops'
+    sr = analyze_services()
+    route_ids = {s.route_id for s in sr.bad}
+    #bad_routes = Route.objects.filter(id__in=route_ids)
+    print 'bad_services: %s' % len(sr.bad)
+    print 'unreliable_services : %s' % len(sr.unreliable)
+    print 'good_services: %s' % len(sr.good)
+    print 'bad routes: %s' % (len(route_ids))
+    print '# of routes before:' % Route.objects.count()
+    for idx,service in enumerate(sr.bad):
+        service.remove_skip_stops()
+        if (idx + 1 % 100 == 0):
+            print '%s/%s completed' % (1+idx,len(sr.bad))
+    print '# of routes before:' % Route.objects.count()
+
+
 
 
 

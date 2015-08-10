@@ -37,11 +37,13 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
+    'corsheaders',
     'train',
     'data',
     'browse',
     'csvparser',
-    'corsheaders'
+    'xlparser'
+
 )
 
 MIDDLEWARE_CLASSES = (

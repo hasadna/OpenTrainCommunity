@@ -8,15 +8,23 @@ try:
 except ImportError:
     CACHE_ENABLED = False
 
-print '********* cache_enabled = %s' % CACHE_ENABLED
+#print '********* cache_enabled = %s' % CACHE_ENABLED
 from django.http import HttpResponse
+import json
 
+def invalidate_cache():
+    if CACHE_ENABLED:
+        CLIENT.flushdb()
+        print 'Flushed db'
 
 def _build_key(req):
     return req.get_full_path()
 
 
-def cacheit(func):
+def cachereq(func):
+    """
+    decorator to cache request call, returns HTTP response
+    """
     def wrap(req, *args, **kwargs):
         use_cache = req.GET.get('no_cache',None) != '1' and CACHE_ENABLED
         if use_cache:
@@ -32,3 +40,32 @@ def cacheit(func):
 
     return wrap
 
+def cache_obj_method(func):
+    """
+    decorator for function that returns json-able object
+    """
+    def wrap(obj, *args, **kwargs):
+        key = '%s:%s' % (func.__name__ ,obj.id)
+        cc = CLIENT.get(key)
+        if cc:
+            return json.loads(cc)
+        result = func(obj, *args, **kwargs)
+        CLIENT.setex(key, TTL, json.dumps(result))
+        return result
+
+    return wrap
+
+
+def cache_result(func):
+    """
+    decorator for function that returns json-able object
+    """
+    def wrap():
+        key = '%s' % (func.__name__)
+        cc = CLIENT.get(key)
+        if cc:
+            return json.loads(cc)
+        result = func()
+        CLIENT.setex(key, TTL, json.dumps(result))
+        return result
+    return wrap

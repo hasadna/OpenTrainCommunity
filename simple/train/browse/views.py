@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 from django.views.decorators.csrf import csrf_exempt
 from data.models import Route,Service,Trip, Sample
 from django.shortcuts import render, get_object_or_404
@@ -32,7 +33,6 @@ def _bc(obj,ctx):
 
 def browse_routes(req):
     routes = Route.objects.all()
-
     return render(req,'browse/browse_routes.html',_bc(None,{'routes':routes}))
 
 
@@ -40,31 +40,26 @@ def browse_route(req,route_id):
     route = get_object_or_404(Route,pk=route_id)
     return render(req,'browse/browse_route.html',_bc(route,{'route':route}))
 
-def edit_route(req,route_id):
-    route = get_object_or_404(Route,pk=route_id)
-    return render(req,'browse/edit_route.html',_bc(route,{'route':route}))
 
-@login_required
-def skip_unskip_stops(req,route_id,skip=None):
-    if req.method != 'POST':
-        return HttpResponseNotAllowed('POST')
-    assert skip is not None,'skip must be boolean'
-    route = get_object_or_404(Route,pk=route_id)
-    stop_ids = [int(k[5:]) for k in req.POST.keys() if k.startswith('stop_')]
-    if skip:
-        for stop_id in stop_ids:
-            if stop_id == route.stop_ids[0] or stop_id == route.stop_ids[-1]:
-                raise Exception('Cannot delete first or last stop')
-    if skip:
-        route.skip_stop_ids(stop_ids)
-    else:
-        route.unskip_stop_ids(stop_ids)
-    return HttpResponseRedirect('/browse/routes/%s/edit/' % route_id)
+def browse_bad_services(req):
+    import data.utils
+    sr = data.utils.analyze_services()
+    bad_services = sr.bad
+    bc = {
+        'name': _('Bad Services'),
+        'link':reverse('browse:bad_services')
+    }
+    ctx = {}
+    ctx['title'] = 'bad services'
+    ctx['breadcrumbs'] = [bc]
+    ctx['services'] = bad_services
+    return render(req,'browse/bad_services.html',ctx)
 
 
 def browse_service(req,service_id):
     service = get_object_or_404(Service,pk=service_id)
     return render(req,'browse/browse_service.html',_bc(service,{'service':service}))
+
 
 def browse_trip(req,trip_id):
     trip = get_object_or_404(Trip,pk=trip_id)
@@ -99,9 +94,11 @@ def show_raw_data(req):
     ctx['next'] = sample.get_text_link(line=lineno + OFFSET * 2 - 1)
     return render(req, 'browse/browse_raw_data.html', _bc(sample,ctx))
 
+
 def resp_json(d,status):
     import json
     return HttpResponse(content=json.dumps(d),status=status,content_type='application/json');
+
 
 @csrf_exempt
 def login(req):
@@ -133,6 +130,7 @@ def user_to_auth_json(user):
     else:
         result['username'] = ''
     return result
+
 
 @csrf_exempt
 def logout(req):

@@ -11,7 +11,7 @@ def main():
         if not trips:
             break
         for trip in trips:
-            trip.sample_set.all().update(stop_ids=trip.stop_ids)
+            trip.samples.all().update(stop_ids=trip.stop_ids)
         print 'Trips %s/%s done' % (count,total_trips)
         offset+=limit
 

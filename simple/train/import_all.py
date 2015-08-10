@@ -1,6 +1,7 @@
 #!/usr/bin/env python 
 import glob
 import os
+import data.cache_utils
 
 CSV_DIR = '/home/opentrain/public_html/files/csv'
 
@@ -35,11 +36,14 @@ def main(csv_files):
     for fullcsv in csv_files:
         run_command('python manage.py parsecsv %s' % fullcsv)
 
+    print 'Building routes - takes long time'
+    run_command('python manage.py build_services')
+    data.cache_utils.invalidate_cache()
+    run_command('python manage.py remove_skip_stops')
+
     print 'Creating materialized views'
     run_command('cat create_views.sql | python manage.py dbshell')
 
-    print 'Building routes - takes long time'
-    run_command('python manage.py build_services')
 
 if __name__ == '__main__':
     import argparse
@@ -47,6 +51,7 @@ if __name__ == '__main__':
     parser.add_argument("csv_files",nargs="*")
     ns = parser.parse_args()
     main(ns.csv_files)
+
 
 
 
