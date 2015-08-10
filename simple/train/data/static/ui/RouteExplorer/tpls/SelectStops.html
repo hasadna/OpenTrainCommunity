@@ -17,9 +17,7 @@
             <div class="row">
                 <div class="col-sm-6">
                     <select name="month" class="form-control" placeholder="חודש"
-                        ng-model="month" >
-                        <option selected disabled>חודש</option>
-                        <option ng-repeat="month in months" value="{{ $index + 1 }}">{{ month }}</option>
+                        ng-model="month" ng-options="month.value as month.name for month in months">
                     </select>
                 </div>
                 <div class="col-sm-6">

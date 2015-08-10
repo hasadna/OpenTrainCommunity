@@ -73,10 +73,12 @@ function($scope, $rootScope, $location, Layout) {
         'אוקטובר',
         'נובמבר',
         'דצמבר'
-    ];
+    ].map(function(v, i) { return { value: i + 1, name: v }; });
 
-    $scope.month = new Date().getMonth() + 1; // JS months are zero-based
-    $scope.year = new Date().getFullYear();
+    var today = new Date();
+    var lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+    $scope.month = lastMonth.getMonth() + 1; // We're using 1-based months vs JavaScript's 0-based
+    $scope.year = lastMonth.getFullYear();
     $scope.minYear = 2013;
     $scope.maxYear = $scope.year;
 
@@ -245,7 +247,7 @@ function($scope, $route, $http, $location, LocationBinder, Layout) {
     $scope.origin = stopIds[0];
     $scope.destination = stopIds[stopIds.length - 1];
     $scope.year = year;
-    $scope.month = month; 
+    $scope.month = month;
 
     $scope.selectedDay = null;
     $scope.days = [
