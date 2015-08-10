@@ -213,7 +213,7 @@ class Trip(models.Model):
 
 
     def get_parent(self):
-        return self.services.all()[0]
+        return self.service
 
     def get_short_name(self):
         return '%s %s %s %s' % (
