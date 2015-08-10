@@ -67,8 +67,8 @@ def get_all_routes_by_date(req):
     to_date = _parse_date(req.GET['to_date'])
 
     routes = list(Route.objects
-        .filter(trip__start_date__gte = from_date, trip__start_date__lte = to_date)
-        .annotate(trips_count=Count('trip')));
+        .filter(trips__start_date__gte = from_date, trips__start_date__lte = to_date)
+        .annotate(trips_count=Count('trips')));
 
     result = [{ 'id': r.id, 'stop_ids': r.stop_ids, 'count': r.trips_count} for r in routes]
     return json_resp(result)
