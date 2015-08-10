@@ -19,7 +19,7 @@ function($routeProvider) {
                 }
             }
         })
-        .when('/:year/:month/routes/:origin/:destination', {
+        .when('/:year/:month/select-route/:origin/:destination', {
             templateUrl: templateUrl('SelectRoute'),
             controller: 'SelectRouteController',
             resolve: {
@@ -28,17 +28,7 @@ function($routeProvider) {
                 }
             }
         })
-        .when('/:year/:month/route/:routeId', {
-            templateUrl: templateUrl('RouteDetails'),
-            controller: 'RouteDetailsController',
-            resolve: {
-                loaded: function(Layout) {
-                    return Layout.loaded;
-                }
-            },
-            reloadOnSearch: false
-        })
-        .when('/routes/:routeId', {
+        .when('/:year/:month/routes/:routeId', {
             templateUrl: templateUrl('RouteDetails'),
             controller: 'RouteDetailsController',
             resolve: {
@@ -107,7 +97,21 @@ function($scope, $rootScope, $location, Layout) {
     };
 
     $scope.goToRoutes = function() {
-        $location.path('/' + $scope.year + '/' + $scope.month + '/routes/' + $scope.origin.id + '/' + $scope.destination.id);
+        $scope.noRoutes = false;
+        $scope.loading = true;
+        Layout.findRoutesByDate($scope.origin.id, $scope.destination.id, $scope.year, $scope.month)
+            .then(function(routes) {
+                if (routes.length === 0) {
+                    $scope.noRoutes = true;
+                } else if (routes.length == 1) {
+                    $location.path('/' + $scope.year + '/' + $scope.month + '/routes/' + routes[0].id);
+                } else {
+                    $location.path('/' + $scope.year + '/' + $scope.month + '/select-route/' + $scope.origin.id + '/' + $scope.destination.id);
+                }
+            })
+            .finally(function() {
+                $scope.loading = false;
+            });
     };
 }]);
 
@@ -119,10 +123,11 @@ function($scope, $location, $route, Layout) {
     var origin = Layout.findStop($route.current.params.origin);
     var destination = Layout.findStop($route.current.params.destination);
 
-    var routes = Layout.findRoutes(origin.id, destination.id);
-    if (routes.length > 1)
-        collapseRoutes(routes);
-    $scope.routes = routes;
+    Layout.findRoutesByDate(origin.id, destination.id, year, month).then(function(routes) {
+        if (routes.length > 1)
+            collapseRoutes(routes);
+        $scope.routes = routes;
+    });
 
     function stopName(stopId) {
         var stop = Layout.findStop(stopId);
@@ -256,8 +261,8 @@ function($scope, $route, $http, $location, LocationBinder, Layout) {
     $scope.selectedTime = null;
     $scope.times = [];
 
-    var fromDate = new Date(year, month, 1);
-    var toDate = new Date(year, month + 1, 1); // Date constructor wraps around so this works on December as well
+    var fromDate = new Date(year, month - 1, 1);
+    var toDate = new Date(year, month, 1); // Date constructor wraps around so this works on December as well
 
     $http.get('/api/route-info-full', { params: { route_id: routeId, from_date: fromDate.getTime(), to_date: toDate.getTime() } })
         .success(function(data) {

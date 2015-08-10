@@ -29,7 +29,16 @@
             </div>
             <div class="row">
                 <div class="col-sm-12">
-                    <button type="submit" class="btn btn-primary btn-block" ng-disabled="!formValid()">סע</button>
+                    <button type="submit" class="btn btn-primary btn-block" ng-disabled="!formValid() || loading">
+                        <span ng-unless="loading">סע</span>
+                        <i ng-if="loading" class="fa fa-spinner fa-pulse"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12 alert alert-warning" ng-if="noRoutes">
+                    לא נמצאו נסיעות.
                 </div>
             </div>
         </form>
