@@ -22,6 +22,8 @@ def parse_xl(xlname, csvname=None):
                     assert len(header) == len(clean_values)
                     xl_row_to_csv(header, clean_values)
                     good+=1
+                    if good == 1:
+                        return
             else:
                 bad+=1
 
@@ -37,6 +39,8 @@ def clean_row(row_num, values):
         return values[1:]
     return None
 
+
 def xl_row_to_csv(header, values):
-    return
+    for h,v in zip(header, values):
+        print '%s: %s' % (h[::-1],v)
 
