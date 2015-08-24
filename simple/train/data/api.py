@@ -53,8 +53,6 @@ def get_all_routes(req):
     routes = list(Route.objects.all().order_by('id').annotate(trips_count=Count('trips')))
     result = []
     for r in routes:
-        # stop_ids = r.stop_ids
-        # stops = [{'stop_id': stop_id} for stop_id in stop_ids]
         result.append({
             'id': r.id,
             'stop_ids': r.stop_ids,
@@ -62,6 +60,18 @@ def get_all_routes(req):
         })
     return json_resp(result)
 
+def get_all_routes_by_date(req):
+    from django.db.models import Count
+
+    from_date = _parse_date(req.GET['from_date'])
+    to_date = _parse_date(req.GET['to_date'])
+
+    routes = list(Route.objects
+        .filter(trips__start_date__gte = from_date, trips__start_date__lte = to_date)
+        .annotate(trips_count=Count('trips')));
+
+    result = [{ 'id': r.id, 'stop_ids': r.stop_ids, 'count': r.trips_count} for r in routes]
+    return json_resp(result)
 
 def contains_stops(route, stop_ids):
     route_stop_ids = route.stop_ids
@@ -111,6 +121,13 @@ def get_path_info(req):
 def _parse_date(dt_str):
     if dt_str is None:
         return None
+
+    if dt_str.isdigit():
+        timestamp = long(dt_str)
+        if timestamp > 1e12: # java time, with milliseconds
+            timestamp = timestamp / 1000
+        return datetime.datetime.fromtimestamp(timestamp)
+
     try:
         d,m,y = [int(x) for x in dt_str.split('/')]
         if y < 2013:

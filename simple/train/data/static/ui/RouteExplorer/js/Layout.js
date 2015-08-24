@@ -9,14 +9,14 @@ function($http, $q) {
 
     var loaded = $q.all([
         $http.get('/api/stops')
-            .success(function(data) {
-                stops = data.map(function(s) { return { id: s.stop_id, name: s.heb_stop_names[0], names: s.heb_stop_names }; });
+            .then(function(response) {
+                stops = response.data.map(function(s) { return { id: s.stop_id, name: s.heb_stop_names[0], names: s.heb_stop_names }; });
                 stops.forEach(function(s) { stopsMap[s.id] = s; });
             }),
 
         $http.get('/api/all-routes')
-            .success(function(data) {
-                routes = data.map(function(r) { return {
+            .then(function(response) {
+                routes = response.data.map(function(r) { return {
                     id: r.id,
                     stops: r.stop_ids,
                     count: r.count
@@ -30,7 +30,7 @@ function($http, $q) {
         return stopsMap[stopId] || null;
     };
 
-    var findRoutes = function(originId, destinationId) {
+    var findRoutes = function(routes, originId, destinationId) {
         var matchingRoutes = {};
 
         routes.forEach(function(r) {
@@ -62,6 +62,35 @@ function($http, $q) {
         return matchingRoutes;
     };
 
+    var findRoutesByDate = function(origin, destination, year, month) {
+        var d = $q.defer();
+        var matchingRoutes = findRoutes(routes, origin, destination);
+        if (matchingRoutes.length === 0) {
+            d.resolve([]);
+        } else {
+            var fromDate = new Date(year, month - 1, 1);
+            var toDate = new Date(year, month, 1);
+
+            $http.get('/api/all-routes-by-date', {
+                params: {
+                    from_date: fromDate.getTime(),
+                    to_date: toDate.getTime()
+                }
+            }).then(function(response) {
+                var routesInDate = response.data.map(function(r) {
+                    return {
+                        id: r.id,
+                        stops: r.stop_ids,
+                        count: r.count
+                    };
+                });
+                d.resolve(findRoutes(routesInDate, origin, destination));
+            }, function(response) { d.reject({ 'msg': 'Error fetching routes', 'response': response }); });
+        }
+
+        return d.promise;
+    };
+
     var findRoute = function(routeId) {
         return routesMap[routeId] || null;
     };
@@ -71,7 +100,8 @@ function($http, $q) {
         getRoutes: function() { return routes; },
         findRoute: findRoute,
         findStop: findStop,
-        findRoutes: findRoutes,
+        findRoutes: function(origin, destination) { return findRoutes(routes, origin, destination); },
+        findRoutesByDate: findRoutesByDate,
         loaded: loaded
     };
 }]);
