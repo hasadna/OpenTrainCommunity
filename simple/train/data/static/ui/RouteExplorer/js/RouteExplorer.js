@@ -20,6 +20,7 @@ function($routeProvider) {
             }
         })
         .when('/:year/:month/select-route/:origin/:destination', {
+            pageId: 'routes',
             templateUrl: templateUrl('SelectRoute'),
             controller: 'SelectRouteController',
             resolve: {
@@ -29,6 +30,7 @@ function($routeProvider) {
             }
         })
         .when('/:year/:month/routes/:routeId', {
+            pageId: 'route',
             templateUrl: templateUrl('RouteDetails'),
             controller: 'RouteDetailsController',
             resolve: {

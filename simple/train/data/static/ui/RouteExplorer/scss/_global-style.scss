@@ -10,8 +10,8 @@ body {
     padding-top: $header-height;
 }
 
-h1 { margin-bottom: 30px; }
-.content { background-color: $rex-content-color; }
+h1 { margin-bottom: 30px; text-align: center; }
+.content { background-color: $rex-content-color; color: black; }
 
 // Header
 .navbar-brand {

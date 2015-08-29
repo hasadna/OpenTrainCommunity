@@ -1081,8 +1081,8 @@ body {
   font-family: "Open Sans Hebrew", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
   line-height: 1.42857;
-  color: #333333;
-  background-color: #e8eaed; }
+  color: white;
+  background-color: #3495c1; }
 
 input,
 button,
@@ -1120,7 +1120,7 @@ img {
 .img-thumbnail {
   padding: 4px;
   line-height: 1.42857;
-  background-color: #e8eaed;
+  background-color: #3495c1;
   border: 1px solid #ddd;
   border-radius: 4px;
   -webkit-transition: all 0.2s ease-in-out;
@@ -2217,7 +2217,7 @@ th {
   .table > tbody + tbody {
     border-top: 2px solid #ddd; }
   .table .table {
-    background-color: #e8eaed; }
+    background-color: #3495c1; }
 
 .table-condensed > thead > tr > th,
 .table-condensed > thead > tr > td,
@@ -2782,7 +2782,7 @@ select[multiple].input-lg,
   display: block;
   margin-top: 5px;
   margin-bottom: 10px;
-  color: #737373; }
+  color: white; }
 
 @media (min-width: 768px) {
   .form-inline .form-group {
@@ -3513,7 +3513,7 @@ tbody.collapse.in {
         border-color: #eeeeee #eeeeee #ddd; }
     .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
       color: #555555;
-      background-color: #e8eaed;
+      background-color: #3495c1;
       border: 1px solid #ddd;
       border-bottom-color: transparent;
       cursor: default; }
@@ -3571,7 +3571,7 @@ tbody.collapse.in {
     .nav-tabs.nav-justified > .active > a:hover,
     .nav-tabs-justified > .active > a:focus,
     .nav-tabs.nav-justified > .active > a:focus {
-      border-bottom-color: #e8eaed; } }
+      border-bottom-color: #3495c1; } }
 
 .tab-content > .tab-pane {
   display: none;
@@ -4230,7 +4230,7 @@ a.badge:hover, a.badge:focus {
   padding: 4px;
   margin-bottom: 20px;
   line-height: 1.42857;
-  background-color: #e8eaed;
+  background-color: #3495c1;
   border: 1px solid #ddd;
   border-radius: 4px;
   -webkit-transition: border 0.2s ease-in-out;
@@ -4245,7 +4245,7 @@ a.badge:hover, a.badge:focus {
     margin-right: auto; }
   .thumbnail .caption {
     padding: 9px;
-    color: #333333; }
+    color: white; }
 
 a.thumbnail:hover,
 a.thumbnail:focus,
@@ -7434,14 +7434,16 @@ button.close {
   .container {
     width: 1570px; } }
 body {
-  background-color: #e8eaed;
+  background-color: #3495c1;
   padding-top: 50px; }
 
 h1 {
-  margin-bottom: 30px; }
+  margin-bottom: 30px;
+  text-align: center; }
 
 .content {
-  background-color: white; }
+  background-color: white;
+  color: black; }
 
 .navbar-brand {
   font-family: "Alef Hebrew", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -7529,15 +7531,9 @@ table.table .table-header-secondary th {
   .stop-diagram.stop-diagram-end::before {
     bottom: 8px; }
 
-body.rex-page-welcome .navbar {
-  background-color: white; }
-  body.rex-page-welcome .navbar .navbar-brand, body.rex-page-welcome .navbar .navbar-link {
-    color: #3495c1; }
-    body.rex-page-welcome .navbar .navbar-brand:hover, body.rex-page-welcome .navbar .navbar-link:hover {
-      color: #165775; }
 body.rex-page-welcome .select-stops-form {
   padding-top: 50px;
-  background-color: white; }
+  background-image: linear-gradient(to bottom, #124760, #0e374a); }
   body.rex-page-welcome .select-stops-form h1 {
     text-align: center;
     font-size: 36px;
@@ -7556,42 +7552,41 @@ body.rex-page-welcome .select-stops-form {
   body.rex-page-welcome .select-stops-form form .form-control {
     background-color: #f5f7f7; }
 
-div.paths-list {
+body.rex-page-routes div.paths-list {
   display: table;
   border-collapse: collapse;
   margin: 10px 0 20px; }
-  div.paths-list > .list-header {
+  body.rex-page-routes div.paths-list > .list-header {
     display: table-row;
     font-size: 15pt; }
-  div.paths-list > .list-body {
+  body.rex-page-routes div.paths-list > .list-body {
     display: table-row-group; }
-  div.paths-list > .list-body > .list-item {
+  body.rex-page-routes div.paths-list > .list-body > .list-item {
     display: table-row; }
-  div.paths-list .index-cell, div.paths-list .path-cell, div.paths-list .count-cell {
+  body.rex-page-routes div.paths-list .index-cell, body.rex-page-routes div.paths-list .path-cell, body.rex-page-routes div.paths-list .count-cell {
     display: table-cell; }
-  div.paths-list > .list-header > div {
+  body.rex-page-routes div.paths-list > .list-header > div {
     padding: 15px 40px;
     font-weight: bold; }
-  div.paths-list > .list-body > .list-item {
+  body.rex-page-routes div.paths-list > .list-body > .list-item {
     cursor: pointer;
-    color: #333333;
+    color: white;
     text-decoration: none;
     background-color: #f9f9f9;
     border: 1px solid #ebedec; }
-    div.paths-list > .list-body > .list-item > div {
+    body.rex-page-routes div.paths-list > .list-body > .list-item > div {
       padding: 40px; }
-    div.paths-list > .list-body > .list-item > div.index-cell {
-      background-color: #e8eaed;
+    body.rex-page-routes div.paths-list > .list-body > .list-item > div.index-cell {
       color: #939599;
       font-size: 30pt;
       vertical-align: middle; }
-    div.paths-list > .list-body > .list-item:hover {
+    body.rex-page-routes div.paths-list > .list-body > .list-item:hover {
       background-color: #fff; }
-      div.paths-list > .list-body > .list-item:hover > div.index-cell {
+      body.rex-page-routes div.paths-list > .list-body > .list-item:hover > div.index-cell {
         background-color: #fff;
         color: #9aca41;
         position: relative; }
-        div.paths-list > .list-body > .list-item:hover > div.index-cell :before {
+        body.rex-page-routes div.paths-list > .list-body > .list-item:hover > div.index-cell :before {
           content: "";
           position: absolute;
           top: -1px;
@@ -7600,7 +7595,7 @@ div.paths-list {
           left: -1px;
           border: 2px solid #bcbcbc;
           border-right: 5px solid #9aca41; }
-        div.paths-list > .list-body > .list-item:hover > div.index-cell :after {
+        body.rex-page-routes div.paths-list > .list-body > .list-item:hover > div.index-cell :after {
           content: "";
           display: block;
           height: 20px;
@@ -7618,53 +7613,59 @@ div.paths-list {
           -ms-transform: rotate(-45deg);
           -o-transform: rotate(-45deg);
           transform: rotate(-45deg); }
-  div.paths-list .stop-list .stop-origin, div.paths-list .stop-list .stop-destination {
+  body.rex-page-routes div.paths-list .stop-list .stop-origin, body.rex-page-routes div.paths-list .stop-list .stop-destination {
     background-color: white; }
-  div.paths-list .count-bar {
+  body.rex-page-routes div.paths-list .count-bar {
     width: 100px;
     height: 5px; }
-  div.paths-list .count-bar-value {
+  body.rex-page-routes div.paths-list .count-bar-value {
     background-color: #b3b3b3;
     height: 100%; }
 
-.route-details-page .days-container {
-  margin-bottom: 20px; }
-.route-details-page .times-container .btn > .btn-text {
-  min-height: 30px; }
-.route-details-page table colgroup {
-  border-right: 2px solid #C4C9D0; }
-  .route-details-page table colgroup:first-child {
-    border-right: none; }
-.route-details-page table tbody th {
-  font-size: 9pt; }
-.route-details-page table tbody td {
-  font-size: 10pt; }
-.route-details-page table tbody th, .route-details-page table tbody td {
-  vertical-align: middle; }
-.route-details-page table td, .route-details-page table th {
-  text-align: center; }
-  .route-details-page table td.stop-name, .route-details-page table td.stop-diagram, .route-details-page table th.stop-name, .route-details-page table th.stop-diagram {
-    text-align: right; }
-.route-details-page table .progress-inline {
-  width: 115px;
-  height: 15px;
-  position: relative;
-  -webkit-transition-property: opacity;
-  transition-property: opacity;
-  -webkit-transition-duration: 150ms;
-  transition-duration: 150ms; }
-  .route-details-page table .progress-inline.progress-novalue {
-    visibility: hidden;
-    opacity: 0;
-    filter: alpha(opacity=0);
-    -webkit-transition-property: opacity, visibility;
-    transition-property: opacity, visibility; }
-  .route-details-page table .progress-inline .progress-value {
-    display: block;
-    position: absolute;
-    left: 2px;
-    right: 2px;
-    text-align: center;
-    font-size: 8pt; }
+body.rex-page-route {
+  background-color: #f5f7f7; }
+  body.rex-page-route h1 {
+    color: #165775; }
+  body.rex-page-route .days-container {
+    margin-bottom: 20px; }
+  body.rex-page-route .box {
+    border: 1px solid #dadddf; }
+  body.rex-page-route .times-container .btn > .btn-text {
+    min-height: 30px; }
+  body.rex-page-route table colgroup {
+    border-right: 2px solid #C4C9D0; }
+    body.rex-page-route table colgroup:first-child {
+      border-right: none; }
+  body.rex-page-route table tbody th {
+    font-size: 9pt; }
+  body.rex-page-route table tbody td {
+    font-size: 10pt; }
+  body.rex-page-route table tbody th, body.rex-page-route table tbody td {
+    vertical-align: middle; }
+  body.rex-page-route table td, body.rex-page-route table th {
+    text-align: center; }
+    body.rex-page-route table td.stop-name, body.rex-page-route table td.stop-diagram, body.rex-page-route table th.stop-name, body.rex-page-route table th.stop-diagram {
+      text-align: right; }
+  body.rex-page-route table .progress-inline {
+    width: 115px;
+    height: 15px;
+    position: relative;
+    -webkit-transition-property: opacity;
+    transition-property: opacity;
+    -webkit-transition-duration: 150ms;
+    transition-duration: 150ms; }
+    body.rex-page-route table .progress-inline.progress-novalue {
+      visibility: hidden;
+      opacity: 0;
+      filter: alpha(opacity=0);
+      -webkit-transition-property: opacity, visibility;
+      transition-property: opacity, visibility; }
+    body.rex-page-route table .progress-inline .progress-value {
+      display: block;
+      position: absolute;
+      left: 2px;
+      right: 2px;
+      text-align: center;
+      font-size: 8pt; }
 
 /*# sourceMappingURL=main.css.map */

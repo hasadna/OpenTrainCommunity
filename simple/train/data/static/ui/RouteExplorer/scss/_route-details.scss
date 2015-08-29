@@ -1,6 +1,13 @@
-.route-details-page {
+body.rex-page-route {
+    background-color: $rex-light-gray-color;
+    h1 { color: $rex-brand-dark-color; }
+
     .days-container {
         margin-bottom: 20px;
+    }
+
+    .box {
+        border: 1px solid $rex-btn-border-color;
     }
 
     .times-container {

@@ -1,12 +1,7 @@
 body.rex-page-welcome {
-    .navbar {
-        background-color: white;
-        .navbar-brand, .navbar-link { color: $rex-brand-color; &:hover { color: $rex-brand-dark-color; } }
-    }
-
     .select-stops-form {
         padding-top: 50px;
-        background-color: white;
+        background-image: linear-gradient(to bottom, darken($rex-brand-dark-color, 5%), darken($rex-brand-dark-color, 10%));
 
         h1 { text-align: center; font-size: 36px; color: $rex-brand-color; font-family: $font-family-sans-serif; }
 
