@@ -16,14 +16,15 @@
     <body ng-class="bodyClass">
         <nav class="navbar navbar-default navbar-fixed-top">
             <div class="navbar-header">
-                <a class="navbar-brand" href="/">רכבת<strong>פתוחה</strong></a>
+                <a class="navbar-brand" href="#/">רכבת<strong>פתוחה</strong></a>
             </div>
 
-            <ul class="nav navbar-nav navbar-left">
-                <li>
-                    <a class="navbar-link" href ng-click="share('http://www.facebook.com/sharer.php?u=')"><i class="fa fa-2x fa-facebook-square"></i></a>
-                </li>
-            </ul>
+            <span class="navbar-left">
+                <a class="navbar-btn btn btn-primary" href="#/about">אודות</a>
+                <a class="navbar-btn btn btn-primary" href ng-click="share('http://www.facebook.com/sharer.php?u=')">
+                    <i class="fa fa-facebook"></i>
+                </a>
+            </span>
         </nav>
 
         <div class="view" ng-view>

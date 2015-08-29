@@ -14,9 +14,12 @@ h1 { margin-bottom: 30px; text-align: center; }
 .content { background-color: $rex-content-color; color: black; }
 
 // Header
-.navbar-brand {
-    font-family: $headings-font-family;
-    font-size: 28px;
+.navbar {
+    padding-left: 10px; padding-right: 10px; 
+    .navbar-brand {
+        font-family: $headings-font-family;
+        font-size: 28px;
+    }
 }
 
 // Specific recurring components

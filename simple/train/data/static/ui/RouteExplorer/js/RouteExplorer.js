@@ -19,6 +19,10 @@ function($routeProvider) {
                 }
             }
         })
+        .when('/about', {
+            pageId: 'about',
+            templateUrl: templateUrl('About'),
+        })
         .when('/:year/:month/select-route/:origin/:destination', {
             pageId: 'routes',
             templateUrl: templateUrl('SelectRoute'),

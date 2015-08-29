@@ -7445,9 +7445,12 @@ h1 {
   background-color: white;
   color: black; }
 
-.navbar-brand {
-  font-family: "Alef Hebrew", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 28px; }
+.navbar {
+  padding-left: 10px;
+  padding-right: 10px; }
+  .navbar .navbar-brand {
+    font-family: "Alef Hebrew", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 28px; }
 
 .duration {
   direction: ltr; }
@@ -7667,5 +7670,10 @@ body.rex-page-route {
       right: 2px;
       text-align: center;
       font-size: 8pt; }
+
+body.rex-page-about .content {
+  width: 60%;
+  margin: 0 auto;
+  padding: 15px; }
 
 /*# sourceMappingURL=main.css.map */
