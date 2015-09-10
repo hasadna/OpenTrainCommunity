@@ -121,6 +121,10 @@ function($scope, $rootScope, $location, Layout) {
                 $scope.loading = false;
             });
     };
+
+    $scope.dismissError = function() {
+        $scope.noRoutes = false;
+    };
 }]);
 
 app.controller('SelectRouteController', ['$scope', '$location', '$route', 'Layout',

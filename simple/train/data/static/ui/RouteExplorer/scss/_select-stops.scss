@@ -18,10 +18,27 @@ body.rex-page-welcome {
             background-color: darken($rex-brand-dark-color, 5%);
             border-color: darken($rex-brand-dark-color, 7%);
             padding: 15px;
-            margin: 15px auto 50px ;
+            margin: 15px auto 50px;
+            position: relative;
 
-            .form-control, .btn-primary { height: 60px; border-radius: 0; font-size: 18px; border: none; }
-            .form-control { background-color: $rex-light-gray-color; }
+            .row {
+                .form-control, .btn-primary { height: 60px; border-radius: 0; font-size: 18px; border: none; }
+                .form-control { background-color: $rex-light-gray-color; }
+            }
+
+            .error-overlay {
+                position: absolute; top: 0; left: 0; bottom: 0; right: 0; padding: 15px;
+                background-color: white; color: black;
+                display: flex; flex-direction: column; justify-content: center;
+                text-align: center;
+            }
+
+            .icon-no-results {
+                $no-results-icon-size: 270px;
+                background-image: url("/static/ui/RouteExplorer/img/no-results.png");
+                width: $no-results-icon-size; height: $no-results-icon-size;
+                display: inline-block;
+            }
         }
     }
 }

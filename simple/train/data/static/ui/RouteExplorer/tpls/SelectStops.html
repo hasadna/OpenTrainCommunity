@@ -38,9 +38,15 @@
                 </div>
             </div>
 
-            <div class="row" ng-if="noRoutes">
-                <div class="col-sm-12 alert alert-warning">
-                    לא נמצאו נסיעות.
+            <div class="error-overlay" ng-if="noRoutes">
+                <div class="error-content">
+                    <div class="icon-no-results"></div>
+                    <h4>
+                        לא נמצאו תוצאות
+                    </h4>
+                    <div>
+                        <button class="btn btn-primary" ng-click="dismissError()">חזרה</button>
+                    </div>
                 </div>
             </div>
         </form>

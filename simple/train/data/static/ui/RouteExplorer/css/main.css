@@ -7560,14 +7560,33 @@ body.rex-page-welcome .select-stops-form {
     background-color: #124760;
     border-color: #104157;
     padding: 15px;
-    margin: 15px auto 50px; }
-    body.rex-page-welcome .select-stops-form form .form-control, body.rex-page-welcome .select-stops-form form .btn-primary {
+    margin: 15px auto 50px;
+    position: relative; }
+    body.rex-page-welcome .select-stops-form form .row .form-control, body.rex-page-welcome .select-stops-form form .row .btn-primary {
       height: 60px;
       border-radius: 0;
       font-size: 18px;
       border: none; }
-    body.rex-page-welcome .select-stops-form form .form-control {
+    body.rex-page-welcome .select-stops-form form .row .form-control {
       background-color: #f5f7f7; }
+    body.rex-page-welcome .select-stops-form form .error-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      padding: 15px;
+      background-color: white;
+      color: black;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center; }
+    body.rex-page-welcome .select-stops-form form .icon-no-results {
+      background-image: url("/static/ui/RouteExplorer/img/no-results.png");
+      width: 270px;
+      height: 270px;
+      display: inline-block; }
 
 body.rex-page-routes div.paths-list {
   display: table;
