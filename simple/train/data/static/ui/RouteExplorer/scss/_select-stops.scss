@@ -1,9 +1,13 @@
 body.rex-page-welcome {
+    h1 {
+        > .logo { display: block; margin: 0 auto 20px; max-height: 140px; }
+    }
+
     .select-stops-form {
         padding-top: 50px;
         background-image: linear-gradient(to bottom, darken($rex-brand-dark-color, 5%), darken($rex-brand-dark-color, 10%));
 
-        h1 { text-align: center; font-size: 36px; color: $rex-brand-color; font-family: $font-family-sans-serif; }
+        h1 { color: $rex-brand-light-color; }
 
         .container {
             max-width: 600px;
@@ -11,6 +15,11 @@ body.rex-page-welcome {
         }
 
         form {
+            background-color: darken($rex-brand-dark-color, 5%);
+            border-color: darken($rex-brand-dark-color, 7%);
+            padding: 15px;
+            margin: 15px auto 50px ;
+
             .form-control, .btn-primary { height: 60px; border-radius: 0; font-size: 18px; border: none; }
             .form-control { background-color: $rex-light-gray-color; }
         }

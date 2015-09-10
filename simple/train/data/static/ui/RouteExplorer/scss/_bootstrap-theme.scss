@@ -3,11 +3,13 @@
 @import url(http://fonts.googleapis.com/earlyaccess/opensanshebrew.css);
 
 $font-family-sans-serif: "Open Sans Hebrew", "Helvetica Neue", Helvetica, Arial, sans-serif;
-$headings-font-family: "Alef Hebrew", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$font-family-serif: "Alef Hebrew", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$headings-font-family: $font-family-sans-serif;
 
 // Colors
 $rex-brand-color: #3495c1;
 $rex-brand-dark-color: #165775;
+$rex-brand-light-color: #62D3FB;
 
 $rex-background-color: $rex-brand-color;
 $rex-content-color: white;

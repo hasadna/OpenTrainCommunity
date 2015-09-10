@@ -10,12 +10,14 @@ body {
     padding-top: $header-height;
 }
 
-h1 { margin-bottom: 30px; text-align: center; }
+h1, h2 { text-align: center; }
+h1 { margin-bottom: 30px; font-size: 32px; font-weight: bold; }
+h2 { margin-bottom: 20px; font-size: 24px; font-weight: bold; }
 .content { background-color: $rex-content-color; color: black; }
 
 // Header
 .navbar {
-    padding-left: 10px; padding-right: 10px; 
+    padding-left: 10px; padding-right: 10px;
     .navbar-brand {
         font-family: $headings-font-family;
         font-size: 28px;
@@ -28,30 +30,32 @@ h1 { margin-bottom: 30px; text-align: center; }
     direction: ltr; &::before { content: '\202d'; } &::after { content: '\202c'; }
 }
 
-.btn.btn-default {
-    &:active, &.active {
-        background-color: $rex-content-color;
-        color: $rex-accent-color;
-        border-top: 5px solid $rex-accent-color;
-        @include box-shadow(none);
-    }
-
-    .btn-title {
-        font-family: $headings-font-family; font-size: 32px; font-weight: bold;
-        i.fa { font-size: 80%; }
-    }
-    .btn-text { font-size: 12px; font-weight: bold; }
-}
-
-.btn-group.btn-group-tabs {
-    > .btn {
-        border-radius: 0 !important;
-        &.active {
-            border-bottom: 1px solid $rex-content-color;
+.btn-group-light {
+    .btn.btn-default {
+        &:active, &.active {
+            background-color: $rex-content-color;
+            color: $rex-accent-color;
+            border-top: 5px solid $rex-accent-color;
+            @include box-shadow(none);
         }
 
-        &:first-child { border-right: none; }
-        &:last-child  { border-left: none; }
+        .btn-title {
+            font-family: $headings-font-family; font-size: 32px; font-weight: bold;
+            i.fa { font-size: 80%; }
+        }
+        .btn-text { font-size: 12px; font-weight: bold; }
+    }
+
+    &.btn-group-tabs {
+        > .btn {
+            border-radius: 0 !important;
+            &.active {
+                border-bottom: 1px solid $rex-content-color;
+            }
+
+            &:first-child { border-right: none; }
+            &:last-child  { border-left: none; }
+        }
     }
 }
 
