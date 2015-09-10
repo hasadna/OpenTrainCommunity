@@ -1159,7 +1159,7 @@ hr {
 
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
-  font-family: "Alef Hebrew", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Open Sans Hebrew", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 500;
   line-height: 1.1;
   color: inherit; }
@@ -7437,9 +7437,18 @@ body {
   background-color: #3495c1;
   padding-top: 50px; }
 
+h1, h2 {
+  text-align: center; }
+
 h1 {
   margin-bottom: 30px;
-  text-align: center; }
+  font-size: 32px;
+  font-weight: bold; }
+
+h2 {
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: bold; }
 
 .content {
   background-color: white;
@@ -7449,7 +7458,7 @@ h1 {
   padding-left: 10px;
   padding-right: 10px; }
   .navbar .navbar-brand {
-    font-family: "Alef Hebrew", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: "Open Sans Hebrew", "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 28px; }
 
 .duration {
@@ -7459,29 +7468,28 @@ h1 {
   .duration::after {
     content: '\202c'; }
 
-.btn.btn-default:active, .btn.btn-default.active {
+.btn-group-light .btn.btn-default:active, .btn-group-light .btn.btn-default.active {
   background-color: white;
   color: #9aca41;
   border-top: 5px solid #9aca41;
   -webkit-box-shadow: none;
   box-shadow: none; }
-.btn.btn-default .btn-title {
-  font-family: "Alef Hebrew", "Helvetica Neue", Helvetica, Arial, sans-serif;
+.btn-group-light .btn.btn-default .btn-title {
+  font-family: "Open Sans Hebrew", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 32px;
   font-weight: bold; }
-  .btn.btn-default .btn-title i.fa {
+  .btn-group-light .btn.btn-default .btn-title i.fa {
     font-size: 80%; }
-.btn.btn-default .btn-text {
+.btn-group-light .btn.btn-default .btn-text {
   font-size: 12px;
   font-weight: bold; }
-
-.btn-group.btn-group-tabs > .btn {
+.btn-group-light.btn-group-tabs > .btn {
   border-radius: 0 !important; }
-  .btn-group.btn-group-tabs > .btn.active {
+  .btn-group-light.btn-group-tabs > .btn.active {
     border-bottom: 1px solid white; }
-  .btn-group.btn-group-tabs > .btn:first-child {
+  .btn-group-light.btn-group-tabs > .btn:first-child {
     border-right: none; }
-  .btn-group.btn-group-tabs > .btn:last-child {
+  .btn-group-light.btn-group-tabs > .btn:last-child {
     border-left: none; }
 
 table.table thead th {
@@ -7534,26 +7542,51 @@ table.table .table-header-secondary th {
   .stop-diagram.stop-diagram-end::before {
     bottom: 8px; }
 
+body.rex-page-welcome h1 > .logo {
+  display: block;
+  margin: 0 auto 20px;
+  max-height: 140px; }
 body.rex-page-welcome .select-stops-form {
   padding-top: 50px;
   background-image: linear-gradient(to bottom, #124760, #0e374a); }
   body.rex-page-welcome .select-stops-form h1 {
-    text-align: center;
-    font-size: 36px;
-    color: #3495c1;
-    font-family: "Open Sans Hebrew", "Helvetica Neue", Helvetica, Arial, sans-serif; }
+    color: #62D3FB; }
   body.rex-page-welcome .select-stops-form .container {
     max-width: 600px; }
     body.rex-page-welcome .select-stops-form .container .row {
       height: 60px;
       margin-bottom: 25px; }
-  body.rex-page-welcome .select-stops-form form .form-control, body.rex-page-welcome .select-stops-form form .btn-primary {
-    height: 60px;
-    border-radius: 0;
-    font-size: 18px;
-    border: none; }
-  body.rex-page-welcome .select-stops-form form .form-control {
-    background-color: #f5f7f7; }
+  body.rex-page-welcome .select-stops-form form {
+    background-color: #124760;
+    border-color: #104157;
+    padding: 15px;
+    margin: 15px auto 50px;
+    position: relative; }
+    body.rex-page-welcome .select-stops-form form .row .form-control, body.rex-page-welcome .select-stops-form form .row .btn-primary {
+      height: 60px;
+      border-radius: 0;
+      font-size: 18px;
+      border: none; }
+    body.rex-page-welcome .select-stops-form form .row .form-control {
+      background-color: #f5f7f7; }
+    body.rex-page-welcome .select-stops-form form .error-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      padding: 15px;
+      background-color: white;
+      color: black;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center; }
+    body.rex-page-welcome .select-stops-form form .icon-no-results {
+      background-image: url("/static/ui/RouteExplorer/img/no-results.png");
+      width: 270px;
+      height: 270px;
+      display: inline-block; }
 
 body.rex-page-routes div.paths-list {
   display: table;
