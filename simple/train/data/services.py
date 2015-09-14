@@ -25,7 +25,7 @@ def read_json():
 
 def csv_to_dicts(csv_file):
     """ csv_file can be file hander or string """
-    import unicodecsv as csv
+    import csv
     result = []
     with open(csv_file) as fh:
         reader = csv.DictReader(fh, delimiter=',')
@@ -36,6 +36,7 @@ def csv_to_dicts(csv_file):
                 new_row[k.strip('\ufeff')] = v
             result.append(new_row)
     return result
+
 
 def read_translations():
     trans_he = dict()
