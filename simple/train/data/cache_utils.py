@@ -8,14 +8,14 @@ try:
 except ImportError:
     CACHE_ENABLED = False
 
-#print '********* cache_enabled = %s' % CACHE_ENABLED
+#print( '********* cache_enabled = %s' % CACHE_ENABLED)
 from django.http import HttpResponse
 import json
 
 def invalidate_cache():
     if CACHE_ENABLED:
         CLIENT.flushdb()
-        print 'Flushed db'
+        print( 'Flushed db')
 
 def _build_key(req):
     return req.get_full_path()
@@ -31,7 +31,7 @@ def cachereq(func):
             key = _build_key(req)
             cc = CLIENT.get(key)
             if cc:
-                #print 'Return cached version of %s' % req.get_full_path()
+                #print( 'Return cached version of %s' % req.get_full_path())
                 return HttpResponse(status=200, content=cc, content_type='application/json')
         result = func(req, *args, **kwargs)
         if use_cache:

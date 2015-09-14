@@ -55,7 +55,7 @@ class Sample(models.Model):
         return self.trip
 
     def get_short_name(self):
-        return _('Sample') + unicode(self.id)
+        return '{0} {1}'.format(_('Sample'), self.id)
 
     def get_text_link(self,line=None):
         if line is None:
@@ -69,9 +69,9 @@ class Sample(models.Model):
                                                                       anchor)
 
     def print_nice(self):
-        print '%2d) %-20s %s' % (self.index,
+        print('%2d) %-20s %s' % (self.index,
                                  self.stop_name,
-                                 self.actual_arrival)
+                                 self.actual_arrival))
 
     def to_local_str_hm(self, dt, sep=''):
         if not dt:
@@ -87,7 +87,7 @@ class Sample(models.Model):
                          self.to_local_str_hm(self.exp_departure))
 
     def to_json(self):
-        import services
+        from . import services
 
         stop_name = services.get_stop_name(self.stop_id, self.stop_name)
 
@@ -180,7 +180,7 @@ class Service(models.Model):
         return stats_by_stop_id
 
     def get_stops(self):
-        import services
+        from . import services
         stats = self.get_stats_dict()
         trip = self.trips.first()
         samples = trip.get_real_stop_samples()
@@ -263,7 +263,7 @@ class Route(models.Model):
         return None
 
     def get_short_name(self):
-        import services
+        from . import services
 
         return '%s %s: %s %s %s' % (_('Route'),
                                     self.id,
@@ -272,10 +272,10 @@ class Route(models.Model):
                                     services.get_heb_stop_name(self.stop_ids[-1]))
 
     def print_nice(self):
-        import services
+        from . import services
 
         for idx, stop_id in enumerate(self.stop_ids):
-            print '%2d %s' % (idx, services.get_stop_name(stop_id))
+            print('%2d %s' % (idx, services.get_stop_name(stop_id)))
 
 
     def get_services(self):
@@ -294,7 +294,7 @@ class Route(models.Model):
 
 
     def get_stops(self):
-        import services
+        from . import services
 
         return services.get_stops(self.stop_ids)
 
@@ -305,7 +305,7 @@ class Route(models.Model):
         return self.stop_ids[-1]
 
     def __unicode__(self):
-        import services
+        from . import services
 
         first_stop_name = services.get_heb_stop_name(self.stop_ids[0])
         last_stop_name = services.get_heb_stop_name(self.stop_ids[-1])
@@ -315,5 +315,4 @@ class Route(models.Model):
                                                  first_stop_name,
                                                  last_stop_name,
         )
-        return unicode(result)
-
+        return result

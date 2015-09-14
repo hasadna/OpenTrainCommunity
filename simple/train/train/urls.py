@@ -16,4 +16,3 @@ urlpatterns = patterns('',
                        url(r'^ui/routes/?$', 'data.views.route_explorer'),
                        url(r'^$', 'data.views.route_explorer'),
 )
-

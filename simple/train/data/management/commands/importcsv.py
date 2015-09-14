@@ -8,7 +8,7 @@ class Command(BaseCommand):
         if not args:
             raise CommandError('must give filename')
         import data.utils
-        print 'Importing csv %s' % ' '.join(args)
+        print('Importing csv %s' % ' '.join(args))
         data.utils.import_csvs(args)
 
 

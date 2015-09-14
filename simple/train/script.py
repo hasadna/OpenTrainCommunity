@@ -12,9 +12,9 @@ def main():
             break
         for trip in trips:
             trip.samples.all().update(stop_ids=trip.stop_ids)
-        print 'Trips %s/%s done' % (count,total_trips)
+        print('Trips %s/%s done' % (count,total_trips))
         offset+=limit
 
-    print 'count = %s' % count
+    print('count = %s' % count)
 
 

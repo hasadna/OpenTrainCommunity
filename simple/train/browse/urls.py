@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, url
 from django.contrib.auth import views as auth_views
-import views
+from . import views
 
 urlpatterns = patterns('',
                        url(r'routes/?$',views.browse_routes),

@@ -5,7 +5,7 @@ from django.conf import settings
 STOPS = None
 
 def read_json():
-    import heb_stop_names
+    from . import heb_stop_names
     global STOPS
     if STOPS:
         return
@@ -25,25 +25,17 @@ def read_json():
 
 def csv_to_dicts(csv_file):
     """ csv_file can be file hander or string """
-    import csv
+    import unicodecsv as csv
     result = []
     with open(csv_file) as fh:
         reader = csv.DictReader(fh, delimiter=',')
+        result = []
         for row in reader:
-            for k in row.keys():
-                if row[k] is None:
-                    row[k] = ''
-                else:
-                    row[k] = row[k].decode('utf-8-sig', 'ignore')
-            result.append(row)
-        new_result = []
-        for row in result:
             new_row = dict()
-            for k,v in row.iteritems():
-                new_row[k.decode('utf-8-sig')] = v
-            new_result.append(new_row)
-        assert len(new_result) == len(result)
-    return new_result
+            for k, v in row.items():
+                new_row[k.strip('\ufeff')] = v
+            result.append(new_row)
+    return result
 
 def read_translations():
     trans_he = dict()
@@ -59,14 +51,14 @@ def get_stop_name(stop_id,defval=None):
     read_json()
     if stop_id in STOPS:
         return STOPS[stop_id]['stop_name']
-    return defval or unicode(stop_id)
+    return defval or str(stop_id)
 
 def get_heb_stop_name(stop_id,defval=None):
     global STOPS
     read_json()
     if stop_id in STOPS:
         return STOPS[stop_id]['heb_stop_names'][0]
-    return defval or unicode(stop_id)
+    return defval or str(stop_id)
 
 def get_stops(stop_ids=None):
     read_json()

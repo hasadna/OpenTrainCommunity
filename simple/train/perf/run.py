@@ -19,7 +19,7 @@ def check(url, reffile,ext):
         reffolder = 'local'
     t1 = time.time()
     final_url = 'http://%s%s' % (server,url)
-    print 'starting %s' % final_url
+    print('starting %s' % final_url)
     resp = requests.get(final_url)
     t2 = time.time()
     cur = resp.json()
@@ -32,7 +32,7 @@ def check(url, reffile,ext):
             result = ref == cur
     except IOError:
         result = False
-    print '%s %s Took %.3f seconds' % ('OK' if result else 'DIFF',final_url,t2-t1)
+    print('%s %s Took %.3f seconds' % ('OK' if result else 'DIFF',final_url,t2-t1))
 
     
 def run(ext):

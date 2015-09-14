@@ -49,7 +49,7 @@ ERROR_MISSING_SAMPLE = 'ERROR_MISSING_SAMPLE'
 ERROR_DUPLICATE_NUM_DATE = 'ERROR_DUPLICATE_NUM_DATE'
 
 def print_and_write(fh,txt):
-    print txt
+    print(txt)
     fh.write(txt)
     fh.write('\n')
 
@@ -75,7 +75,7 @@ class Trip(object):
 
 
     def print_full(self):
-        print self.unicode_full()
+        print(self.unicode_full())
 
     def unicode_full(self):
         res = []
@@ -160,7 +160,7 @@ class Trip(object):
         try:
             self.do_check()
             self.is_valid = True
-        except CheckException, e:
+        except CheckException as e:
             self.error = e
 
     def do_check(self):
@@ -325,14 +325,14 @@ class TrainParser():
             for idx, line in enumerate(ifh):
                 self.parse_line(idx, line)
                 if (1 + idx) % 10000 == 0:
-                    print 'parsed %d lines' % (idx + 1)
+                    print('parsed %d lines' % (idx + 1))
 
     def build_trips(self):
         stops_by_trip_num = defaultdict(list)
         for trip in self.stop_lines:
             stops_by_trip_num[trip.train_num].append(trip)
 
-        for trip_num, trips in stops_by_trip_num.iteritems():
+        for trip_num, trips in stops_by_trip_num.items():
             self.split_trips(trip_num, trips)
 
     def make_dir(self, dirname):
@@ -357,13 +357,13 @@ class TrainParser():
             count_by_code = defaultdict(int)
             for invalid_trip in invalid_trips:
                 count_by_code[invalid_trip.error.code] += 1
-            for code, code_count in count_by_code.iteritems():
+            for code, code_count in count_by_code.items():
                 print_and_write(invalid_fh,'    %s: %s' % (code, code_count))
             for invalid_trip in invalid_trips:
                 invalid_fh.write('=' * 80 + '\n')
-                invalid_fh.write('TRIP = %s ERROR = %s\n' % (invalid_trip, unicode(invalid_trip.error)))
+                invalid_fh.write('TRIP = %s ERROR = %s\n' % (invalid_trip, str(invalid_trip.error)))
                 invalid_fh.write(invalid_trip.unicode_full() + '\n')
-        print 'Invalid details written to %s' % invalid_file
+        print('Invalid details written to %s' % invalid_file)
 
 
     def split_trips(self, trip_num, stops):
@@ -413,7 +413,7 @@ class TrainParser():
                 rows = trip.get_csv_rows(self)
                 for row in rows:
                     csv_writer.writerow(row)
-        print 'CSV was writtten to %s' % output_csv
+        print('CSV was writtten to %s' % output_csv)
 
     def _parse_date(self, date):
         year = int(date[0:4])
@@ -456,7 +456,7 @@ class TrainParser():
         trip_by_train_num_date = defaultdict(list)
         for trip in self.trips:
             trip_by_train_num_date[(trip.train_num,trip.get_start_date())].append(trip)
-        for k,trips in trip_by_train_num_date.iteritems():
+        for k,trips in trip_by_train_num_date.items():
             if len(trips) > 1:
                 offset = 0
                 for trip in trips:

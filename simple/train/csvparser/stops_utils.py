@@ -107,14 +107,14 @@ def is_real(stop_id):
 def get_stop_name(stop_id,heb_name=None):
     """ returns the stop_name of stop_id
      if stop is not real, name if prefixed with -
-     if no stop name returns unicode(stop_id) and print warning
+     if no stop name returns unicode(stop_id) and print(warning)
     """
     assert isinstance(stop_id,int)
     is_real = stop_id in REAL_STOP_IDS
     prefix = '-' if not is_real else ''
     result = prefix + STOP_NAMES.get(stop_id,unicode(stop_id))
     if stop_id not in STOP_NAMES:
-        print 'No stop name for %s (%s) - please fix in stops_utils.py' % (stop_id,heb_name or '')
+        print('No stop name for %s (%s) - please fix in stops_utils.py' % (stop_id,heb_name or ''))
     return result
 
 

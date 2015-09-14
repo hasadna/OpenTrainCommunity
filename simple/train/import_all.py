@@ -30,18 +30,18 @@ def main(csv_files):
         for csv in CSV_FILES:
             fullcsv = os.path.join(CSV_DIR,csv)
             csv_files.append(fullcsv)
-    print 'Will parse the following csv_files:'
+    print('Will parse the following csv_files:')
     for idx,fullcsv in enumerate(csv_files):
-        print '%2d) %s' % (idx,fullcsv)
+        print('%2d) %s' % (idx,fullcsv))
     for fullcsv in csv_files:
         run_command('python manage.py parsecsv %s' % fullcsv)
 
-    print 'Building routes - takes long time'
+    print('Building routes - takes long time')
     run_command('python manage.py build_services')
     data.cache_utils.invalidate_cache()
     run_command('python manage.py remove_skip_stops')
 
-    print 'Creating materialized views'
+    print('Creating materialized views')
     run_command('cat create_views.sql | python manage.py dbshell')
 
 

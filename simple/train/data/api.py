@@ -1,13 +1,14 @@
-from models import Sample, Trip, Route
+from .models import Sample, Trip, Route
 from django.http import HttpResponse, Http404
-import cache_utils
+from . import cache_utils
 import django.db
 import time
 from collections import namedtuple
 import datetime
-import errors
+from . import errors
 
-Filters = namedtuple('Filters',['from_date','to_date'])
+Filters = namedtuple('Filters', ['from_date', 'to_date'])
+
 
 def json_resp(obj, status=200):
     import json
@@ -17,17 +18,19 @@ def json_resp(obj, status=200):
 
 
 def benchit(func):
-    def wrap(*args,**kwargs):
+    def wrap(*args, **kwargs):
         t1 = time.time()
-        result = func(*args,**kwargs)
+        result = func(*args, **kwargs)
         t2 = time.time()
-        print '%s took %.2f' % (func.__name__,t2-t1)
+        print('%s took %.2f' % (func.__name__, t2 - t1))
         return result
+
     return wrap
+
 
 @cache_utils.cachereq
 def get_stops(req):
-    import services
+    from . import services
 
     stops = services.get_stops()
     stops.sort(key=lambda x: x['stop_name'])
@@ -35,7 +38,7 @@ def get_stops(req):
 
 
 def get_trip(req, trip_id):
-    from models import Trip
+    from .models import Trip
 
     try:
         trip = Trip.objects.get(id=trip_id)
@@ -60,6 +63,7 @@ def get_all_routes(req):
         })
     return json_resp(result)
 
+
 def get_all_routes_by_date(req):
     from django.db.models import Count
 
@@ -67,11 +71,12 @@ def get_all_routes_by_date(req):
     to_date = _parse_date(req.GET['to_date'])
 
     routes = list(Route.objects
-        .filter(trips__start_date__gte = from_date, trips__start_date__lte = to_date)
-        .annotate(trips_count=Count('trips')));
+                  .filter(trips__start_date__gte=from_date, trips__start_date__lte=to_date)
+                  .annotate(trips_count=Count('trips')));
 
-    result = [{ 'id': r.id, 'stop_ids': r.stop_ids, 'count': r.trips_count} for r in routes]
+    result = [{'id': r.id, 'stop_ids': r.stop_ids, 'count': r.trips_count} for r in routes]
     return json_resp(result)
+
 
 def contains_stops(route, stop_ids):
     route_stop_ids = route.stop_ids
@@ -97,7 +102,7 @@ HOURS = [(4, 7),
          (18, 21),
          (21, 24),
          (24, 28),
-]
+         ]
 
 
 def _check_hours():
@@ -118,23 +123,26 @@ def get_path_info(req):
     stat = [stat for stat in stats if stat['info']['hours'] == 'all' and stat['info']['week_day'] == 'all'][0]['stops']
     return json_resp(stat)
 """
+
+
 def _parse_date(dt_str):
     if dt_str is None:
         return None
 
     if dt_str.isdigit():
-        timestamp = long(dt_str)
-        if timestamp > 1e12: # java time, with milliseconds
+        timestamp = int(dt_str)
+        if timestamp > 1e12:  # java time, with milliseconds
             timestamp = timestamp / 1000
         return datetime.datetime.fromtimestamp(timestamp)
 
     try:
-        d,m,y = [int(x) for x in dt_str.split('/')]
+        d, m, y = [int(x) for x in dt_str.split('/')]
         if y < 2013:
-            raise errors.InputError('Wrong year %s for param %s' % (y,dt_str))
-        return datetime.date(year=y,month=m,day=d)
-    except ValueError,e:
-        raise errors.InputError('Wrong date param %s: %s' % (dt_str,unicode(e)))
+            raise errors.InputError('Wrong year %s for param %s' % (y, dt_str))
+        return datetime.date(year=y, month=m, day=d)
+    except ValueError as e:
+        raise errors.InputError('Wrong date param %s: %s' % (dt_str, str(e)))
+
 
 """
 @cache_utils.cacheit
@@ -151,6 +159,7 @@ def get_path_info_full(req):
     return json_resp(stats)
 """
 
+
 @cache_utils.cachereq
 @benchit
 def get_route_info_full(req):
@@ -158,17 +167,19 @@ def get_route_info_full(req):
     from_date = _parse_date(req.GET.get('from_date'))
     to_date = _parse_date(req.GET.get('to_date'))
     if from_date and to_date and from_date > to_date:
-        raise errors.InputError('from_date %s cannot be after to_date %s' % (from_date,to_date))
-    filters = Filters(from_date=from_date,to_date=to_date)
+        raise errors.InputError('from_date %s cannot be after to_date %s' % (from_date, to_date))
+    filters = Filters(from_date=from_date, to_date=to_date)
     stats = _get_route_info_full(route_id, filters)
     stats.sort(key=_get_info_sort_key)
     return json_resp(stats)
 
+
 def _get_info_sort_key(stat):
     info = stat['info']
-    hours = info['hours'] if info['hours'] != 'all' else (1000,1000)
+    hours = info['hours'] if info['hours'] != 'all' else [1000, 1000]
     week_day = info['week_day'] if info['week_day'] != 'all' else 1000
-    return week_day,hours
+    return week_day, hours
+
 
 """
 def _get_path_info_full(stop_ids, filters):
@@ -180,22 +191,25 @@ def _get_path_info_full(stop_ids, filters):
     return stats
 """
 
+
 def _get_route_info_full(route_id, filters):
-    route = Route.objects.get(id = route_id);
+    route = Route.objects.get(id=route_id);
     table = _get_stats_table(route, filters)
     stats = _complete_table(table, route.stop_ids);
 
     return stats
 
-def _find_relevant_entries(table,week_day,hours):
+
+def _find_relevant_entries(table, week_day, hours):
     result = []
     for entry in table:
         if hours != 'all':
-            hours_range = [h%24 for h in range(hours[0],hours[1])]
+            hours_range = [h % 24 for h in range(hours[0], hours[1])]
         if week_day == 'all' or entry['week_day_pg'] == week_day - 1:
             if hours == 'all' or entry['hour_pg'] in hours_range:
                 result.append(entry)
     return result
+
 
 def _avg_entries(stop_id, entries):
     result = dict()
@@ -206,21 +220,22 @@ def _avg_entries(stop_id, entries):
             "arrival_early_pct",
             "departure_late_pct"]
     result['stop_id'] = stop_id
-    total_num = sum(e.get('num_trips',0) for e in entries)
+    total_num = sum(e.get('num_trips', 0) for e in entries)
     for key in keys:
         if total_num != 0:
-            count_key = key.replace('_pct','_count')
-            sum_values = sum(entry.get(count_key,0) for entry in entries)
+            count_key = key.replace('_pct', '_count')
+            sum_values = sum(entry.get(count_key, 0) for entry in entries)
             result[key] = 1.0 * sum_values / total_num
         else:
             result[key] = 0
     return result
 
-def _complete_table(table,stop_ids):
+
+def _complete_table(table, stop_ids):
     result = []
     for week_day in WEEK_DAYS + ['all']:
         for hours in HOURS + ['all']:
-            entries = _find_relevant_entries(table,week_day,hours)
+            entries = _find_relevant_entries(table, week_day, hours)
             stops = []
             num_trips = None
             for stop_id in stop_ids:
@@ -228,7 +243,7 @@ def _complete_table(table,stop_ids):
                 prev_num_trips = num_trips
                 num_trips = sum(e['num_trips'] for e in stop_id_entries)
                 if prev_num_trips is not None:
-                    assert num_trips == prev_num_trips,'inconsistency in num trips'
+                    assert num_trips == prev_num_trips, 'inconsistency in num trips'
                 if num_trips == 0:
                     stops.append({})
                 else:
@@ -237,7 +252,7 @@ def _complete_table(table,stop_ids):
                 'info': {
                     'num_trips': num_trips or 0,
                     'week_day': week_day,
-                    'hours': list(hours) if isinstance(hours,tuple) else hours
+                    'hours': list(hours) if isinstance(hours, tuple) else hours
                 },
                 'stops': stops
             }
@@ -257,17 +272,19 @@ def get_service_stat(service):
         where s.trip_id = ANY(%(trip_ids)s)
         GROUP by s.stop_id
     '''
-    trip_ids = list(service.trips.all().values_list('id',flat=True))
+    trip_ids = list(service.trips.all().values_list('id', flat=True))
     select_kwargs = {'trip_ids': trip_ids}
     cursor = django.db.connection.cursor()
-    cursor.execute(select_stmt,select_kwargs)
-    cols = ['stop_id','num_trips','avg_delay_arrival','avg_delay_departure','time_in_stop']
+    cursor.execute(select_stmt, select_kwargs)
+    cols = ['stop_id', 'num_trips', 'avg_delay_arrival', 'avg_delay_departure', 'time_in_stop']
     result = []
     for row in cursor:
-        row_dict = dict(zip(cols,row))
-        row_dict['time_in_stop'] = row_dict['time_in_stop'].total_seconds() if row_dict['time_in_stop'] is not None else None
+        row_dict = dict(zip(cols, row))
+        row_dict['time_in_stop'] = row_dict['time_in_stop'].total_seconds() if row_dict[
+                                                                                   'time_in_stop'] is not None else None
         result.append(row_dict)
     return result
+
 
 @benchit
 def _get_stats_table(route, filters):
@@ -298,14 +315,14 @@ def _get_stats_table(route, filters):
         AND th.valid
         AND s.trip_id = th.id
         '''
-    +
-    (' AND th.start_date >= %(start_date)s' if filters.from_date else '')
-    +
-    (' AND th.start_date <= %(to_date)s' if filters.to_date else '')
-    +
-    '''
-        GROUP BY s.stop_id,week_day_pg,hour_pg
-    ''')
+                   +
+                   (' AND th.start_date >= %(start_date)s' if filters.from_date else '')
+                   +
+                   (' AND th.start_date <= %(to_date)s' if filters.to_date else '')
+                   +
+                   '''
+                       GROUP BY s.stop_id,week_day_pg,hour_pg
+                   ''')
     select_kwargs = {
         'route_id': route.id,
         'early_threshold': early_threshold,
@@ -315,7 +332,7 @@ def _get_stats_table(route, filters):
         'to_date': filters.to_date
     }
     cursor = django.db.connection.cursor()
-    cursor.execute(select_stmt,select_kwargs)
+    cursor.execute(select_stmt, select_kwargs)
 
     cols = [
         'num_trips',

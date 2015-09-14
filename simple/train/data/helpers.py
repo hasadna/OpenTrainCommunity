@@ -1,4 +1,4 @@
-from models import Sample
+from .models import Sample
 
 def samples_with_0_delay(stop_id):
     samples = Sample.objects.filter(valid=True,

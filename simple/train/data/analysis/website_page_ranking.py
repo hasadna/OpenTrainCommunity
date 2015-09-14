@@ -15,8 +15,8 @@ base_url = 'http://otrain.org/api/route-info-full?route_id={}'
 def save_data():
   route_ids = []
   route_info_list = []
-  for route_id in xrange(1,1000):
-    print route_id
+  for route_id in range(1,1000):
+    print(route_id)
     try:
       resp = requests.get(url=base_url.format(route_id))
       if resp.status_code == 500:
@@ -25,7 +25,7 @@ def save_data():
       route_info_list.append(route_info)
       route_ids.append(route_id)
     except:
-      print 'cannot run', route_id
+      print('cannot run %s' % route_id)
   
   all_data = [route_ids, route_info_list]
   
@@ -43,7 +43,6 @@ def analyse():
   num_trips = []
 
   for route, route_info in zip(route_ids, route_info_list):
-    print route
     for sub_route_info in route_info:
       if (sub_route_info['info']['num_trips'] == 0):
         continue
@@ -69,21 +68,20 @@ def analyse():
   scores=sorted(scores, reverse=True)
 
 
-  print '*** High error to low ***'
-  for i in xrange(25):
-    print urls[i]
-    print 'arrival late score', scores[i]
-    print 'num trips', num_trips[i]
-    print ''
+  print('*** High error to low ***')
+  for i in range(25):
+    print('arrival late score', scores[i])
+    print('num trips', num_trips[i])
+    print('')
 
-  print '*** Low error to high **********************************************************************'
-  for i in xrange(25):
+  print( '*** Low error to high **********************************************************************')
+  for i in range(25):
     ind = len(urls) - i - 1
-    print urls[ind]
-    print 'arrival late score', scores[ind]
-    print 'num trips', num_trips[ind]
-    print ''
-  print len(urls)
+    print( urls[ind])
+    print( 'arrival late score', scores[ind])
+    print( 'num trips', num_trips[ind])
+    print( '')
+  print( len(urls))
 
 
 def analyse2():
@@ -99,7 +97,7 @@ def analyse2():
   y = []
 
   for route, route_info in zip(route_ids, route_info_list):
-    print route
+    print( route)
     for sub_route_info in route_info:
       if (sub_route_info['info']['num_trips'] < 100):
         continue
@@ -108,20 +106,20 @@ def analyse2():
         x.append(idx/float(len(stop_values)))
         y.append(val)
 
-  print x[0:100]
-  print y[0:100]
+  print( x[0:100])
+  print( y[0:100])
   
   k = 12
   means = []
-  for i in xrange(k):
+  for i in range(k):
     means.append([])
   
   for xa, ya in zip(x,y):
     if ya:
       means[int(xa*k)].append(ya)
   
-  mean_vals = [np.mean(means[i]) for i in xrange(k)]  
-  plt.plot([int(float(i)/(k-1)*100) for i in xrange(k)], mean_vals)
+  mean_vals = [np.mean(means[i]) for i in range(k)]
+  plt.plot([int(float(i)/(k-1)*100) for i in range(k)], mean_vals)
   plt.xlabel('Route percentage')
   plt.ylabel('Percent late')
   plt.title('Route lateness progression')
