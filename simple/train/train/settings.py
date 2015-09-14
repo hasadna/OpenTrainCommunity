@@ -118,6 +118,6 @@ LOGGING = {
 TXT_FOLDER = os.path.join(BASE_DIR, 'csvparser/unzip_data')
 
 try:
-    from local_settings import *
+    from .local_settings import *
 except ImportError:
     pass
