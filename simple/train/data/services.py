@@ -26,14 +26,18 @@ def read_json():
 def csv_to_dicts(csv_file):
     """ csv_file can be file hander or string """
     import csv
-    result = []
     with open(csv_file) as fh:
         reader = csv.DictReader(fh, delimiter=',')
         result = []
         for row in reader:
             new_row = dict()
             for k, v in row.items():
-                new_row[k.strip('\ufeff')] = v
+                try:
+                    k = k.encode('utf-8').decode('utf-8-sig')
+                    k = k.rstrip('\uefff')
+                except Exception as e:
+                    print(e)
+                new_row[k] = v
             result.append(new_row)
     return result
 
