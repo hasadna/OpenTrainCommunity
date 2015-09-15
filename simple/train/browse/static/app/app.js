@@ -26,7 +26,6 @@ $("#login_form").submit(function() {
 
 
 function refresh_login(data) {
-    console.log(data);
     if (data.logged_in) {
         $("#login_li").addClass("hideit");
         $("#username").text(data.username);

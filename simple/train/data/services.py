@@ -65,7 +65,7 @@ def get_stops(stop_ids=None):
     read_json()
     global STOPS
     if stop_ids is None:
-        return STOPS.values()[:]
+        return list(STOPS.values())
     return [STOPS[stop_id] for stop_id in stop_ids]
 
 

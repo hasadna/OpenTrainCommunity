@@ -140,3 +140,9 @@ def logout(req):
 
 def logged_in(req):
     return resp_json(user_to_auth_json(req.user),status=200)
+
+def test1(self):
+    x = {'name':'soccer', 'icon':'\u26bd'}
+    import json
+    from django.http import JsonResponse
+    return JsonResponse(x)

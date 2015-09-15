@@ -1,8 +1,8 @@
 from django.conf.urls import patterns, url
-from django.contrib.auth import views as auth_views
 from . import views
 
 urlpatterns = patterns('',
+                       url(r'test/$',views.test1),
                        url(r'routes/?$',views.browse_routes),
                        url(r'routes/(?P<route_id>\d+)/?$',views.browse_route),
                        url(r'services/bad/?$',views.browse_bad_services,name='bad_services'),

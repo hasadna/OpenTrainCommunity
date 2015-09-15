@@ -2,7 +2,7 @@ try:
     import redis
 
     CACHE_ENABLED = True
-    CLIENT = redis.StrictRedis()
+    CLIENT = redis.StrictRedis(decode_responses=True)
     TTL = 30 * 24 * 60 * 60
 
 except ImportError:
@@ -31,8 +31,7 @@ def cachereq(func):
             key = _build_key(req)
             cc = CLIENT.get(key)
             if cc:
-                #print( 'Return cached version of %s' % req.get_full_path())
-                return HttpResponse(status=200, content=cc, content_type='application/json')
+                return HttpResponse(content=cc, status=200, content_type='application/json')
         result = func(req, *args, **kwargs)
         if use_cache:
             CLIENT.setex(key, TTL, result.content)
