@@ -1,11 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import unicode_literals
-
 import xlrd
-import unicodecsv as csv
 import os
+import csv
 import datetime
 from django.utils import timezone
 
@@ -14,16 +12,16 @@ from django.utils import timezone
 def parse_xl(xlname, csvname=None):
     wb = xlrd.open_workbook(xlname)
     sheet = wb.sheet_by_index(0)
-    heb_header = [sheet.cell_value(3, colx) for colx in xrange(1, sheet.ncols)]
+    heb_header = [sheet.cell_value(3, colx) for colx in range(1, sheet.ncols)]
     header = [HEADER_MAPPING[h] for h in heb_header]
     if csvname is None:
         csvname = os.path.splitext(xlname)[0] + '.csv'
     with open(csvname,'w') as fh:
         wr = csv.DictWriter(fh, quoting=csv.QUOTE_ALL,fieldnames=CSV_HEADER)
         wr.writeheader()
-        for rowx in xrange(4, sheet.nrows):
+        for rowx in range(4, sheet.nrows):
             row = []
-            for colx in xrange(1, sheet.ncols):
+            for colx in range(1, sheet.ncols):
                 cell_value = sheet.cell_value(rowx, colx)
                 cell_type = sheet.cell_type(rowx, colx)
                 if cell_type == xlrd.XL_CELL_DATE:
