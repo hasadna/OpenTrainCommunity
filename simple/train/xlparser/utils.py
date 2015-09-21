@@ -113,8 +113,8 @@ def xl_row_to_csv(input_dict):
                                                                           STOP_KINDS['middle'],
                                                                           STOP_KINDS['dest']])
     output_dict['valid'] = bool_to_csv(True)
-    output_dict['is_first'] = input_dict['stop_kind'] == STOP_KINDS['source']
-    output_dict['is_last'] = input_dict['stop_kind'] == STOP_KINDS['dest']
+    output_dict['is_first'] = bool_to_csv(input_dict['stop_kind'] == STOP_KINDS['source'])
+    output_dict['is_last'] = bool_to_csv(input_dict['stop_kind'] == STOP_KINDS['dest'])
     for f in ['actual_arrival', 'actual_departure', 'exp_arrival', 'exp_departure']:
         output_dict[f] = dt_to_csv(input_dict[f])
     output_dict['delay_arrival'] = diff_dt(input_dict['actual_arrival'], input_dict['exp_arrival'])
