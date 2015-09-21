@@ -120,3 +120,9 @@ def xl_row_to_csv(input_dict):
     output_dict['delay_arrival'] = diff_dt(input_dict['actual_arrival'], input_dict['exp_arrival'])
     output_dict['delay_departure'] = diff_dt(input_dict['actual_departure'], input_dict['exp_departure'])
     return output_dict
+
+if __name__ == '__main__':
+    import sys
+    parse_xl(sys.argv[0])
+
+
