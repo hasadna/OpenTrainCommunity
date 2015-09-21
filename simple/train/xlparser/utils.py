@@ -5,7 +5,7 @@ import xlrd
 import os
 import csv
 import datetime
-from django.utils import timezone
+import pytz
 
 
 def parse_xl(xlname, csvname=None):
@@ -26,7 +26,7 @@ def parse_xl(xlname, csvname=None):
                 if cell_type == xlrd.XL_CELL_DATE:
                     dt_tuple = xlrd.xldate_as_tuple(cell_value, wb.datemode)
                     dt = datetime.datetime(*dt_tuple)
-                    dt = timezone.get_default_timezone().localize(dt)
+                    dt = pytz.timezone('Asia/Jerusalem').localize(dt)
                     row.append(dt)
                 else:
                     row.append(cell_value)
