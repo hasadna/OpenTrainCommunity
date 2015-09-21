@@ -123,6 +123,6 @@ def xl_row_to_csv(input_dict):
 
 if __name__ == '__main__':
     import sys
-    parse_xl(sys.argv[0])
+    parse_xl(sys.argv[1])
 
 
