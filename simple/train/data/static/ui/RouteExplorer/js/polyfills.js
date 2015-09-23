@@ -1,5 +1,5 @@
 // String.repeat polyfill
-// from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/repeat#Polyfill
+// taken from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/repeat#Polyfill
 if (!String.prototype.repeat) {
   String.prototype.repeat = function(count) {
     'use strict';

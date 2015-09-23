@@ -2,41 +2,63 @@
 
 RouteExplorer is a web UI for exploring OpenTrain data.
 
-## Dependencies
+## Layout
 
-### Sass
-
-We use Sass for stylesheets.
-You'll need Ruby installed on your system. Then:
-
-```shell
-gem install sass
-./sass-update.sh # run once to generate CSS; see below for development mode
-```
-
-### Bower
-
-We use [Bower](http://bower.io) to manage dependencies.
-You'll need Node.js installed on your system. Then:
-
-```shell
-npm install -g bower
-bower install
-```
-
-This will download all remaining dependencies.
+* `RouteExplorer/`
+  * `js/`: JavaScript sources
+  * `scss/`: Sass stylesheets
+  * `tpls/`: Angular.js templates
+  * `img/`: Image assets
+  * `dist/`: Compiled files for production, plus their sourcemaps
+    * `js/`: Bundled & minified JavaScript
+    * `css/`: Bundled & compiled CSS
+  * `node_modules/`: Development tools installed by NPM
+  * `bower_components/`: Front-end components installed by Bower
 
 ## Development
 
-### Generating CSS from SCSS
+We use [NPM](http://npmjs.org) and [Bower](http://bower.io) to manage
+dependencies. Broadly, NPM manages development dependencies like our
+Gulp tasks, while Bower manages frontend dependencies like Angular and
+Bootstrap.
 
-During development, it's handy to watch the `scss` folder so that CSS is automatically generated from SCSS files. A script that does this using the correct load-path is included:
+### NPM and Bower
+
+If you don't have npm on your system, get it by installing
+[node.js](http://nodejs.org) or [io.js](http://iojs.org).
+
+Then, install all the required dev dependencies with:
 
 ```shell
-./sass-watch.cmd # on Windows
-./sass-watch.sh # on POSIX environments
+npm install # this will also install bower
+bower install
 ```
 
-If you don't plan on modifying any SCSS files, you'll still need to generate the CSS once, by running `sass-update.sh`.
+### Gulp
 
-Enjoy!
+We use Gulp to streamline our development tasks.
+The default task takes care of generating everything for the first time
+and watching the files for changes.
+
+```shell
+# gulp
+
+[20:17:24] Starting 'scripts'...
+Minifying Scripts...
+[20:17:24] Finished 'scripts' after 23 ms
+[20:17:24] Starting 'styles'...
+Compiling Styles...
+[20:17:24] Finished 'styles' after 7.03 ms
+[20:17:24] Starting 'watch'...
+Gulp is watching for changes...
+[20:17:24] Finished 'watch' after 31 ms
+[20:17:24] Starting 'default'...
+[20:17:24] Finished 'default' after 11 μs
+```
+You can now hack around as you wish and gulp will regenerate files
+in `dist/` as needed.
+
+Other tasks include:
+* `gulp scripts` to compile and minify JavaScript sources
+* `gulp styles` to compile and minify Sass sources
+* `gulp watch` to watch sources for changes and recompile as needed
