@@ -1,6 +1,6 @@
 angular.module('RouteExplorer').controller('RouteDetailsController',
-['$scope', '$route', '$http', '$location', 'LocationBinder', 'Layout',
-function($scope, $route, $http, $location, LocationBinder, Layout) {
+['$scope', '$route', '$http', '$location', 'LocationBinder', 'Layout', 'Locale',
+function($scope, $route, $http, $location, LocationBinder, Layout, Locale) {
     var year = $route.current.params.year;
     var month = $route.current.params.month;
     var routeId = $route.current.params.routeId;
@@ -11,19 +11,10 @@ function($scope, $route, $http, $location, LocationBinder, Layout) {
     $scope.stopIds = stopIds;
     $scope.origin = stopIds[0];
     $scope.destination = stopIds[stopIds.length - 1];
-    $scope.year = year;
-    $scope.month = month;
+    $scope.selectedMonth = Locale.months[month - 1].name + ' ' + year;
 
     $scope.selectedDay = null;
-    $scope.days = [
-        { abbr: 'א', title: 'ראשון', id: 1 },
-        { abbr: 'ב', title: 'שני', id: 2 },
-        { abbr: 'ג', title: 'שלישי', id: 3 },
-        { abbr: 'ד', title: 'רביעי', id: 4 },
-        { abbr: 'ה', title: 'חמישי', id: 5 },
-        { abbr: 'ו', title: 'שישי', id: 6 },
-        { abbr: 'ש', title: 'שבת', id: 7 }
-    ];
+    $scope.days = Locale.days;
 
     $scope.selectedTime = null;
     $scope.times = [];

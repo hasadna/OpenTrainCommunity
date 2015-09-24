@@ -1,23 +1,10 @@
 angular.module('RouteExplorer').controller('SelectStopsController',
-['$scope', '$rootScope', '$location', 'Layout',
-function($scope, $rootScope, $location, Layout) {
+['$scope', '$rootScope', '$location', 'Layout', 'Locale',
+function($scope, $rootScope, $location, Layout, Locale) {
     $scope.stops = Layout.getStops();
     $scope.origin = null;
     $scope.destination = null;
-    $scope.months = [
-        'ינואר',
-        'פברואר',
-        'מרץ',
-        'אפריל',
-        'מאי',
-        'יוני',
-        'יולי',
-        'אוגוסט',
-        'ספטמבר',
-        'אוקטובר',
-        'נובמבר',
-        'דצמבר'
-    ].map(function(v, i) { return { value: i + 1, name: v }; });
+    $scope.months = Locale.months;
 
     var today = new Date();
     var lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);

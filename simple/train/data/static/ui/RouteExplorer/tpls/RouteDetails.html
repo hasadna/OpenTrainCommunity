@@ -2,7 +2,7 @@
     <div class="page-header">
         <h1>
             {{ stopName(origin) }} - {{ stopName(destination) }}
-            <small>{{ month }}/{{ year }}</small>
+            <small>{{ selectedMonth }}</small>
         </h1>
     </div>
 
@@ -19,7 +19,7 @@
             </div>
             <div class="btn btn-default" ng-repeat="day in days" ng-class="{ disabled: isDayEmpty(day) }" ng-model="$parent.selectedDay" btn-radio="day.id">
                 <div class="btn-title">{{ day.abbr }}</div>
-                <div class="btn-text">{{ day.title }}</div>
+                <div class="btn-text">{{ day.name }}</div>
             </div>
         </div>
 
