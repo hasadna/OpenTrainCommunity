@@ -14,11 +14,7 @@
               pageId: 'welcome',
               templateUrl: templateUrl('SelectStops'),
               controller: 'SelectStopsController',
-              resolve: {
-                  loaded: function(Layout) {
-                      return Layout.loaded;
-                  }
-              }
+              resolve: { 'Layout': 'Layout' }
           })
           .when('/about', {
               pageId: 'about',
@@ -28,21 +24,13 @@
               pageId: 'routes',
               templateUrl: templateUrl('SelectRoute'),
               controller: 'SelectRouteController',
-              resolve: {
-                  loaded: function(Layout) {
-                      return Layout.loaded;
-                  }
-              }
+              resolve: { 'Layout': 'Layout' }
           })
           .when('/:year/:month/routes/:routeId', {
               pageId: 'route',
               templateUrl: templateUrl('RouteDetails'),
               controller: 'RouteDetailsController',
-              resolve: {
-                  loaded: function(Layout) {
-                      return Layout.loaded;
-                  }
-              },
+              resolve: { 'Layout': 'Layout' },
               reloadOnSearch: false
           })
           .otherwise({
@@ -406,7 +394,8 @@
         };
   });
 
-  app.factory('LocationBinder', function($location) {
+  app.factory('LocationBinder', ['$location',
+  function($location) {
       return {
           bind: function(scope, scopeProperty, locationProperty, parser, formatter) {
               scope[scopeProperty] = $location.search()[locationProperty] || null;
@@ -426,5 +415,5 @@
               });
           }
       };
-  });
+  }]);
 })();

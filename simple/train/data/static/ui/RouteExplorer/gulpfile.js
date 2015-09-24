@@ -30,7 +30,7 @@
             .pipe(plumber())
             .pipe(sourcemaps.init())
               .pipe(concat('app.js'))
-              // .pipe(uglify())
+              .pipe(uglify())
             .pipe(sourcemaps.write(config.scripts.map))
             .pipe(gulp.dest(config.scripts.out));
     });
