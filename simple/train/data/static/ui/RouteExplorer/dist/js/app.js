@@ -1,2 +1,586 @@
-String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(null===this)throw new TypeError("can't convert "+this+" to object");var n=""+this;if(t=+t,t!=t&&(t=0),0>t)throw new RangeError("repeat count must be non-negative");if(t==1/0)throw new RangeError("repeat count must be less than infinity");if(t=Math.floor(t),0===n.length||0===t)return"";if(n.length*t>=1<<28)throw new RangeError("repeat count must not overflow maximum string size");for(var e="";1==(1&t)&&(e+=n),t>>>=1,0!==t;)n+=n;return e}),function(){var t="/static/ui/RouteExplorer",n=angular.module("RouteExplorer",["ngRoute","ui.bootstrap","ui.bootstrap.buttons"]);n.config(["$routeProvider",function(n){var e=function(n){return t+"/tpls/"+n+".html"};n.when("/",{pageId:"welcome",templateUrl:e("SelectStops"),controller:"SelectStopsController",resolve:{loaded:function(t){return t.loaded}}}).when("/about",{pageId:"about",templateUrl:e("About")}).when("/:year/:month/select-route/:origin/:destination",{pageId:"routes",templateUrl:e("SelectRoute"),controller:"SelectRouteController",resolve:{loaded:function(t){return t.loaded}}}).when("/:year/:month/routes/:routeId",{pageId:"route",templateUrl:e("RouteDetails"),controller:"RouteDetailsController",resolve:{loaded:function(t){return t.loaded}},reloadOnSearch:!1}).otherwise({redirectTo:"/"})}]),n.controller("AppController",["$scope","$location",function(t,n){t.share=function(t){var e=t+encodeURIComponent("http://otrain.org/#"+n.url());window.open(e,"sharePopup","width=600,height=550,top=100,left=100,location=no,scrollbar=no,status=no,menubar=no")},t.$on("$routeChangeSuccess",function(n,e){t.bodyClass=e.pageId?"rex-page-"+e.pageId:null})}]),n.controller("SelectStopsController",["$scope","$rootScope","$location","Layout",function(t,n,e,r){t.stops=r.getStops(),t.origin=null,t.destination=null,t.months=["ינואר","פברואר","מרץ","אפריל","מאי","יוני","יולי","אוגוסט","ספטמבר","אוקטובר","נובמבר","דצמבר"].map(function(t,n){return{value:n+1,name:t}});var o=new Date,i=new Date(o.getFullYear(),o.getMonth()-1,1);t.month=i.getMonth()+1,t.year=i.getFullYear(),t.minYear=2013,t.maxYear=t.year,t.formValid=function(){return!!t.origin&&!!t.destination&&t.origin!=t.destination},t.stopName=function(t){var n=r.findStop(t);return n?n.name:null},t.goToRoutes=function(){t.noRoutes=!1,t.loading=!0,r.findRoutesByDate(t.origin.id,t.destination.id,t.year,t.month).then(function(n){0===n.length?t.noRoutes=!0:1==n.length?e.path("/"+t.year+"/"+t.month+"/routes/"+n[0].id):e.path("/"+t.year+"/"+t.month+"/select-route/"+t.origin.id+"/"+t.destination.id)})["finally"](function(){t.loading=!1})},t.dismissError=function(){t.noRoutes=!1}}]),n.controller("SelectRouteController",["$scope","$location","$route","Layout",function(t,n,e,r){function o(t){var n=r.findStop(t);return n?n.name:null}function i(t){function n(t){var n={};for(var e in t){var r=t[e];for(var o in r.stops){var i=r.stops[o];n[i]||(n[i]=0),n[i]++}}return n}function e(t,n){var e={};for(var r in t)t[r]==n&&(e[r]=!0);return e}function r(t,n){var e,r=[];for(var o in t){var i=t[o];o>0&&o<t.length-1&&n[i]?(e||(e=[],r.push(e)),e.push(i)):(e=null,r.push(i))}return r}var o=e(n(t),t.length);delete o[l.id],delete o[s.id];for(var i in t)t[i].stops=r(t[i].stops,o)}t.stops=r.getStops();var a=e.current.params.year,u=e.current.params.month,l=r.findStop(e.current.params.origin),s=r.findStop(e.current.params.destination);r.findRoutesByDate(l.id,s.id,a,u).then(function(n){n.length>1&&i(n),t.routes=n}),t.isCollapsed=function(t){return angular.isArray(t)},t.isOrigin=function(t){return t==l.id},t.isDestination=function(t){return t==s.id},t.stopText=function(n){return t.isCollapsed(n)?"•".repeat(n.length):o(n)},t.stopTooltip=function(n){return t.isCollapsed(n)?n.map(o).join(", "):null},t.barWidth=function(n){var e=100*n.count/t.routes[0].count;return 1>e?"1px":e+"%"},t.routeUrl=function(t){return"/#/"+a+"/"+u+"/routes/"+t.id}}]),n.controller("RouteDetailsController",["$scope","$route","$http","$location","LocationBinder","Layout",function(t,n,e,r,o,i){function a(){var n=t.selectedDay||"all",e=t.selectedTime||"all",r=d[n]&&d[n][e]?d[n][e].stops:[];return r}function u(n){function e(t){return("0"+t%24).slice(-2)+":00"}t.times=[];var r={};for(var o in n){var i=n[o],a="all"==i.info.hours?"all":i.info.hours[0]+"-"+i.info.hours[1],u=i.info.week_day;if(d[u]||(d[u]={}),d[u][a]=i,"all"!=a&&!r[a]){var l={id:a,from:e(i.info.hours[0]),to:e(i.info.hours[1])};r[a]=l,t.times.push(l)}}}var l=n.current.params.year,s=n.current.params.month,c=n.current.params.routeId,f=i.findRoute(c).stops,d={};t.loaded=!1,t.stopIds=f,t.origin=f[0],t.destination=f[f.length-1],t.year=l,t.month=s,t.selectedDay=null,t.days=[{abbr:"א",title:"ראשון",id:1},{abbr:"ב",title:"שני",id:2},{abbr:"ג",title:"שלישי",id:3},{abbr:"ד",title:"רביעי",id:4},{abbr:"ה",title:"חמישי",id:5},{abbr:"ו",title:"שישי",id:6},{abbr:"ש",title:"שבת",id:7}],t.selectedTime=null,t.times=[];var p=new Date(l,s-1,1),m=new Date(l,s,1);e.get("/api/route-info-full",{params:{route_id:c,from_date:p.getTime(),to_date:m.getTime()}}).success(function(n){u(n),t.loaded=!0}),o.bind(t,"selectedDay","day",function(t){return t?Number(t):null}),o.bind(t,"selectedTime","time"),t.stopStats=function(t){var n=a();for(var e in n)if(n[e].stop_id==t)return n[e];return null},t.stopName=function(t){var n=i.findStop(t);return n?n.name:null},t.isDayEmpty=function(t){var n=t.id,e=d[n];if(!e)return!0;for(var r in e)if(e[r].info.num_trips>0)return!1;return!0},t.isTimeEmpty=function(n){var e=t.selectedDay||"all",r=n.id,o=d[e]&&d[e][r];return o&&o.info.num_trips>0?!1:!0}}]),n.filter("duration",function(){return function(t){var n=!1;t=Math.trunc(t),0>t&&(n=!0,t=-t);var e=Math.trunc(t/60);t-=60*e;var r=Math.trunc(e/60);e-=60*r,10>t&&(t="0"+t),10>e&&0!==r&&(e="0"+e);var o=e+":"+t;return 0!==r&&(o=r+":"+o),n&&(o="-"+o),o}}),n.directive("rexPercentBar",function(){return{restrict:"E",scope:{value:"=value",type:"=type"},templateUrl:t+"/tpls/PercentBar.html"}}),n.factory("LocationBinder",function(t){return{bind:function(n,e,r,o,i){n[e]=t.search()[r]||null,n.$watch(e,function(n){i&&(n=i(n)),t.search(r,n)}),n.$watch(function(){return t.search()[r]||null},function(t){o&&(t=o(t)),n[e]=t})}}})}(),function(){var t=angular.module("RouteExplorer");t.factory("Layout",["$http","$q",function(t,n){var e=[],r={},o=[],i={},a=n.all([t.get("/api/stops").then(function(t){e=t.data.map(function(t){return{id:t.stop_id,name:t.heb_stop_names[0],names:t.heb_stop_names}}),e.forEach(function(t){r[t.id]=t})}),t.get("/api/all-routes").then(function(t){o=t.data.map(function(t){return{id:t.id,stops:t.stop_ids,count:t.count}}),i=o.reduce(function(t,n){return t[n.id]=n,t},{})})]),u=function(t){return r[t]||null},l=function(t,n,e){var r={};return t.forEach(function(t){var o=t.stops.indexOf(n),i=t.stops.indexOf(e);if(!(0>o||0>i||o>i)){var a=t.stops,u=t.id;u in r?r[u].count+=t.count:r[u]={id:u,stops:a,count:t.count}}}),r=Object.keys(r).map(function(t){return r[t]}),r.sort(function(t,n){return n.count-t.count}),r},s=function(e,r,i,a){var u=n.defer(),s=l(o,e,r);if(0===s.length)u.resolve([]);else{var c=new Date(i,a-1,1),f=new Date(i,a,1);t.get("/api/all-routes-by-date",{params:{from_date:c.getTime(),to_date:f.getTime()}}).then(function(t){var n=t.data.map(function(t){return{id:t.id,stops:t.stop_ids,count:t.count}});u.resolve(l(n,e,r))},function(t){u.reject({msg:"Error fetching routes",response:t})})}return u.promise},c=function(t){return i[t]||null};return{getStops:function(){return e},getRoutes:function(){return o},findRoute:c,findStop:u,findRoutes:function(t,n){return l(o,t,n)},findRoutesByDate:s,loaded:a}}])}();
+// String.repeat polyfill
+// taken from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/repeat#Polyfill
+if (!String.prototype.repeat) {
+  String.prototype.repeat = function(count) {
+    'use strict';
+    if (this === null) {
+      throw new TypeError('can\'t convert ' + this + ' to object');
+    }
+    var str = '' + this;
+    count = +count;
+    if (count != count) {
+      count = 0;
+    }
+    if (count < 0) {
+      throw new RangeError('repeat count must be non-negative');
+    }
+    if (count == Infinity) {
+      throw new RangeError('repeat count must be less than infinity');
+    }
+    count = Math.floor(count);
+    if (str.length === 0 || count === 0) {
+      return '';
+    }
+    // Ensuring count is a 31-bit integer allows us to heavily optimize the
+    // main part. But anyway, most current (August 2014) browsers can't handle
+    // strings 1 << 28 chars or longer, so:
+    if (str.length * count >= 1 << 28) {
+      throw new RangeError('repeat count must not overflow maximum string size');
+    }
+    var rpt = '';
+    for (;;) {
+      if ((count & 1) == 1) {
+        rpt += str;
+      }
+      count >>>= 1;
+      if (count === 0) {
+        break;
+      }
+      str += str;
+    }
+    return rpt;
+  };
+}
+
+(function() {
+  var baseDir = '/static/ui/RouteExplorer';
+  var app = angular.module('RouteExplorer', ['ngRoute', 'ui.bootstrap', 'ui.bootstrap.buttons']);
+
+  app.config(['$routeProvider',
+  function($routeProvider) {
+
+      var templateUrl = function(templateName) {
+          return baseDir + '/tpls/' + templateName + '.html';
+      };
+
+      $routeProvider
+          .when('/', {
+              pageId: 'welcome',
+              templateUrl: templateUrl('SelectStops'),
+              controller: 'SelectStopsController',
+              resolve: {
+                  loaded: function(Layout) {
+                      return Layout.loaded;
+                  }
+              }
+          })
+          .when('/about', {
+              pageId: 'about',
+              templateUrl: templateUrl('About'),
+          })
+          .when('/:year/:month/select-route/:origin/:destination', {
+              pageId: 'routes',
+              templateUrl: templateUrl('SelectRoute'),
+              controller: 'SelectRouteController',
+              resolve: {
+                  loaded: function(Layout) {
+                      return Layout.loaded;
+                  }
+              }
+          })
+          .when('/:year/:month/routes/:routeId', {
+              pageId: 'route',
+              templateUrl: templateUrl('RouteDetails'),
+              controller: 'RouteDetailsController',
+              resolve: {
+                  loaded: function(Layout) {
+                      return Layout.loaded;
+                  }
+              },
+              reloadOnSearch: false
+          })
+          .otherwise({
+              redirectTo: '/'
+          });
+  }]);
+
+  app.controller('AppController', ['$scope', '$location',
+  function($scope, $location) {
+      $scope.share = function(prefix) {
+          var url = prefix + encodeURIComponent('http://otrain.org/#' + $location.url());
+          window.open(url, 'sharePopup', 'width=600,height=550,top=100,left=100,location=no,scrollbar=no,status=no,menubar=no');
+      };
+
+      $scope.$on('$routeChangeSuccess', function(e, route) {
+          $scope.bodyClass = route.pageId ? 'rex-page-' + route.pageId : null;
+      });
+  }]);
+
+  app.controller('SelectStopsController', ['$scope', '$rootScope', '$location', 'Layout',
+  function($scope, $rootScope, $location, Layout) {
+      $scope.stops = Layout.getStops();
+      $scope.origin = null;
+      $scope.destination = null;
+      $scope.months = [
+          'ינואר',
+          'פברואר',
+          'מרץ',
+          'אפריל',
+          'מאי',
+          'יוני',
+          'יולי',
+          'אוגוסט',
+          'ספטמבר',
+          'אוקטובר',
+          'נובמבר',
+          'דצמבר'
+      ].map(function(v, i) { return { value: i + 1, name: v }; });
+
+      var today = new Date();
+      var lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+      $scope.month = lastMonth.getMonth() + 1; // We're using 1-based months vs JavaScript's 0-based
+      $scope.year = lastMonth.getFullYear();
+      $scope.minYear = 2013;
+      $scope.maxYear = $scope.year;
+
+      $scope.formValid = function() {
+          return (
+              !!$scope.origin &&
+              !!$scope.destination &&
+              $scope.origin != $scope.destination
+          );
+      };
+
+      $scope.stopName = function(stopId) {
+          var stop = Layout.findStop(stopId);
+          if (!stop)
+              return null;
+
+          return stop.name;
+      };
+
+      $scope.goToRoutes = function() {
+          $scope.noRoutes = false;
+          $scope.loading = true;
+          Layout.findRoutesByDate($scope.origin.id, $scope.destination.id, $scope.year, $scope.month)
+              .then(function(routes) {
+                  if (routes.length === 0) {
+                      $scope.noRoutes = true;
+                  } else if (routes.length == 1) {
+                      $location.path('/' + $scope.year + '/' + $scope.month + '/routes/' + routes[0].id);
+                  } else {
+                      $location.path('/' + $scope.year + '/' + $scope.month + '/select-route/' + $scope.origin.id + '/' + $scope.destination.id);
+                  }
+              })
+              .finally(function() {
+                  $scope.loading = false;
+              });
+      };
+
+      $scope.dismissError = function() {
+          $scope.noRoutes = false;
+      };
+  }]);
+
+  app.controller('SelectRouteController', ['$scope', '$location', '$route', 'Layout',
+  function($scope, $location, $route, Layout) {
+      $scope.stops = Layout.getStops();
+      var year = $route.current.params.year;
+      var month = $route.current.params.month;
+      var origin = Layout.findStop($route.current.params.origin);
+      var destination = Layout.findStop($route.current.params.destination);
+
+      Layout.findRoutesByDate(origin.id, destination.id, year, month).then(function(routes) {
+          if (routes.length > 1)
+              collapseRoutes(routes);
+          $scope.routes = routes;
+      });
+
+      function stopName(stopId) {
+          var stop = Layout.findStop(stopId);
+          if (!stop)
+              return null;
+
+          return stop.name;
+      }
+
+      $scope.isCollapsed = function(value) {
+          return angular.isArray(value);
+      };
+
+      $scope.isOrigin = function(stopId) {
+          return stopId == origin.id;
+      };
+
+      $scope.isDestination = function(stopId) {
+          return stopId == destination.id;
+      };
+
+      $scope.stopText = function(stopId) {
+          if ($scope.isCollapsed(stopId))
+              return "\u2022".repeat(stopId.length);
+
+          return stopName(stopId);
+      };
+
+      $scope.stopTooltip = function(stopId) {
+          if (!$scope.isCollapsed(stopId))
+              return null;
+
+          return stopId.map(stopName).join(", ");
+      };
+
+      $scope.barWidth = function(route) {
+          var percentWidth = route.count * 100.0 / $scope.routes[0].count;
+
+          if (percentWidth < 1.0)
+              return "1px";
+
+          return percentWidth + "%";
+      };
+
+      $scope.routeUrl = function(route) {
+          return '/#/' + year + '/' + month + '/routes/' + route.id;
+      };
+
+      function collapseRoutes(routes) {
+          var collapsibleStops = findCommonStops(countStopFrequencies(routes), routes.length);
+          delete collapsibleStops[origin.id];
+          delete collapsibleStops[destination.id];
+
+          for (var routeIndex in routes) {
+              routes[routeIndex].stops = collapseStops(routes[routeIndex].stops, collapsibleStops);
+          }
+
+          function countStopFrequencies(routes) {
+              var stopFrequencies = {};
+              for (var routeIndex in routes) {
+                  var route = routes[routeIndex];
+                  for (var i in route.stops) {
+                      var stopId = route.stops[i];
+                      if (!stopFrequencies[stopId])
+                          stopFrequencies[stopId] = 0;
+                      stopFrequencies[stopId]++;
+                  }
+              }
+
+              return stopFrequencies;
+          }
+
+          function findCommonStops(stopFrequencies, routesCount) {
+              var commonStops = {};
+              for (var stopId in stopFrequencies)
+                  if (stopFrequencies[stopId] == routesCount)
+                      commonStops[stopId] = true;
+
+              return commonStops;
+          }
+
+          function collapseStops(stops, collapsibleStops) {
+              var collapsed = [];
+              var accumulator;
+
+              for (var i in stops) {
+                  var stopId = stops[i];
+                  if (i > 0 && i < stops.length - 1 && collapsibleStops[stopId]) {
+                      if (!accumulator) {
+                          accumulator = [];
+                          collapsed.push(accumulator);
+                      }
+                      accumulator.push(stopId);
+                  } else {
+                      accumulator = null;
+                      collapsed.push(stopId);
+                  }
+              }
+
+              return collapsed;
+          }
+      }
+  }]);
+
+  app.controller('RouteDetailsController', ['$scope', '$route', '$http', '$location', 'LocationBinder', 'Layout',
+  function($scope, $route, $http, $location, LocationBinder, Layout) {
+      var year = $route.current.params.year;
+      var month = $route.current.params.month;
+      var routeId = $route.current.params.routeId;
+      var stopIds = Layout.findRoute(routeId).stops;
+      var statsMap = {};
+
+      $scope.loaded = false;
+      $scope.stopIds = stopIds;
+      $scope.origin = stopIds[0];
+      $scope.destination = stopIds[stopIds.length - 1];
+      $scope.year = year;
+      $scope.month = month;
+
+      $scope.selectedDay = null;
+      $scope.days = [
+          { abbr: 'א', title: 'ראשון', id: 1 },
+          { abbr: 'ב', title: 'שני', id: 2 },
+          { abbr: 'ג', title: 'שלישי', id: 3 },
+          { abbr: 'ד', title: 'רביעי', id: 4 },
+          { abbr: 'ה', title: 'חמישי', id: 5 },
+          { abbr: 'ו', title: 'שישי', id: 6 },
+          { abbr: 'ש', title: 'שבת', id: 7 }
+      ];
+
+      $scope.selectedTime = null;
+      $scope.times = [];
+
+      var fromDate = new Date(year, month - 1, 1);
+      var toDate = new Date(year, month, 1); // Date constructor wraps around so this works on December as well
+
+      $http.get('/api/route-info-full', { params: { route_id: routeId, from_date: fromDate.getTime(), to_date: toDate.getTime() } })
+          .success(function(data) {
+              loadStats(data);
+              $scope.loaded = true;
+          });
+
+      LocationBinder.bind($scope, 'selectedDay', 'day', function(val) { return val ? Number(val) : null; });
+      LocationBinder.bind($scope, 'selectedTime', 'time');
+
+      $scope.stopStats = function(stopId) {
+          var stats = selectedStats();
+          for (var i in stats) {
+              if (stats[i].stop_id == stopId)
+                  return stats[i];
+          }
+          return null;
+      };
+
+      $scope.stopName = function(stopId) {
+          var stop = Layout.findStop(stopId);
+          if (!stop)
+              return null;
+
+              return stop.name;
+      };
+
+      $scope.isDayEmpty = function(day) {
+          var dayId = day.id;
+          var dayTimes = statsMap[dayId];
+
+          if (!dayTimes)
+              return true;
+
+          for (var time in dayTimes)
+              if (dayTimes[time].info.num_trips > 0)
+                  return false;
+
+          return true;
+      };
+
+      $scope.isTimeEmpty = function(time) {
+          var dayId = $scope.selectedDay || 'all';
+          var timeId = time.id;
+
+          var timeStats = statsMap[dayId] && statsMap[dayId][timeId];
+          if (timeStats && timeStats.info.num_trips > 0)
+              return false;
+
+          return true;
+      };
+
+      function selectedStats() {
+          var dayId = $scope.selectedDay || 'all';
+          var timeId = $scope.selectedTime || 'all';
+
+          var stats = statsMap[dayId] && statsMap[dayId][timeId] ? statsMap[dayId][timeId].stops : [];
+          return stats;
+      }
+
+      function loadStats(data) {
+          $scope.times = [];
+          var timesMap = {};
+
+          for (var i in data) {
+              var statGroup = data[i];
+              var timeId = statGroup.info.hours == 'all' ? 'all' : statGroup.info.hours[0] + '-' + statGroup.info.hours[1];
+              var dayId = statGroup.info.week_day;
+
+              if (!statsMap[dayId])
+                  statsMap[dayId] = {};
+
+              statsMap[dayId][timeId] = statGroup;
+
+              if (timeId != 'all' && !timesMap[timeId]) {
+                  var time = {
+                      id: timeId,
+                      from: formatHour(statGroup.info.hours[0]),
+                      to: formatHour(statGroup.info.hours[1])
+                  };
+                  timesMap[timeId] = time;
+                  $scope.times.push(time);
+              }
+          }
+
+          function formatHour(hour) {
+              return ('0' + hour % 24 + '').slice(-2) + ':00';
+          }
+      }
+  }]);
+
+  app.filter('duration', function() {
+      return function(seconds) {
+          var negative = false;
+          seconds = Math.trunc(seconds);
+          if (seconds < 0) {
+              negative = true;
+              seconds = -seconds;
+          }
+
+          var minutes = Math.trunc(seconds / 60);
+          seconds -= minutes * 60;
+          var hours = Math.trunc(minutes / 60);
+          minutes -= hours * 60;
+
+          if (seconds < 10) seconds = '0' + seconds;
+          if (minutes < 10 && hours !== 0) minutes = '0' + minutes;
+
+          var res = minutes + ':' + seconds;
+          if (hours !== 0)
+              res = hours + ':' + res;
+
+          if (negative)
+              res = '-' + res;
+
+          return res;
+      };
+  });
+
+  app.directive("rexPercentBar", function() {
+      return {
+          restrict: 'E',
+          scope: {
+            value: '=value',
+            type: '=type'
+          },
+          templateUrl: baseDir + '/tpls/PercentBar.html'
+        };
+  });
+
+  app.factory('LocationBinder', function($location) {
+      return {
+          bind: function(scope, scopeProperty, locationProperty, parser, formatter) {
+              scope[scopeProperty] = $location.search()[locationProperty] || null;
+
+              scope.$watch(scopeProperty, function(value) {
+                  if (formatter)
+                      value = formatter(value);
+
+                  $location.search(locationProperty, value);
+              });
+
+              scope.$watch(function() { return $location.search()[locationProperty] || null; }, function(value) {
+                  if (parser)
+                      value = parser(value);
+
+                  scope[scopeProperty] = value;
+              });
+          }
+      };
+  });
+})();
+
+(function() {
+  var app = angular.module('RouteExplorer');
+
+  app.factory('Layout', ['$http', '$q',
+  function($http, $q) {
+      var stops = [];
+      var stopsMap = {};
+      var routes = [];
+      var routesMap = {};
+
+      var loaded = $q.all([
+          $http.get('/api/stops')
+              .then(function(response) {
+                  stops = response.data.map(function(s) { return { id: s.stop_id, name: s.heb_stop_names[0], names: s.heb_stop_names }; });
+                  stops.forEach(function(s) { stopsMap[s.id] = s; });
+              }),
+
+          $http.get('/api/all-routes')
+              .then(function(response) {
+                  routes = response.data.map(function(r) { return {
+                      id: r.id,
+                      stops: r.stop_ids,
+                      count: r.count
+                  }; });
+
+                  routesMap = routes.reduce(function(m, r) { m[r.id] = r; return m; }, {});
+              })
+      ]);
+
+      var findStop = function(stopId) {
+          return stopsMap[stopId] || null;
+      };
+
+      var findRoutes = function(routes, originId, destinationId) {
+          var matchingRoutes = {};
+
+          routes.forEach(function(r) {
+              var originIndex = r.stops.indexOf(originId);
+              var destinationIndex = r.stops.indexOf(destinationId);
+
+              if (originIndex < 0 || destinationIndex < 0)
+                  return;
+
+              if (originIndex > destinationIndex)
+                  return;
+
+              var routeStops = r.stops;
+              var routeId = r.id;
+
+              if (routeId in matchingRoutes)
+                  matchingRoutes[routeId].count += r.count;
+              else {
+                  matchingRoutes[routeId] = {
+                      id: routeId,
+                      stops: routeStops,
+                      count: r.count
+                  };
+              }
+          });
+
+          matchingRoutes = Object.keys(matchingRoutes).map(function(routeId) { return matchingRoutes[routeId]; });
+          matchingRoutes.sort(function(r1, r2) { return r2.count - r1.count; });
+          return matchingRoutes;
+      };
+
+      var findRoutesByDate = function(origin, destination, year, month) {
+          var d = $q.defer();
+          var matchingRoutes = findRoutes(routes, origin, destination);
+          if (matchingRoutes.length === 0) {
+              d.resolve([]);
+          } else {
+              var fromDate = new Date(year, month - 1, 1);
+              var toDate = new Date(year, month, 1);
+
+              $http.get('/api/all-routes-by-date', {
+                  params: {
+                      from_date: fromDate.getTime(),
+                      to_date: toDate.getTime()
+                  }
+              }).then(function(response) {
+                  var routesInDate = response.data.map(function(r) {
+                      return {
+                          id: r.id,
+                          stops: r.stop_ids,
+                          count: r.count
+                      };
+                  });
+                  d.resolve(findRoutes(routesInDate, origin, destination));
+              }, function(response) { d.reject({ 'msg': 'Error fetching routes', 'response': response }); });
+          }
+
+          return d.promise;
+      };
+
+      var findRoute = function(routeId) {
+          return routesMap[routeId] || null;
+      };
+
+      return {
+          getStops: function() { return stops; },
+          getRoutes: function() { return routes; },
+          findRoute: findRoute,
+          findStop: findStop,
+          findRoutes: function(origin, destination) { return findRoutes(routes, origin, destination); },
+          findRoutesByDate: findRoutesByDate,
+          loaded: loaded
+      };
+  }]);
+})();
+
 //# sourceMappingURL=app.js.map
