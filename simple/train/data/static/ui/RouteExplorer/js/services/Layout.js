@@ -1,13 +1,13 @@
-var app = angular.module('RouteExplorer');
-
-app.factory('Layout', ['$http', '$q',
+angular.module('RouteExplorer').factory('Layout',
+['$http', '$q',
 function($http, $q) {
+    var self = this;
     var stops = [];
     var stopsMap = {};
     var routes = [];
     var routesMap = {};
 
-    var loaded = $q.all([
+    var loadedPromise = $q.all([
         $http.get('/api/stops')
             .then(function(response) {
                 stops = response.data.map(function(s) { return { id: s.stop_id, name: s.heb_stop_names[0], names: s.heb_stop_names }; });
@@ -95,13 +95,14 @@ function($http, $q) {
         return routesMap[routeId] || null;
     };
 
-    return {
+    service = {
         getStops: function() { return stops; },
         getRoutes: function() { return routes; },
         findRoute: findRoute,
         findStop: findStop,
         findRoutes: function(origin, destination) { return findRoutes(routes, origin, destination); },
-        findRoutesByDate: findRoutesByDate,
-        loaded: loaded
+        findRoutesByDate: findRoutesByDate
     };
+
+    return loadedPromise.then(function() { return service; });
 }]);
