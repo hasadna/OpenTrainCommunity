@@ -79,7 +79,9 @@ CSV_HEADER = ['train_num',
               'delay_departure',
               'data_file',
               'data_file_line',
-              'data_file_link'
+              'data_file_link',
+              #'is_planned',  ## NEW
+              #'is_stopped'  ## NEW
               ]
 
 
@@ -105,24 +107,31 @@ def xl_row_to_csv(input_dict):
         output_dict[n] = ''
     output_dict['train_num'] = int(input_dict['train_num'])
     output_dict['start_date'] = input_dict['train_date'].date().isoformat()
-    output_dict['trip_name'] = '{0}_{1}'.format(output_dict['train_num'], output_dict['start_date'].replace('_', ''))
+    output_dict['trip_name'] = '{0}_{1}'.format(output_dict['train_num'],
+                                                output_dict['start_date'].replace('_', ''))  # is it necessary?
     output_dict['index'] = input_dict['index']
     output_dict['stop_id'] = input_dict['stop_id']
     output_dict['stop_name'] = input_dict['stop_name']
-    output_dict['is_real_stop'] = bool_to_csv(input_dict['stop_kind'] in [STOP_KINDS['source'],
-                                                                          STOP_KINDS['middle'],
-                                                                          STOP_KINDS['dest']])
+    output_dict['is_real_stop'] = bool_to_csv(input_dict['is_stopped'] and
+                                              input_dict['stop_kind'] != STOP_KINDS['source_operation'])  ## CHANGED
     output_dict['valid'] = bool_to_csv(True)
-    output_dict['is_first'] = bool_to_csv(input_dict['stop_kind'] == STOP_KINDS['source'])
+    output_dict['is_first'] = bool_to_csv(input_dict['stop_kind']
+                                          in (STOP_KINDS['source'], STOP_KINDS['source_commercial']))
     output_dict['is_last'] = bool_to_csv(input_dict['stop_kind'] == STOP_KINDS['dest'])
     for f in ['actual_arrival', 'actual_departure', 'exp_arrival', 'exp_departure']:
         output_dict[f] = dt_to_csv(input_dict[f])
     output_dict['delay_arrival'] = diff_dt(input_dict['actual_arrival'], input_dict['exp_arrival'])
     output_dict['delay_departure'] = diff_dt(input_dict['actual_departure'], input_dict['exp_departure'])
+    #output_dict['is_planned'] = bool_to_csv(input_dict['is_planned'])  ### NEW
+    #output_dict['is_stopped'] = bool_to_csv(input_dict['is_stopped'])  ### NEW
+    # Suggestion - to consider the cases in which a train skipped a station (it's severe) but not to consider the cases
+    # in which a train added an unplanned station (very rare and not severe)
+    # eran: this is great idea, for now I don't want to add new fields to the csv, until we change the csv code
+    # anyway, we should maybe consider write all this import from scratch...
     return output_dict
+
 
 if __name__ == '__main__':
     import sys
+
     parse_xl(sys.argv[1])
-
-
