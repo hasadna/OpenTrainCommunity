@@ -6,7 +6,9 @@ import os
 import csv
 import datetime
 import pytz
+import logging
 
+LOGGER = logging.getLogger(__name__)
 
 def parse_xl(xlname, csvname=None):
     wb = xlrd.open_workbook(xlname)
@@ -32,7 +34,9 @@ def parse_xl(xlname, csvname=None):
                     row.append(cell_value)
             output_dict = xl_row_to_csv(dict(zip(header, row)))
             wr.writerow(output_dict)
-        print('Wrote {0}'.format(fh.name))
+            if rowx % 20000 == 0:
+                LOGGER.info('Completed %s/%s rows',rowx,sheet.nrows)
+        LOGGER.info('Wrote {0}'.format(fh.name))
 
 
 HEADER_MAPPING = dict()
@@ -109,8 +113,8 @@ def xl_row_to_csv(input_dict):
     output_dict['start_date'] = input_dict['train_date'].date().isoformat()
     output_dict['trip_name'] = '{0}_{1}'.format(output_dict['train_num'],
                                                 output_dict['start_date'].replace('_', ''))  # is it necessary?
-    output_dict['index'] = input_dict['index']
-    output_dict['stop_id'] = input_dict['stop_id']
+    output_dict['index'] = int(input_dict['index'])
+    output_dict['stop_id'] = int(input_dict['stop_id'])
     output_dict['stop_name'] = input_dict['stop_name']
     output_dict['is_real_stop'] = bool_to_csv(input_dict['is_stopped'] and
                                               input_dict['stop_kind'] != STOP_KINDS['source_operation'])  ## CHANGED

@@ -2,7 +2,8 @@ from data.models import Sample, Trip, Route, Service
 import csv
 import datetime
 from collections import namedtuple
-import cache_utils
+from data import cache_utils
+from django.db import transaction
 
 def benchit(func):
     def _wrap(*args, **kwargs):
@@ -20,7 +21,9 @@ def csv_to_date(date_str):
     y,m,d = date_str.split('-')
     return datetime.date(year=int(y),month=int(m),day=int(d))
 
-def csv_to_int(int_str):
+def csv_to_int(int_str,allow_none=False):
+    if allow_none and (int_str == '' or int_str is None):
+        return None
     return int(int_str)
 
 @benchit
@@ -95,6 +98,7 @@ def csv_to_datetime(dt_str):
     return dt_utc
 
 @benchit
+@transaction.atomic
 def import_current_csv(csv_file):
     build_current_trips(csv_file)
     with open(csv_file) as fh:
@@ -118,7 +122,7 @@ def import_current_csv(csv_file):
                        delay_departure=csv_to_float(row['delay_departure']),
                        delay_arrival=csv_to_float(row['delay_arrival']),
                        data_file=row['data_file'],
-                       data_file_line=csv_to_int(row['data_file_line']))
+                       data_file_line=csv_to_int(row['data_file_line'],allow_none=True))
             cur_samples.append(s)
             if len(cur_samples) == 30000:
                 Sample.objects.bulk_create(cur_samples)

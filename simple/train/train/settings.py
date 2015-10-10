@@ -97,8 +97,12 @@ LOGGING = {
     'version' : 1,
     'disable_existing_loggers': False,
     'formatters': {
-        'simple' : {
+        'simple': {
             'format' : "==========================================\n[%(asctime)s %(levelname)s] %(message)s"
+        },
+        'verbose': {
+            'format': "[%(asctime)s] %(levelname)s [%(module)s:%(lineno)s] %(message)s",
+            'datefmt': "%d/%m/%Y %H:%M:%S"
         },
     },
     'handlers': {
@@ -107,11 +111,20 @@ LOGGING = {
             'filename': os.path.join(OT_LOG_DIR,'error.log'),
             'formatter' : 'simple',
         },
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
     },
     'loggers': {
+        '': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        },
         'errors': {
             'handlers': ['file'],
         },
+
     },
 }
 

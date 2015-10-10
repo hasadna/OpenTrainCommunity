@@ -48,7 +48,7 @@ class Sample(models.Model):
                                          null=True)  # exp depart time with tz, will be None if this is the last stop
     delay_departure = models.FloatField(blank=True, null=True)  # the delay in the departure in seconds
     data_file = models.CharField(max_length=100)  # the name of the data file (text file)
-    data_file_line = models.IntegerField()  # the line number in the data file (text file)
+    data_file_line = models.IntegerField(null=True)  # the line number in the data file (text file)
     trip = models.ForeignKey('Trip', blank=True, null=True,related_name='samples')
 
     def get_parent(self):
