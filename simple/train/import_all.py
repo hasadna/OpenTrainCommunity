@@ -25,6 +25,7 @@ def run_command(cmd):
         
 
 def main(csv_files):
+    data.cache_utils.invalidate_cache()
     if not csv_files:
         csv_files = []
         for csv in CSV_FILES:

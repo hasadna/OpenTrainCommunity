@@ -6,4 +6,5 @@ node_modules/
 !browse/**/css
 error.log
 tmp
+__pycache__
 

@@ -14,6 +14,9 @@
             {% trans 'Stop Name' %}
         </th>
         <th>
+            {% trans 'Stop id' %}
+        </th>
+        <th>
             {% trans 'Expected Arrival' %}
         </th>
         <th>
@@ -34,6 +37,7 @@
 {% for sample in samples %}
     <tr>
         <td>{{sample.stop_id | heb_stop_name }}</td>
+        <td>{{ sample.stop_id }}</td>
         <td>{{sample.exp_arrival | stop_time}}</td>
         <td>{{sample.actual_arrival | stop_time}}</td>
         <td>{{sample.exp_departure | stop_time}}</td>

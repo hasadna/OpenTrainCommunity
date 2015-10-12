@@ -46,7 +46,7 @@ def get_trip(req, trip_id):
         return json_resp({'error': '404',
                           'trip_id': trip_id},
                          status=404)
-    return json_resp(trip.to_json());
+    return json_resp(trip.to_json())
 
 
 @cache_utils.cachereq
@@ -72,7 +72,7 @@ def get_all_routes_by_date(req):
 
     routes = list(Route.objects
                   .filter(trips__start_date__gte=from_date, trips__start_date__lte=to_date)
-                  .annotate(trips_count=Count('trips')));
+                  .annotate(trips_count=Count('trips')))
 
     result = [{'id': r.id, 'stop_ids': r.stop_ids, 'count': r.trips_count} for r in routes]
     return json_resp(result)
@@ -163,7 +163,7 @@ def get_path_info_full(req):
 @cache_utils.cachereq
 @benchit
 def get_route_info_full(req):
-    route_id = req.GET['route_id'];
+    route_id = req.GET['route_id']
     from_date = _parse_date(req.GET.get('from_date'))
     to_date = _parse_date(req.GET.get('to_date'))
     if from_date and to_date and from_date > to_date:
@@ -193,9 +193,9 @@ def _get_path_info_full(stop_ids, filters):
 
 
 def _get_route_info_full(route_id, filters):
-    route = Route.objects.get(id=route_id);
+    route = Route.objects.get(id=route_id)
     table = _get_stats_table(route, filters)
-    stats = _complete_table(table, route.stop_ids);
+    stats = _complete_table(table, route.stop_ids)
 
     return stats
 
@@ -314,8 +314,7 @@ def _get_stats_table(route, filters):
         AND th.route_id = r.id
         AND th.valid
         AND s.trip_id = th.id
-        '''
-                   +
+        '''+
                    (' AND th.start_date >= %(start_date)s' if filters.from_date else '')
                    +
                    (' AND th.start_date <= %(to_date)s' if filters.to_date else '')

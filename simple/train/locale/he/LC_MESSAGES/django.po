@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-03 21:30+0300\n"
-"PO-Revision-Date: 2015-08-03 21:31+0200\n"
+"POT-Creation-Date: 2015-10-12 22:13+0300\n"
+"PO-Revision-Date: 2015-10-12 22:14+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,206 +16,146 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.5.4\n"
+"Language: he\n"
 
-#: browse/templates/browse/bad_services.html:6
-#: browse/templates/browse/browse_route.html:6 browse/views.py:49
 msgid "Bad Services"
 msgstr "שירותים חשודים"
 
-#: browse/templates/browse/bad_services.html:7
-#: browse/templates/browse/browse_route.html:7
-#: browse/templates/browse/browse_routes.html:21
-msgid "Services"
-msgstr "שירותים"
-
-#: browse/templates/browse/bad_services.html:11
-#: browse/templates/browse/browse_route.html:11
-#: browse/templates/browse/browse_service.html:31
 msgid "ID"
 msgstr "מזהה"
 
-#: browse/templates/browse/bad_services.html:12
-#: browse/templates/browse/browse_route.html:12
 msgid "Departure Time"
 msgstr "זמן יציאה"
 
-#: browse/templates/browse/bad_services.html:13
-#: browse/templates/browse/browse_route.html:13
 msgid "Arrival Time"
 msgstr "זמן הגעה"
 
-#: browse/templates/browse/bad_services.html:14
-#: browse/templates/browse/browse_route.html:14
-#| msgid "Arrival Time"
 msgid "Total Time"
 msgstr "זמן כולל"
 
-#: browse/templates/browse/bad_services.html:15
-#: browse/templates/browse/browse_route.html:15
 msgid "trips"
 msgstr "נסיעות"
 
-#: browse/templates/browse/bad_services.html:16
-#: browse/templates/browse/browse_route.html:16
-#: browse/templates/browse/edit_route.html:20
 msgid "Skipped Stops"
 msgstr "תחנות מדולגות"
 
-#: browse/templates/browse/browse_raw_data.html:4 browse/views.py:19
 msgid "File"
 msgstr "קובץ"
 
-#: browse/templates/browse/browse_raw_data.html:5
 msgid "prev"
 msgstr "הקודם"
 
-#: browse/templates/browse/browse_raw_data.html:5
 msgid "next"
 msgstr "הבא"
 
-#: browse/templates/browse/browse_raw_data.html:9
 msgid "Line No"
 msgstr "מספר שורה"
 
-#: browse/templates/browse/browse_raw_data.html:11
 msgid "Line"
 msgstr "שורה"
 
-#: browse/templates/browse/browse_routes.html:9
+msgid "Services"
+msgstr "שירותים"
+
 msgid "Id"
 msgstr "מזהה"
 
-#: browse/templates/browse/browse_routes.html:12
 msgid "origin"
 msgstr "מוצא"
 
-#: browse/templates/browse/browse_routes.html:15
 msgid "destination"
 msgstr "יעד"
 
-#: browse/templates/browse/browse_routes.html:18
-#: browse/templates/browse/browse_service.html:6
-#: browse/templates/browse/edit_route.html:7
 msgid "Stops"
 msgstr "תחנות"
 
-#: browse/templates/browse/browse_routes.html:24
-#: browse/templates/browse/browse_service.html:27
 msgid "Trips"
 msgstr "נסיעות"
 
-#: browse/templates/browse/browse_service.html:5 data/models.py:120
 msgid "Service"
 msgstr "שירות"
 
-#: browse/templates/browse/browse_service.html:32
 msgid "Date"
 msgstr "תאריך"
 
-#: browse/templates/browse/browse_service.html:33
 msgid "Train Num"
 msgstr "מספר רכבת"
 
-#: browse/templates/browse/browse_trip.html:7 data/models.py:206
 msgid "Trip"
 msgstr "נסיעה"
 
-#: browse/templates/browse/browse_trip.html:7
 msgid "in"
 msgstr "ב"
 
-#: browse/templates/browse/browse_trip.html:9
 msgid "Samples"
 msgstr "דגימות"
 
-#: browse/templates/browse/browse_trip.html:14
 msgid "Stop Name"
 msgstr "שם תחנה"
 
-#: browse/templates/browse/browse_trip.html:17
+#| msgid "Stops"
+msgid "Stop id"
+msgstr "מזהה תחנה"
+
 msgid "Expected Arrival"
 msgstr "הגעה מתוכננת"
 
-#: browse/templates/browse/browse_trip.html:20
 msgid "Actual Arrival"
 msgstr "הגעה בפועל"
 
-#: browse/templates/browse/browse_trip.html:23
 msgid "Expected Departure"
 msgstr "יציאה מתוכננת"
 
-#: browse/templates/browse/browse_trip.html:26
 msgid "Actual Departure"
 msgstr "יציאה בפועל"
 
-#: browse/templates/browse/browse_trip.html:29
 msgid "Link"
 msgstr "קישור"
 
-#: browse/templates/browse/browse_trip.html:41
 msgid "line"
 msgstr "שורה"
 
-#: browse/templates/browse/edit_route.html:6 data/models.py:267
 msgid "Route"
 msgstr "מסלול"
 
-#: browse/templates/browse/edit_route.html:6
 msgid "editing"
 msgstr "עריכה"
 
-#: browse/templates/browse/edit_route.html:10
 msgid "Real Stops"
 msgstr "תחנות אמיתיות"
 
-#: browse/templates/browse/edit_route.html:16
 msgid "mark as skip"
 msgstr "דלג על תחנות אלו"
 
-#: browse/templates/browse/edit_route.html:26
 msgid "unskip"
 msgstr "בטל דילוג"
 
-#: browse/templates/browse/login_modal.html:4
 msgid "hello"
 msgstr "שלום"
 
-#: browse/templates/browse/login_modal.html:4
 msgid "logout"
 msgstr "התנתק"
 
-#: browse/templates/browse/login_modal.html:8
-#: browse/templates/browse/login_modal.html:18
-#: browse/templates/browse/login_modal.html:31
 msgid "login"
 msgstr "התחבר"
 
-#: browse/templates/browse/login_modal.html:20
 msgid "authentication failed"
 msgstr "התחברות נכשלה"
 
-#: browse/templates/browse/login_modal.html:24
-#: browse/templates/browse/login_modal.html:25
 msgid "name"
 msgstr "שם"
 
-#: browse/templates/browse/login_modal.html:28
-#| msgid "Password"
 msgid "password"
 msgstr "ססמא"
 
-#: browse/views.py:13
 msgid "Routes"
 msgstr "מסלולים"
 
-#: data/models.py:56
 msgid "Sample"
 msgstr "דגימה"
 
-#: data/models.py:123
 msgid "to"
 msgstr "ל"
 
-#: data/models.py:208
 msgid "on"
 msgstr "ב"
