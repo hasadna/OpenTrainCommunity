@@ -184,6 +184,7 @@ def analyze_services():
                           unreliable=Service.objects.filter(id__in=d['unreliable']),
                           good=Service.objects.filter(id__in=d['good']))
 
+@transaction.atomic
 def remove_skip_stops():
     print('Removing Skipped Stops')
     sr = analyze_services()
@@ -198,7 +199,7 @@ def remove_skip_stops():
         service.remove_skip_stops()
         if (idx + 1 % 100 == 0):
             print('%s/%s completed' % (1+idx,len(sr.bad)))
-    print('# of routes before: %s' % Route.objects.count())
+    print('# of routes after: %s' % Route.objects.count())
 
 
 
