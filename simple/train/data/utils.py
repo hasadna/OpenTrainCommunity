@@ -193,12 +193,12 @@ def remove_skip_stops():
     print('unreliable_services : %s' % len(sr.unreliable))
     print('good_services: %s' % len(sr.good))
     print('bad routes: %s' % (len(route_ids)))
-    print('# of routes before:' % Route.objects.count())
+    print('# of routes before: %s' % Route.objects.count())
     for idx,service in enumerate(sr.bad):
         service.remove_skip_stops()
         if (idx + 1 % 100 == 0):
             print('%s/%s completed' % (1+idx,len(sr.bad)))
-    print('# of routes before:' % Route.objects.count())
+    print('# of routes before: %s' % Route.objects.count())
 
 
 
