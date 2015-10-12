@@ -161,6 +161,9 @@ class Service(models.Model):
         stop_ids = self.route.stop_ids
         result = []
         for stop_id in stop_ids:
+            if stop_id == 5900:
+                import pdb
+                pdb.set_trace()
             stop_stat = stats[stop_id]
             if stop_stat['time_in_stop'] is not None and stop_stat['time_in_stop'] < 5:
                 result.append(stop_id)
