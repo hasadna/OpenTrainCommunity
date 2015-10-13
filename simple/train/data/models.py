@@ -1,4 +1,4 @@
-
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.db import transaction
 from django.conf import settings
@@ -249,6 +249,12 @@ class Trip(models.Model):
         for sample in samples:
             sample.print_nice()
 
+    def __str__(self):
+        return '{0} #{1} {2} {3}'.format(_('trip'),self.id,_('in'),self.start_date)
+
+    def get_absoluet_url(self):
+        return reverse('browse:trip_detail',kwargs=dict(trip_id=self.id))
+
 
 class Route(models.Model):
     stop_ids = ArrayField(base_field=models.IntegerField(),db_index=True, unique=True)
@@ -270,6 +276,12 @@ class Route(models.Model):
                                     services.get_heb_stop_name(self.stop_ids[0]),
                                     '&#8604;',
                                     services.get_heb_stop_name(self.stop_ids[-1]))
+
+    def earliest_trip(self):
+        return self.trips.earliest('start_date')
+
+    def latest_trip(self):
+        return self.trips.latest('start_date')
 
     def print_nice(self):
         from . import services
@@ -304,7 +316,7 @@ class Route(models.Model):
     def last_stop_id(self):
         return self.stop_ids[-1]
 
-    def __unicode__(self):
+    def __str__(self):
         from . import services
 
         first_stop_name = services.get_heb_stop_name(self.stop_ids[0])

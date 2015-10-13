@@ -23,6 +23,12 @@
     <th>
         # {% trans 'Trips' %}
     </th>
+    <th>
+        {% trans 'earliest trip' %}
+    </th>
+    <th>
+        {% trans 'latest trip' %}
+    </th>
 </tr>
     </thead>
     <tbody>
@@ -46,7 +52,13 @@
     <td>
         {{route.trips.count}}
     </td>
-</tr>
+    <td>
+        {{ route.earliest_trip | u }}
+    </td>
+    <td>
+        {{ route.latest_trip | u }}
+    </td>
+</trd>
 {% endfor %}
 </tbody>
 </table>
