@@ -252,8 +252,8 @@ class Trip(models.Model):
     def __str__(self):
         return '{0} {1} {2} {3}'.format(_('trip'),self.id,_('in'),self.start_date)
 
-    def get_absoluet_url(self):
-        return reverse('browse:trip_detail',kwargs=dict(trip_id=self.id))
+    def get_absolute_url(self):
+        return reverse('browse:trip',kwargs=dict(pk=self.id))
 
 
 class Route(models.Model):

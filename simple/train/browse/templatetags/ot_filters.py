@@ -31,8 +31,8 @@ def secondsOrNA(d):
 
 @register.filter
 def u(obj):
-    #if hasattr(obj,'get_absoluet_url'):
-    #    return mark_safe('<a href="{0}">{1}</a>'.format(obj.get_absoluet_url(),obj))
+    if hasattr(obj,'get_absolute_url'):
+        return mark_safe('<a href="{0}">{1}</a>'.format(obj.get_absolute_url(),obj))
     return obj
 
 

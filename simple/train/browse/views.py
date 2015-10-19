@@ -1,6 +1,6 @@
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import ListView, DetailView, View
+from django.views.generic import ListView, DetailView, View, TemplateView
 from data.models import Route, Service, Trip, Sample
 from django.shortcuts import render, get_object_or_404
 from django.utils.translation import ugettext as _
@@ -84,11 +84,10 @@ class BrowseTrip(BrowseMixin, DetailView):
         ]
 
 
-class RawDateView(View):
-    model = Sample
+class RawDateView(TemplateView):
+    template_name = 'browse/browse_raw_data.html'
     def get_context_data(self,**kwargs):
         ctx = super().get_context_data(**kwargs)
-        import codecs
         import os.path
         OFFSET = 20
         filename = self.request.GET['file']
@@ -100,7 +99,7 @@ class RawDateView(View):
         cur_lineno = 1
         lines = []
         file_path = os.path.join(settings.TXT_FOLDER, filename)
-        with codecs.open(file_path, encoding="windows-1255") as fh:
+        with open(file_path, encoding="windows-1255") as fh:
             for line in fh:
                 if cur_lineno >= from_lineno and cur_lineno <= to_lineno:
                     lines.append({'lineno': cur_lineno,
