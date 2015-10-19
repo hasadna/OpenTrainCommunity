@@ -93,10 +93,12 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 OT_LOG_DIR = '/var/log/opentrain'
 try:
-    os.makedirs(OT_LOG_DIR)
+    if not os.path.exists(OT_LOG_DIR):
+        os.makedirs(OT_LOG_DIR)
 except (OSError, IOError):
     OT_LOG_DIR = os.path.join(BASE_DIR, 'logdir')
-    os.makedirs(OT_LOG_DIR)
+    if not os.path.exists(OT_LOG_DIR):
+        os.makedirs(OT_LOG_DIR)
 
 TXT_FOLDER = os.path.join(BASE_DIR, 'csvparser/unzip_data')
 
