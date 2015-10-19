@@ -2,77 +2,81 @@
 {% load ot_filters %}
 {% load i18n %}
 {% block content %}
-<table class="table" id="routesTable">
-    <thead>
-<tr>
-    <th>
-        {% trans 'Id' %}
-    </th>
-    <th>
-        {% trans 'origin' %}
-    </th>
-    <th>
-        {% trans 'destination' %}
-    </th>
-    <th>
-        # {% trans 'Stops' %}
-    </th>
-    <th>
-        # {% trans 'Services' %}
-    </th>
-    <th>
-        # {% trans 'Trips' %}
-    </th>
-    <th>
-        {% trans 'earliest trip' %}
-    </th>
-    <th>
-        {% trans 'latest trip' %}
-    </th>
-</tr>
-    </thead>
-    <tbody>
-{% for route in routes %}
-<tr>
-    <td>
-        <a href="/browse/routes/{{route.id}}/">{{route.id}}</a>
-    </td>
-    <td>
-        {{route.first_stop_id | heb_stop_name}}
-    </td>
-    <td>
-        {{route.last_stop_id | heb_stop_name}}
-    </td>
-    <td>
-        {{route.stop_ids | length}}
-    </td>
-    <td>
-        {{route.services.count}}
-    </td>
-    <td>
-        {{route.trips.count}}
-    </td>
-    <td>
-        {{ route.earliest_trip | u }}
-    </td>
-    <td>
-        {{ route.latest_trip | u }}
-    </td>
-</trd>
-{% endfor %}
-</tbody>
-</table>
- {% endblock %}
+    <form method="get">
+        {{ form }}
+        {% csrf_token %}
+    </form>
+    <table class="table" id="routesTable">
+        <thead>
+        <tr>
+            <th>
+                {% trans 'Id' %}
+            </th>
+            <th>
+                {% trans 'origin' %}
+            </th>
+            <th>
+                {% trans 'destination' %}
+            </th>
+            <th>
+                # {% trans 'Stops' %}
+            </th>
+            <th>
+                # {% trans 'Services' %}
+            </th>
+            <th>
+                # {% trans 'Trips' %}
+            </th>
+            <th>
+                {% trans 'earliest trip' %}
+            </th>
+            <th>
+                {% trans 'latest trip' %}
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for route in object_list %}
+            <tr>
+            <td>
+                <a href="/browse/routes/{{ route.id }}/">{{ route.id }}</a>
+            </td>
+            <td>
+                {{ route.first_stop_id | heb_stop_name }}
+            </td>
+            <td>
+                {{ route.last_stop_id | heb_stop_name }}
+            </td>
+            <td>
+                {{ route.stop_ids | length }}
+            </td>
+            <td>
+                {{ route.services.count }}
+            </td>
+            <td>
+                {{ route.trips.count }}
+            </td>
+            <td>
+                {{ route.earliest_trip | u }}
+            </td>
+            <td>
+                {{ route.latest_trip | u }}
+            </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
 
 
 {% block post_scripts %}
-<script>
-$(document).ready(function(){
-    $('#routesTable').dataTable({
-        paging: false,
-        searching: false,
-        bInfo: false,
-    });
-});
-</script>
+    <script>
+        $(document).ready(function () {
+            $('#routesTable').dataTable({
+                paging: false,
+                searching: false,
+                bInfo: false,
+            });
+        });
+    </script>
 {% endblock %}

@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<h2>{% trans 'Trip' %} {{trip.id}} {% trans 'in' %} {{trip.start_date | date:"D, d/m/Y"}}</h2>
+<h2>{% trans 'Trip' %} {{object.id}} {% trans 'in' %} {{object.start_date | date:"D, d/m/Y"}}</h2>
 
 <h3>{{samples | length }} {% trans 'Samples' %}</h3>
 <table class="table">

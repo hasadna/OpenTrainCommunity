@@ -23,12 +23,11 @@
   <body>
   <ul>
     {% for bc in breadcrumbs %}
-        <li class="breadcrumb"><a href="{{bc.link}}">{{ bc.name | safe }}</a></li>
+        <li class="breadcrumb"><a href="{{bc.1}}">{{ bc.0 | safe }}</a></li>
         {% if not forloop.last %}
         <b>/</b>
         {% endif %}
     {% endfor %}
-    {% include "browse/login_modal.html" %}
    </ul>
     {% block content %}
     {% endblock %}
@@ -39,7 +38,6 @@
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="{% static 'bs/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'dataTables/1.10.2/js/dataTables.bootstrap.js' %}"></script>
-    <script src="{% static 'app/app.js' %}"></script>
     {% block post_scripts %}
     {% endblock %}
   </body>

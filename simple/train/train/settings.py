@@ -92,6 +92,19 @@ STATIC_ROOT = '/home/opentrain/public_html/static/'
 CORS_ORIGIN_ALLOW_ALL = True
 
 OT_LOG_DIR = '/var/log/opentrain'
+TXT_FOLDER = os.path.join(BASE_DIR, 'csvparser/unzip_data')
+
+
+try:
+    from .local_settings import *
+except ImportError:
+    pass
+
+try:
+    from local_settings import *
+except ImportError:
+    pass
+
 
 LOGGING = {
     'version' : 1,
@@ -128,14 +141,5 @@ LOGGING = {
     },
 }
 
-TXT_FOLDER = os.path.join(BASE_DIR, 'csvparser/unzip_data')
 
-try:
-    from .local_settings import *
-except ImportError:
-    pass
 
-try:
-    from local_settings import *
-except ImportError:
-    pass

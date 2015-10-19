@@ -1,71 +1,88 @@
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
-from data.models import Route,Service,Trip, Sample
+from django.views.generic import ListView, DetailView
+from data.models import Route, Service, Trip, Sample
 from django.shortcuts import render, get_object_or_404
 from django.utils.translation import ugettext as _
 from django.conf import settings
 from django.http import HttpResponseNotAllowed, HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 
-def _build_breadcrumbs(obj=None):
-    if obj is None:
-        return  [{
-        'name': _('Routes'),
-        'link': '/browse/routes/'
-    }]
-    parent = obj.get_parent()
-    if isinstance(obj,Sample):
-        cur = {
-            'name': '%s %s' % (_('File'),obj.data_file),
-            'link': obj.get_text_link()
-        }
-    else:
-        cur = {
-            'name': obj.get_short_name(),
-            'link': '/browse/%ss/%s' % (obj.__class__.__name__.lower(),obj.id)
-        }
-    return _build_breadcrumbs(parent) + [cur]
 
-def _bc(obj,ctx):
-    ctx['breadcrumbs'] = _build_breadcrumbs(obj)
-    ctx['title'] = ctx['breadcrumbs'][-1]['name']
-    return ctx
+class BrowseMixin:
+    def get_context_data(self, **kwargs):
+        d = super().get_context_data(**kwargs)
+        d['breadcrumbs'] = self.get_breadcrumbs()
+        assert isinstance(d['breadcrumbs'], list)
+        for bc in d['breadcrumbs']:
+            assert isinstance(bc, tuple)
+            assert len(bc) == 2
+        return d
 
-def browse_routes(req):
-    routes = Route.objects.all()
-    return render(req,'browse/browse_routes.html',_bc(None,{'routes':routes}))
+    def get_breadcrumbs(self):
+        return self.breadcrumbs
+
+    def dispatch(self, request, *args, **kwargs):
+        self.pre_dispatch(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)
+
+    def pre_dispatch(self, request, *args, **kwargs):
+        pass
 
 
-def browse_route(req,route_id):
-    route = get_object_or_404(Route,pk=route_id)
-    return render(req,'browse/browse_route.html',_bc(route,{'route':route}))
+class BrowseRoutes(BrowseMixin, ListView):
+    model = Route
+    template_name = 'browse/browse_routes.html'
+    breadcrumbs = [
+        (_('Routes'), reverse_lazy('browse:routes'))
+    ]
 
 
-def browse_bad_services(req):
-    import data.utils
-    sr = data.utils.analyze_services()
-    bad_services = sr.bad
-    bc = {
-        'name': _('Bad Services'),
-        'link':reverse('browse:bad_services')
-    }
-    ctx = {}
-    ctx['title'] = 'bad services'
-    ctx['breadcrumbs'] = [bc]
-    ctx['services'] = bad_services
-    return render(req,'browse/bad_services.html',ctx)
+class BrowseRoute(BrowseMixin, DetailView):
+    model = Route
+    template_name = 'browse/browse_route.html'
+
+    def get_breadcrumbs(self):
+        route = self.get_object()
+        return BrowseRoutes.breadcrumbs + [
+            (route.get_short_name(), reverse_lazy('browse:route', kwargs={'pk': route.id}))
+        ]
 
 
-def browse_service(req,service_id):
-    service = get_object_or_404(Service,pk=service_id)
-    return render(req,'browse/browse_service.html',_bc(service,{'service':service}))
+class BrowseService(BrowseMixin, DetailView):
+    template_name = 'browse/browse_service.html'
+    model = Service
+
+    def get_breadcrumbs(self):
+        service = self.get_object()
+        route = service.route
+        return BrowseRoutes.breadcrumbs + [
+            (route.get_short_name(), reverse_lazy('browse:route', kwargs={'pk': route.id})),
+            (service.get_short_name(), reverse_lazy('browse:service', kwargs={'pk': service.id})),
+        ]
 
 
-def browse_trip(req,trip_id):
-    trip = get_object_or_404(Trip,pk=trip_id)
-    samples = list(trip.get_real_stop_samples())
-    return render(req,'browse/browse_trip.html',_bc(trip,{'trip':trip,
-                                                 'samples': samples}))
+class BrowseTrip(BrowseMixin, DetailView):
+    template_name = 'browse/browse_trip.html'
+    model = Trip
+
+    def get_context_data(self, **kwargs):
+        d = super().get_context_data(**kwargs)
+        trip = self.get_object()
+        d['samples'] = list(trip.get_real_stop_samples())
+        return d
+
+    def get_breadcrumbs(self):
+        trip = self.get_object()
+        service = trip.service
+        route = service.route
+
+        return BrowseRoutes.breadcrumbs + [
+            (route.get_short_name(), reverse_lazy('browse:route', kwargs={'pk': route.id})),
+            (service.get_short_name(), reverse_lazy('browse:service', kwargs={'pk': service.id})),
+            (trip.get_short_name(), reverse_lazy('browse:trip', kwargs={'pk': trip.id})),
+        ]
+
 
 def show_raw_data(req):
     import codecs
@@ -74,13 +91,13 @@ def show_raw_data(req):
     filename = req.GET['file']
     lineno = int(req.GET['line'])
     sample_id = int(req.GET['sample_id'])
-    sample = get_object_or_404(Sample,pk=sample_id)
+    sample = get_object_or_404(Sample, pk=sample_id)
     from_lineno = max(0, lineno - OFFSET)
     to_lineno = (lineno + OFFSET)
     ctx = dict()
     cur_lineno = 1
     lines = []
-    file_path = os.path.join(settings.TXT_FOLDER,filename)
+    file_path = os.path.join(settings.TXT_FOLDER, filename)
     with codecs.open(file_path, encoding="windows-1255") as fh:
         for line in fh:
             if cur_lineno >= from_lineno and cur_lineno <= to_lineno:
@@ -90,59 +107,8 @@ def show_raw_data(req):
     ctx['lines'] = lines
     ctx['filename'] = filename
     ctx['lineno'] = lineno
-    ctx['prev'] =  sample.get_text_link(line=lineno - OFFSET * 2 - 1)
+    ctx['prev'] = sample.get_text_link(line=lineno - OFFSET * 2 - 1)
     ctx['next'] = sample.get_text_link(line=lineno + OFFSET * 2 - 1)
-    return render(req, 'browse/browse_raw_data.html', _bc(sample,ctx))
+    return render(req, 'browse/browse_raw_data.html', _bc(sample, ctx))
 
 
-def resp_json(d,status):
-    import json
-    return HttpResponse(content=json.dumps(d),status=status,content_type='application/json');
-
-
-@csrf_exempt
-def login(req):
-    import django.contrib.auth
-    username = req.POST['name']
-    password = req.POST['password']
-    user = django.contrib.auth.authenticate(username=username, password=password)
-    if user is not None:
-        if user.is_active:
-            django.contrib.auth.login(req, user)
-            error = None
-            status = 201
-        else:
-            error = 'Disabled account'
-            status = 401
-    else:
-        error = 'Invalid Login'
-        status = 401
-    d = user_to_auth_json(user)
-    d['error'] = error
-    return resp_json(d,status)
-
-
-def user_to_auth_json(user):
-    result = dict()
-    result['logged_in'] = user and user.is_authenticated()
-    if result['logged_in']:
-        result['username'] = user.first_name or user.username
-    else:
-        result['username'] = ''
-    return result
-
-
-@csrf_exempt
-def logout(req):
-    import django.contrib.auth
-    django.contrib.auth.logout(req)
-    return resp_json(user_to_auth_json(req.user),status=201)
-
-def logged_in(req):
-    return resp_json(user_to_auth_json(req.user),status=200)
-
-def test1(self):
-    x = {'name':'soccer', 'icon':'\u26bd'}
-    import json
-    from django.http import JsonResponse
-    return JsonResponse(x)
