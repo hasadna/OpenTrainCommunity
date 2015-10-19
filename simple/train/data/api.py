@@ -144,21 +144,6 @@ def _parse_date(dt_str):
         raise errors.InputError('Wrong date param %s: %s' % (dt_str, str(e)))
 
 
-"""
-@cache_utils.cacheit
-@benchit
-def get_path_info_full(req):
-    stop_ids = [int(s) for s in req.GET['stop_ids'].split(',')]
-    from_date = _parse_date(req.GET.get('from_date'))
-    to_date = _parse_date(req.GET.get('to_date'))
-    if from_date and to_date and from_date > to_date:
-        raise errors.InputError('from_date %s cannot be after to_date %s' % (from_date,to_date))
-    filters = Filters(from_date=from_date,to_date=to_date)
-    stats = _get_path_info_full(stop_ids,filters)
-    stats.sort(key=_get_info_sort_key)
-    return json_resp(stats)
-"""
-
 
 @cache_utils.cachereq
 @benchit
@@ -179,17 +164,6 @@ def _get_info_sort_key(stat):
     hours = info['hours'] if info['hours'] != 'all' else [1000, 1000]
     week_day = info['week_day'] if info['week_day'] != 'all' else 1000
     return week_day, hours
-
-
-"""
-def _get_path_info_full(stop_ids, filters):
-    # find all routes whose contains these stop ids
-    routes = find_all_routes_with_stops(stop_ids)
-    table = _get_stats_table(stop_ids, routes, filters)
-    stats = _complete_table(table,stop_ids)
-
-    return stats
-"""
 
 
 def _get_route_info_full(route_id, filters):
