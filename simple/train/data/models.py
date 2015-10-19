@@ -51,9 +51,6 @@ class Sample(models.Model):
     data_file_line = models.IntegerField(null=True)  # the line number in the data file (text file)
     trip = models.ForeignKey('Trip', blank=True, null=True,related_name='samples')
 
-    def get_parent(self):
-        return self.trip
-
     def get_short_name(self):
         return '{0} {1}'.format(_('Sample'), self.id)
 
@@ -113,9 +110,6 @@ class Sample(models.Model):
 class Service(models.Model):
     route = models.ForeignKey('Route',related_name='services')
     local_time_str = models.TextField(default=None)
-
-    def get_parent(self):
-        return self.route
 
     def remove_skip_stops(self):
         with transaction.atomic():
@@ -211,10 +205,6 @@ class Trip(models.Model):
         db_index=True)  # the start date of the trip (note that trip can be spanned over two days)
     service=models.ForeignKey('Service',related_name='trips',null=True)
 
-
-    def get_parent(self):
-        return self.service
-
     def get_short_name(self):
         return '%s %s %s %s' % (
             _('Trip'),
@@ -258,15 +248,6 @@ class Trip(models.Model):
 
 class Route(models.Model):
     stop_ids = ArrayField(base_field=models.IntegerField(),db_index=True, unique=True)
-
-    def is_to_north(self):
-        import services
-        first_stop = services.get_stop(self.stop_ids[0])
-        last_stop = services.get_stop(self.stop_ids[-1])
-        return first_stop['latlon'][0] < last_stop['latlon'][0]
-
-    def get_parent(self):
-        return None
 
     def get_short_name(self):
         from . import services

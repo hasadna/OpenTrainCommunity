@@ -8,5 +8,6 @@ error.log
 tmp
 __pycache__
 logdir
+db.sqlite3
 
 
