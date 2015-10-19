@@ -6,5 +6,5 @@ urlpatterns = patterns('',
                        url(r'routes/(?P<pk>\d+)/?$',views.BrowseRoute.as_view(),name='route'),
                        url(r'services/(?P<pk>\d+)/?$',views.BrowseService.as_view(),name='service'),
                        url(r'trips/(?P<pk>[\w\-]+)/?$',views.BrowseTrip.as_view(),name='trip'),
-                       url(r'^raw-data', views.show_raw_data))
+                       url(r'^raw-data', views.RawDateView.as_view(),name='raw-data'))
 

@@ -1,6 +1,6 @@
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, View
 from data.models import Route, Service, Trip, Sample
 from django.shortcuts import render, get_object_or_404
 from django.utils.translation import ugettext as _
@@ -84,31 +84,32 @@ class BrowseTrip(BrowseMixin, DetailView):
         ]
 
 
-def show_raw_data(req):
-    import codecs
-    import os.path
-    OFFSET = 20
-    filename = req.GET['file']
-    lineno = int(req.GET['line'])
-    sample_id = int(req.GET['sample_id'])
-    sample = get_object_or_404(Sample, pk=sample_id)
-    from_lineno = max(0, lineno - OFFSET)
-    to_lineno = (lineno + OFFSET)
-    ctx = dict()
-    cur_lineno = 1
-    lines = []
-    file_path = os.path.join(settings.TXT_FOLDER, filename)
-    with codecs.open(file_path, encoding="windows-1255") as fh:
-        for line in fh:
-            if cur_lineno >= from_lineno and cur_lineno <= to_lineno:
-                lines.append({'lineno': cur_lineno,
-                              'line': line.strip().encode('utf-8', errors='ignore')})
-            cur_lineno += 1
-    ctx['lines'] = lines
-    ctx['filename'] = filename
-    ctx['lineno'] = lineno
-    ctx['prev'] = sample.get_text_link(line=lineno - OFFSET * 2 - 1)
-    ctx['next'] = sample.get_text_link(line=lineno + OFFSET * 2 - 1)
-    return render(req, 'browse/browse_raw_data.html', _bc(sample, ctx))
-
+class RawDateView(View):
+    model = Sample
+    def get_context_data(self,**kwargs):
+        ctx = super().get_context_data(**kwargs)
+        import codecs
+        import os.path
+        OFFSET = 20
+        filename = self.request.GET['file']
+        lineno = int(self.request.GET['line'])
+        sample_id = int(self.request.GET['sample_id'])
+        sample = get_object_or_404(Sample, pk=sample_id)
+        from_lineno = max(0, lineno - OFFSET)
+        to_lineno = (lineno + OFFSET)
+        cur_lineno = 1
+        lines = []
+        file_path = os.path.join(settings.TXT_FOLDER, filename)
+        with codecs.open(file_path, encoding="windows-1255") as fh:
+            for line in fh:
+                if cur_lineno >= from_lineno and cur_lineno <= to_lineno:
+                    lines.append({'lineno': cur_lineno,
+                                  'line': line.strip().encode('utf-8', errors='ignore')})
+                cur_lineno += 1
+        ctx['lines'] = lines
+        ctx['filename'] = filename
+        ctx['lineno'] = lineno
+        ctx['prev'] = sample.get_text_link(line=lineno - OFFSET * 2 - 1)
+        ctx['next'] = sample.get_text_link(line=lineno + OFFSET * 2 - 1)
+        return ctx
 
