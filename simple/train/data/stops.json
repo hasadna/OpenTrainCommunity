@@ -699,5 +699,15 @@
         ], 
         "bssids": [], 
         "stop_name": "Rishon LeTsiyyon - Moshe Dayan"
+    },
+    {
+        "stop_short_name": "נתיבות",
+        "gtfs_stop_id": 9650,
+        "latlon": [
+            31.410595,
+            34.571191
+        ],
+        "bssids": [],
+        "stop_name": "Netivot"
     }
 ]

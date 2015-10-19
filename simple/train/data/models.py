@@ -250,7 +250,7 @@ class Trip(models.Model):
             sample.print_nice()
 
     def __str__(self):
-        return '{0} #{1} {2} {3}'.format(_('trip'),self.id,_('in'),self.start_date)
+        return '{0} {1} {2} {3}'.format(_('trip'),self.id,_('in'),self.start_date)
 
     def get_absoluet_url(self):
         return reverse('browse:trip_detail',kwargs=dict(trip_id=self.id))
