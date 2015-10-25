@@ -4,6 +4,9 @@ import datetime
 from collections import namedtuple
 from data import cache_utils
 from django.db import transaction
+import pytz
+
+IST = pytz.timezone('Asia/Jerusalem')
 
 def benchit(func):
     def _wrap(*args, **kwargs):
@@ -58,10 +61,12 @@ def build_current_trips(csv_file):
     with open(csv_file) as fh:
         reader = csv.DictReader(fh)
         for idx,row in enumerate(reader):
+            start_date = csv_to_date(row['start_date'])
             if row['trip_name'] not in trip_names:
                 trip_data = {'id' : row['trip_name'],
                              'train_num' : int(row['train_num']),
-                             'start_date': csv_to_date(row['start_date']),
+                             'start_date': start_date,
+                             'x_week_day_local': start_date.isoweekday() % 7, #isoweekday is 1..7
                              'valid': csv_to_bool(row['valid']),
                              'route_id' : route_id_by_trip[row['trip_name']]
                              }
@@ -86,16 +91,16 @@ def csv_to_float(b):
     return float(b)
 
 def csv_to_datetime(dt_str):
-    import pytz
     if dt_str == '':
         return None
     # 2013-01-22T14:25:00+02:00
     dt_str2 = dt_str[-5:]
     dt_str1 = dt_str[:-6]
     dt = datetime.datetime.strptime(dt_str1,'%Y-%m-%dT%H:%M:%S')
-    dt_il = pytz.timezone('Asia/Jerusalem').localize(dt)
+    dt_il = IST.localize(dt)
     dt_utc = dt_il.astimezone(pytz.utc)
     return dt_utc
+
 
 @benchit
 @transaction.atomic
@@ -123,6 +128,10 @@ def import_current_csv(csv_file):
                        delay_arrival=csv_to_float(row['delay_arrival']),
                        data_file=row['data_file'],
                        data_file_line=csv_to_int(row['data_file_line'],allow_none=True))
+            if s.is_first and s.valid:
+                t = Trip.objects.get(pk=s.trip_id)
+                t.x_hour_local = s.exp_departure.astimezone(IST).hour
+                t.save(update_fields=['x_hour_local'])
             cur_samples.append(s)
             if len(cur_samples) == 30000:
                 Sample.objects.bulk_create(cur_samples)

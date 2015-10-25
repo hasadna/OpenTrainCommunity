@@ -205,6 +205,9 @@ class Trip(models.Model):
         db_index=True)  # the start date of the trip (note that trip can be spanned over two days)
     service=models.ForeignKey('Service',related_name='trips',null=True)
 
+    x_week_day_local = models.IntegerField(null=True)
+    x_hour_local = models.IntegerField(null=True)
+
     def get_short_name(self):
         return '%s %s %s %s' % (
             _('Trip'),

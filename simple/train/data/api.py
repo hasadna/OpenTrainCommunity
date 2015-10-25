@@ -286,8 +286,8 @@ def _get_stats_table(route, filters):
     select_stmt = ('''
         SELECT  count(s.stop_id) as num_trips,
                 s.stop_id as stop_id,
-                th.week_day_pg,
-                th.hour_pg as hour_pg,
+                t.x_week_day_local as week_day_local,
+                t.x_hour_local as hour_local,
                 sum(case when s.delay_arrival <= %(early_threshold)s then 1 else 0 end) as arrival_early_count,
                 sum(case when s.delay_arrival > %(early_threshold)s and s.delay_arrival < %(late_threshold)s then 1 else 0 end) as arrival_on_time_count,
                 sum(case when s.delay_arrival >= %(late_threshold)s then 1 else 0 end) as arrival_late_count,
@@ -298,21 +298,21 @@ def _get_stats_table(route, filters):
 
         FROM
         data_route as r,
-        trip_with_hour as th,
+        data_trip as t,
         data_sample as s
 
         WHERE
         r.id = %(route_id)s
-        AND th.route_id = r.id
-        AND th.valid
-        AND s.trip_id = th.id
+        AND t.route_id = r.id
+        AND t.valid
+        AND s.trip_id = t.id
         '''+
-                   (' AND th.start_date >= %(start_date)s' if filters.from_date else '')
+                   (' AND t.start_date >= %(start_date)s' if filters.from_date else '')
                    +
-                   (' AND th.start_date <= %(to_date)s' if filters.to_date else '')
+                   (' AND t.start_date <= %(to_date)s' if filters.to_date else '')
                    +
                    '''
-                       GROUP BY s.stop_id,week_day_pg,hour_pg
+                       GROUP BY s.stop_id,week_day_local,hour_local
                    ''')
     select_kwargs = {
         'route_id': route.id,

@@ -1,5 +1,4 @@
 #!/usr/bin/env python 
-import glob
 import os
 os.environ['DJANGO_SETTINGS_MODULE'] = 'train.settings'
 import data.cache_utils
@@ -46,11 +45,13 @@ def main(csv_files):
     data.cache_utils.invalidate_cache()
     run_command('python manage.py remove_skip_stops')
 
-    if is_sqlite3:
-        run_command('cat create_views_sqlite3.sql | python manage.py dbshell')
-    else:
-        print('Creating materialized views')
-        run_command('cat create_views.sql | python manage.py dbshell')
+
+
+    # if is_sqlite3:
+    #     run_command('cat create_views_sqlite3.sql | python manage.py dbshell')
+    # else:
+    #     print('Creating materialized views')
+    #     run_command('cat create_views.sql | python manage.py dbshell')
 
 
 if __name__ == '__main__':

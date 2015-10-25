@@ -6,6 +6,8 @@ import sys
 import os
 
 def main(url):
+    if not os.path.exists('output'):
+        os.mkdir('output')
     timestamp = datetime.datetime.utcnow().strftime('%Y%m%d%H%M%S')
     t1 = time.time()
     r = requests.get(url)
@@ -21,7 +23,7 @@ def main(url):
     with open(fname,'w') as fh:
         json.dump(j,fh,indent=4)
     os.system('cp %s output/%s' % (fname,'last_call.json'))
-    print 'Took: %.2f Wrote to %s' % (took,fname)
+    print('Took: %.2f Wrote to %s' % (took,fname))
 
 if __name__ == '__main__':
     assert len(sys.argv) == 2,'Should be <url>'
