@@ -1,3 +1,4 @@
+import functools
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db import transaction
@@ -161,7 +162,7 @@ class Service(models.Model):
         return result
 
 
-    @cache_utils.cache_obj_method
+    @functools.lru_cache()
     def get_stats_list(self):
         import data.api
         return data.api.get_service_stat(self)

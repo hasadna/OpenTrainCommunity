@@ -32,12 +32,14 @@ def csv_to_int(int_str,allow_none=False):
 @benchit
 def build_current_routes(csv_file):
     import collections
-    stop_ids_by_trip = collections.defaultdict(list)
+    stop_ids_by_trip = collections.OrderedDict()
     found_routes = dict()
     with open(csv_file) as fh:
         reader = csv.DictReader(fh)
         for idx,row in enumerate(reader):
             if csv_to_bool(row['is_real_stop']):
+                if row['trip_name'] not in stop_ids_by_trip:
+                    stop_ids_by_trip[row['trip_name']] = []
                 stop_ids_by_trip[row['trip_name']].append(int(row['stop_id']))
     route_id_by_trip = dict()
     for trip_name,stop_ids in stop_ids_by_trip.items():
