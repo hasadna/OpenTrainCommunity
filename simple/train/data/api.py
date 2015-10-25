@@ -180,8 +180,8 @@ def _find_relevant_entries(table, week_day, hours):
     for entry in table:
         if hours != 'all':
             hours_range = [h % 24 for h in range(hours[0], hours[1])]
-        if week_day == 'all' or entry['week_day_pg'] == week_day - 1:
-            if hours == 'all' or entry['hour_pg'] in hours_range:
+        if week_day == 'all' or entry['week_day_local'] == week_day - 1:
+            if hours == 'all' or entry['hour_local'] in hours_range:
                 result.append(entry)
     return result
 
@@ -328,8 +328,8 @@ def _get_stats_table(route, filters):
     cols = [
         'num_trips',
         'stop_id',
-        'week_day_pg',
-        'hour_pg',
+        'week_day_local',
+        'hour_local',
         'arrival_early_count',
         'arrival_on_time_count',
         'arrival_late_count',
