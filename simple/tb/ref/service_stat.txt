@@ -1,0 +1,115 @@
+In [13]: s.local_time_str
+Out[13]: '----0903,1013----'
+
+In [14]: s.route_id
+Out[14]: 1
+
+In [15]: s.id
+Out[15]: 21
+
+In [16]: data.api.get_service_stat(s)
+[25/10/2015 11:10:19] DEBUG [utils:89] (0.000) QUERY = 'SELECT "data_trip"."id" FROM "data_trip" WHERE "data_trip"."service_id" = %s' - PARAMS = (21,); args=(21,)
+[25/10/2015 11:10:19] DEBUG [utils:89] (0.002) QUERY = "\n            SELECT s.stop_id as stop_id,\n            count(s.stop_id) as num_trips,\n            avg(s.delay_arrival) as avg_delay_arrival,\n            avg(s.delay_departure) as avg_delay_departure,\n            avg(strftime('%s',s.actual_arrival) - strftime('%s',s.actual_departure)) as time_in_stop\n            FROM\n            data_sample as s\n            where s.trip_id in ('621_20130101','621_20130102','621_20130103','621_20130106','621_20130107','621_20130109','621_20130110','621_20130113','621_20130114','621_20130115','621_20130116','621_20130117','621_20130120','621_20130121','621_20130123','621_20130124','621_20130127','621_20130128','621_20130129','621_20130130','621_20130131')\n            GROUP by s.stop_id\n        " - PARAMS = (); args=None
+Out[16]: 
+[{'avg_delay_arrival': -48.57142857142857,
+  'avg_delay_departure': -157.14285714285714,
+  'num_trips': 21,
+  'stop_id': 3600,
+  'time_in_stop': -11.428571428571429},
+ {'avg_delay_arrival': -114.28571428571429,
+  'avg_delay_departure': 5.714285714285714,
+  'num_trips': 21,
+  'stop_id': 3700,
+  'time_in_stop': -240.0},
+ {'avg_delay_arrival': -51.42857142857143,
+  'avg_delay_departure': -57.142857142857146,
+  'num_trips': 21,
+  'stop_id': 4100,
+  'time_in_stop': -114.28571428571429},
+ {'avg_delay_arrival': -140.0,
+  'avg_delay_departure': -177.14285714285714,
+  'num_trips': 21,
+  'stop_id': 4170,
+  'time_in_stop': -22.857142857142858},
+ {'avg_delay_arrival': -40.0,
+  'avg_delay_departure': 2.857142857142857,
+  'num_trips': 21,
+  'stop_id': 4250,
+  'time_in_stop': -102.85714285714286},
+ {'avg_delay_arrival': -14.285714285714286,
+  'avg_delay_departure': -62.857142857142854,
+  'num_trips': 21,
+  'stop_id': 4600,
+  'time_in_stop': -71.42857142857143},
+ {'avg_delay_arrival': -51.42857142857143,
+  'avg_delay_departure': -22.857142857142858,
+  'num_trips': 21,
+  'stop_id': 4640,
+  'time_in_stop': -88.57142857142857},
+ {'avg_delay_arrival': -42.857142857142854,
+  'avg_delay_departure': 8.571428571428571,
+  'num_trips': 21,
+  'stop_id': 4660,
+  'time_in_stop': -111.42857142857143},
+ {'avg_delay_arrival': -28.571428571428573,
+  'avg_delay_departure': -77.14285714285714,
+  'num_trips': 21,
+  'stop_id': 4680,
+  'time_in_stop': -71.42857142857143},
+ {'avg_delay_arrival': -62.857142857142854,
+  'avg_delay_departure': -20.0,
+  'num_trips': 21,
+  'stop_id': 4690,
+  'time_in_stop': -102.85714285714286},
+ {'avg_delay_arrival': 28.571428571428573,
+  'avg_delay_departure': -5.714285714285714,
+  'num_trips': 21,
+  'stop_id': 4900,
+  'time_in_stop': -85.71428571428571},
+ {'avg_delay_arrival': 2.857142857142857,
+  'avg_delay_departure': 8.571428571428571,
+  'num_trips': 21,
+  'stop_id': 8700,
+  'time_in_stop': -65.71428571428571},
+ {'avg_delay_arrival': -34.285714285714285,
+  'avg_delay_departure': 8.571428571428571,
+  'num_trips': 21,
+  'stop_id': 8800,
+  'time_in_stop': -102.85714285714286},
+ {'avg_delay_arrival': -117.14285714285714,
+  'avg_delay_departure': None,
+  'num_trips': 21,
+  'stop_id': 9000,
+  'time_in_stop': None},
+ {'avg_delay_arrival': None,
+  'avg_delay_departure': 40.0,
+  'num_trips': 21,
+  'stop_id': 9200,
+  'time_in_stop': None},
+ {'avg_delay_arrival': -108.57142857142857,
+  'avg_delay_departure': -97.14285714285714,
+  'num_trips': 21,
+  'stop_id': 9800,
+  'time_in_stop': -131.42857142857142}]
+
+def compare_entries(l1, l2):
+    n1 = list(l1)
+    n2 = list(l2)
+    n1.sort(key=lambda x: x['stop_id'])
+    n2.sort(key=lambda x: x['stop_id'])
+    assert len(n1) == len(n2)
+    assert n1 != n2
+    for e1, e2 in zip(n1, n2):
+        assert set(e1.keys()) == set(e2.keys())
+        for f in ['stop_id', 'num_trips']:
+            assert e1[f] == e2[f]
+        for f in ['avg_delay_arrival', 'time_in_stop', 'avg_delay_departure']:
+            if e1[f] is None:
+                assert e2[f] is None
+                assert e1[f] is None
+            else:
+                assert abs(e1[f]-e1[f]) < 0.0001
+
+    	   
+
+	
