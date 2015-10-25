@@ -2,7 +2,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.db import transaction
 from django.conf import settings
-from django.contrib.postgres.fields import ArrayField
+from data.fields import ArrayField
 import pytz
 from django.utils.translation import ugettext as _
 from data import cache_utils
@@ -247,7 +247,7 @@ class Trip(models.Model):
 
 
 class Route(models.Model):
-    stop_ids = ArrayField(base_field=models.IntegerField(),db_index=True, unique=True)
+    stop_ids = ArrayField(db_index=True, unique=True)
 
     def get_short_name(self):
         from . import services
