@@ -4,12 +4,12 @@ Fresh install (on linux)
 To clean everything and refresh the data to the following steps
 
 * Verify that you are not running the project in any shell or runserver
-* source the script clean_all.sh. This will clean your DB and will rebuild it (e.g. it runs python manage.py migrate). Note this needs **sudo** permissions
+* run the script python clean_all.py. This will clean your DB and will rebuild it (e.g. it runs python manage.py migrate). Note this needs **sudo** permissions
 
 **IMPORTANT** Make sure that there are no error in the SQL commands. They don't abort the script, so look at the output
 ```
 % cd /home/eran/work/pkw/OpenTrainCommunity/simple/train
-% source clean_all.sh
+% python clean_all.py
 ```
 the clean_all.sh, will clean and rebuild the DB and then run migrate. output is like this:
 ```
@@ -44,11 +44,12 @@ Running migrations:
 
 
 * Next step is to import the csv files. If you don't have them locally, you copy them from the server.
-The url is: http://otrain.org/files/csv/
+The url is: http://otrain.org/files/csv/ or http://otrain.org.files/xl
 
 To make things faster (much faster), copy the .gz files of the monthes that you want. There are 12 files for 2013 01_2013.csv.gz to 12_2013.csv.gz, and one for 2014 - 2014.csv.gz.
+*The new csv files are generated from excel files, copy them from the xl directory*!!!
 
-If you develop locally, it is usually better just to download 1 or 2 months of 2013...
+If you develop locally, it is usually better just to download 1 or 2 months.
 
 After you donwload gunzip 
 
@@ -76,7 +77,7 @@ After you donwload gunzip
 **Note** cd back from the tmp folder
 ```
 % cd /home/eran/work/pkw/OpenTrainCommunity/simple/train
-% ./import_all.py tmp/csv_data/*.csv
+% python manage.py importall tmp/csv_data/*.csv
 # GO DRINK COFFEE OR HAVE (LONG) LUNCH...
 ```
 ### In case of failures/errors
@@ -84,6 +85,6 @@ After you donwload gunzip
 If you have any errors, during the process, you can rerun it again.
 In this case, since you already copied the csv files, you just need to run:
 ```
-% source clean_all.sh
-% ./import_all.py tmp/csv_data/*.csv
+% python clean_all.py
+% python manage.py importall.py tmp/csv_data/*.csv
 ```
