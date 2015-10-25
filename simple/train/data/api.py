@@ -1,3 +1,4 @@
+from django.conf import settings
 from .models import Sample, Trip, Route
 from django.http import HttpResponse, Http404
 from . import cache_utils
@@ -235,27 +236,44 @@ def _complete_table(table, stop_ids):
 
 
 def get_service_stat(service):
-    select_stmt = '''
-        SELECT s.stop_id as stop_id,
-        count(s.stop_id) as num_trips,
-        avg(s.delay_arrival) as avg_delay_arrival,
-        avg(s.delay_departure) as avg_delay_departure,
-        avg(s.actual_departure-s.actual_arrival) as time_in_stop
-        FROM
-        data_sample as s
-        where s.trip_id = ANY(%(trip_ids)s)
-        GROUP by s.stop_id
-    '''
+    if settings.USE_SQLITE3:
+        select_stmt = '''
+            SELECT s.stop_id as stop_id,
+            count(s.stop_id) as num_trips,
+            avg(s.delay_arrival) as avg_delay_arrival,
+            avg(s.delay_departure) as avg_delay_departure,
+            avg(strftime('%%s',s.actual_arrival) - strftime('%%s',s.actual_departure)) as time_in_stop
+            FROM
+            data_sample as s
+            where s.trip_id in %(trip_ids_str)s
+            GROUP by s.stop_id
+        '''
+    else:
+        select_stmt = '''
+            SELECT s.stop_id as stop_id,
+            count(s.stop_id) as num_trips,
+            avg(s.delay_arrival) as avg_delay_arrival,
+            avg(s.delay_departure) as avg_delay_departure,
+            avg(s.actual_departure-s.actual_arrival) as time_in_stop
+            FROM
+            data_sample as s
+            where s.trip_id in %(trip_ids_str)s
+            GROUP by s.stop_id
+        '''
     trip_ids = list(service.trips.all().values_list('id', flat=True))
-    select_kwargs = {'trip_ids': trip_ids}
+    trip_ids_str = '({0})'.format(','.join(("'{0}'".format(tid) for tid in trip_ids)))
+    select_kwargs = {'trip_ids_str': trip_ids_str}
     cursor = django.db.connection.cursor()
-    cursor.execute(select_stmt, select_kwargs)
+    cursor.execute(select_stmt % select_kwargs)
     cols = ['stop_id', 'num_trips', 'avg_delay_arrival', 'avg_delay_departure', 'time_in_stop']
     result = []
     for row in cursor:
         row_dict = dict(zip(cols, row))
-        row_dict['time_in_stop'] = row_dict['time_in_stop'].total_seconds() if row_dict[
-                                                                                   'time_in_stop'] is not None else None
+        ts = row_dict['time_in_stop']
+        if ts is not None:
+            if not settings.USE_SQLITE3:
+                ts = ts.total_seconds() # in postgres: timedelta object
+        row_dict['time_in_stop'] = ts
         result.append(row_dict)
     return result
 

@@ -7,6 +7,10 @@ out, err = process.communicate()
 db = out.decode('utf-8').strip()
 assert db in ['sqlite3','postgres'],'Invalid db: {0}'.format(db)
 
+print('='*60)
+print('DB is {0}'.format(db))
+print('='*60)
+
 if db == 'sqlite3':
     if os.path.exists('db.sqlite3'):
         os.remove('db.sqlite3')

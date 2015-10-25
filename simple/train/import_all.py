@@ -1,7 +1,9 @@
 #!/usr/bin/env python 
 import glob
 import os
+os.environ['DJANGO_SETTINGS_MODULE'] = 'train.settings'
 import data.cache_utils
+from django.conf import settings
 
 CSV_DIR = '/home/opentrain/public_html/files/csv'
 
@@ -25,6 +27,8 @@ def run_command(cmd):
         
 
 def main(csv_files):
+    is_sqlite3 = settings.USE_SQLITE3
+    print('Using sqlite3 = {0}'.format(is_sqlite3))
     data.cache_utils.invalidate_cache()
     if not csv_files:
         csv_files = []
@@ -37,13 +41,16 @@ def main(csv_files):
     for fullcsv in csv_files:
         run_command('python manage.py parsecsv %s' % fullcsv)
 
-    print('Building routes - takes long time')
+    print('Building services - takes long time')
     run_command('python manage.py build_services')
     data.cache_utils.invalidate_cache()
     run_command('python manage.py remove_skip_stops')
 
-    print('Creating materialized views')
-    run_command('cat create_views.sql | python manage.py dbshell')
+    if is_sqlite3:
+        run_command('cat create_views_sqlite3.sql | python manage.py dbshell')
+    else:
+        print('Creating materialized views')
+        run_command('cat create_views.sql | python manage.py dbshell')
 
 
 if __name__ == '__main__':

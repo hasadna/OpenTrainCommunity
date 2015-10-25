@@ -1,4 +1,4 @@
-DROP MATERIALIZED VIEW if exists data_sample_with_hour;
+--DROP MATERIALIZED VIEW if exists data_sample_with_hour;
 --CREATE MATERIALIZED VIEW data_sample_with_hour AS
 --       SELECT s.trip_id AS trip_id,
 --       s.stop_id AS stop_id,
