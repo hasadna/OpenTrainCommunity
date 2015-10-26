@@ -34,7 +34,7 @@ def build_current_routes(csv_file):
     import collections
     stop_ids_by_trip = collections.OrderedDict()
     found_routes = dict()
-    with open(csv_file) as fh:
+    with open(csv_file,encoding='utf-8') as fh:
         reader = csv.DictReader(fh)
         for idx,row in enumerate(reader):
             if csv_to_bool(row['is_real_stop']):
@@ -60,7 +60,7 @@ def build_current_trips(csv_file):
     trip_names = set()
     trips = []
     route_id_by_trip = build_current_routes(csv_file)
-    with open(csv_file) as fh:
+    with open(csv_file,encoding='utf-8') as fh:
         reader = csv.DictReader(fh)
         for idx,row in enumerate(reader):
             start_date = csv_to_date(row['start_date'])
@@ -108,7 +108,7 @@ def csv_to_datetime(dt_str):
 @transaction.atomic
 def import_current_csv(csv_file):
     build_current_trips(csv_file)
-    with open(csv_file) as fh:
+    with open(csv_file, encoding='utf-8') as fh:
         reader = csv.DictReader(fh)
         cur_samples = []
         for idx, row in enumerate(reader):

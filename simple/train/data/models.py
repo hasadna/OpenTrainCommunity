@@ -297,7 +297,7 @@ class Route(models.Model):
     def group_into_services(self):
         from itertools import groupby
 
-        trips = self.trips.filter(valid=True)
+        trips = list(self.trips.filter(valid=True))
         group_it = groupby(trips, key=lambda t: t.get_exp_time_strings())
         for k, trips_it in group_it:
             s = Service.objects.get_or_create(route=self,
