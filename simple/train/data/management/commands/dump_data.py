@@ -29,8 +29,8 @@ class Command(BaseCommand):
         for trip in Trip.objects.all():
             trips.append({
                 'id': trip.id,
-                #'route_id': trip.route_id,
-                #'start_data': trip.start_date.isoformat(),
+                'route_id': trip.route_id,
+                'start_data': trip.start_date.isoformat(),
                 #'x_hour_local': trip.x_hour_local,
                 #'x_week_day_local': trip.x_week_day_local,
             })
