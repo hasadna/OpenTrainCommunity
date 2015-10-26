@@ -1,4 +1,3 @@
-import functools
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db import transaction
@@ -6,9 +5,10 @@ from django.conf import settings
 from data.fields import ArrayField
 import pytz
 from django.utils.translation import ugettext as _
+
+
 import logging
 LOGGER = logging.getLogger(__name__)
-from data import cache_utils
 
 ISRAEL_TIMEZONE = pytz.timezone(settings.TIME_ZONE)
 IST=ISRAEL_TIMEZONE
@@ -245,7 +245,10 @@ class Trip(models.Model):
 
     def get_real_stop_samples(self):
         stop_ids = self.route.stop_ids
-        return self.samples.filter(valid=True, stop_id__in=stop_ids).order_by('index')
+        result = list(self.samples.all())
+        result = [s for s in result if s.stop_id in stop_ids]
+        result.sort(key=lambda s: s.index)
+        return result
 
     def to_json(self):
         stops = self.get_real_stop_samples()
@@ -302,8 +305,7 @@ class Route(models.Model):
 
     def group_into_services(self):
         from itertools import groupby
-
-        trips = list(self.trips.filter(valid=True))
+        trips = list(self.trips.filter(valid=True).prefetch_related('samples'))
         group_it = groupby(trips, key=lambda t: t.get_exp_time_strings())
         for k, trips_it in group_it:
             s = Service.objects.get_or_create(route=self,
