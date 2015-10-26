@@ -220,6 +220,7 @@ class Trip(models.Model):
     def fix_x_hour_local(self):
         if self.x_hour_local is None:
             self.x_hour_local = self.samples.earliest('index').exp_departure.astimezone(IST).hour
+            self.save(update_fields=['x_hour_local'])
 
     def get_short_name(self):
         return '%s %s %s %s' % (
