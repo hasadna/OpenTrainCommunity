@@ -31,7 +31,7 @@ class Command(BaseCommand):
                 'id': trip.id,
                 'route_id': trip.route_id,
                 'start_data': trip.start_date.isoformat(),
-                #'x_hour_local': trip.x_hour_local,
+                'x_hour_local': trip.x_hour_local,
                 #'x_week_day_local': trip.x_week_day_local,
             })
         self.dump(trips, 'trips')
