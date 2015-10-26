@@ -107,6 +107,9 @@ class Sample(models.Model):
                 'link': remove_site(self.data_file_link)
         }
 
+    class Meta:
+        ordering = ('id',)
+
 
 class Service(models.Model):
     route = models.ForeignKey('Route',related_name='services')
@@ -194,6 +197,9 @@ class Service(models.Model):
     def __str__(self):
         return '{0} of {1}'.format(self.local_time_str,self.route)
 
+    class Meta:
+        ordering = ('id',)
+
 
 class Trip(models.Model):
     id = models.CharField(primary_key=True, max_length=30, db_index=True, unique=True)
@@ -250,6 +256,9 @@ class Trip(models.Model):
 
     def get_absolute_url(self):
         return reverse('browse:trip',kwargs=dict(pk=self.id))
+
+    class Meta:
+        ordering = ('id',)
 
 
 class Route(models.Model):
@@ -315,3 +324,7 @@ class Route(models.Model):
                                                  last_stop_name,
         )
         return result
+
+    class Meta:
+        ordering = ('id',)
+
