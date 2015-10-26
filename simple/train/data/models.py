@@ -221,7 +221,7 @@ class Trip(models.Model):
 
     def fix_x_hour_local(self):
         if self.x_hour_local is None:
-            dt = self.samples.earliest('index').exp_departure.
+            dt = self.samples.earliest('index').exp_departure
             if dt:
                 self.x_hour_local = dt.astimezone(IST).hour
                 self.save(update_fields=['x_hour_local'])
