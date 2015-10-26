@@ -9,13 +9,12 @@ body.rex-page-routes {
         > .list-header > div { padding: 15px 40px; font-weight: bold; }
         > .list-body > .list-item {
             cursor: pointer;
-            color: $text-color; text-decoration: none;
+            color: #939599; text-decoration: none;
             background-color: $table-bg-accent;
             border: 1px solid #ebedec;
             > div { padding: 40px; }
 
             > div.index-cell {
-                color: #939599;
                 font-size: 30pt;
                 vertical-align: middle;
             }
