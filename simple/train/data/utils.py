@@ -142,8 +142,18 @@ def import_current_csv(csv_file):
         if cur_samples:
             Sample.objects.bulk_create(cur_samples)
             print('processes %s lines' % (idx+1))
-
     print('Read %s rows' % (1+idx))
+    fix_x_time()
+
+
+def fix_x_time():
+    trips = list(Trip.objects.filter(x_hour_local__isnull=True))
+    print('Fix missing hour for %s trips' % len(trips))
+    for idx, t in enumerate(trips):
+        if idx % 100 == 0:
+            print('{0}/{1} completed'.format(idx, len(trips)))
+        t.fix_x_hour_local()
+
 
 def build_all_services():
     print('In build_all_services')
