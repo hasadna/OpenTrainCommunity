@@ -22,7 +22,7 @@ CSV_FILES = ['01_2013.csv',
 
 class Command(BaseCommand):
     args = ''
-    help = 'print db name sqlite3 or postgres'
+    help = 'Imports all (or specified) CSV files into the database'
 
     def add_arguments(self, parser):
         parser.add_argument("csv_files",nargs="*")
@@ -52,7 +52,3 @@ class Command(BaseCommand):
         self.run_command('python manage.py build_services')
         data.cache_utils.invalidate_cache()
         self.run_command('python manage.py remove_skip_stops')
-
-
-
-
