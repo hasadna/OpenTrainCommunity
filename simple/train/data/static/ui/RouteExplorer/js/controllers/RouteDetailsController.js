@@ -73,12 +73,26 @@ function($scope, $route, $http, $location, LocationBinder, Layout, Locale) {
         return true;
     };
 
-    function selectedStats() {
-        var dayId = $scope.selectedDay || 'all';
-        var timeId = $scope.selectedTime || 'all';
+    $scope.tripCount = function(dayId, timeId) {
+      var stats = getStats(dayId, timeId);
+      if (!stats)
+        return 0;
 
-        var stats = statsMap[dayId] && statsMap[dayId][timeId] ? statsMap[dayId][timeId].stops : [];
-        return stats;
+      return stats.info.num_trips;
+    };
+
+    function getStats(dayId, timeId) {
+      dayId = dayId || 'all';
+      timeId = timeId || 'all';
+      return statsMap[dayId] && statsMap[dayId][timeId] ? statsMap[dayId][timeId] : null;
+    }
+
+    function selectedStats() {
+        var stats = getStats($scope.selectedDay, $scope.selectedTime);
+        if (stats)
+          return stats.stops;
+
+        return [];
     }
 
     function loadStats(data) {
