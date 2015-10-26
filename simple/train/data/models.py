@@ -258,7 +258,7 @@ class Trip(models.Model):
         return reverse('browse:trip',kwargs=dict(pk=self.id))
 
     class Meta:
-        ordering = ('route_id','start_date','x_hour_local')
+        ordering = ['id']
 
 
 class Route(models.Model):
