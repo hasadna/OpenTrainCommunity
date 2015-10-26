@@ -6,6 +6,8 @@ from django.conf import settings
 from data.fields import ArrayField
 import pytz
 from django.utils.translation import ugettext as _
+import logging
+LOGGER = logging.getLogger(__name__)
 from data import cache_utils
 
 ISRAEL_TIMEZONE = pytz.timezone(settings.TIME_ZONE)
@@ -219,8 +221,12 @@ class Trip(models.Model):
 
     def fix_x_hour_local(self):
         if self.x_hour_local is None:
-            self.x_hour_local = self.samples.earliest('index').exp_departure.astimezone(IST).hour
-            self.save(update_fields=['x_hour_local'])
+            dt = self.samples.earliest('index').exp_departure.
+            if dt:
+                self.x_hour_local = dt.astimezone(IST).hour
+                self.save(update_fields=['x_hour_local'])
+            else:
+                LOGGER.info('could not fix x_hour_local for trip %s',self.id)
 
     def get_short_name(self):
         return '%s %s %s %s' % (
