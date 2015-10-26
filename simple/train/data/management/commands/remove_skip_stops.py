@@ -13,7 +13,8 @@ class Command(BaseCommand):
     help = 'build services'
 
     def handle(self, *args, **options):
+        data.cache_utils.invalidate_cache()
         data.utils.remove_skip_stops()
         data.cache_utils.invalidate_cache()
-        run_command('cat create_views.sql | python manage.py dbshell')
+
 
