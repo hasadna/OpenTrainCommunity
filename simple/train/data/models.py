@@ -9,7 +9,7 @@ from django.utils.translation import ugettext as _
 from data import cache_utils
 
 ISRAEL_TIMEZONE = pytz.timezone(settings.TIME_ZONE)
-
+IST=ISRAEL_TIMEZONE
 
 class Sample(models.Model):
     """
@@ -217,6 +217,10 @@ class Trip(models.Model):
     x_week_day_local = models.IntegerField(null=True)
     x_hour_local = models.IntegerField(null=True)
 
+    def fix_x_hour_local(self):
+        if self.x_hour_local is None:
+            self.x_hour_local = self.samples.earliest('index').exp_departure.astimezone(IST).hour
+
     def get_short_name(self):
         return '%s %s %s %s' % (
             _('Trip'),
@@ -247,7 +251,7 @@ class Trip(models.Model):
         }
 
     def print_nice(self):
-        samples = self.samples.filter(is_real_stop=True).order_by('index')
+        samples = self.samples.order_by('index')
         for sample in samples:
             sample.print_nice()
 
