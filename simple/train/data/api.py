@@ -1,3 +1,4 @@
+import functools
 from django.conf import settings
 from .models import Sample, Trip, Route
 from django.http import HttpResponse, Http404
@@ -236,6 +237,7 @@ def _complete_table(table, stop_ids):
     return result
 
 
+@functools.lru_cache()
 def get_service_stat(service):
     if settings.USE_SQLITE3:
         select_stmt = '''
@@ -243,7 +245,7 @@ def get_service_stat(service):
             count(s.stop_id) as num_trips,
             avg(s.delay_arrival) as avg_delay_arrival,
             avg(s.delay_departure) as avg_delay_departure,
-            avg(strftime('%%s',s.actual_arrival) - strftime('%%s',s.actual_departure)) as time_in_stop
+            avg(strftime('%%s',s.actual_departure) - strftime('%%s',s.actual_arrival)) as time_in_stop
             FROM
             data_sample as s
             where s.trip_id in %(trip_ids_str)s
@@ -362,10 +364,7 @@ def _get_select_sqlite3(*,route,filters,early_threshold,late_threshold):
         'start_date': filters.from_date,
         'to_date': filters.to_date
     }
-    print('=================================================================')
-    print(select_stmt % select_kwargs)
-    print('=================================================================')
-    return select_stmt , select_kwargs
+    return select_stmt % select_kwargs, {}
 
 
 @benchit

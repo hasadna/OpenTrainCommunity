@@ -173,7 +173,7 @@ ServicesResult = namedtuple('ServicesResult',['bad','unreliable','good'])
 
 def _analyze_services_impl():
     services = list(Service.objects.all())
-    print('Fond %s services' % len(services))
+    print('Found %s services' % len(services))
     bad_services = []
     unreliable_services = []
     good_services = []

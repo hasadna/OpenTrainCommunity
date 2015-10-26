@@ -162,7 +162,6 @@ class Service(models.Model):
         return result
 
 
-    @functools.lru_cache()
     def get_stats_list(self):
         import data.api
         return data.api.get_service_stat(self)
@@ -191,6 +190,9 @@ class Service(models.Model):
                 'can_be_skipped': stop_stat['time_in_stop'] is not None and stop_stat['time_in_stop'] < 5
             })
         return result
+
+    def __str__(self):
+        return '{0} of {1}'.format(self.local_time_str,self.route)
 
 
 class Trip(models.Model):
