@@ -279,11 +279,7 @@ def get_service_stat(service):
     return result
 
 
-@benchit
-def _get_stats_table(route, filters):
-    early_threshold = -120
-    late_threshold = 300
-
+def _get_select_postgres(*,route,filters,early_threshold,late_threshold):
     select_stmt = ('''
         SELECT  count(s.stop_id) as num_trips,
                 s.stop_id as stop_id,
@@ -323,6 +319,64 @@ def _get_stats_table(route, filters):
         'start_date': filters.from_date,
         'to_date': filters.to_date
     }
+    return select_stmt, select_kwargs
+
+
+def _get_select_sqlite3(*,route,filters,early_threshold,late_threshold):
+    select_stmt = ('''
+        SELECT  count(s.stop_id) as num_trips,
+                s.stop_id as stop_id,
+                t.x_week_day_local as week_day_local,
+                t.x_hour_local as hour_local,
+                sum(case when s.delay_arrival <= %(early_threshold)s then 1 else 0 end) as arrival_early_count,
+                sum(case when s.delay_arrival > %(early_threshold)s and s.delay_arrival < %(late_threshold)s then 1 else 0 end) as arrival_on_time_count,
+                sum(case when s.delay_arrival >= %(late_threshold)s then 1 else 0 end) as arrival_late_count,
+
+                sum(case when s.delay_departure <= %(early_threshold)s then 1 else 0 end) as departure_early_count,
+                sum(case when s.delay_departure > %(early_threshold)s and s.delay_departure < %(late_threshold)s then 1 else 0 end) as departure_on_time_count,
+                sum(case when s.delay_departure >= %(late_threshold)s then 1 else 0 end) as departure_late_count
+
+        FROM
+        data_route as r,
+        data_trip as t,
+        data_sample as s
+
+        WHERE
+        r.id = %(route_id)s
+        AND t.route_id = r.id
+        AND t.valid
+        AND s.trip_id = t.id
+        '''+
+                   (''' AND t.start_date >= datetime('%(start_date)s')''' if filters.from_date else '')
+                   +
+                   (''' AND t.start_date <= datetime('%(to_date)s')''' if filters.to_date else '')
+                   +
+                   '''
+                       GROUP BY s.stop_id,week_day_local,hour_local
+                   ''')
+    select_kwargs = {
+        'route_id': route.id,
+        'early_threshold': early_threshold,
+        'late_threshold': late_threshold,
+        'stop_ids': route.stop_ids,
+        'start_date': filters.from_date,
+        'to_date': filters.to_date
+    }
+    print('=================================================================')
+    print(select_stmt % select_kwargs)
+    print('=================================================================')
+    return select_stmt , select_kwargs
+
+
+@benchit
+def _get_stats_table(route, filters):
+    early_threshold = -120
+    late_threshold = 300
+    if settings.USE_SQLITE3:
+        select_stmt, select_kwargs = _get_select_sqlite3(route=route, filters=filters,early_threshold=early_threshold,late_threshold=late_threshold)
+    else:
+        select_stmt, select_kwargs = _get_select_postgres(route=route, filters=filters,early_threshold=early_threshold,late_threshold=late_threshold)
+
     cursor = django.db.connection.cursor()
     cursor.execute(select_stmt, select_kwargs)
 
