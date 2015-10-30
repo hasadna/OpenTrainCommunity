@@ -9,7 +9,7 @@ mkvirtualenv -p $(which python3) opentrain
 Then from the virtualenv environement,
 
 ````
-(opentrain)% git clone git@github.com:hasadna/OpenTrainCommunity.git
+(opentrain)% git clone https://github.com/hasadna/OpenTrainCommunity.git
 (opentrain)% cd simple/train
 (opentrain)% pip install -r requirements.txt
 ````
@@ -22,7 +22,7 @@ DATA - Fresh install (on linux)
 To clean everything and refresh the data to the following steps
 
 * Verify that you are not running the project in any shell or runserver
-* run the script python clean_all.py. This will clean your DB and will rebuild it (e.g. it runs python manage.py migrate). Note this needs **sudo** permissions
+* Run the script python clean_all.py. This will clean your DB and will rebuild it (e.g. it runs python manage.py migrate). Note this needs **sudo** permissions
 
 **IMPORTANT** Make sure that there are no error in the SQL commands. They don't abort the script, so look at the output
 ```
