@@ -110,6 +110,10 @@ In this case, since you already copied the csv files, you just need to run:
 TEST SETUP
 ========================
 To test the setup, run the server locally:
-python manage.py runserver 
+```
+% python manage.py runserver 
+```
 Then go to this url:
+```
 http://localhost:8000
+```
