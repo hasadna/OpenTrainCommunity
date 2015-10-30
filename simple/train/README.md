@@ -1,4 +1,22 @@
-Fresh install (on linux)
+ENVIRONENT
+==========
+
+You need to work on python3.*. Best is to work on virtualenv
+```
+mkvirtualenv -p $(which python3) opentrain
+```
+
+Then from the virtualenv environement,
+
+````
+(opentrain)% git clone git@github.com:hasadna/OpenTrainCommunity.git
+(opentrain)% cd simple/train
+(opentrain)% pip install -r requirements.txt
+````
+*NOTE:* If you plan to work with sqlite3, you can edit locally the requirements.txt and remove the line with psycopg2
+
+
+DATA - Fresh install (on linux)
 ========================
 
 To clean everything and refresh the data to the following steps
