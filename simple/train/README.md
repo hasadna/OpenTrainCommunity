@@ -1,5 +1,5 @@
-ENVIRONENT
-==========
+DEV ENV SETUP
+=============
 
 You need to work on python3.*. Best is to work on virtualenv
 ```
