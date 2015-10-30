@@ -106,3 +106,10 @@ In this case, since you already copied the csv files, you just need to run:
 % python clean_all.py
 % python manage.py importall.py tmp/csv_data/*.csv
 ```
+
+TEST SETUP
+========================
+To test the setup, run the server locally:
+python manage.py runserver 
+Then go to this url:
+http://localhost:8000
