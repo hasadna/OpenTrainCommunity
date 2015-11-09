@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-09 21:12+0200\n"
-"PO-Revision-Date: 2015-11-09 21:12+0200\n"
+"POT-Creation-Date: 2015-11-09 21:33+0200\n"
+"PO-Revision-Date: 2015-11-09 21:33+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: he\n"
@@ -17,15 +17,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.5.4\n"
-
-msgid "to"
-msgstr "ל"
-
-msgid "route"
-msgstr "מסלול"
-
-msgid "source"
-msgstr "תחנת מוצא"
 
 msgid "Bad Services"
 msgstr "שירותים חשודים"
@@ -71,6 +62,10 @@ msgstr "שירותים"
 
 msgid "go"
 msgstr "סע"
+
+#| msgid "route"
+msgid "routes"
+msgstr "מסלולים"
 
 msgid "Id"
 msgstr "מזהה"
@@ -135,23 +130,29 @@ msgstr "קישור"
 msgid "line"
 msgstr "שורה"
 
-msgid "Routes"
-msgstr "מסלולים"
+#~ msgid "to"
+#~ msgstr "ל"
 
-msgid "Select only one of source and route"
-msgstr "בחר רק אחד ממסלול או תחנת מוצא"
+#~ msgid "source"
+#~ msgstr "תחנת מוצא"
 
-msgid "Sample"
-msgstr "דגימה"
+#~ msgid "Routes"
+#~ msgstr "מסלולים"
 
-msgid "on"
-msgstr "ב"
+#~ msgid "Select only one of source and route"
+#~ msgstr "בחר רק אחד ממסלול או תחנת מוצא"
 
-msgid "trip"
-msgstr "נסיעה"
+#~ msgid "Sample"
+#~ msgstr "דגימה"
 
-msgid "Route"
-msgstr "מסלול"
+#~ msgid "on"
+#~ msgstr "ב"
+
+#~ msgid "trip"
+#~ msgstr "נסיעה"
+
+#~ msgid "Route"
+#~ msgstr "מסלול"
 
 #~ msgid "start stop"
 #~ msgstr "תחנת התחלה"
