@@ -2,9 +2,9 @@
 {% load ot_filters %}
 {% load i18n %}
 {% block content %}
-    <form method="get">
+    <form method="get" action="{% url 'browse:routes' %}">
         {{ form }}
-        {% csrf_token %}
+        <button class="btn btn-success" type="submit">{% trans 'go' %}</button>
     </form>
     <table class="table" id="routesTable">
         <thead>

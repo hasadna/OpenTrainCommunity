@@ -1,10 +1,14 @@
-from django.core.urlresolvers import  reverse_lazy
-from django.views.generic import ListView, DetailView, TemplateView
-from data.models import Route, Service, Trip, Sample
-from django.shortcuts import render, get_object_or_404
-from django.utils.translation import ugettext as _
-from django.conf import settings
 import os.path
+
+from django.conf import settings
+from django.core.urlresolvers import reverse_lazy
+from django.shortcuts import get_object_or_404
+from django.utils.translation import ugettext as _
+from django.views.generic import ListView, DetailView, TemplateView, FormView
+from django.views.generic.edit import FormMixin
+
+from data.models import Route, Service, Trip, Sample
+from . import forms
 
 
 class BrowseMixin:
@@ -28,12 +32,50 @@ class BrowseMixin:
         pass
 
 
-class BrowseRoutes(BrowseMixin, ListView):
+class BrowseRoutes(FormMixin, ListView):
     model = Route
     template_name = 'browse/browse_routes.html'
+    form_class = forms.FilterStopsForm
     breadcrumbs = [
         (_('Routes'), reverse_lazy('browse:routes'))
     ]
+
+    def get(self, request):
+        self.form = self.get_form_class()(request.GET)
+        return super().get(request)
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        if self.form.is_valid():
+            route = self.form.cleaned_data['route']
+            source = self.form.cleaned_data['source']
+            if route and route == '0':
+                route = None
+            if source and source == '0':
+                source = None
+            if route and source:
+                self.form.add_error(None,_('Select only one of source and route'))
+            if route or source:
+                if route:
+                    start_stop_id, end_stop_id = route.split(',')
+                    start_stop_id = int(start_stop_id)
+                    end_stop_id = int(end_stop_id)
+                if source:
+                    start_stop_id = int(source)
+                    end_stop_id = None
+
+                all_routes = list(qs)
+                routes = []
+                for r in all_routes:
+                    if r.stop_ids[0] == start_stop_id and (r.stop_ids[-1] == end_stop_id or end_stop_id is None):
+                        routes.append(r)
+                return routes
+
+        return qs
+
+    def get_context_data(self, **kwargs):
+
+        return super().get_context_data(form=self.form, **kwargs)
 
 
 class BrowseRoute(BrowseMixin, DetailView):
@@ -84,7 +126,8 @@ class BrowseTrip(BrowseMixin, DetailView):
 
 class RawDateView(TemplateView):
     template_name = 'browse/browse_raw_data.html'
-    def get_context_data(self,**kwargs):
+
+    def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         OFFSET = 20
         filename = self.request.GET['file']
@@ -108,4 +151,3 @@ class RawDateView(TemplateView):
         ctx['prev'] = sample.get_text_link(line=lineno - OFFSET * 2 - 1)
         ctx['next'] = sample.get_text_link(line=lineno + OFFSET * 2 - 1)
         return ctx
-

@@ -48,6 +48,7 @@ def get_stop_name(stop_id,defval=None):
         return STOPS[stop_id]['stop_name']
     return defval or str(stop_id)
 
+
 def get_heb_stop_name(stop_id,defval=None):
     global STOPS
     read_json()
@@ -61,6 +62,13 @@ def get_stops(stop_ids=None):
     if stop_ids is None:
         return list(STOPS.values())
     return [STOPS[stop_id] for stop_id in stop_ids]
+
+def get_stops_as_choices():
+    read_json()
+    global STOPS
+    result = [(stop['gtfs_stop_id'],stop['heb_stop_names'][0]) for stop in STOPS.values()]
+    result.sort(key=lambda x:x[1])
+    return result
 
 
 def get_stop(stop_id):
