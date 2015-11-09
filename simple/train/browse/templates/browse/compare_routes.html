@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load i18n ot_filters %}
+{% block content %}
+<h1>{% trans 'Compare Routes' %}</h1>
+
+<table class="table">
+    <tr>
+        <td>
+            {% trans '# of stops' %}
+        </td>
+        {% for route in object_list %}
+            <td>
+            {{ route.stop_ids | length }}
+            </td>
+        {% endfor %}
+        <td>
+    </tr>
+    <tr>
+        <td>
+            {% trans '# of trips' %}
+        </td>
+            {% for route in object_list %}
+            <td>
+            {{ route.trips.count }}
+            </td>
+        {% endfor %}
+    </tr>
+    <tr>
+    {% for stop_id in all_stop_ids %}
+        <tr>
+            <td>
+                {{ stop_id | heb_stop_name }}
+            </td>
+            {% for route in object_list %}
+                <td>
+                {% if stop_id in route.stop_ids %}
+                    <span class="text-success glyphicon glyphicon-ok"></span>
+                {% else %}
+                    <span class="text-danger glyphicon glyphicon-remove"></span>
+                {% endif %}
+                </td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</table>
+{% endblock %}

@@ -8,6 +8,11 @@
     </form>
     {% if object_list %}
     <h2>{{ object_list | length}} {% trans 'routes' %}</h2>
+    {% if view.is_route %}
+        <a class="btn btn-primary"
+           href="{% url 'browse:compare_routes' %}?start_stop_id={{ view.start_stop_id }}&end_stop_id={{ view.end_stop_id }}">
+            {% trans 'Compare Stops' %}</a>
+    {% endif %}
     <table class="table" id="routesTable">
         <thead>
         <tr>

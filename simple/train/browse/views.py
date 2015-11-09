@@ -1,5 +1,6 @@
 import os.path
 
+import functools
 from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import get_object_or_404
@@ -57,13 +58,15 @@ class BrowseRoutes(FormMixin, ListView):
                 self.form.add_error(None,_('Select only one of source and route'))
             if route or source:
                 if route:
+                    self.is_route = True
                     start_stop_id, end_stop_id = route.split(',')
                     start_stop_id = int(start_stop_id)
                     end_stop_id = int(end_stop_id)
                 if source:
                     start_stop_id = int(source)
                     end_stop_id = None
-
+                self.start_stop_id = start_stop_id
+                self.end_stop_id = end_stop_id
                 all_routes = list(qs)
                 routes = []
                 for r in all_routes:
@@ -74,8 +77,54 @@ class BrowseRoutes(FormMixin, ListView):
         return qs.none()
 
     def get_context_data(self, **kwargs):
-
         return super().get_context_data(form=self.form, **kwargs)
+
+class BrowseCompareRoutes(ListView):
+    template_name = 'browse/compare_routes.html'
+    model = Route
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        start_stop_id = int(self.request.GET['start_stop_id'])
+        end_stop_id = int(self.request.GET['end_stop_id'])
+        all_routes = list(qs)
+        routes = []
+        for r in all_routes:
+            if r.stop_ids[0] == start_stop_id and r.stop_ids[-1] == end_stop_id:
+                routes.append(r)
+        self.routes = routes
+        return routes
+
+    def get_all_stops(self, routes):
+        all_stop_ids = set()
+        for r in routes:
+            all_stop_ids |= set(r.stop_ids)
+
+        def cmp_stops(s1,s2):
+            for r in routes:
+                try:
+                    idx1 = r.stop_ids.index(s1)
+                    idx2 = r.stop_ids.index(s2)
+                    if idx1 > idx2:
+                        return 1
+                    if idx1 < idx2:
+                        return -1
+                    return 0
+                except ValueError:
+                    pass
+            return 0
+
+        all_stop_ids = list(all_stop_ids)
+        all_stop_ids.sort(key=functools.cmp_to_key(cmp_stops))
+        return all_stop_ids
+
+    def get_context_data(self, **kwargs):
+        return super().get_context_data(all_stop_ids=self.get_all_stops(self.routes), **kwargs)
+
+
+
+
+
 
 
 class BrowseRoute(BrowseMixin, DetailView):
