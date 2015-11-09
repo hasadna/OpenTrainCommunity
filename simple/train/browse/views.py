@@ -93,6 +93,12 @@ class BrowseCompareRoutes(ListView):
             if r.stop_ids[0] == start_stop_id and r.stop_ids[-1] == end_stop_id:
                 routes.append(r)
         self.routes = routes
+        self.all_stop_ids = self.get_all_stops(routes)
+        all_stop_ids = set(self.all_stop_ids)
+        def get_vector(r):
+            return tuple([s in all_stop_ids for s in r.stop_ids])
+
+        routes.sort(key=get_vector)
         return routes
 
     def get_all_stops(self, routes):
@@ -119,7 +125,7 @@ class BrowseCompareRoutes(ListView):
         return all_stop_ids
 
     def get_context_data(self, **kwargs):
-        return super().get_context_data(all_stop_ids=self.get_all_stops(self.routes), **kwargs)
+        return super().get_context_data(all_stop_ids=self.all_stop_ids)
 
 
 
