@@ -99,7 +99,13 @@ class BrowseCompareRoutes(ListView):
             binstr = ''.join(str(int(x)) for x in r.vector)
             r.checksum = int(binstr,2)
 
+
         routes.sort(key=lambda r:r.vector)
+        checksums = [r.checksum for r in routes]
+        for r in routes:
+            r.checksum_index = checksums.index(r.checksum)
+
+
 
         return routes
 

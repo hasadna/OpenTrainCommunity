@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-09 21:47+0200\n"
-"PO-Revision-Date: 2015-11-09 21:48+0200\n"
+"POT-Creation-Date: 2015-11-09 23:47+0200\n"
+"PO-Revision-Date: 2015-11-09 23:48+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: he\n"
@@ -75,7 +75,6 @@ msgstr "סע"
 msgid "routes"
 msgstr "מסלולים"
 
-#| msgid "Skipped Stops"
 msgid "Compare Stops"
 msgstr "השווה תחנות"
 
@@ -141,6 +140,20 @@ msgstr "קישור"
 
 msgid "line"
 msgstr "שורה"
+
+#| msgid "Compare Stops"
+msgid "Compare Routes"
+msgstr "השוואת מסלולים"
+
+msgid "# of stops"
+msgstr "# תחנות"
+
+#| msgid "trips"
+msgid "# of trips"
+msgstr "# נסיעות"
+
+msgid "checksum index"
+msgstr "מזהה ביקורת"
 
 msgid "Routes"
 msgstr "מסלולים"
