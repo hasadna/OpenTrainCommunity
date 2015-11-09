@@ -94,11 +94,13 @@ class BrowseCompareRoutes(ListView):
                 routes.append(r)
         self.routes = routes
         self.all_stop_ids = self.get_all_stops(routes)
-        all_stop_ids = set(self.all_stop_ids)
-        def get_vector(r):
-            return tuple([s in all_stop_ids for s in r.stop_ids])
+        for r in routes:
+            r.vector = tuple(s in r.stop_ids for s in self.all_stop_ids)
+            binstr = ''.join(str(int(x)) for x in r.vector)
+            r.checksum = int(binstr,2)
 
-        routes.sort(key=get_vector)
+        routes.sort(key=lambda r:r.vector)
+
         return routes
 
     def get_all_stops(self, routes):

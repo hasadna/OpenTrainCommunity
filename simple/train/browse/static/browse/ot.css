@@ -49,3 +49,19 @@ body {
 .hideit {
 	display: none;
 }
+
+td.bad {
+    background-color: red;
+}
+
+td.good {
+    background-color: green;
+}
+
+.compare-table td {
+    border: 2px solid black;
+}
+
+.compare-table tr {
+    border: 2px solid black;
+}

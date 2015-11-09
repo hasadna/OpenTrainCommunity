@@ -3,7 +3,8 @@
 {% block content %}
 <h1>{% trans 'Compare Routes' %}</h1>
 
-<table class="table">
+<table class="table table-hover compare-table" >
+    <tbody>
     <tr>
         <td>
             {% trans '# of stops' %}
@@ -13,8 +14,8 @@
             {{ route.stop_ids | length }}
             </td>
         {% endfor %}
-        <td>
     </tr>
+
     <tr>
         <td>
             {% trans '# of trips' %}
@@ -26,21 +27,32 @@
         {% endfor %}
     </tr>
     <tr>
+        <td>
+            {% trans 'checksum' %}
+        </td>
+            {% for route in object_list %}
+            <td>
+            {{ route.checksum }}
+            </td>
+        {% endfor %}
+    </tr>
+    <tr>
     {% for stop_id in all_stop_ids %}
         <tr>
             <td>
                 {{ stop_id | heb_stop_name }}
             </td>
             {% for route in object_list %}
-                <td>
-                {% if stop_id in route.stop_ids %}
-                    <span class="text-success glyphicon glyphicon-ok"></span>
-                {% else %}
-                    <span class="text-danger glyphicon glyphicon-remove"></span>
-                {% endif %}
-                </td>
+                {% spaceless %}
+                    {% if stop_id in route.stop_ids %}
+                        <td class="good"></td>
+                    {% else %}
+                        <td class="bad"></td>
+                    {% endif %}
+                {% endspaceless %}
             {% endfor %}
         </tr>
     {% endfor %}
+    </tbody>
 </table>
 {% endblock %}
