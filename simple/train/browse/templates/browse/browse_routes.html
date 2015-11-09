@@ -2,7 +2,7 @@
 {% load ot_filters %}
 {% load i18n %}
 {% block content %}
-    <form method="get" action="{% url 'browse:routes' %}">
+    <form method="get" action="{% url 'browse:routes' %}" dir="rtl">
         {{ form }}
         <button class="btn btn-success" type="submit">{% trans 'go' %}</button>
     </form>
@@ -75,12 +75,15 @@
 
 {% block post_scripts %}
     <script>
-        $(document).ready(function () {
+        $(function () {
             $('#routesTable').dataTable({
                 paging: false,
                 searching: false,
                 bInfo: false,
             });
+        });
+        $(function() {
+            $('select').select2();
         });
     </script>
 {% endblock %}
