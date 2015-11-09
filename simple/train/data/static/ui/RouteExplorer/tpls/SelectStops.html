@@ -19,15 +19,9 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-6">
-                    <select name="month" class="form-control" placeholder="חודש"
-                        ng-model="month" ng-options="month.id as month.name for month in months">
-                    </select>
-                </div>
-                <div class="col-sm-6">
-                    <input name="year" class="form-control" type="number" min="{{ minYear }}" max="{{ maxYear }}" placeholder="שנה"
-                        ng-model="year" />
-                </div>
+              <div class="col-sm-12">
+                <select name="period" class="form-control" ng-model="period" ng-options="period as period.name for period in periods"></select>
+              </div>
             </div>
             <div class="row">
                 <div class="col-sm-12">

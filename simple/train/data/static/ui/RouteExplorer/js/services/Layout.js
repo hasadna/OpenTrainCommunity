@@ -19,7 +19,9 @@ function($http, $q) {
                 routes = response.data.map(function(r) { return {
                     id: r.id,
                     stops: r.stop_ids,
-                    count: r.count
+                    count: r.count,
+                    minDate: new Date(r.min_date),
+                    maxDate: new Date(r.max_date)
                 }; });
 
                 routesMap = routes.reduce(function(m, r) { m[r.id] = r; return m; }, {});
@@ -63,6 +65,8 @@ function($http, $q) {
     };
 
     var findRoutesByDate = function(origin, destination, year, month) {
+        // TODO use minDate and maxDate from our cached routes to avoid the http request
+
         var d = $q.defer();
         var matchingRoutes = findRoutes(routes, origin, destination);
         if (matchingRoutes.length === 0) {
@@ -95,13 +99,32 @@ function($http, $q) {
         return routesMap[routeId] || null;
     };
 
+    var getRoutesDateRange = function() {
+        var max = new Date(1900, 0, 1);
+        var min = new Date(2100, 0, 1);
+
+        for (var i in routes) {
+            route = routes[i];
+            if (route.count === 0)
+              continue;
+
+            if (route.minDate && route.minDate < min) min = route.minDate;
+            if (route.maxDate && route.maxDate > max) max = route.maxDate;
+        }
+        return {
+          min: min,
+          max: max
+        };
+    };
+
     service = {
         getStops: function() { return stops; },
         getRoutes: function() { return routes; },
         findRoute: findRoute,
         findStop: findStop,
         findRoutes: function(origin, destination) { return findRoutes(routes, origin, destination); },
-        findRoutesByDate: findRoutesByDate
+        findRoutesByDate: findRoutesByDate,
+        getRoutesDateRange: getRoutesDateRange
     };
 
     return loadedPromise.then(function() { return service; });
