@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-09 20:39+0200\n"
-"PO-Revision-Date: 2015-11-09 20:39+0200\n"
+"POT-Creation-Date: 2015-11-09 21:12+0200\n"
+"PO-Revision-Date: 2015-11-09 21:12+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: he\n"
@@ -63,6 +63,9 @@ msgstr "מספר שורה"
 msgid "Line"
 msgstr "שורה"
 
+msgid "Stops"
+msgstr "תחנות"
+
 msgid "Services"
 msgstr "שירותים"
 
@@ -78,9 +81,6 @@ msgstr "מוצא"
 msgid "destination"
 msgstr "יעד"
 
-msgid "Stops"
-msgstr "תחנות"
-
 msgid "Trips"
 msgstr "נסיעות"
 
@@ -89,6 +89,9 @@ msgstr "נסיעה ראשונה"
 
 msgid "latest trip"
 msgstr "נסיעה אחרונה"
+
+msgid "No routes. Please select route or source"
+msgstr "אין מסלולים. אנא בחר מסלול או תחנת מוצא מלמעלה"
 
 msgid "Service"
 msgstr "שירות"
