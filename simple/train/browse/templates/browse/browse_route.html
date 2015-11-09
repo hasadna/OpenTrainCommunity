@@ -2,7 +2,18 @@
 {% load ot_filters %}
 {% load i18n %}
 {% block content %}
-
+<h2>{% trans 'Stops' %}</h2>
+<table class="table table-hover">
+<tr>
+    {% for stop in route.get_stops %}
+        <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ stop.stop_id }}</td>
+        <td>{{ stop.stop_id | heb_stop_name }}</td>
+        </tr>
+    {% endfor %}
+</tr>
+</table>
 <h2>{% trans 'Services' %}</h2>
 <h3>{{route.services.count}} {% trans 'Services' %}</h3>
 <table class="table" id="servicesTable">
