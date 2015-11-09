@@ -1,8 +1,7 @@
 bower_components/
 node_modules/
 .sass-cache/
-!browse/static/bs/css
-!browse/static/bs_rtl/css
+!browse/static/**
 !browse/**/css
 error.log
 tmp
