@@ -9,13 +9,13 @@
             <div class="row">
                 <div class="col-sm-12">
                     <input ng-model="origin" name="origin" class="form-control" type="text" placeholder="בחרו תחנת מוצא" autocomplete="off"
-                        typeahead="stop as stop.name for stop in stops | filter:$viewValue" typeahead-editable="false" />
+                        uib-typeahead="stop as stop.name for stop in stops | filter:$viewValue" typeahead-editable="false" />
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-12">
                     <input ng-model="destination" name="destination" class="form-control" type="text" placeholder="בחרו תחנת יעד" autocomplete="off"
-                        typeahead="stop as stop.name for stop in stops | filter:$viewValue" typeahead-editable="false" />
+                        uib-typeahead="stop as stop.name for stop in stops | filter:$viewValue" typeahead-editable="false" />
                 </div>
             </div>
             <div class="row">

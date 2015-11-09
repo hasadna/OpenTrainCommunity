@@ -13,16 +13,16 @@
 
     <div ng-show="loaded">
         <div class="days-container btn-group btn-group-lg btn-group-justified btn-group-light">
-            <div class="btn btn-default" ng-model="selectedDay" btn-radio="null"
-              tooltip="{{ tripCount() }} נסיעות" tooltip-append-to-body="true">
+            <div class="btn btn-default" ng-model="selectedDay" uib-btn-radio="null"
+              uib-tooltip="{{ tripCount() }} נסיעות" tooltip-append-to-body="true">
                 <div class="btn-title">&zwnj;<i class="fa fa-calendar"></i></div>
                 <div class="btn-text">הכל</div>
             </div>
             <div class="btn btn-default"
               ng-repeat="day in days"
               ng-class="{ disabled: isDayEmpty(day) }"
-              ng-model="$parent.selectedDay" btn-radio="day.id"
-              tooltip="{{ tripCount(day.id) }} נסיעות" tooltip-append-to-body="true">
+              ng-model="$parent.selectedDay" uib-btn-radio="day.id"
+              uib-tooltip="{{ tripCount(day.id) }} נסיעות" tooltip-append-to-body="true">
                 <div class="btn-title">{{ day.abbr }}</div>
                 <div class="btn-text">{{ day.name }}</div>
             </div>
@@ -30,16 +30,16 @@
 
         <div class="box">
             <div class="times-container btn-group btn-group-lg btn-group-justified btn-group-tabs btn-group-light">
-                <div class="btn btn-default" ng-model="selectedTime" btn-radio="null"
-                  tooltip="{{ tripCount(selectedDay) }} נסיעות" tooltip-append-to-body="true">
+                <div class="btn btn-default" ng-model="selectedTime" uib-btn-radio="null"
+                  uib-tooltip="{{ tripCount(selectedDay) }} נסיעות" tooltip-append-to-body="true">
                     <div class="btn-text">הכל</div>
                 </div>
                 <div class="btn btn-default"
                   ng-repeat="time in times"
                   ng-class="{ disabled: isTimeEmpty(time) }"
                   ng-model="$parent.selectedTime"
-                  btn-radio="time.id"
-                  tooltip="{{ tripCount($parent.selectedDay, time.id) }} נסיעות" tooltip-append-to-body="true">
+                  uib-btn-radio="time.id"
+                  uib-tooltip="{{ tripCount($parent.selectedDay, time.id) }} נסיעות" tooltip-append-to-body="true">
                     <div class="btn-text">{{ time.from }}<br/>{{ time.to }}</div>
                 </div>
             </div>
@@ -61,23 +61,23 @@
                       <tr class="table-header-secondary">
                           <th></th>
                           <th></th>
-                          <th tooltip="הגעה יותר מ-2 דקות לפני הזמן המתוכנן" tooltip-append-to-body="true">
+                          <th uib-tooltip="הגעה יותר מ-2 דקות לפני הזמן המתוכנן" tooltip-append-to-body="true">
                               הגעה מוקדמת
                           </th>
-                          <th tooltip="הגעה עד 5 דקות אחרי הזמן המתוכנן" tooltip-append-to-body="true">
+                          <th uib-tooltip="הגעה עד 5 דקות אחרי הזמן המתוכנן" tooltip-append-to-body="true">
                               הגעה בזמן
                           </th>
-                          <th tooltip="הגעה מעבר ל-5 דקות אחרי הזמן המתוכנן" tooltip-append-to-body="true">
+                          <th uib-tooltip="הגעה מעבר ל-5 דקות אחרי הזמן המתוכנן" tooltip-append-to-body="true">
                               הגעה באיחור
                           </th>
 
-                          <th tooltip="יציאה יותר מ-2 דקות לפני הזמן המתוכנן" tooltip-append-to-body="true">
+                          <th uib-tooltip="יציאה יותר מ-2 דקות לפני הזמן המתוכנן" tooltip-append-to-body="true">
                               יציאה מוקדמת
                           </th>
-                          <th tooltip="יציאה עד 5 דקות אחרי הזמן המתוכנן" tooltip-append-to-body="true">
+                          <th uib-tooltip="יציאה עד 5 דקות אחרי הזמן המתוכנן" tooltip-append-to-body="true">
                               יציאה בזמן
                           </th>
-                          <th tooltip="יציאה מעבר ל-5 דקות אחרי הזמן המתוכנן" tooltip-append-to-body="true">
+                          <th uib-tooltip="יציאה מעבר ל-5 דקות אחרי הזמן המתוכנן" tooltip-append-to-body="true">
                               יציאה באיחור
                           </th>
                       </tr>

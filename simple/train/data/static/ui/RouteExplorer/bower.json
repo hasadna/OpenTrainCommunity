@@ -18,13 +18,12 @@
   "dependencies": {
     "angular": "1.4",
     "angular-route": "1.4",
-    "angular-bootstrap": "0.13.4",
+    "angular-bootstrap": "0.14",
     "bootstrap-rtl": "~3.3.1",
     "bootstrap-sass": "~3.3.2",
     "fontawesome": "~4.3.0"
   },
   "resolutions": {
-    "angular": "1.4",
-    "angular-route": "1.4"
+    "angular": "1.4"
   }
 }
