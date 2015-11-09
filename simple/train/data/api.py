@@ -53,15 +53,21 @@ def get_trip(req, trip_id):
 
 @cache_utils.cachereq
 def get_all_routes(req):
-    from django.db.models import Count
+    from django.db.models import Count, Min, Max
 
-    routes = list(Route.objects.all().order_by('id').annotate(trips_count=Count('trips')))
+    routes = list(Route.objects.all().order_by('id').annotate(
+        trips_count=Count('trips'),
+        min_date=Min('trips__start_date'),
+        max_date=Max('trips__start_date')))
+
     result = []
     for r in routes:
         result.append({
             'id': r.id,
             'stop_ids': r.stop_ids,
-            'count': r.trips_count
+            'count': r.trips_count,
+            'min_date': _encode_date(r.min_date),
+            'max_date': _encode_date(r.max_date)
         })
     return json_resp(result)
 
@@ -147,6 +153,18 @@ def _parse_date(dt_str):
         raise errors.InputError('Wrong date param %s: %s' % (dt_str, str(e)))
 
 
+def _encode_date(date):
+    import calendar
+    if date is None:
+        return None
+
+    assert isinstance(date, (datetime.datetime, datetime.date)), date
+
+    if hasattr(date, 'utcoffset') and date.utcoffset:
+        date -= date.utcoffset() or 0
+
+    millis = int(calendar.timegm(date.timetuple()) * 1000)
+    return millis
 
 @cache_utils.cachereq
 @benchit

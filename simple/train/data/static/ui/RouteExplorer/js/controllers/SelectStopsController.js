@@ -6,12 +6,9 @@ function($scope, $rootScope, $location, Layout, Locale) {
     $scope.destination = null;
     $scope.months = Locale.months;
 
-    var today = new Date();
-    var lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-    $scope.month = lastMonth.getMonth() + 1; // We're using 1-based months vs JavaScript's 0-based
-    $scope.year = lastMonth.getFullYear();
-    $scope.minYear = 2013;
-    $scope.maxYear = $scope.year;
+    var dateRange = Layout.getRoutesDateRange();
+    $scope.periods = generatePeriods(dateRange.min, dateRange.max);
+    $scope.period = $scope.periods[0];
 
     $scope.formValid = function() {
         return (
@@ -32,14 +29,16 @@ function($scope, $rootScope, $location, Layout, Locale) {
     $scope.goToRoutes = function() {
         $scope.noRoutes = false;
         $scope.loading = true;
-        Layout.findRoutesByDate($scope.origin.id, $scope.destination.id, $scope.year, $scope.month)
+        var year = $scope.period.from.getFullYear();
+        var month = $scope.period.from.getMonth() + 1;
+        Layout.findRoutesByDate($scope.origin.id, $scope.destination.id, year, month)
             .then(function(routes) {
                 if (routes.length === 0) {
                     $scope.noRoutes = true;
                 } else if (routes.length == 1) {
-                    $location.path('/' + $scope.year + '/' + $scope.month + '/routes/' + routes[0].id);
+                    $location.path('/' + year + '/' + month + '/routes/' + routes[0].id);
                 } else {
-                    $location.path('/' + $scope.year + '/' + $scope.month + '/select-route/' + $scope.origin.id + '/' + $scope.destination.id);
+                    $location.path('/' + year + '/' + month + '/select-route/' + $scope.origin.id + '/' + $scope.destination.id);
                 }
             })
             .finally(function() {
@@ -50,4 +49,24 @@ function($scope, $rootScope, $location, Layout, Locale) {
     $scope.dismissError = function() {
         $scope.noRoutes = false;
     };
+
+    function generatePeriods(fromDate, toDate) {
+      // fromDate=1970-1-1 due to a data bug. This is a quick temporary workaround
+      if (fromDate.getFullYear() < 2013) fromDate = new Date(2013, 0, 1);
+
+      var periods = [];
+      var from = new Date(fromDate.getFullYear(), fromDate.getMonth(), 1);
+      while (from < toDate) {
+        to = new Date(from.getFullYear(), from.getMonth() + 1, from.getDate());
+        var period = {
+          from: from,
+          to: to,
+          name: Locale.months[from.getMonth()].name + " " + from.getFullYear()
+        };
+        periods.push(period);
+        from = to;
+      }
+      periods.reverse();
+      return periods;
+    }
 }]);
