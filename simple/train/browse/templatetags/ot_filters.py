@@ -1,3 +1,5 @@
+import json
+
 from django import template
 from django.template.defaultfilters import mark_safe
 from django.conf import settings
@@ -36,5 +38,9 @@ def u(obj):
     return obj
 
 
+@register.filter
+def route_ids_json(objs):
+    route_ids = [obj.id for obj in objs]
+    return json.dumps(route_ids)
 
 

@@ -1,3 +1,4 @@
+import json
 import os.path
 
 import functools
@@ -89,14 +90,8 @@ class BrowseCompareRoutes(ListView):
 
     def get_queryset(self):
         qs = super().get_queryset()
-        start_stop_id = int(self.request.GET['start_stop_id'])
-        end_stop_id = int(self.request.GET['end_stop_id'])
-        all_routes = list(qs)
-        routes = []
-        for r in all_routes:
-            if r.stop_ids[0] == start_stop_id and r.stop_ids[-1] == end_stop_id:
-                routes.append(r)
-        self.routes = routes
+        route_ids = json.loads(self.request.GET['routes'])
+        routes = list(Route.objects.filter(id__in=route_ids))
         self.all_stop_ids = self.get_all_stops(routes)
         for r in routes:
             r.vector = tuple(s in r.stop_ids for s in self.all_stop_ids)
