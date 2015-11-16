@@ -11,6 +11,9 @@
     <thead>
     <tr>
         <th>
+            {% trans 'Sample Id' %}
+        </th>
+        <th>
             {% trans 'Stop Name' %}
         </th>
         <th>
@@ -36,6 +39,7 @@
     <tbody>
 {% for sample in samples %}
     <tr>
+        <td>{{sample.id }}</td>
         <td>{{sample.stop_id | heb_stop_name }}</td>
         <td>{{ sample.stop_id }}</td>
         <td>{{sample.exp_arrival | stop_time}}</td>

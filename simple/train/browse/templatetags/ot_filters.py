@@ -39,6 +39,13 @@ def u(obj):
 
 
 @register.filter
+def uid(obj):
+    if hasattr(obj,'get_absolute_url'):
+        return mark_safe('<a href="{0}">{1}</a>'.format(obj.get_absolute_url(),obj.id))
+    return obj.id
+
+
+@register.filter
 def route_ids_json(objs):
     route_ids = [obj.id for obj in objs]
     return json.dumps(route_ids)

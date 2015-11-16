@@ -278,6 +278,10 @@ class Trip(models.Model):
 class Route(models.Model):
     stop_ids = ArrayField(db_index=True, unique=True)
 
+    def get_absolute_url(self):
+        return reverse('browse:route',kwargs=dict(pk=self.id))
+
+
     def get_short_name(self):
         from . import services
 

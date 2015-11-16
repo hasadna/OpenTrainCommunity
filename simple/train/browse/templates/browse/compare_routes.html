@@ -7,6 +7,16 @@
     <tbody>
     <tr>
         <td>
+            {% trans 'route' %}
+        </td>
+        {% for route in object_list %}
+            <td>
+            {{ route | uid }}
+            </td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <td>
             {% trans '# of stops' %}
         </td>
         {% for route in object_list %}
