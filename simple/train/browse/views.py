@@ -2,6 +2,11 @@ import json
 import os.path
 
 import functools
+
+import datetime
+
+import pytz
+import xlrd
 from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import get_object_or_404
@@ -190,8 +195,23 @@ class RawDateView(TemplateView):
         sample = get_object_or_404(Sample, pk=sample_id)
         from_lineno = max(0, lineno - OFFSET)
         to_lineno = (lineno + OFFSET)
-        cur_lineno = 1
+        ext = os.path.splitext(filename)
+        assert ext in ['.txt','.xlsx']
+        if ext == '.txt':
+            lines = self.get_text_lines(filename, from_lineno, to_lineno)
+        elif ext == '.xlsx':
+            lines = self.get_excel_lines(filename, from_lineno, to_lineno)
+
+        ctx['lines'] = lines
+        ctx['filename'] = filename
+        ctx['lineno'] = lineno
+        ctx['prev'] = sample.get_text_link(line=lineno - OFFSET * 2 - 1)
+        ctx['next'] = sample.get_text_link(line=lineno + OFFSET * 2 - 1)
+        return ctx
+
+    def get_text_lines(self, filename, from_lineno, to_lineno):
         lines = []
+        cur_lineno = 1
         file_path = os.path.join(settings.TXT_FOLDER, filename)
         with open(file_path, encoding="windows-1255") as fh:
             for line in fh:
@@ -199,9 +219,32 @@ class RawDateView(TemplateView):
                     lines.append({'lineno': cur_lineno,
                                   'line': line.strip().encode('utf-8', errors='ignore')})
                 cur_lineno += 1
-        ctx['lines'] = lines
-        ctx['filename'] = filename
-        ctx['lineno'] = lineno
-        ctx['prev'] = sample.get_text_link(line=lineno - OFFSET * 2 - 1)
-        ctx['next'] = sample.get_text_link(line=lineno + OFFSET * 2 - 1)
-        return ctx
+        return lines
+
+    def get_excel_lines(self, filename, from_lineno, to_lineno):
+        sheet = self.get_sheet(file_path)
+        lines = []
+        ncols = sheet.ncols;
+        for rowx in range(from_lineno, to_lineno):
+            line_values = []
+            for colx in range(1,ncols):
+                cell_value = sheet.cell_value(rowx, colx)
+                cell_type = sheet.cell_type(rowx, colx)
+                if cell_type == xlrd.XL_CELL_DATE:
+                    dt_tuple = xlrd.xldate_as_tuple(cell_value, wb.datemode)
+                    dt = datetime.datetime(*dt_tuple)
+                    dt = pytz.timezone('Asia/Jerusalem').localize(dt)
+                    line_values.append(dt.isoformat())
+                else:
+                    line_values.append(cell_value)
+            line = ' '.join(line_values)
+            lines.append({'lineno':rowx,
+                          'line': line})
+        return lines
+
+    def get_sheet(self, filename):
+        import xlrd
+        wb = xlrd.open_workbook(filename)
+        sheet = wb.sheet_by_index(0)
+        return sheet
+
