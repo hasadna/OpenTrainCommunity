@@ -72,12 +72,16 @@ class BrowseRoutes(FormMixin, ListView):
                 for r in all_routes:
                     if r.stop_ids[0] == start_stop_id and (r.stop_ids[-1] == end_stop_id or end_stop_id is None):
                         routes.append(r)
+                min_stops = self.form.cleaned_data['min_stops']
+                if min_stops:
+                    routes = [r for r in routes if r.trips.count() >= min_stops]
                 return routes
 
         return qs.none()
 
     def get_context_data(self, **kwargs):
         return super().get_context_data(form=self.form, **kwargs)
+
 
 class BrowseCompareRoutes(ListView):
     template_name = 'browse/compare_routes.html'
@@ -104,9 +108,6 @@ class BrowseCompareRoutes(ListView):
         checksums = [r.checksum for r in routes]
         for r in routes:
             r.checksum_index = checksums.index(r.checksum)
-
-
-
         return routes
 
     def get_all_stops(self, routes):
@@ -134,11 +135,6 @@ class BrowseCompareRoutes(ListView):
 
     def get_context_data(self, **kwargs):
         return super().get_context_data(all_stop_ids=self.all_stop_ids)
-
-
-
-
-
 
 
 class BrowseRoute(BrowseMixin, DetailView):

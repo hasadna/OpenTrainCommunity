@@ -34,4 +34,5 @@ def get_all_stops():
 class FilterStopsForm(forms.Form):
     route = forms.ChoiceField(choices=get_all_routes(), label=_('route'), required=False)
     source = forms.ChoiceField(choices=get_all_stops(),label=_('source'),required=False)
+    min_stops = forms.IntegerField(min_value=0,label=_('min stops'),required=False)
 
