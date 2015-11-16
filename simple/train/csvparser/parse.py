@@ -191,13 +191,13 @@ class Trip(object):
                 #    or stop.actual_departure is None and stop.exp_departure is not None):
                 #    raise CheckException(ERROR_MISSING_SAMPLE,'stop index %d' % idx)
 
-        for idx in xrange(1, len(self.stops)):
+        for idx in range(1, len(self.stops)):
             self.check_gap(idx - 1, idx)
 
-        for idx in xrange(1, len(self.stops)):
+        for idx in range(1, len(self.stops)):
             self.check_csv_incr(idx - 1, idx)
 
-        for idx in xrange(len(self.stops)):
+        for idx in range(len(self.stops)):
             self.check_delay(idx)
 
 

@@ -12,6 +12,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 def parse_xl(xlname, csvname=None):
+    base_xlname = os.path.basename(xlname)
     wb = xlrd.open_workbook(xlname)
     sheet = wb.sheet_by_index(0)
     heb_header = [sheet.cell_value(3, colx) for colx in range(1, sheet.ncols)]
@@ -33,7 +34,7 @@ def parse_xl(xlname, csvname=None):
                     row.append(dt)
                 else:
                     row.append(cell_value)
-            output_dict = xl_row_to_csv(dict(zip(header, row)))
+            output_dict = xl_row_to_csv(dict(zip(header, row)), base_xlname, rowx)
             wr.writerow(output_dict)
             if rowx % 20000 == 0:
                 LOGGER.info('Completed %s/%s rows', rowx, sheet.nrows)
@@ -106,7 +107,7 @@ def diff_dt(actual, exp):
     return ''
 
 
-def xl_row_to_csv(input_dict):
+def xl_row_to_csv(input_dict, filename, linenum):
     output_dict = dict()
     for n in CSV_HEADER:
         output_dict[n] = ''
@@ -133,6 +134,8 @@ def xl_row_to_csv(input_dict):
     # in which a train added an unplanned station (very rare and not severe)
     # eran: this is great idea, for now I don't want to add new fields to the csv, until we change the csv code
     # anyway, we should maybe consider write all this import from scratch...
+    output_dict['data_file'] = filename
+    output_dict['data_file_line'] = linenum
     return output_dict
 
 

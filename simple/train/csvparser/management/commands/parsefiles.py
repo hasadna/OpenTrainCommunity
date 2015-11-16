@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 import csvparser.parse
 
+
 class Command(BaseCommand):
     args = ''
     help = 'parse files'
