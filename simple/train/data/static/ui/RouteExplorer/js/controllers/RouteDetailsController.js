@@ -1,9 +1,13 @@
 angular.module('RouteExplorer').controller('RouteDetailsController',
 ['$scope', '$route', '$http', '$location', 'LocationBinder', 'Layout', 'Locale',
 function($scope, $route, $http, $location, LocationBinder, Layout, Locale) {
-    var year = $route.current.params.year;
-    var month = $route.current.params.month;
-    var routeId = $route.current.params.routeId;
+    var routeParams = $route.current.params;
+
+    var period = parsePeriod(routeParams.period);
+    var startDate = period.from;
+    var endDate = new Date(period.to.getFullYear(), period.to.getMonth() + 1, 1);
+
+    var routeId = routeParams.routeId;
     var stopIds = Layout.findRoute(routeId).stops;
     var statsMap = {};
 
@@ -11,7 +15,10 @@ function($scope, $route, $http, $location, LocationBinder, Layout, Locale) {
     $scope.stopIds = stopIds;
     $scope.origin = stopIds[0];
     $scope.destination = stopIds[stopIds.length - 1];
-    $scope.selectedMonth = Locale.months[month - 1].name + ' ' + year;
+    $scope.selectedPeriod = formatMonth(period.from);
+    if (period.to > period.from) {
+        $scope.selectedPeriod += " \u2014 " + formatMonth(period.to)
+    }
 
     $scope.selectedDay = null;
     $scope.days = Locale.days;
@@ -19,10 +26,7 @@ function($scope, $route, $http, $location, LocationBinder, Layout, Locale) {
     $scope.selectedTime = null;
     $scope.times = [];
 
-    var fromDate = new Date(year, month - 1, 1);
-    var toDate = new Date(year, month, 1); // Date constructor wraps around so this works on December as well
-
-    $http.get('/api/route-info-full', { params: { route_id: routeId, from_date: fromDate.getTime(), to_date: toDate.getTime() } })
+    $http.get('/api/route-info-full', { params: { route_id: routeId, from_date: startDate.getTime(), to_date: endDate.getTime() } })
         .success(function(data) {
             loadStats(data);
             $scope.loaded = true;
@@ -123,5 +127,22 @@ function($scope, $route, $http, $location, LocationBinder, Layout, Locale) {
         function formatHour(hour) {
             return ('0' + hour % 24 + '').slice(-2) + ':00';
         }
+    }
+
+    function parsePeriod(periodString) {
+        function parseMonth(monthString) {
+            var year = Number(monthString.substr(0, 4));
+            var month = Number(monthString.substr(5, 2));
+            return new Date(year, month - 1, 1);
+        }
+
+        var parts = periodString.split('-', 2);
+        var from = parseMonth(parts[0]);
+        var to = parts.length > 1 ? parseMonth(parts[1]) : from;
+        return { from: from, to: to };
+    }
+
+    function formatMonth(date) {
+        return Locale.months[date.getMonth()].name + ' ' + date.getFullYear()
     }
 }]);

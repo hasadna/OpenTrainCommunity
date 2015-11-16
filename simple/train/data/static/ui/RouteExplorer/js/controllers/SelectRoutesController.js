@@ -57,7 +57,7 @@ function($scope, $location, $route, Layout) {
     };
 
     $scope.routeUrl = function(route) {
-        return '/#/' + year + '/' + month + '/routes/' + route.id;
+        return '/#/' + year + ("0" + month).slice(-2) + '/routes/' + route.id;
     };
 
     function collapseRoutes(routes) {

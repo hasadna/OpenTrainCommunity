@@ -29,7 +29,7 @@
               controller: 'SelectRouteController',
               resolve: { 'Layout': 'Layout' }
           })
-          .when('/:year/:month/routes/:routeId', {
+          .when('/:period/routes/:routeId', {
               pageId: 'route',
               templateUrl: templateUrl('RouteDetails'),
               controller: 'RouteDetailsController',

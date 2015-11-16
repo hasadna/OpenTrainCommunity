@@ -36,7 +36,7 @@ function($scope, $rootScope, $location, Layout, Locale) {
                 if (routes.length === 0) {
                     $scope.noRoutes = true;
                 } else if (routes.length == 1) {
-                    $location.path('/' + year + '/' + month + '/routes/' + routes[0].id);
+                    $location.path('/' + year + ("0" + month).slice(-2) + '/routes/' + routes[0].id);
                 } else {
                     $location.path('/' + year + '/' + month + '/select-route/' + $scope.origin.id + '/' + $scope.destination.id);
                 }
