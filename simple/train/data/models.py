@@ -5,13 +5,13 @@ from django.conf import settings
 from data.fields import ArrayField
 import pytz
 from django.utils.translation import ugettext as _
-
-
 import logging
+
 LOGGER = logging.getLogger(__name__)
 
 ISRAEL_TIMEZONE = pytz.timezone(settings.TIME_ZONE)
-IST=ISRAEL_TIMEZONE
+IST = ISRAEL_TIMEZONE
+
 
 class Sample(models.Model):
     """
@@ -34,8 +34,8 @@ class Sample(models.Model):
     stop_id = models.IntegerField(db_index=True)  # the stop id
     stop_name = models.CharField(
         max_length=100)  # the stop name in english - not formal name, if this is not real stop will be prefixed with -
-    #is_real_stop = models.BooleanField(default=False)  # true is this is real stop
-    is_skipped = models.BooleanField(default=False) # true if this is skipped stop
+    # is_real_stop = models.BooleanField(default=False)  # true is this is real stop
+    is_skipped = models.BooleanField(default=False)  # true if this is skipped stop
     valid = models.BooleanField(default=False,
                                 db_index=True)  # true if this is stop in valid trip (e.g. with no errros)
     is_first = models.BooleanField(default=False)  # true if this is the first stop of the trip (index = 0)
@@ -52,21 +52,21 @@ class Sample(models.Model):
     delay_departure = models.FloatField(blank=True, null=True)  # the delay in the departure in seconds
     data_file = models.CharField(max_length=100)  # the name of the data file (text file)
     data_file_line = models.IntegerField(null=True)  # the line number in the data file (text file)
-    trip = models.ForeignKey('Trip', blank=True, null=True,related_name='samples')
+    trip = models.ForeignKey('Trip', blank=True, null=True, related_name='samples')
 
     def get_short_name(self):
         return '{0} {1}'.format(_('Sample'), self.id)
 
-    def get_text_link(self,line=None):
+    def get_text_link(self, line=None):
         if line is None:
             line = self.data_file_line
             anchor = '#%s' % line
         else:
             anchor = ''
         return '/browse/raw-data/?file=%s&line=%s&sample_id=%s%s' % (self.data_file,
-                                                                      line,
-                                                                      self.id,
-                                                                      anchor)
+                                                                     line,
+                                                                     self.id,
+                                                                     anchor)
 
     def print_nice(self):
         print('%2d) %-20s %s' % (self.index,
@@ -107,14 +107,14 @@ class Sample(models.Model):
                 'exp_departure': self.exp_departure.isoformat() if self.exp_departure else None,
                 'delay_departure': self.delay_departure,
                 'link': remove_site(self.data_file_link)
-        }
+                }
 
     class Meta:
         ordering = ('id',)
 
 
 class Service(models.Model):
-    route = models.ForeignKey('Route',related_name='services')
+    route = models.ForeignKey('Route', related_name='services')
     local_time_str = models.TextField(default=None)
 
     def remove_skip_stops(self):
@@ -126,7 +126,7 @@ class Service(models.Model):
             self.route = new_route
             self.save()
             self.trips.update(route=new_route)
-            samples = Sample.objects.filter(trip__in=self.trips.all(),stop_id__in=skip_stop_ids)
+            samples = Sample.objects.filter(trip__in=self.trips.all(), stop_id__in=skip_stop_ids)
             samples.update(is_skipped=True)
 
     def get_short_name(self):
@@ -152,9 +152,9 @@ class Service(models.Model):
         last_sample = trip.samples.filter(valid=True).latest('index')
         total_secs = (last_sample.exp_arrival - first_sample.exp_departure).total_seconds()
         total_minutes = total_secs / 60
-        hours,minutes = divmod(total_minutes,60)
+        hours, minutes = divmod(total_minutes, 60)
 
-        return '%d:%02d' % (hours,minutes)
+        return '%d:%02d' % (hours, minutes)
 
     def get_skipped_stop_ids(self):
         stats = self.get_stats_dict()
@@ -165,7 +165,6 @@ class Service(models.Model):
             if stop_stat['time_in_stop'] is not None and stop_stat['time_in_stop'] < 5:
                 result.append(stop_id)
         return result
-
 
     def get_stats_list(self):
         import data.api
@@ -197,7 +196,7 @@ class Service(models.Model):
         return result
 
     def __str__(self):
-        return '{0} of {1}'.format(self.local_time_str,self.route)
+        return '{0} of {1}'.format(self.local_time_str, self.route)
 
     class Meta:
         ordering = ('id',)
@@ -208,13 +207,13 @@ class Trip(models.Model):
     train_num = models.IntegerField(db_index=True)
     start_date = models.DateField(db_index=True)
     valid = models.BooleanField(default=False)
-    route = models.ForeignKey('Route',related_name='trips')
+    route = models.ForeignKey('Route', related_name='trips')
     trip_name = models.CharField(max_length=30,
                                  db_index=True)  # generated id for the given trip (combination of train num and date)
     train_num = models.IntegerField(db_index=True)  # the train num as given in the text files
     start_date = models.DateField(
         db_index=True)  # the start date of the trip (note that trip can be spanned over two days)
-    service=models.ForeignKey('Service',related_name='trips',null=True)
+    service = models.ForeignKey('Service', related_name='trips', null=True)
 
     x_week_day_local = models.IntegerField(null=True)
     x_hour_local = models.IntegerField(null=True)
@@ -226,7 +225,7 @@ class Trip(models.Model):
                 self.x_hour_local = dt.astimezone(IST).hour
                 self.save(update_fields=['x_hour_local'])
             else:
-                LOGGER.info('could not fix x_hour_local for trip %s',self.id)
+                LOGGER.info('could not fix x_hour_local for trip %s', self.id)
 
     def get_short_name(self):
         return '%s %s %s %s' % (
@@ -240,7 +239,7 @@ class Trip(models.Model):
         :return: common separated string of all exp time in local time
         """
         samples = list(self.get_real_stop_samples())
-        samples = [samples[0],samples[-1]]
+        samples = [samples[0], samples[-1]]
         return ','.join(s.get_exp_time_string() for s in samples)
 
     def get_real_stop_samples(self):
@@ -258,7 +257,7 @@ class Trip(models.Model):
                 'valid': self.valid,
                 'stops': stops,
                 'is_to_north': self.route.is_to_north()
-        }
+                }
 
     def print_nice(self):
         samples = self.samples.order_by('index')
@@ -266,21 +265,20 @@ class Trip(models.Model):
             sample.print_nice()
 
     def __str__(self):
-        return '{0} {1} {2} {3}'.format(_('trip'),self.id,_('in'),self.start_date)
+        return '{0} {1} {2} {3}'.format(_('trip'), self.id, _('in'), self.start_date)
 
     def get_absolute_url(self):
-        return reverse('browse:trip',kwargs=dict(pk=self.id))
+        return reverse('browse:trip', kwargs=dict(pk=self.id))
 
     class Meta:
-        ordering = ['route_id','start_date','x_hour_local','id']
+        ordering = ['route_id', 'start_date', 'x_hour_local', 'id']
 
 
 class Route(models.Model):
     stop_ids = ArrayField(db_index=True, unique=True)
 
     def get_absolute_url(self):
-        return reverse('browse:route',kwargs=dict(pk=self.id))
-
+        return reverse('browse:route', kwargs=dict(pk=self.id))
 
     def get_short_name(self):
         from . import services
@@ -303,7 +301,6 @@ class Route(models.Model):
         for idx, stop_id in enumerate(self.stop_ids):
             print('%2d %s' % (idx, services.get_stop_name(stop_id)))
 
-
     def get_services(self):
         return self.services.all().order_by('id')
 
@@ -314,9 +311,8 @@ class Route(models.Model):
         for k, trips_it in group_it:
             s = Service.objects.get_or_create(route=self,
                                               local_time_str=k
-            )[0]
+                                              )[0]
             s.trips.add(*list(trips_it))
-
 
     def get_stops(self):
         from . import services
@@ -339,9 +335,8 @@ class Route(models.Model):
                                                  len(self.stop_ids),
                                                  first_stop_name,
                                                  last_stop_name,
-        )
+                                                 )
         return result
 
     class Meta:
         ordering = ('id',)
-

@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import json
+
 import xlrd
 import os
 import csv
@@ -8,20 +10,43 @@ import datetime
 import pytz
 import logging
 
+
 LOGGER = logging.getLogger(__name__)
 
+ISRAEL_TIMEZONE = pytz.timezone('Asia/Jerusalem')
 
-def parse_xl(xlname, csvname=None):
+
+class DtEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, datetime.datetime):
+            if o.tzinfo != ISRAEL_TIMEZONE:
+                o = o.astimezone(ISRAEL_TIMEZONE)
+            return list(o.timetuple()[0:6])
+        return super().default(o)
+
+
+
+def parse_xl(xlname):
+    """
+    :param xlname: xl file name
+    :return: None
+    creates xl file name and outputs two files, one is csv which we import,
+    and the otherone is txt file which is text representation of the excel file
+    used for the source ref in the browse app
+    """
     base_xlname = os.path.basename(xlname)
     wb = xlrd.open_workbook(xlname)
     sheet = wb.sheet_by_index(0)
     heb_header = [sheet.cell_value(3, colx) for colx in range(1, sheet.ncols)]
     header = [HEADER_MAPPING[h] for h in heb_header]
-    if csvname is None:
-        csvname = os.path.splitext(xlname)[0] + '.csv'
-    with open(csvname, 'w') as fh:
+    csvname = os.path.splitext(xlname)[0] + '.csv'
+    txtname = os.path.splitext(xlname)[0] + '.txt'
+    with open(csvname, 'w') as fh, open(txtname, 'w') as txt:
         wr = csv.DictWriter(fh, quoting=csv.QUOTE_ALL, fieldnames=CSV_HEADER)
         wr.writeheader()
+        txt.write(json.dumps(heb_header))
+        txt.write('\n')
+        # this is 0 based, e.g. row #4 is row 5 in the excel (since excel sheet itself is 1 based)
         for rowx in range(4, sheet.nrows):
             row = []
             for colx in range(1, sheet.ncols):
@@ -30,12 +55,16 @@ def parse_xl(xlname, csvname=None):
                 if cell_type == xlrd.XL_CELL_DATE:
                     dt_tuple = xlrd.xldate_as_tuple(cell_value, wb.datemode)
                     dt = datetime.datetime(*dt_tuple)
-                    dt = pytz.timezone('Asia/Jerusalem').localize(dt)
+                    dt = ISRAEL_TIMEZONE.localize(dt)
                     row.append(dt)
                 else:
                     row.append(cell_value)
-            output_dict = xl_row_to_csv(dict(zip(header, row)), base_xlname, rowx)
+            d = dict(zip(header, row))
+            output_dict = xl_row_to_csv(d, base_xlname, rowx)
+            txt.write(json.dumps(row, cls=DtEncoder))
+            txt.write('\n')
             wr.writerow(output_dict)
+
             if rowx % 20000 == 0:
                 LOGGER.info('Completed %s/%s rows', rowx, sheet.nrows)
         LOGGER.info('Wrote {0}'.format(fh.name))
@@ -56,6 +85,44 @@ HEADER_MAPPING['תאריך ושעת יציאה מהתחנה מתוכנן'] = 'ex
 HEADER_MAPPING['תאריך ושעת יציאה מהתחנה בפועל'] = 'actual_departure'
 HEADER_MAPPING['תאריך ושעת הגעה לתחנה מתוכנן'] = 'exp_arrival'
 HEADER_MAPPING['תאריך ושעת הגעה לתחנה בפועל'] = 'actual_arrival'
+
+
+def to_dt_str(dt,date_only=False):
+    if not dt:
+        return ''
+    dt = datetime.datetime(*dt)
+    ISRAEL_TIMEZONE.localize(dt)
+    if not date_only:
+        return dt.strftime('%H:%M:%S %d/%m/%Y')
+    return dt.strftime('%d/%m/%Y')
+
+
+def to_d_str(dt):
+    return to_dt_str(dt, date_only=True)
+
+
+def int_or_none(v):
+    if v == '' or v is None:
+        return ''
+    return int(v)
+
+
+HEADER_TO_STRING = dict()
+HEADER_TO_STRING['תאריך נסיעת רכבת'] = to_d_str
+HEADER_TO_STRING['מספר רכבת'] = int
+HEADER_TO_STRING['רכבת מתוכננת/לא מתוכננת'] = str
+HEADER_TO_STRING['מספר תחנה'] = int
+HEADER_TO_STRING['תאור תחנה'] = str
+HEADER_TO_STRING['מספר סידורי של התחנה'] = int
+HEADER_TO_STRING['תאור קו נוסעים'] = str
+HEADER_TO_STRING['אופי התחנה'] = str
+HEADER_TO_STRING['האם תחנת עצירה מתוכננת'] = int_or_none
+HEADER_TO_STRING['האם תחנת עצירה בפועל'] = int_or_none
+HEADER_TO_STRING['תאריך ושעת יציאה מהתחנה מתוכנן'] = to_dt_str
+HEADER_TO_STRING['תאריך ושעת יציאה מהתחנה בפועל'] = to_dt_str
+HEADER_TO_STRING['תאריך ושעת הגעה לתחנה מתוכנן'] = to_dt_str
+HEADER_TO_STRING['תאריך ושעת הגעה לתחנה בפועל'] = to_dt_str
+
 
 STOP_KINDS = {
     'source_operation': 'מוצא תפעולי',

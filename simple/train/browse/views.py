@@ -188,31 +188,42 @@ class RawDateView(TemplateView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        OFFSET = 20
+        OFFSET = 10
         filename = self.request.GET['file']
         lineno = int(self.request.GET['line'])
         sample_id = int(self.request.GET['sample_id'])
         sample = get_object_or_404(Sample, pk=sample_id)
         from_lineno = max(0, lineno - OFFSET)
         to_lineno = (lineno + OFFSET)
-        ext = os.path.splitext(filename)
+        ext = os.path.splitext(filename)[1]
         assert ext in ['.txt','.xlsx']
         if ext == '.txt':
-            lines = self.get_text_lines(filename, from_lineno, to_lineno)
+            file_path = os.path.join(settings.TXT_FOLDER, filename)
+            lines = self.get_text_lines(file_path, from_lineno, to_lineno)
+            is_excel = False
+            header = None
         elif ext == '.xlsx':
-            lines = self.get_excel_lines(filename, from_lineno, to_lineno)
+            is_excel = True
+            filename = filename[:-4] + 'txt'
+            file_path = os.path.join(settings.EXCEL_FOLDER, filename)
+            if not os.path.exists(file_path):
+                raise Exception('No txt versions for the excel files, please run the command m parse_xl again')
+            header, lines = self.get_excel_text_lines(file_path, from_lineno, to_lineno)
 
         ctx['lines'] = lines
         ctx['filename'] = filename
         ctx['lineno'] = lineno
+        ctx['sample_lineno'] = sample.data_file_line
         ctx['prev'] = sample.get_text_link(line=lineno - OFFSET * 2 - 1)
-        ctx['next'] = sample.get_text_link(line=lineno + OFFSET * 2 - 1)
+        ctx['next'] = sample.get_text_link(line=lineno + OFFSET * 2 + 1)
+        ctx['is_excel'] = is_excel
+        ctx['header'] = header
+
         return ctx
 
-    def get_text_lines(self, filename, from_lineno, to_lineno):
+    def get_text_lines(self, file_path, from_lineno, to_lineno):
         lines = []
         cur_lineno = 1
-        file_path = os.path.join(settings.TXT_FOLDER, filename)
         with open(file_path, encoding="windows-1255") as fh:
             for line in fh:
                 if cur_lineno >= from_lineno and cur_lineno <= to_lineno:
@@ -221,30 +232,24 @@ class RawDateView(TemplateView):
                 cur_lineno += 1
         return lines
 
-    def get_excel_lines(self, filename, from_lineno, to_lineno):
-        sheet = self.get_sheet(file_path)
+    def get_excel_text_lines(self, file_path, from_lineno, to_lineno):
+        from xlparser.utils import HEADER_TO_STRING
         lines = []
-        ncols = sheet.ncols;
-        for rowx in range(from_lineno, to_lineno):
-            line_values = []
-            for colx in range(1,ncols):
-                cell_value = sheet.cell_value(rowx, colx)
-                cell_type = sheet.cell_type(rowx, colx)
-                if cell_type == xlrd.XL_CELL_DATE:
-                    dt_tuple = xlrd.xldate_as_tuple(cell_value, wb.datemode)
-                    dt = datetime.datetime(*dt_tuple)
-                    dt = pytz.timezone('Asia/Jerusalem').localize(dt)
-                    line_values.append(dt.isoformat())
+        cur_lineno = 4
+        first_line = True
+        with open(file_path, encoding="utf-8") as fh:
+            for line in fh:
+                line = line.strip()
+                if first_line:
+                    header = json.loads(line)
+                    first_line = False
                 else:
-                    line_values.append(cell_value)
-            line = ' '.join(line_values)
-            lines.append({'lineno':rowx,
-                          'line': line})
-        return lines
+                    if cur_lineno >= from_lineno and cur_lineno <= to_lineno:
+                        converted_line = [HEADER_TO_STRING[header[idx]](v) for idx,v in enumerate(json.loads(line))]
+                        lines.append({'lineno': cur_lineno,
+                                      'line': converted_line})
+                    cur_lineno += 1
+        return header, lines
 
-    def get_sheet(self, filename):
-        import xlrd
-        wb = xlrd.open_workbook(filename)
-        sheet = wb.sheet_by_index(0)
-        return sheet
+
 

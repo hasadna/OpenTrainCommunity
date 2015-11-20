@@ -106,7 +106,8 @@ except (OSError, IOError):
     if not os.path.exists(OT_LOG_DIR):
         os.makedirs(OT_LOG_DIR)
 
-TXT_FOLDER = os.path.join(BASE_DIR, 'csvparser/unzip_data')
+TXT_FOLDER = os.path.join(BASE_DIR, '/home/opentrain/public_html/files/txt/')
+EXCEL_FOLDER = os.path.join(BASE_DIR, '/home/opentrain/public_html/files/xl/')
 
 
 try:

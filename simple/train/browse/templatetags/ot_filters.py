@@ -13,7 +13,7 @@ ISRAEL_TIMEZONE = pytz.timezone(settings.TIME_ZONE)
 def stop_time(dt):
     if not dt:
         return '----'
-    return dt.astimezone(ISRAEL_TIMEZONE).strftime('%H:%M')
+    return dt.astimezone(ISRAEL_TIMEZONE).strftime('%H:%M:%S')
 
 @register.filter
 def heb_stop_name(stop_id):
