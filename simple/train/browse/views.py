@@ -196,7 +196,7 @@ class RawDateView(TemplateView):
         from_lineno = max(0, lineno - OFFSET)
         to_lineno = (lineno + OFFSET)
         ext = os.path.splitext(filename)[1]
-        assert ext in ['.txt','.xlsx']
+        assert ext in ['.txt','.xlsx'],'illegal ext = {0}, filename = {1}'.format(ext, filename)
         if ext == '.txt':
             file_path = os.path.join(settings.TXT_FOLDER, filename)
             lines = self.get_text_lines(file_path, from_lineno, to_lineno)
