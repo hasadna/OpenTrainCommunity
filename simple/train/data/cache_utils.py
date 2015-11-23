@@ -2,7 +2,13 @@ try:
     import redis
 
     CACHE_ENABLED = True
-    CLIENT = redis.StrictRedis(decode_responses=True)
+    try:
+        CLIENT = redis.StrictRedis(decode_responses=True)
+        CLIENT.keys('*')
+    except Exception as e:
+        print('Could not connect to Redis - disabling cache {0}'.format(e))
+        CACHE_ENABLED = False
+
     TTL = 30 * 24 * 60 * 60
 
 except ImportError:
