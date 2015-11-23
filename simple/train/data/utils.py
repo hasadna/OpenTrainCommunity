@@ -134,7 +134,7 @@ def import_current_csv(csv_file):
                        data_file_line=csv_to_int(row['data_file_line'],allow_none=True),
                        is_planned=csv_to_bool(row.get('is_planned')),
                        is_stopped=csv_to_bool(row.get('is_stopped')),
-                       version=csv_to_bool(row.get('version',1)))
+                       version=csv_to_int(row.get('version',1)))
 
             if s.is_first and s.valid:
                 t = Trip.objects.get(pk=s.trip_id)
