@@ -53,6 +53,9 @@ class Sample(models.Model):
     data_file = models.CharField(max_length=100)  # the name of the data file (text file)
     data_file_line = models.IntegerField(null=True)  # the line number in the data file (text file)
     trip = models.ForeignKey('Trip', blank=True, null=True, related_name='samples')
+    version = models.IntegerField(default=1) # 1 for old text files, 2 for excel
+    is_planned = models.NullBooleanField()
+    is_stopped = models.NullBooleanField()
 
     def get_short_name(self):
         return '{0} {1}'.format(_('Sample'), self.id)

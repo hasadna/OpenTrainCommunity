@@ -15,6 +15,7 @@ LOGGER = logging.getLogger(__name__)
 
 ISRAEL_TIMEZONE = pytz.timezone('Asia/Jerusalem')
 
+VERSION = 2
 
 class DtEncoder(json.JSONEncoder):
     def default(self, o):
@@ -153,8 +154,9 @@ CSV_HEADER = ['train_num',
               'data_file',
               'data_file_line',
               'data_file_link',
-              # 'is_planned',  ## NEW
-              # 'is_stopped'  ## NEW
+              'is_planned',  ## NEW
+              'is_stopped',  ## NEW
+              'version'
               ]
 
 
@@ -195,14 +197,15 @@ def xl_row_to_csv(input_dict, filename, linenum):
         output_dict[f] = dt_to_csv(input_dict[f])
     output_dict['delay_arrival'] = diff_dt(input_dict['actual_arrival'], input_dict['exp_arrival'])
     output_dict['delay_departure'] = diff_dt(input_dict['actual_departure'], input_dict['exp_departure'])
-    # output_dict['is_planned'] = bool_to_csv(input_dict['is_planned'])  ### NEW
-    # output_dict['is_stopped'] = bool_to_csv(input_dict['is_stopped'])  ### NEW
+    output_dict['is_planned'] = bool_to_csv(input_dict['is_planned'])  ### NEW
+    output_dict['is_stopped'] = bool_to_csv(input_dict['is_stopped'])  ### NEW
     # Suggestion - to consider the cases in which a train skipped a station (it's severe) but not to consider the cases
     # in which a train added an unplanned station (very rare and not severe)
     # eran: this is great idea, for now I don't want to add new fields to the csv, until we change the csv code
     # anyway, we should maybe consider write all this import from scratch...
     output_dict['data_file'] = filename
     output_dict['data_file_line'] = linenum
+    output_dict['version'] = VERSION
     return output_dict
 
 
