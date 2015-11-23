@@ -188,7 +188,7 @@ class RawDateView(TemplateView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        OFFSET = 10
+        OFFSET = 20
         filename = self.request.GET['file']
         lineno = int(self.request.GET['line'])
         sample_id = int(self.request.GET['sample_id'])
