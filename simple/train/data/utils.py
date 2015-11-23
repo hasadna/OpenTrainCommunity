@@ -81,6 +81,8 @@ def build_current_trips(csv_file):
 
 
 def csv_to_bool(b):
+    if b is None:
+        return None
     if int(b) == 1:
         return True
     if int(b) == 0:
