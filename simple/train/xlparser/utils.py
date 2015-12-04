@@ -180,6 +180,8 @@ def xl_row_to_csv(input_dict, filename, linenum):
     output_dict = dict()
     for n in CSV_HEADER:
         output_dict[n] = ''
+    is_planned = input_dict['is_planned']
+    is_stopped = input_dict['is_stopped']
     output_dict['train_num'] = int(input_dict['train_num'])
     output_dict['start_date'] = input_dict['train_date'].date().isoformat()
     output_dict['trip_name'] = '{0}_{1}'.format(output_dict['train_num'],
@@ -187,9 +189,9 @@ def xl_row_to_csv(input_dict, filename, linenum):
     output_dict['index'] = int(input_dict['index'])
     output_dict['stop_id'] = int(input_dict['stop_id'])
     output_dict['stop_name'] = input_dict['stop_name']
-    output_dict['is_real_stop'] = bool_to_csv(input_dict['is_stopped'] and
+    output_dict['is_real_stop'] = bool_to_csv(input_dict['is_planned'] and
                                               input_dict['stop_kind'] != STOP_KINDS['source_operation'])  ## CHANGED
-    output_dict['valid'] = bool_to_csv(True)
+    output_dict['valid'] = bool_to_csv(not (is_planned and not is_stopped))
     output_dict['is_first'] = bool_to_csv(input_dict['stop_kind']
                                           in (STOP_KINDS['source'], STOP_KINDS['source_commercial']))
     output_dict['is_last'] = bool_to_csv(input_dict['stop_kind'] == STOP_KINDS['dest'])

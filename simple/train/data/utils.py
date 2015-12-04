@@ -150,6 +150,7 @@ def import_current_csv(csv_file):
             print('processes %s lines' % (idx+1))
     print('Read %s rows' % (1+idx))
     fix_x_time()
+    Trip.objects.filter(id__in=Sample.objects.filter(valid=False).values_list('trip')).filter(valid=True).update(valid=False)
 
 
 def fix_x_time():
