@@ -1,6 +1,6 @@
 angular.module('RouteExplorer').controller('SelectStopsController',
-['$scope', '$rootScope', '$location', 'Layout', 'Locale',
-function($scope, $rootScope, $location, Layout, Locale) {
+['$scope', '$rootScope', '$location', 'Layout', 'Locale', 'TimeParser',
+function($scope, $rootScope, $location, Layout, Locale, TimeParser) {
     $scope.stops = Layout.getStops();
     $scope.origin = null;
     $scope.destination = null;
@@ -62,7 +62,7 @@ function($scope, $rootScope, $location, Layout, Locale) {
         var period = {
           from: start,
           to: start,
-          end: to,
+          end: end,
           name: Locale.months[start.getMonth()].name + " " + start.getFullYear()
         };
         periods.push(period);
