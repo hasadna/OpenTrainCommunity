@@ -1,8 +1,22 @@
 <div class="container route-details-page">
+
+        <ol class="breadcrumb">
+            <li><a href="#">מתחנת מוצא לתחנת יעד - חודש ושנה</a></li>
+            <li><a href="#">בחירת מסלול נסיעה</a></li>
+            <li class="active">חיפוש לפי זמנים</li>
+        </ol>
+
     <div class="page-header">
         <h1>
-            {{ stopName(origin) }} - {{ stopName(destination) }}
-            <small>{{ selectedPeriod }}</small>
+            <a class="previousMonth" href="" role="button" data-slide="next">
+                <i class="fa fa-arrow-right"></i>
+            </a>
+
+            <div class="dateSelected">דצמבר 2015</div>
+
+            <a class="nextMonth" href="" role="button" data-slide="next">
+                <i class="fa fa-arrow-left"></i>
+            </a>
         </h1>
     </div>
 
@@ -13,7 +27,7 @@
 
     <div ng-show="loaded">
         <div class="days-container btn-group btn-group-lg btn-group-justified btn-group-light">
-            <div class="btn btn-default" ng-model="selectedDay" uib-btn-radio="null"
+            <div class="btn btn-default all" ng-model="selectedDay" uib-btn-radio="null"
               uib-tooltip="{{ tripCount() }} נסיעות" tooltip-append-to-body="true">
                 <div class="btn-title">&zwnj;<i class="fa fa-calendar"></i></div>
                 <div class="btn-text">הכל</div>
@@ -28,10 +42,10 @@
             </div>
         </div>
 
-        <div class="box">
-            <div class="times-container btn-group btn-group-lg btn-group-justified btn-group-tabs btn-group-light">
-                <div class="btn btn-default" ng-model="selectedTime" uib-btn-radio="null"
+           <div class="times-container btn-group btn-group-lg btn-group-justified btn-group-tabs btn-group-light">
+                <div class="btn btn-default all" ng-model="selectedTime" uib-btn-radio="null"
                   uib-tooltip="{{ tripCount(selectedDay) }} נסיעות" tooltip-append-to-body="true">
+                    <div class="btn-title">&zwnj;<i class="fa fa-clock-o"></i></div>
                     <div class="btn-text">הכל</div>
                 </div>
                 <div class="btn btn-default"
@@ -44,6 +58,7 @@
                 </div>
             </div>
 
+        <div class="box">
             <div class="content">
               <table class="table table-striped">
                   <colgroup span="2">
@@ -92,13 +107,13 @@
                           </td>
                           <th class="stop-name">{{ stopName(stopId) }}</th>
 
-                          <td><rex-percent-bar value="stopStats(stopId).arrival_early_pct" type="'info'"></rex-percent-bar></td>
-                          <td><rex-percent-bar value="stopStats(stopId).arrival_on_time_pct" type="'success'"></rex-percent-bar></td>
-                          <td><rex-percent-bar value="stopStats(stopId).arrival_late_pct" type="'warning'"></rex-percent-bar></td>
+                          <td><rex-percent-bar value="stopStats(stopId).arrival_early_pct" type="'orange'"></rex-percent-bar></td>
+                          <td><rex-percent-bar value="stopStats(stopId).arrival_on_time_pct" type="'green'"></rex-percent-bar></td>
+                          <td><rex-percent-bar value="stopStats(stopId).arrival_late_pct" type="'red'"></rex-percent-bar></td>
 
-                          <td><rex-percent-bar value="stopStats(stopId).departure_early_pct" type="'info'"></rex-percent-bar></td>
-                          <td><rex-percent-bar value="stopStats(stopId).departure_on_time_pct" type="'success'"></rex-percent-bar></td>
-                          <td><rex-percent-bar value="stopStats(stopId).departure_late_pct" type="'warning'"></rex-percent-bar></td>
+                          <td><rex-percent-bar value="stopStats(stopId).departure_early_pct" type="'pink'"></rex-percent-bar></td>
+                          <td><rex-percent-bar value="stopStats(stopId).departure_on_time_pct" type="'blue'"></rex-percent-bar></td>
+                          <td><rex-percent-bar value="stopStats(stopId).departure_late_pct" type="'purple'"></rex-percent-bar></td>
                       </tr>
                   </tbody>
               </table>

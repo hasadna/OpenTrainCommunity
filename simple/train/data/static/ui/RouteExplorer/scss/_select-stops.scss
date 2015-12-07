@@ -1,8 +1,5 @@
 body.rex-page-welcome {
 
-    h1 {
-        > .logo { display: block; margin: 0 auto 25px; max-height: 70px; }
-    }
 
     .select-stops-form {
         background-image: linear-gradient(to bottom, darken($rex-brand-dark-color, 5%), darken($rex-brand-dark-color, 10%));
@@ -20,26 +17,35 @@ body.rex-page-welcome {
             display: table-cell;
         }
 
+        .mainImg{
+            margin: auto;
+            display: block;
+            max-width: 260px;
+            margin-bottom: 20px;
+            margin-top: 20px;
+        }
+
         .opentrain-logo-title{
-            //margin-top: 80px;
+            font-size: 23px;
         }
 
         h1 { color: $rex-brand-light-color; }
 
         .container {
-            max-width: 370px;
+            max-width: 400px;
             .row { margin-bottom: 15px; }
         }
 
         form {
             background-color: darken($rex-brand-dark-color, 5%);
             border-color: darken($rex-brand-dark-color, 7%);
-            padding: 35px 15px 35px 15px;
+            padding: 25px 15px 25px 15px;
             margin: 0 auto;
             position: relative;
 
-            .selctBoxTitel{
+            .selctBoxTitel {
                 padding-bottom: 17px;
+                font-size: 18px;
             }
 
             .row {
@@ -54,8 +60,12 @@ body.rex-page-welcome {
                 }
 
                 .selectBox {
-                    padding: 0 50px 0 50px;
+                    padding: 0 45px 0 45px;
+                }
 
+                .dropdown-menu{
+                    right: 59px;
+                    left: 59px !important;
                 }
 
                 .error-overlay {

@@ -1,20 +1,114 @@
 body.rex-page-route {
     background-color: $rex-light-gray-color;
+
+        .breadcrumb{
+        margin-top: 50px;
+        text-align: center;
+        background-color: inherit;
+
+        li{
+            a{
+                color: #103D52;
+            }
+        }
+
+        .active{
+            color: #103D52;
+            opacity: 0.7;
+        }
+    }
+
+    .page-header{
+        margin: 0;
+        border: none;
+    }
+
     h1 { color: $rex-brand-dark-color; }
+
+    .dateSelected{
+        display: inline-block;
+    }
+
+    .previousMonth,
+    .nextMonth{
+        display: inline-block;
+
+        .fa{
+            font-size: 16px;
+                display: table-cell;
+    padding: 0 8px;
+    color: #9CB6C3;
+        }
+    }
+
 
     .days-container {
         margin-bottom: 20px;
+        height: 82px;
+    }
+
+    .fa-calendar:before{
+        font-size: 23px;
+    }
+
+    .fa-clock-o:before{
+        font-size: 28px;
+    }
+
+    .btn{
+
+    &.btn-default{
+    border: none;
+    background-color: #D6DEE1;
+
+    &.all{
+    font-size: 12px;
+        padding-top: 0;
+        padding-bottom: 0;
+    font-weight: bold;
+
+    .btn-title{
+        margin-top: 3px;
+        margin-bottom: 6px;
+    }
+
+        .btn-text{
+            margin-bottom: 10px;
+        }
+
+    }
+
+    }
+
     }
 
     .box {
         border: 1px solid $rex-btn-border-color;
+        -webkit-box-shadow: 0px -2px 46px 7px rgba(0,0,0,0.21);
+        -moz-box-shadow: 0px -2px 46px 7px rgba(0,0,0,0.21);
+        box-shadow: 0px -2px 46px 7px rgba(0,0,0,0.21);
     }
 
     .times-container {
-        .btn > .btn-text { min-height: 30px; }
+        margin-bottom: 20px;
+        height: 82px;
+        //.btn > .btn-text { min-height: 30px; }
     }
 
     table {
+        >thead>tr>th{
+            padding-top: 11px;
+        }
+
+        thead{
+            background-color: #103D52;
+            color: white;
+        }
+
+        .table-header-secondary{
+            //background-color: #0F2A36;
+        }
+
         colgroup {
             border-right: 2px solid $table-column-border-color;
             &:first-child { border-right: none; }

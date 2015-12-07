@@ -1,6 +1,6 @@
 // Container width
 @media (min-width: 1600px) {
-    .container { width: 1570px; }
+    .container { width: 1465px; }
 }
 
 // Page layout
@@ -12,41 +12,102 @@ body {
 
 h1, h2 { text-align: center; }
 h1 { margin-bottom: 30px; margin-top: 0; font-size: 26px; font-weight: lighter; }
-h2 { margin: 0; font-size: 19px; font-weight: lighter; }
+h2 { margin: 0; font-size: 20px; font-weight: lighter; }
 .content { background-color: $rex-content-color; color: black; }
 
 // Header
 .navbar {
-    padding-left: 10px; padding-right: 10px;
-    .navbar-brand {
-        font-family: $headings-font-family;
-        font-size: 28px;
-        padding: 0;
-        position: relative;
+padding-left: 10px;
+padding-right: 0;
+background-color: #D6DEE1;
+height: 70px;
+border: 0;
+-webkit-box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.32);
+-moz-box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.32);
+box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.32);
 
-        > .sadnaLogo {
-        display: inline-block;
-        top: 50%;
-        transform: translateY(-50%);
-        position: relative;
-        margin: 0;
-        max-height: 30px;
-            margin-right: 5px;
-        }
+.navbarRight{
+float: right;
+padding: 0 30px;
+line-height: 65px;
+height: 100%;
+background-color: #F9F9F9;
+border-left: solid 2px #C2CACD;
+
+.logo {
+vertical-align: middle;
+max-width: 70px;
+}
+
+}
+
+.navbarCenter{
+text-align: center;
+width: 100%;
+position: absolute;
+margin: 0;
+padding: 0;
+display: block;
+z-index: -1;
+line-height: 70px;
+}
+
+.navbarLeft{
+display: table;
+height: 100%;
+float: left;
+
+.aboutBtn{
+background-color: pink;
+height: 100%;
+display: table;
+margin-left: 15px;
+
+span{
+vertical-align: middle;
+display: table-cell;
+background-color: #3495C1;
+padding: 18px;
+color: white;
+font-size: 15px;
+}
+}
+
+.navbar-btn{
+margin: 0;
+display: table-cell;
+vertical-align: middle;
+padding: 2px;
 
 
-        span{
-        display: inline-block;
-        -moz-transform: translate(0,50%);
-        -ms-transform: translate(0,50%);
-        -o-transform: translate(0,50%);
-        -webkit-transform: translate(0,50%);
-        transform: translate(0,50%);
-        position: relative;
-        font-size: 15px;
-        padding-right: 9px;
-        }
-    }
+.fa-2x{
+font-size: 1.5em;
+}
+
+.fa-stack-2x{
+color: #3495C1;
+}
+
+.fa-stack-1x{
+color: white;
+}
+
+.fa-facebook{
+font-size: 20px;
+}
+
+.fa-github{
+font-size: 22px;
+}
+
+.fa-wikipedia-w{
+font-size: 16px;
+font-weight: bold;
+}
+}
+
+}
+
 }
 
 // Specific recurring components
@@ -62,6 +123,13 @@ h2 { margin: 0; font-size: 19px; font-weight: lighter; }
             color: $rex-accent-color;
             border-top: 5px solid $rex-accent-color;
             @include box-shadow(none);
+            -webkit-box-shadow: inset 0px 0px 1px 1px rgba(0,0,0,0.14);
+            -moz-box-shadow: inset 0px 0px 1px 1px rgba(0,0,0,0.14);
+            box-shadow: inset 0px 0px 1px 1px rgba(0,0,0,0.14);
+
+            &:hover{
+                background-color: white;
+            }
         }
 
         .btn-title {
@@ -69,6 +137,13 @@ h2 { margin: 0; font-size: 19px; font-weight: lighter; }
             i.fa { font-size: 80%; }
         }
         .btn-text { font-size: 12px; font-weight: bold; }
+
+             &:hover{
+            background-color: #BFC9CD;
+            -webkit-box-shadow: inset 0px 0px 1px 1px rgba(0,0,0,0.14);
+            -moz-box-shadow: inset 0px 0px 1px 1px rgba(0,0,0,0.14);
+            box-shadow: inset 0px 0px 1px 1px rgba(0,0,0,0.14);
+        }
     }
 
     &.btn-group-tabs {
@@ -87,6 +162,6 @@ h2 { margin: 0; font-size: 19px; font-weight: lighter; }
 $table-column-border-color: #C4C9D0;
 table.table {
     thead th { font-weight: normal; }
-    .table-header-primary th { font-size: 15pt; }
-    .table-header-secondary th { font-size: 10pt; }
+    .table-header-primary th { font-size: 13pt; }
+    .table-header-secondary th { font-size: 9pt; }
 }

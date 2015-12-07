@@ -1,23 +1,59 @@
 body.rex-page-routes {
+
+    .container{
+        margin: 0;
+        padding: 0;
+        margin: auto;
+    }
+
+    .breadcrumb{
+        margin-top: 50px;
+        text-align: center;
+        background-color: inherit;
+
+        li{
+            a{
+                color: #103D52;
+            }
+        }
+
+        .active{
+            color: #103D52;
+            opacity: 0.7;
+        }
+    }
+
+    .select-route-titel{
+    margin-bottom: 30px;
+    margin-top: 0;
+    font-size: 26px;
+    font-weight: lighter;
+    }
+
     div.paths-list {
-        display: table; border-collapse: collapse; margin: 10px 0 20px;
-        > .list-header { display: table-row; font-size: 15pt; }
+        display: table;
+        -webkit-box-shadow: 0px -2px 46px 7px rgba(0,0,0,0.21);
+        -moz-box-shadow: 0px -2px 46px 7px rgba(0,0,0,0.21);
+        box-shadow: 0px -2px 46px 7px rgba(0,0,0,0.21);
+        > .list-header { display: table-row; font-size: 15pt; background-color: #103D52; }
         > .list-body { display: table-row-group; }
         > .list-body > .list-item { display: table-row; }
         .index-cell, .path-cell, .count-cell { display: table-cell; }
 
-        > .list-header > div { padding: 15px 40px; font-weight: bold; }
+        > .list-header > div { padding: 15px 20px; font-weight: normal; color: #3495C1}
         > .list-body > .list-item {
             cursor: pointer;
             color: #939599; text-decoration: none;
-            background-color: $table-bg-accent;
+            background-color: #E8E9ED;
             border: 1px solid #ebedec;
-            > div { padding: 40px; }
+            > div { padding: 20px 20px 20px 30px; }
 
             > div.index-cell {
-                font-size: 30pt;
+                font-size: 45pt;
+                font-weight: lighter;
                 vertical-align: middle;
                 text-align: center;
+                padding: 20px 20px 20px 0;
             }
 
             &:hover {
@@ -34,13 +70,13 @@ body.rex-page-routes {
                         content: "";
                         position: absolute;
                         top: -1px; bottom: -1px; right: -1px; left: -1px;
-                        border: 2px solid $table-highlight-border-color;
-                        border-right: 5px solid $rex-accent-color;
+                        //border: 2px solid $table-highlight-border-color;
+                        border-right: 8px solid $rex-accent-color;
                     }
 
                     :after {
                         $triangle-size: 20px;
-                        content: "";
+                        //content: "";
                         display: block;
                         height: $triangle-size; width: $triangle-size;
                         background-color: #fff;
@@ -58,7 +94,7 @@ body.rex-page-routes {
         }
 
         .stop-list {
-            .stop-origin, .stop-destination { background-color: white; }
+            .stop-origin, .stop-destination { background-color: white; color: #3495C1;}
         }
 
         .count-bar { width: 100px; height: 5px; }

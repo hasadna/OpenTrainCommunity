@@ -85,3 +85,27 @@
 .progress-bar-danger {
   @include progress-bar-variant($progress-bar-danger-bg);
 }
+
+.progress-bar-orange {
+  background-color: #f59855;
+}
+
+.progress-bar-green {
+  background-color: #69C15F;
+}
+
+.progress-bar-red {
+  background-color: #C3545F;
+}
+
+.progress-bar-pink {
+  background-color: #E46C92;
+}
+
+.progress-bar-blue {
+  background-color: #4F90BB;
+}
+
+.progress-bar-purple {
+  background-color: #c18ed6;
+}

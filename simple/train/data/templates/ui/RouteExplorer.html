@@ -13,18 +13,43 @@
         <link rel="stylesheet" href="/static/ui/RouteExplorer/dist/css/app.css">
         <link rel="stylesheet" href="/static/ui/RouteExplorer/bower_components/bootstrap-rtl/dist/css/bootstrap-rtl.min.css">
         <link rel="icon" type="image/png" href="/static/ui/RouteExplorer/img/opentrain-favicon.png">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     </head>
     <body ng-class="bodyClass">
         <nav class="navbar navbar-default navbar-fixed-top">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="#/"><img class="sadnaLogo" src="/static/ui/RouteExplorer/img/hasadna-logo.png" alt="הסדנא לידע ציבורי"/><span>הסדנא לידע ציבורי</span></a>
-            </div>
+            <a class="navbarRight" href="#/">
+                <img class="logo" src="/static/ui/RouteExplorer/img/logo_3.png" alt="רכבת פתוחה"/>
+            </a>
 
-            <span class="navbar-left">
-                <a class="navbar-btn btn btn-primary" href="#/about">אודות</a>
-                <a class="navbar-btn btn btn-primary" href ng-click="share('http://www.facebook.com/sharer.php?u=')">
-                    <i class="fa fa-facebook"></i>
+            <span class="navbarCenter">
+                <img class="logo" src="/static/ui/RouteExplorer/img/hasadna.png" alt="רכבת פתוחה"/>
+            </span>
+
+            <span class="navbarLeft">
+
+                <a class="aboutBtn" href="#/about"><span>אודות</span></a>
+
+                <a class="navbar-btn btn" href ng-click="share('http://www.facebook.com/sharer.php?u=')">
+                    <span class="fa-stack fa-2x">
+                        <i class="fa fa-circle fa-stack-2x"></i>
+                        <i class="fa fa-facebook fa-stack-1x"></i>
+                    </span>
                 </a>
+
+                <a class="navbar-btn btn" href="https://github.com/hasadna/OpenTrainCommunity">
+                    <span class="fa-stack fa-2x">
+                        <i class="fa fa-circle fa-stack-2x"></i>
+                        <i class="fa fa-github fa-stack-1x"></i>
+                    </span>
+                </a>
+
+                <a class="navbar-btn btn" href="http://wiki.hasadna.org.il/wiki/%D7%A8%D7%9B%D7%91%D7%AA_%D7%A4%D7%AA%D7%95%D7%97%D7%94">
+                    <span class="fa-stack fa-2x">
+                        <i class="fa fa-circle fa-stack-2x"></i>
+                        <i class="fa fa-wikipedia-w fa-stack-1x"></i>
+                    </span>
+                </a>
+
             </span>
         </nav>
 
