@@ -2,7 +2,6 @@ from data.models import Sample, Trip, Route, Service
 import csv
 import datetime
 from collections import namedtuple
-from data import cache_utils
 from django.db import transaction
 import pytz
 
@@ -150,6 +149,7 @@ def import_current_csv(csv_file):
             print('processes %s lines' % (idx+1))
     print('Read %s rows' % (1+idx))
     fix_x_time()
+    Trip.objects.filter(id__in=Sample.objects.filter(valid=False).values_list('trip')).filter(valid=True).update(valid=False)
 
 
 def fix_x_time():
@@ -224,11 +224,13 @@ def remove_skip_stops():
     print('# of routes before: %s' % Route.objects.count())
     for idx,service in enumerate(sr.bad):
         service.remove_skip_stops()
-        if (idx + 1 % 100 == 0):
+        if (idx + 1) % 100 == 0:
             print('%s/%s completed' % (1+idx,len(sr.bad)))
     print('# of routes after: %s' % Route.objects.count())
 
 
-
+def invalidate_cache():
+    from django.core.cache import caches
+    caches['default'].clear()
 
 
