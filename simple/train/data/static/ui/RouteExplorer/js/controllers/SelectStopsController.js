@@ -29,10 +29,10 @@ function($scope, $rootScope, $location, Layout, Locale) {
     $scope.goToRoutes = function() {
         $scope.noRoutes = false;
         $scope.loading = true;
-        var from = $scope.period.from;
-        var to = $scope.period.to;
-        var periodStr = from.getFullYear() + ('0' + (from.getMonth() + 1)).slice(-2);
-        Layout.findRoutesByPeriod($scope.origin.id, $scope.destination.id, from, to)
+        var fromDate = $scope.period.from;
+        var toDate = $scope.period.end;
+        var periodStr = TimeParser.formatPeriod($scope.period);
+        Layout.findRoutesByPeriod($scope.origin.id, $scope.destination.id, fromDate, toDate)
             .then(function(routes) {
                 if (routes.length === 0) {
                     $scope.noRoutes = true;
@@ -56,16 +56,17 @@ function($scope, $rootScope, $location, Layout, Locale) {
       if (fromDate.getFullYear() < 2013) fromDate = new Date(2013, 0, 1);
 
       var periods = [];
-      var from = new Date(fromDate.getFullYear(), fromDate.getMonth(), 1);
-      while (from < toDate) {
-        to = new Date(from.getFullYear(), from.getMonth() + 1, from.getDate());
+      var start = new Date(fromDate.getFullYear(), fromDate.getMonth(), 1);
+      while (start < toDate) {
+        end = new Date(start.getFullYear(), start.getMonth() + 1, start.getDate());
         var period = {
-          from: from,
-          to: to,
-          name: Locale.months[from.getMonth()].name + " " + from.getFullYear()
+          from: start,
+          to: start,
+          end: to,
+          name: Locale.months[start.getMonth()].name + " " + start.getFullYear()
         };
         periods.push(period);
-        from = to;
+        start = end;
       }
       periods.reverse();
       return periods;

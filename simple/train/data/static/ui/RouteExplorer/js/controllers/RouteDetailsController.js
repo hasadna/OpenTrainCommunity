@@ -15,6 +15,7 @@ function($scope, $route, $http, $location, LocationBinder, Layout, Locale, TimeP
     $scope.stopIds = stopIds;
     $scope.origin = stopIds[0];
     $scope.destination = stopIds[stopIds.length - 1];
+
     $scope.selectedPeriod = formatMonth(period.from);
     if (period.to > period.from) {
         $scope.selectedPeriod += " \u2014 " + formatMonth(period.to)
@@ -27,6 +28,13 @@ function($scope, $route, $http, $location, LocationBinder, Layout, Locale, TimeP
     $scope.times = [];
 
     $scope.selectRouteUrl = '#/' + routeParams.period + '/select-route/' + $scope.origin + '/' + $scope.destination;
+
+    var previousPeriod = offsetPeriod(period, -1);
+    var nextPeriod = offsetPeriod(period, +1);
+    var bounds = Layout.getRoutesDateRange();
+
+    $scope.previousPeriodUrl = bounds.min < previousPeriod.from ? '#/' + TimeParser.formatPeriod(previousPeriod) + '/routes/' + routeId : null;
+    $scope.nextPeriodUrl = bounds.max > nextPeriod.to ? '#/' + TimeParser.formatPeriod(nextPeriod) + '/routes/' + routeId : null;
 
     $http.get('/api/route-info-full', { params: { route_id: routeId, from_date: startDate.getTime(), to_date: endDate.getTime() } })
         .success(function(data) {
@@ -133,5 +141,23 @@ function($scope, $route, $http, $location, LocationBinder, Layout, Locale, TimeP
 
     function formatMonth(date) {
         return Locale.months[date.getMonth()].name + ' ' + date.getFullYear()
+    }
+
+    function offsetMonth(date, offset) {
+        var d = new Date(date);
+        d.setMonth(d.getMonth() + offset);
+        return d;
+    }
+
+    function offsetPeriod(period, offset) {
+        size =
+            (period.to.getFullYear() - period.from.getFullYear()) * 12 +
+            period.to.getMonth() - period.from.getMonth() + 1;
+
+        return {
+            from: offsetMonth(period.from, size * offset),
+            to: offsetMonth(period.to, size * offset),
+            end: offsetMonth(period.end, size * offset)
+        };
     }
 }]);

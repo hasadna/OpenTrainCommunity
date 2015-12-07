@@ -15,8 +15,22 @@ function() {
         return { from: from, to: to, end: end };
     }
 
+    function formatMonth(date) {
+        return date.getFullYear() + ('0' + (date.getMonth() + 1)).slice(-2);
+    }
+
+    function formatPeriod(period) {
+        var f = formatMonth(period.from);
+        if (period.from < period.to)
+            f += '-' + formatMonth(period.to);
+
+        return f;
+    }
+
     return {
         parseMonth: parseMonth,
-        parsePeriod: parsePeriod
+        parsePeriod: parsePeriod,
+        formatMonth: formatMonth,
+        formatPeriod: formatPeriod
     }
 }]);
