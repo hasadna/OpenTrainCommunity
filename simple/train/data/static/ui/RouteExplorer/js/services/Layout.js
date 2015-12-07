@@ -64,7 +64,7 @@ function($http, $q) {
         return matchingRoutes;
     };
 
-    var findRoutesByDate = function(origin, destination, year, month) {
+    var findRoutesByPeriod = function(origin, destination, from, to) {
         // TODO use minDate and maxDate from our cached routes to avoid the http request
 
         var d = $q.defer();
@@ -72,8 +72,8 @@ function($http, $q) {
         if (matchingRoutes.length === 0) {
             d.resolve([]);
         } else {
-            var fromDate = new Date(year, month - 1, 1);
-            var toDate = new Date(year, month, 1);
+            var fromDate = from;
+            var toDate = to;
 
             $http.get('/api/all-routes-by-date', {
                 params: {
@@ -123,7 +123,7 @@ function($http, $q) {
         findRoute: findRoute,
         findStop: findStop,
         findRoutes: function(origin, destination) { return findRoutes(routes, origin, destination); },
-        findRoutesByDate: findRoutesByDate,
+        findRoutesByPeriod: findRoutesByPeriod,
         getRoutesDateRange: getRoutesDateRange
     };
 

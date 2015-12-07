@@ -21,9 +21,9 @@
           })
           .when('/about', {
               pageId: 'about',
-              templateUrl: templateUrl('About'),
+              templateUrl: templateUrl('About')
           })
-          .when('/:year/:month/select-route/:origin/:destination', {
+          .when('/:period/select-route/:origin/:destination', {
               pageId: 'routes',
               templateUrl: templateUrl('SelectRoute'),
               controller: 'SelectRouteController',

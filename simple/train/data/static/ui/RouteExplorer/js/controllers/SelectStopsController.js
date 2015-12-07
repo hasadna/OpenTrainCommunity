@@ -29,16 +29,17 @@ function($scope, $rootScope, $location, Layout, Locale) {
     $scope.goToRoutes = function() {
         $scope.noRoutes = false;
         $scope.loading = true;
-        var year = $scope.period.from.getFullYear();
-        var month = $scope.period.from.getMonth() + 1;
-        Layout.findRoutesByDate($scope.origin.id, $scope.destination.id, year, month)
+        var from = $scope.period.from;
+        var to = $scope.period.to;
+        var periodStr = from.getFullYear() + ('0' + (from.getMonth() + 1)).slice(-2);
+        Layout.findRoutesByPeriod($scope.origin.id, $scope.destination.id, from, to)
             .then(function(routes) {
                 if (routes.length === 0) {
                     $scope.noRoutes = true;
                 } else if (routes.length == 1) {
-                    $location.path('/' + year + ("0" + month).slice(-2) + '/routes/' + routes[0].id);
+                    $location.path('/' + periodStr + '/routes/' + routes[0].id);
                 } else {
-                    $location.path('/' + year + '/' + month + '/select-route/' + $scope.origin.id + '/' + $scope.destination.id);
+                    $location.path('/' + periodStr + '/select-route/' + $scope.origin.id + '/' + $scope.destination.id);
                 }
             })
             .finally(function() {

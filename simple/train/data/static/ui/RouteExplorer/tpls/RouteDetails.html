@@ -1,8 +1,8 @@
 <div class="container route-details-page">
 
         <ol class="breadcrumb">
-            <li><a href="#">מתחנת מוצא לתחנת יעד - חודש ושנה</a></li>
-            <li><a href="#">בחירת מסלול נסיעה</a></li>
+            <li><a href="#/">בחירת תחנות מוצא ויעד</a></li>
+            <li><a href="{{ selectRouteUrl }}">בחירת מסלול נסיעה</a></li>
             <li class="active">חיפוש לפי זמנים</li>
         </ol>
 
@@ -12,7 +12,7 @@
                 <i class="fa fa-arrow-right"></i>
             </a>
 
-            <div class="dateSelected">דצמבר 2015</div>
+            <div class="dateSelected">{{ selectedPeriod }}</div>
 
             <a class="nextMonth" href="" role="button" data-slide="next">
                 <i class="fa fa-arrow-left"></i>

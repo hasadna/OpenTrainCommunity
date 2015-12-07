@@ -1,11 +1,11 @@
 angular.module('RouteExplorer').controller('RouteDetailsController',
-['$scope', '$route', '$http', '$location', 'LocationBinder', 'Layout', 'Locale',
-function($scope, $route, $http, $location, LocationBinder, Layout, Locale) {
+['$scope', '$route', '$http', '$location', 'LocationBinder', 'Layout', 'Locale', 'TimeParser',
+function($scope, $route, $http, $location, LocationBinder, Layout, Locale, TimeParser) {
     var routeParams = $route.current.params;
 
-    var period = parsePeriod(routeParams.period);
+    var period = TimeParser.parsePeriod(routeParams.period);
     var startDate = period.from;
-    var endDate = new Date(period.to.getFullYear(), period.to.getMonth() + 1, 1);
+    var endDate = period.end;
 
     var routeId = routeParams.routeId;
     var stopIds = Layout.findRoute(routeId).stops;
@@ -25,6 +25,8 @@ function($scope, $route, $http, $location, LocationBinder, Layout, Locale) {
 
     $scope.selectedTime = null;
     $scope.times = [];
+
+    $scope.selectRouteUrl = '#/' + routeParams.period + '/select-route/' + $scope.origin + '/' + $scope.destination;
 
     $http.get('/api/route-info-full', { params: { route_id: routeId, from_date: startDate.getTime(), to_date: endDate.getTime() } })
         .success(function(data) {
@@ -127,19 +129,6 @@ function($scope, $route, $http, $location, LocationBinder, Layout, Locale) {
         function formatHour(hour) {
             return ('0' + hour % 24 + '').slice(-2) + ':00';
         }
-    }
-
-    function parsePeriod(periodString) {
-        function parseMonth(monthString) {
-            var year = Number(monthString.substr(0, 4));
-            var month = Number(monthString.substr(5, 2));
-            return new Date(year, month - 1, 1);
-        }
-
-        var parts = periodString.split('-', 2);
-        var from = parseMonth(parts[0]);
-        var to = parts.length > 1 ? parseMonth(parts[1]) : from;
-        return { from: from, to: to };
     }
 
     function formatMonth(date) {

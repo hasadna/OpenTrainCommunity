@@ -1,13 +1,12 @@
 angular.module('RouteExplorer').controller('SelectRouteController',
-['$scope', '$location', '$route', 'Layout',
-function($scope, $location, $route, Layout) {
+['$scope', '$location', '$route', 'Layout', 'TimeParser',
+function($scope, $location, $route, Layout, TimeParser) {
     $scope.stops = Layout.getStops();
-    var year = $route.current.params.year;
-    var month = $route.current.params.month;
+    var period = TimeParser.parsePeriod($route.current.params.period);
     var origin = Layout.findStop($route.current.params.origin);
     var destination = Layout.findStop($route.current.params.destination);
 
-    Layout.findRoutesByDate(origin.id, destination.id, year, month).then(function(routes) {
+    Layout.findRoutesByPeriod(origin.id, destination.id, period.from, period.end).then(function(routes) {
         if (routes.length > 1)
             collapseRoutes(routes);
         $scope.routes = routes;
@@ -57,7 +56,7 @@ function($scope, $location, $route, Layout) {
     };
 
     $scope.routeUrl = function(route) {
-        return '/#/' + year + ("0" + month).slice(-2) + '/routes/' + route.id;
+        return '/#/' + $route.current.params.period + '/routes/' + route.id;
     };
 
     function collapseRoutes(routes) {
