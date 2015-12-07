@@ -1,13 +1,15 @@
+import datetime
 import functools
-from django.conf import settings
-from .models import Sample, Trip, Route
-from django.http import HttpResponse, Http404
-from . import cache_utils
-import django.db
 import time
 from collections import namedtuple
-import datetime
+
+import django.db
+from django.conf import settings
+from django.http import HttpResponse
+from django.views.decorators.cache import cache_page
+
 from . import errors
+from .models import Route
 
 Filters = namedtuple('Filters', ['from_date', 'to_date'])
 
@@ -30,7 +32,7 @@ def benchit(func):
     return wrap
 
 
-@cache_utils.cachereq
+@cache_page(settings.CACHE_TTL)
 def get_stops(req):
     from . import services
 
@@ -51,7 +53,7 @@ def get_trip(req, trip_id):
     return json_resp(trip.to_json())
 
 
-@cache_utils.cachereq
+@cache_page(settings.CACHE_TTL)
 def get_all_routes(req):
     from django.db.models import Count, Min, Max
 
@@ -124,15 +126,6 @@ def _check_hours():
 
 _check_hours()
 
-"""
-@cache_utils.cacheit
-def get_path_info(req):
-    stop_ids = [int(s) for s in req.GET['stop_ids'].split(',')]
-    stats = _get_path_info_full(stop_ids)
-    stat = [stat for stat in stats if stat['info']['hours'] == 'all' and stat['info']['week_day'] == 'all'][0]['stops']
-    return json_resp(stat)
-"""
-
 
 def _parse_date(dt_str):
     if dt_str is None:
@@ -166,8 +159,8 @@ def _encode_date(date):
     millis = int(calendar.timegm(date.timetuple()) * 1000)
     return millis
 
-@cache_utils.cachereq
-@benchit
+
+@cache_page(settings.CACHE_TTL)
 def get_route_info_full(req):
     route_id = req.GET['route_id']
     from_date = _parse_date(req.GET.get('from_date'))
@@ -293,13 +286,13 @@ def get_service_stat(service):
         ts = row_dict['time_in_stop']
         if ts is not None:
             if not settings.USE_SQLITE3:
-                ts = ts.total_seconds() # in postgres: timedelta object
+                ts = ts.total_seconds()  # in postgres: timedelta object
         row_dict['time_in_stop'] = ts
         result.append(row_dict)
     return result
 
 
-def _get_select_postgres(*,route,filters,early_threshold,late_threshold):
+def _get_select_postgres(*, route, filters, early_threshold, late_threshold):
     select_stmt = ('''
         SELECT  count(s.stop_id) as num_trips,
                 s.stop_id as stop_id,
@@ -323,7 +316,7 @@ def _get_select_postgres(*,route,filters,early_threshold,late_threshold):
         AND t.route_id = r.id
         AND t.valid
         AND s.trip_id = t.id
-        '''+
+        ''' +
                    (' AND t.start_date >= %(start_date)s' if filters.from_date else '')
                    +
                    (' AND t.start_date <= %(to_date)s' if filters.to_date else '')
@@ -342,7 +335,7 @@ def _get_select_postgres(*,route,filters,early_threshold,late_threshold):
     return select_stmt, select_kwargs
 
 
-def _get_select_sqlite3(*,route,filters,early_threshold,late_threshold):
+def _get_select_sqlite3(*, route, filters, early_threshold, late_threshold):
     select_stmt = ('''
         SELECT  count(s.stop_id) as num_trips,
                 s.stop_id as stop_id,
@@ -366,7 +359,7 @@ def _get_select_sqlite3(*,route,filters,early_threshold,late_threshold):
         AND t.route_id = r.id
         AND t.valid
         AND s.trip_id = t.id
-        '''+
+        ''' +
                    (''' AND t.start_date >= datetime('%(start_date)s')''' if filters.from_date else '')
                    +
                    (''' AND t.start_date <= datetime('%(to_date)s')''' if filters.to_date else '')
@@ -390,9 +383,11 @@ def _get_stats_table(route, filters):
     early_threshold = -120
     late_threshold = 300
     if settings.USE_SQLITE3:
-        select_stmt, select_kwargs = _get_select_sqlite3(route=route, filters=filters,early_threshold=early_threshold,late_threshold=late_threshold)
+        select_stmt, select_kwargs = _get_select_sqlite3(route=route, filters=filters, early_threshold=early_threshold,
+                                                         late_threshold=late_threshold)
     else:
-        select_stmt, select_kwargs = _get_select_postgres(route=route, filters=filters,early_threshold=early_threshold,late_threshold=late_threshold)
+        select_stmt, select_kwargs = _get_select_postgres(route=route, filters=filters, early_threshold=early_threshold,
+                                                          late_threshold=late_threshold)
 
     cursor = django.db.connection.cursor()
     cursor.execute(select_stmt, select_kwargs)

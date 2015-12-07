@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 from django.core.management import BaseCommand
-import data.cache_utils
 from django.conf import settings
+from django.core import cache
+from data.utils import invalidate_cache
 import os
 
 CSV_DIR = '/home/opentrain/public_html/files/csv'
@@ -20,6 +21,7 @@ CSV_FILES = ['01_2013.csv',
              '12_2013.csv',
              '2014.csv']
 
+
 class Command(BaseCommand):
     args = ''
     help = 'Imports all (or specified) CSV files into the database'
@@ -35,7 +37,7 @@ class Command(BaseCommand):
         csv_files = options['csv_files']
         is_sqlite3 = settings.USE_SQLITE3
         print('Using sqlite3 = {0}'.format(is_sqlite3))
-        data.cache_utils.invalidate_cache()
+        invalidate_cache()
         if not csv_files:
             csv_files = []
             for csv in CSV_FILES:
@@ -50,5 +52,5 @@ class Command(BaseCommand):
 
         print('Building services - takes long time')
         self.run_command('python manage.py build_services')
-        data.cache_utils.invalidate_cache()
+        invalidate_cache()
         self.run_command('python manage.py remove_skip_stops')

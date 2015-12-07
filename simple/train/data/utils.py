@@ -2,7 +2,6 @@ from data.models import Sample, Trip, Route, Service
 import csv
 import datetime
 from collections import namedtuple
-from data import cache_utils
 from django.db import transaction
 import pytz
 
@@ -225,11 +224,13 @@ def remove_skip_stops():
     print('# of routes before: %s' % Route.objects.count())
     for idx,service in enumerate(sr.bad):
         service.remove_skip_stops()
-        if (idx + 1 % 100 == 0):
+        if (idx + 1) % 100 == 0:
             print('%s/%s completed' % (1+idx,len(sr.bad)))
     print('# of routes after: %s' % Route.objects.count())
 
 
-
+def invalidate_cache():
+    from django.core.cache import caches
+    caches['default'].clear()
 
 

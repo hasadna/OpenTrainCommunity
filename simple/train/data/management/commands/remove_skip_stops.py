@@ -13,7 +13,7 @@ class Command(BaseCommand):
     help = 'build services'
 
     def handle(self, *args, **options):
-        data.cache_utils.invalidate_cache()
+        data.utils.invalidate_cache()
         data.utils.remove_skip_stops()
         data.cache_utils.invalidate_cache()
 
