@@ -16,6 +16,12 @@ def stop_time(dt):
     return dt.astimezone(ISRAEL_TIMEZONE).strftime('%H:%M:%S')
 
 @register.filter
+def delay(secs):
+    if secs is None:
+        return '----'
+    return secs
+
+@register.filter
 def heb_stop_name(stop_id):
     import data.services
     return data.services.get_heb_stop_name(stop_id)
@@ -51,3 +57,11 @@ def route_ids_json(objs):
     return json.dumps(route_ids)
 
 
+@register.simple_tag
+def stop_time_span(dt):
+    if not dt:
+        return '----'
+    dt_il = dt.astimezone(ISRAEL_TIMEZONE)
+    return mark_safe('<span title="{0}">{1}</span>').format(
+        dt_il.isoformat(),
+        dt_il.strftime('%H:%M:%S'))

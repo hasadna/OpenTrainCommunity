@@ -26,10 +26,16 @@
             {% trans 'Actual Arrival' %}
         </th>
         <th>
+            {% trans 'Delay Arrival' %}
+        </th>
+        <th>
             {% trans 'Expected Departure' %}
         </th>
         <th>
             {% trans 'Actual Departure' %}
+        </th>
+        <th>
+            {% trans 'Delay Departure' %}
         </th>
         <th>
             {% trans 'Link' %}
@@ -42,10 +48,12 @@
         <td>{{sample.id }}</td>
         <td>{{sample.stop_id | heb_stop_name }}</td>
         <td>{{ sample.stop_id }}</td>
-        <td>{{sample.exp_arrival | stop_time}}</td>
-        <td>{{sample.actual_arrival | stop_time}}</td>
-        <td>{{sample.exp_departure | stop_time}}</td>
-        <td>{{sample.actual_departure | stop_time}}</td>
+        <td>{% stop_time_span sample.exp_arrival %}</td>
+        <td>{% stop_time_span sample.actual_arrival %}</td>
+        <td><span dir="ltr">{{ sample.delay_arrival | delay}}</span></td>
+        <td>{% stop_time_span sample.exp_departure %}</td>
+        <td>{% stop_time_span sample.actual_departure %}</td>
+        <td><span dir="ltr">{{ sample.delay_departure | delay }}</span></td>
         <td><a href="{{sample.get_text_link}}">{% trans 'line' %} #{{sample.data_file_line}}</a></td>
     </tr>
 {% endfor %}

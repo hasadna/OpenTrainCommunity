@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-16 20:15+0200\n"
-"PO-Revision-Date: 2015-11-16 20:16+0200\n"
+"POT-Creation-Date: 2015-12-07 22:13+0200\n"
+"PO-Revision-Date: 2015-12-07 22:14+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: he\n"
@@ -120,7 +120,6 @@ msgstr "ב"
 msgid "Samples"
 msgstr "דגימות"
 
-#| msgid "Sample"
 msgid "Sample Id"
 msgstr "מזהה"
 
@@ -136,11 +135,19 @@ msgstr "הגעה מתוכננת"
 msgid "Actual Arrival"
 msgstr "הגעה בפועל"
 
+#| msgid "Actual Arrival"
+msgid "Delay Arrival"
+msgstr "איחור בהגעה"
+
 msgid "Expected Departure"
 msgstr "יציאה מתוכננת"
 
 msgid "Actual Departure"
 msgstr "יציאה בפועל"
+
+#| msgid "Actual Departure"
+msgid "Delay Departure"
+msgstr "איחור ביציאה"
 
 msgid "Link"
 msgstr "קישור"
