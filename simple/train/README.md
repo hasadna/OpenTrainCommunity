@@ -21,6 +21,8 @@ If you are working with postgres, you can just download the dump file from the s
 
 **If this does not work for you, you can skip to next section and rebuild everything from the raw data.**
 
+If you are working locally on postgres, this is much faster and simpler. Use this.
+
 - Download the latest sql dump from http://otrain.org/files/dumps/ 
 
 - gunzip it locally 
@@ -41,10 +43,14 @@ python clean_all.py --restore db_2015_12_09_02_35_04.sql
 rm db_2015_12_09_02_35_04.sql # unless you want to keep it
 ```
 
+Now you can start the server.
+```
+python manage.py runserver 
+```
 
 
 
-DATA - Fresh install (on linux)
+DATA - Fresh install (on linux) - build all data from (almost) scratch
 ========================
 
 To clean everything and refresh the data to the following steps
