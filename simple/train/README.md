@@ -19,9 +19,11 @@ DATA - Fresh install (on linux) with postgres (with DB restore)
 ========================
 If you are working with postgres, you can just download the dump file from the server and install it.
 
+**Note: this is much faster and simpler, then building from the csv files (next section), so if you are working with postgres, use this one. It will also enable you to rebuild the DB easily if we change the DB on the server (all the process should take less than 5 minutes)**
+
 **If this does not work for you, you can skip to next section and rebuild everything from the raw data.**
 
-If you are working locally on postgres, this is much faster and simpler. Use this.
+
 
 - Download the latest sql dump from http://otrain.org/files/dumps/ 
 
