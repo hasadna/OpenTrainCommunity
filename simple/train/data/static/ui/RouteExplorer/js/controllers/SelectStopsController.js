@@ -1,6 +1,6 @@
 angular.module('RouteExplorer').controller('SelectStopsController',
-['$scope', '$rootScope', '$location', 'Layout', 'Locale',
-function($scope, $rootScope, $location, Layout, Locale) {
+['$scope', '$rootScope', '$location', 'Layout', 'Locale', 'TimeParser',
+function($scope, $rootScope, $location, Layout, Locale, TimeParser) {
     $scope.stops = Layout.getStops();
     $scope.origin = null;
     $scope.destination = null;
@@ -29,16 +29,17 @@ function($scope, $rootScope, $location, Layout, Locale) {
     $scope.goToRoutes = function() {
         $scope.noRoutes = false;
         $scope.loading = true;
-        var year = $scope.period.from.getFullYear();
-        var month = $scope.period.from.getMonth() + 1;
-        Layout.findRoutesByDate($scope.origin.id, $scope.destination.id, year, month)
+        var fromDate = $scope.period.from;
+        var toDate = $scope.period.end;
+        var periodStr = TimeParser.formatPeriod($scope.period);
+        Layout.findRoutesByPeriod($scope.origin.id, $scope.destination.id, fromDate, toDate)
             .then(function(routes) {
                 if (routes.length === 0) {
                     $scope.noRoutes = true;
                 } else if (routes.length == 1) {
-                    $location.path('/' + year + ("0" + month).slice(-2) + '/routes/' + routes[0].id);
+                    $location.path('/' + periodStr + '/routes/' + routes[0].id);
                 } else {
-                    $location.path('/' + year + '/' + month + '/select-route/' + $scope.origin.id + '/' + $scope.destination.id);
+                    $location.path('/' + periodStr + '/select-route/' + $scope.origin.id + '/' + $scope.destination.id);
                 }
             })
             .finally(function() {
@@ -55,16 +56,17 @@ function($scope, $rootScope, $location, Layout, Locale) {
       if (fromDate.getFullYear() < 2013) fromDate = new Date(2013, 0, 1);
 
       var periods = [];
-      var from = new Date(fromDate.getFullYear(), fromDate.getMonth(), 1);
-      while (from < toDate) {
-        to = new Date(from.getFullYear(), from.getMonth() + 1, from.getDate());
+      var start = new Date(fromDate.getFullYear(), fromDate.getMonth(), 1);
+      while (start < toDate) {
+        end = new Date(start.getFullYear(), start.getMonth() + 1, start.getDate());
         var period = {
-          from: from,
-          to: to,
-          name: Locale.months[from.getMonth()].name + " " + from.getFullYear()
+          from: start,
+          to: start,
+          end: end,
+          name: Locale.months[start.getMonth()].name + " " + start.getFullYear()
         };
         periods.push(period);
-        from = to;
+        start = end;
       }
       periods.reverse();
       return periods;
