@@ -34,6 +34,7 @@ def main():
         subprocess.call('python manage.py migrate', shell=True)
     if options.restore:
         subprocess.call('{0} --set ON_ERROR_STOP=on traindata < {1}'.format(postgres_cmd, options.restore), shell=True)
+        subprocess.call('python manage.py clear_cache',shell=True)
 
 
 if __name__ == '__main__':
