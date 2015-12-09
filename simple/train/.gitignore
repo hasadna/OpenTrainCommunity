@@ -8,5 +8,5 @@ tmp
 __pycache__
 logdir
 db.sqlite3
-
-
+db*.sql
+db*.sql.gz

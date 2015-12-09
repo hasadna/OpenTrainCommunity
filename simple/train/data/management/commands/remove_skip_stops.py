@@ -1,6 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
 import data.utils
-import data.cache_utils
 import os
 
 def run_command(cmd):
@@ -15,6 +14,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         data.utils.invalidate_cache()
         data.utils.remove_skip_stops()
-        data.cache_utils.invalidate_cache()
+        data.utils.invalidate_cache()
 
 
