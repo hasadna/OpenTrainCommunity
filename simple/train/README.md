@@ -15,6 +15,34 @@ Then from the virtualenv environement,
 ````
 *NOTE:* If you plan to work with sqlite3, you can edit locally the requirements.txt and remove the line with psycopg2
 
+DATA - Fresh install (on linux) with postgres (with DB restore)
+========================
+If you are working with postgres, you can just download the dump file from the server and install it.
+
+**If this does not work for you, you can skip to next section and rebuild everything from the raw data.**
+
+- Download the latest sql dump from http://otrain.org/files/dumps/ 
+
+- gunzip it locally 
+
+- then run:
+
+```
+python clean_all.py --restore <name-of-sql-file>
+```
+
+e.g.:
+
+```
+cd /home/eran/work/pkw/OpenTrainCommunity/simple/train
+wget http://otrain.org/files/dumps/db_2015_12_09_02_35_04.sql.gz 
+gunzip db_2015_12_09_02_35_04.sql.gz
+python clean_all.py --restore db_2015_12_09_02_35_04.sql
+rm db_2015_12_09_02_35_04.sql # unless you want to keep it
+```
+
+
+
 
 DATA - Fresh install (on linux)
 ========================
