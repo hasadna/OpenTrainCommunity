@@ -1,10 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
 import data.utils
-import os
-
-def run_command(cmd):
-    res = os.system(cmd)
-    assert res == 0,'Failed in command %s' % cmd
 
 
 class Command(BaseCommand):

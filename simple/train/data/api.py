@@ -56,11 +56,13 @@ def get_trip(req, trip_id):
 @cache_page(settings.CACHE_TTL)
 def get_all_routes(req):
     from django.db.models import Count, Min, Max
-
+    min_count = req.GET.get('min_count',10)
     routes = list(Route.objects.all().order_by('id').annotate(
         trips_count=Count('trips'),
         min_date=Min('trips__start_date'),
         max_date=Max('trips__start_date')))
+
+    routes = [r for r in routes if r.trips_count > min_count]
 
     result = []
     for r in routes:
