@@ -6,6 +6,19 @@ You need to work on python3.*. Best is to work on virtualenv
 mkvirtualenv -p $(which python3) opentrain
 ```
 
+You might need to install virtualenv package before, running:
+```
+sudo pip install virtualenv
+```
+
+Then run the environnement,
+
+```
+cd opentrain
+source bin/activate
+```
+
+
 Then from the virtualenv environement,
 
 ````
@@ -33,6 +46,11 @@ If you are working with postgres, you can just download the dump file from the s
 
 ```
 python clean_all.py --restore <name-of-sql-file>
+```
+You might need to run,
+
+```
+pip install argparse
 ```
 
 e.g.:
