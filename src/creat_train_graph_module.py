@@ -1,4 +1,4 @@
-import manage
+import src.manage
 import datetime
 from entities import Station, TrainStop
 import numpy as np
@@ -108,8 +108,8 @@ def create_train_graph(session, stop_names, station_id_dict, date_val=None):
 
 if __name__ == "__main__":
 
-  session = manage.get_session()
-  stop_names = manage.get_stop_names()
+  session = src.manage.get_session()
+  stop_names = src.manage.get_stop_names()
   station_id_dict = station_id2name('../data/stops_ids_and_names.txt')
 
   date_val = datetime.date(2014, 1, 1)

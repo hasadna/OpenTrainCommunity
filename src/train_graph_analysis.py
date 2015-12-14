@@ -1,8 +1,9 @@
-import manage
+import src.manage
 import datetime
 import numpy as np
 import matplotlib.pyplot as plt
-from graph_module import dynamic_all_to_one, display_graph
+import src.manage
+from graph_modlue import dynamic_all_to_one, display_graph
 from creat_train_graph_module import create_train_graph, station_id2name
 
 
@@ -10,8 +11,8 @@ def analyze_average_commute(date_val):
     # Display a contiguous commute time from a source station to a target station
 
     # Get DB data
-    session = manage.get_session()
-    stop_names = manage.get_stop_names()
+    session = src.manage.get_session()
+    stop_names = src.manage.get_stop_names()
     station_id_dict = station_id2name('../data/stops_ids_and_names.txt')
     # Create a graph representation of the train stops
     G = create_train_graph(session, stop_names, station_id_dict, date_val)
