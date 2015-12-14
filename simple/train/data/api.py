@@ -78,7 +78,7 @@ def get_all_routes(req):
 
 def get_all_routes_by_date(req):
     from django.db.models import Count
-
+    min_count = req.GET.get('min_count',10)
     from_date = _parse_date(req.GET['from_date'])
     to_date = _parse_date(req.GET['to_date'])
 
@@ -86,6 +86,8 @@ def get_all_routes_by_date(req):
                   .filter(trips__start_date__gte=from_date, trips__start_date__lte=to_date)
                   .annotate(trips_count=Count('trips'))
                   .order_by('id'))
+
+    routes = [r for r in routes if r.trips_count > min_count]
 
     result = [{'id': r.id, 'stop_ids': r.stop_ids, 'count': r.trips_count} for r in routes]
     return json_resp(result)
