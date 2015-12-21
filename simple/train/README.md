@@ -19,14 +19,11 @@ source bin/activate
 ```
 
 
-Then from the virtualenv environement,
+Then from the virtualenv environment,
+**NOTE:** If you plan to work with sqlite3, do the following changes:
 
-````
-(opentrain)% git clone https://github.com/hasadna/OpenTrainCommunity.git
-(opentrain)% cd simple/train
-(opentrain)% pip install -r requirements.txt
-````
-*NOTE:* If you plan to work with sqlite3, you can edit locally the requirements.txt and remove the line with psycopg2
+1. Edit locally the requirements.txt and remove the line with psycopg2
+2. Copy the local_settings.py.sqlite3 into local_settings.py 
 
 DATA - Fresh install (on linux) with postgres (with DB restore)
 ========================
