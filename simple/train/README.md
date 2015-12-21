@@ -53,6 +53,8 @@ You might need to run,
 pip install argparse
 ```
 
+In case you have already set a postgres, user name, in clean_all.py line 29 replace postgres by your_pgname.
+
 e.g.:
 
 ```
