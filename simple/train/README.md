@@ -53,7 +53,17 @@ You might need to run,
 pip install argparse
 ```
 
-In case you have already set a postgres, user name, in clean_all.py line 29 replace postgres by your_pgname.
+In case you have already set a postgres user name, you could face: 
+```
+ERROR:  role "postgres" does not exist
+```
+In this case, create a user name postgres before running the script.
+
+On linux platform you might also have to change l29 in clean_all.py to 
+
+```
+postgres_cmd = "sudo -u your_macuser psql"
+```
 
 e.g.:
 
