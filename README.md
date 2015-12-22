@@ -18,8 +18,13 @@ cd opentrain
 source bin/activate
 ```
 
-
 Then from the virtualenv environment,
+you need to run
+
+```
+pip install -r requirements.txt
+```
+
 **NOTE:** If you plan to work with sqlite3, do the following changes:
 
 1. Edit locally the requirements.txt and remove the line with psycopg2
