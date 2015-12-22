@@ -26,6 +26,8 @@ cd OpenTrainCommunity/simple/train
 pip install -r requirements.txt
 ```
 
+**If you are working with postgres, make sure that you install the postgres server for your own OS (not only the psql client)**
+
 **NOTE:** If you plan to work with sqlite3, do the following changes:
 
 1. Edit locally the requirements.txt and remove the line with psycopg2
