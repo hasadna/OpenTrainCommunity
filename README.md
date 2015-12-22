@@ -22,6 +22,7 @@ Then from the virtualenv environment,
 you need to run
 
 ```
+cd OpenTrainCommunity/simple/train
 pip install -r requirements.txt
 ```
 
