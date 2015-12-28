@@ -1,6 +1,25 @@
 from rest_framework import serializers
 from rest_framework import fields
+from rest_framework.reverse import reverse
+
 from data import models
+
+
+class RelationUrlField(serializers.CharField):
+    def __init__(self, name, **kwargs):
+        kwargs['read_only'] = True
+        kwargs['source'] = '*'
+        self.name = name
+        return super().__init__(**kwargs)
+
+    def to_representation(self, value):
+        if isinstance(value, models.Route):
+            kwargs={'route_id': value.id}
+        elif isinstance(value, models.Service):
+            kwargs = {'route_id': value.route_id,
+                      'service_id': value.id}
+
+        return reverse(self.name, kwargs=kwargs, request=self.context['request'])
 
 
 class StopSerializer(serializers.Serializer):
@@ -15,12 +34,17 @@ class StopSerializer(serializers.Serializer):
 class RouteSerializer(serializers.ModelSerializer):
     id = fields.IntegerField()
     stops = StopSerializer(many=True, source='get_stops')
+    services = RelationUrlField(name='route-services-list')
+    trips = RelationUrlField(name='route-trips-list')
 
     class Meta:
         model = models.Route
         fields = (
             'id',
-            'stops'
+            'stops',
+            'services',
+            'trips',
+            'stops',
         )
 
 
@@ -33,4 +57,13 @@ class TripSerializer(serializers.ModelSerializer):
             'id',
         )
 
+
+class ServiceSerializer(serializers.ModelSerializer):
+    id = fields.CharField()
+
+    class Meta:
+        model = models.Service
+        fields = (
+            'id',
+        )
 
