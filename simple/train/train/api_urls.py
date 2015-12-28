@@ -17,6 +17,12 @@ router.register('routes/(?P<route_id>\d+)/services/(?P<service_id>\d+)/trips',
                 data.drf.RouteServicesViewSet,
                 base_name='service-trips')
 
+# router.register('routes/(?P<route_id>\d+)/services/(?P<service_id>\d+)/trips/(?P<trip_id>[^/.]+)/samples',
+#                 data.drf.TripSamplesViewSet,
+#                 base_name='trip-samples')
+#
+
+
 urlpatterns = [
     url(r'^', include(router.urls)),
 ]
