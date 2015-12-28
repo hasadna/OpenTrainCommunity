@@ -43,7 +43,8 @@ INSTALLED_APPS = (
     'browse',
     'csvparser',
     'xlparser',
-    'rest_framework'
+    'rest_framework',
+    'rest_framework_swagger'
 )
 
 MIDDLEWARE_CLASSES = (

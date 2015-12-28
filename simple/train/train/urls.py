@@ -14,4 +14,6 @@ urlpatterns = patterns('',
                        url(r'^ui/routes/?$', 'data.views.route_explorer'),
                        url(r'^$', 'data.views.route_explorer'),
                        url(r'api/v1/', include(api_urls.router.urls)),
-                       )
+                       url(r'^api/docs/', include('rest_framework_swagger.urls')),
+)
+
