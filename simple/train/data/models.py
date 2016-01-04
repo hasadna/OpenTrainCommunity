@@ -180,22 +180,28 @@ class Service(models.Model):
             stats_by_stop_id[stat['stop_id']] = stat
         return stats_by_stop_id
 
-    def get_stops(self):
+    def get_stop_times(self):
+        return self.get_stops(with_stats=False)
+
+    def get_stops(self, with_stats=True):
         from . import services
-        stats = self.get_stats_dict()
+        if with_stats:
+            stats = self.get_stats_dict()
         trip = self.trips.first()
         samples = trip.get_real_stop_samples()
         result = []
         for sample in samples:
-            stop_stat = stats[sample.stop_id]
-            result.append({
+            item = {
                 'stop_id': sample.stop_id,
                 'stop_name': services.get_heb_stop_name(sample.stop_id),
                 'exp_arrival': sample.to_local_str_hm(sample.exp_arrival, ':'),
                 'exp_departure': sample.to_local_str_hm(sample.exp_departure, ':'),
-                'stat': stop_stat,
-                'can_be_skipped': stop_stat['time_in_stop'] is not None and stop_stat['time_in_stop'] < 5
-            })
+            }
+            if with_stats:
+                stop_stat = stats[sample.stop_id]
+                item['stat'] = stop_stat,
+                item['can_be_skipped'] = stop_stat['time_in_stop'] is not None and stop_stat['time_in_stop'] < 5
+            result.append(item)
         return result
 
     def __str__(self):

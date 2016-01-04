@@ -87,11 +87,13 @@ class TripSerializer(serializers.ModelSerializer):
 
 class ServiceSerializer(serializers.ModelSerializer):
     id = fields.CharField()
+    stop_times = serializers.ListField(source='get_stop_times')
 
     class Meta:
         model = models.Service
         fields = (
             'id',
+            'stop_times'
         )
 
 
