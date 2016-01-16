@@ -8,13 +8,15 @@ function($scope, $rootScope, $location, Layout, Locale, TimeParser) {
 
     var dateRange = Layout.getRoutesDateRange();
     $scope.periods = generatePeriods(dateRange.min, dateRange.max);
-    $scope.period = $scope.periods[0];
+    $scope.startPeriod = $scope.periods[0];
+    $scope.endPeriod = $scope.periods[0];
 
     $scope.formValid = function() {
         return (
             !!$scope.origin &&
             !!$scope.destination &&
-            $scope.origin != $scope.destination
+            $scope.origin != $scope.destination &&
+            $scope.startPeriod.from <= $scope.endPeriod.to
         );
     };
 
@@ -29,9 +31,14 @@ function($scope, $rootScope, $location, Layout, Locale, TimeParser) {
     $scope.goToRoutes = function() {
         $scope.noRoutes = false;
         $scope.loading = true;
-        var fromDate = $scope.period.from;
-        var toDate = $scope.period.end;
-        var periodStr = TimeParser.formatPeriod($scope.period);
+        var period = {
+            from: $scope.startPeriod.from,
+            to: $scope.endPeriod.to,
+            end: $scope.endPeriod.end,
+        };
+        var fromDate = period.from;
+        var toDate = period.end;
+        var periodStr = TimeParser.formatPeriod(period);
         Layout.findRoutesByPeriod($scope.origin.id, $scope.destination.id, fromDate, toDate)
             .then(function(routes) {
                 if (routes.length === 0) {
@@ -65,6 +72,7 @@ function($scope, $rootScope, $location, Layout, Locale, TimeParser) {
           end: end,
           name: Locale.months[start.getMonth()].name + " " + start.getFullYear()
         };
+        period.toName = Locale.until + period.name;
         periods.push(period);
         start = end;
       }
