@@ -1,0 +1,106 @@
+<div class="days-container btn-group btn-group-lg btn-group-justified btn-group-light">
+    <div class="btn btn-default all" ng-model="selectedDay" uib-btn-radio="null"
+         uib-tooltip="{{ tripCount() }} נסיעות" tooltip-append-to-body="true">
+        <div class="btn-title">&zwnj;<i class="fa fa-calendar"></i></div>
+        <div class="btn-text">הכל</div>
+    </div>
+    <div class="btn btn-default"
+         ng-repeat="day in days"
+         ng-class="{ disabled: isDayEmpty(day) }"
+         ng-model="$parent.selectedDay" uib-btn-radio="day.id"
+         uib-tooltip="{{ tripCount(day.id) }} נסיעות" tooltip-append-to-body="true">
+        <div class="btn-title">{{ day.abbr }}</div>
+        <div class="btn-text">{{ day.name }}</div>
+    </div>
+</div>
+
+<div class="times-container btn-group btn-group-lg btn-group-justified btn-group-tabs btn-group-light">
+    <div class="btn btn-default all" ng-model="selectedTime" uib-btn-radio="null"
+         uib-tooltip="{{ tripCount(selectedDay) }} נסיעות" tooltip-append-to-body="true">
+        <div class="btn-title">&zwnj;<i class="fa fa-clock-o"></i></div>
+        <div class="btn-text">הכל</div>
+    </div>
+    <div class="btn btn-default"
+         ng-repeat="time in times"
+         ng-class="{ disabled: isTimeEmpty(time) }"
+         ng-model="$parent.selectedTime"
+         uib-btn-radio="time.id"
+         uib-tooltip="{{ tripCount($parent.selectedDay, time.id) }} נסיעות" tooltip-append-to-body="true">
+        <div class="btn-text">{{ time.from }}<br/>{{ time.to }}</div>
+    </div>
+</div>
+
+<div class="box">
+    <div class="content">
+        <table class="table table-striped">
+            <colgroup span="2">
+            </colgroup>
+            <colgroup span="3">
+            </colgroup>
+            <colgroup span="3">
+            </colgroup>
+            <thead>
+                <tr class="table-header-primary">
+                    <th scope="colgroup" colspan="2">תחנות</th>
+                    <th scope="colgroup" colspan="3">הגעה לתחנה</th>
+                    <th scope="colgroup" colspan="3">יציאה מהתחנה</th>
+                </tr>
+                <tr class="table-header-secondary">
+                    <th></th>
+                    <th></th>
+                    <th uib-tooltip="הגעה יותר מ-2 דקות לפני הזמן המתוכנן" tooltip-append-to-body="true">
+                        הגעה מוקדמת
+                    </th>
+                    <th uib-tooltip="הגעה עד 5 דקות אחרי הזמן המתוכנן" tooltip-append-to-body="true">
+                        הגעה בזמן
+                    </th>
+                    <th uib-tooltip="הגעה מעבר ל-5 דקות אחרי הזמן המתוכנן" tooltip-append-to-body="true">
+                        הגעה באיחור
+                    </th>
+
+                    <th uib-tooltip="יציאה יותר מ-2 דקות לפני הזמן המתוכנן" tooltip-append-to-body="true">
+                        יציאה מוקדמת
+                    </th>
+                    <th uib-tooltip="יציאה עד 5 דקות אחרי הזמן המתוכנן" tooltip-append-to-body="true">
+                        יציאה בזמן
+                    </th>
+                    <th uib-tooltip="יציאה מעבר ל-5 דקות אחרי הזמן המתוכנן" tooltip-append-to-body="true">
+                        יציאה באיחור
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr ng-repeat="stopId in stopIds">
+                    <td class="stop-diagram" ng-class="{ 'stop-diagram-start': $first, 'stop-diagram-end': $last }">
+                        <div class="stop-diagram-number">
+                            {{ $index +1 }}
+                        </div>
+                    </td>
+                    <th class="stop-name">{{ stopName(stopId) }}</th>
+
+                    <td>
+                        <rex-percent-bar value="stopStats(stopId).arrival_early_pct" type="'orange'"></rex-percent-bar>
+                    </td>
+                    <td>
+                        <rex-percent-bar value="stopStats(stopId).arrival_on_time_pct" type="'green'"></rex-percent-bar>
+                    </td>
+                    <td>
+                        <rex-percent-bar value="stopStats(stopId).arrival_late_pct" type="'red'"></rex-percent-bar>
+                    </td>
+
+                    <td>
+                        <rex-percent-bar value="stopStats(stopId).departure_early_pct" type="'pink'"></rex-percent-bar>
+                    </td>
+                    <td>
+                        <rex-percent-bar value="stopStats(stopId).departure_on_time_pct"
+                                         type="'blue'"></rex-percent-bar>
+                    </td>
+                    <td>
+                        <rex-percent-bar value="stopStats(stopId).departure_late_pct" type="'purple'"></rex-percent-bar>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

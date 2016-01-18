@@ -91,3 +91,12 @@ def get_route_info_full(req):
     return json_resp(logic.get_route_info_full(route_id, from_date, to_date))
 
 
+#@cache_page(settings.CACHE_TTL)
+def get_path_info_full(req):
+    origin = int(req.GET['origin'])
+    destination = int(req.GET['destination'])
+    from_date = logic.parse_date(req.GET.get('from_date'))
+    to_date = logic.parse_date(req.GET.get('to_date'))
+    if from_date and to_date and from_date > to_date:
+        raise errors.InputError('from_date %s cannot be after to_date %s' % (from_date, to_date))
+    return json_resp(logic.get_path_info_full(origin, destination, from_date, to_date))

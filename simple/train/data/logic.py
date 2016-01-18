@@ -5,8 +5,6 @@ from collections import namedtuple
 
 import django.db
 from django.conf import settings
-from django.http import HttpResponse
-from django.views.decorators.cache import cache_page
 
 from . import errors
 from .models import Route
@@ -25,22 +23,8 @@ def benchit(func):
     return wrap
 
 
-def contains_stops(route, stop_ids):
-    route_stop_ids = route.stop_ids
-    try:
-        first_index = route_stop_ids.index(stop_ids[0])
-    except ValueError:
-        return False
-    return route_stop_ids[first_index:len(stop_ids) + first_index] == stop_ids
-
-
-def find_all_routes_with_stops(stop_ids):
-    routes = Route.objects.all()
-    result = [r for r in routes if contains_stops(r, stop_ids)]
-    return result
-
-
 WEEK_DAYS = [1, 2, 3, 4, 5, 6, 7]
+
 HOURS = [(4, 7),
          (7, 9),
          (9, 12),
@@ -99,10 +83,33 @@ def encode_date(date):
 def get_route_info_full(route_id, from_date, to_date):
     filters = Filters(from_date=from_date, to_date=to_date)
     route = Route.objects.get(id=route_id)
-    table = _get_stats_table(route, filters)
+    table = _get_stats_table(route=route, filters=filters)
     stats = _complete_table(table, route.stop_ids)
     stats.sort(key=_get_info_sort_key)
     return stats
+
+
+def get_path_info_full(origin_id, destination_id, from_date, to_date):
+    routes = get_routes_from_to(origin_id, destination_id)
+    filters = Filters(from_date=from_date, to_date=to_date)
+    table = _get_stats_table(routes=routes, filters=filters,origin_id=origin_id, destination_id=destination_id)
+    stats = _complete_table(table, [origin_id, destination_id])
+    stats.sort(key=_get_info_sort_key)
+    return stats
+
+
+def get_routes_from_to(origin_id, destination_id):
+    result = []
+    for route in Route.objects.all():
+        try:
+            idx1 = route.stop_ids.index(origin_id)
+            idx2 = route.stop_ids.index(destination_id)
+        except ValueError:
+            pass
+        else:
+            if idx1 < idx2:
+                result.append(route)
+    return result
 
 
 def _get_info_sort_key(stat):
@@ -261,6 +268,51 @@ def _get_select_postgres(*, route, filters, early_threshold, late_threshold):
     return select_stmt, select_kwargs
 
 
+def _get_select_from_to_postgres(*, routes, filters, origin_id, destination_id, early_threshold, late_threshold):
+    route_ids = [r.id for r in routes]
+    select_stmt = ('''
+        SELECT  count(s.stop_id) as num_trips,
+                s.stop_id as stop_id,
+                t.x_week_day_local as week_day_local,
+                t.x_hour_local as hour_local,
+                sum(case when s.delay_arrival <= %(early_threshold)s then 1 else 0 end) as arrival_early_count,
+                sum(case when s.delay_arrival > %(early_threshold)s and s.delay_arrival < %(late_threshold)s then 1 else 0 end) as arrival_on_time_count,
+                sum(case when s.delay_arrival >= %(late_threshold)s then 1 else 0 end) as arrival_late_count,
+
+                sum(case when s.delay_departure <= %(early_threshold)s then 1 else 0 end) as departure_early_count,
+                sum(case when s.delay_departure > %(early_threshold)s and s.delay_departure < %(late_threshold)s then 1 else 0 end) as departure_on_time_count,
+                sum(case when s.delay_departure >= %(late_threshold)s then 1 else 0 end) as departure_late_count
+
+        FROM
+        data_route as r,
+        data_trip as t,
+        data_sample as s
+
+        WHERE
+        r.id =  ANY(%(route_ids)s)
+        AND t.route_id = r.id
+        AND t.valid
+        AND s.trip_id = t.id
+        ''' +
+                   (' AND t.start_date >= %(start_date)s' if filters.from_date else '')
+                   +
+                   (' AND t.start_date <= %(to_date)s' if filters.to_date else '')
+                   +
+                   '''
+                       GROUP BY s.stop_id,week_day_local,hour_local
+                   ''')
+    select_kwargs = {
+        'route_ids': route_ids,
+        'early_threshold': early_threshold,
+        'late_threshold': late_threshold,
+        'stop_ids': [origin_id, destination_id],
+        'start_date': filters.from_date,
+        'to_date': filters.to_date
+    }
+    return select_stmt, select_kwargs
+
+
+
 def _get_select_sqlite3(*, route, filters, early_threshold, late_threshold):
     select_stmt = ('''
         SELECT  count(s.stop_id) as num_trips,
@@ -305,15 +357,39 @@ def _get_select_sqlite3(*, route, filters, early_threshold, late_threshold):
 
 
 @benchit
-def _get_stats_table(route, filters):
+def _get_stats_table(*, route=None,
+                     routes=None,
+                     origin_id=None,
+                     destination_id=None,
+                     filters=None):
+    assert (route is None) ^ (routes is None), 'exactly one of route, routes must be None'
     early_threshold = -120
     late_threshold = 300
-    if settings.USE_SQLITE3:
-        select_stmt, select_kwargs = _get_select_sqlite3(route=route, filters=filters, early_threshold=early_threshold,
-                                                         late_threshold=late_threshold)
+    if route:
+        if settings.USE_SQLITE3:
+            select_stmt, select_kwargs = _get_select_sqlite3(route=route, filters=filters,
+                                                             early_threshold=early_threshold,
+                                                             late_threshold=late_threshold)
+        else:
+            select_stmt, select_kwargs = _get_select_postgres(route=route, filters=filters,
+                                                              early_threshold=early_threshold,
+                                                              late_threshold=late_threshold)
     else:
-        select_stmt, select_kwargs = _get_select_postgres(route=route, filters=filters, early_threshold=early_threshold,
-                                                          late_threshold=late_threshold)
+        if settings.USE_SQLITE3:
+            assert False, 'not implemented for sqlite3 yet'
+            select_stmt, select_kwargs = _get_select_from_to_sqlite3(routes=routes,
+                                                                     filters=filters,
+                                                                     origin_id=origin_id,
+                                                                     destination_id=destination_id,
+                                                                     early_threshold=early_threshold,
+                                                                     late_threshold=late_threshold)
+        else:
+            select_stmt, select_kwargs = _get_select_from_to_postgres(routes=routes,
+                                                                      filters=filters,
+                                                                      origin_id=origin_id,
+                                                                      destination_id=destination_id,
+                                                                      early_threshold=early_threshold,
+                                                                      late_threshold=late_threshold)
 
     cursor = django.db.connection.cursor()
     cursor.execute(select_stmt, select_kwargs)

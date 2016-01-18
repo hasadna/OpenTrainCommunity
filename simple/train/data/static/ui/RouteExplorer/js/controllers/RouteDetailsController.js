@@ -133,10 +133,10 @@ function($scope, $route, $http, $location, LocationBinder, Layout, Locale, TimeP
                 $scope.times.push(time);
             }
         }
+    }
 
-        function formatHour(hour) {
-            return ('0' + hour % 24 + '').slice(-2) + ':00';
-        }
+    function formatHour(hour) {
+        return ('0' + hour % 24 + '').slice(-2) + ':00';
     }
 
     function formatMonth(date) {
