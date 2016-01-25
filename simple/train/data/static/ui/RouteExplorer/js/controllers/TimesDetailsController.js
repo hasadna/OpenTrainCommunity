@@ -1,7 +1,9 @@
 angular.module('RouteExplorer').controller('TimesDetailsController',
-    ['$scope', 'Locale','LocationBinder',
-function($scope, Locale, LocationBinder) {
+    ['$scope', '$route', 'Locale','LocationBinder',
+function($scope, $route, Locale, LocationBinder) {
     var statsMap = {};
+    var routeParams = $route.current.params;
+    console.log(routeParams);
     LocationBinder.bind($scope, 'selectedDay', 'day', function(val) { return val ? Number(val) : null; });
     LocationBinder.bind($scope, 'selectedTime', 'time');
     function formatHour(hour) {
