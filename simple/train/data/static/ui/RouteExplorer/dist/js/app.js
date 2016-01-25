@@ -511,6 +511,14 @@ function($scope, $route, Locale, LocationBinder, Layout) {
         return Locale.months[date.getMonth()].name + ' ' + date.getFullYear()
     }
 
+    function selectedStats() {
+        var stats = getStats($scope.selectedDay, $scope.selectedTime);
+        if (stats)
+          return stats.stops;
+
+        return [];
+    }
+
     $scope.stopName = function(stopId) {
         if ($scope.layout) {
             var stop = $scope.layout.findStop(stopId);
@@ -568,6 +576,27 @@ function($scope, $route, Locale, LocationBinder, Layout) {
       timeId = timeId || 'all';
       return statsMap[dayId] && statsMap[dayId][timeId] ? statsMap[dayId][timeId] : null;
     }
+
+    $scope.isTimeEmpty = function(time) {
+        var dayId = $scope.selectedDay || 'all';
+        var timeId = time.id;
+
+        var timeStats = statsMap[dayId] && statsMap[dayId][timeId];
+        if (timeStats && timeStats.info.num_trips > 0)
+            return false;
+
+        return true;
+    };
+
+    $scope.stopStats = function(stopId) {
+        var stats = selectedStats();
+        for (var i in stats) {
+            if (stats[i].stop_id == stopId)
+                return stats[i];
+        }
+        return null;
+    };
+
     $scope.loadStats();
 }]);
 
