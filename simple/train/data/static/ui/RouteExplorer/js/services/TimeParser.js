@@ -3,7 +3,7 @@ angular.module('RouteExplorer').factory('TimeParser',
 function() {
     function parseMonth(monthString) {
         var year = Number(monthString.substr(0, 4));
-        var month = Number(monthString.substr(5, 2));
+        var month = Number(monthString.substr(4, 2));
         return new Date(year, month - 1, 1);
     }
 
