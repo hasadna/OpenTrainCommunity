@@ -28,29 +28,7 @@ function($scope, $http, $location, $route, Layout, TimeParser) {
 
 
     function loadStats(data) {
-        $scope.times = [];
-        var timesMap = {};
-
-        for (var i in data) {
-            var statGroup = data[i];
-            var timeId = statGroup.info.hours == 'all' ? 'all' : statGroup.info.hours[0] + '-' + statGroup.info.hours[1];
-            var dayId = statGroup.info.week_day;
-
-            if (!statsMap[dayId])
-                statsMap[dayId] = {};
-
-            statsMap[dayId][timeId] = statGroup;
-
-            if (timeId != 'all' && !timesMap[timeId]) {
-                var time = {
-                    id: timeId,
-                    from: formatHour(statGroup.info.hours[0]),
-                    to: formatHour(statGroup.info.hours[1])
-                };
-                timesMap[timeId] = time;
-                $scope.times.push(time);
-            }
-        }
+        $scope.stats = data;
     }
 
     Layout.findRoutesByPeriod(origin.id, destination.id, period.from, period.end).then(function(routes) {

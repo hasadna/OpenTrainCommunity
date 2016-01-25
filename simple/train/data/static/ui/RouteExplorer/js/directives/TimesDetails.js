@@ -4,6 +4,7 @@ function(env) {
     return {
         restrict: 'E',
         scope: {
+            stats: '='
         },
         controller: 'TimesDetailsController',
         templateUrl: env.baseDir + '/tpls/TimesDetails.html'
