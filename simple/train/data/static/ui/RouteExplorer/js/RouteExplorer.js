@@ -27,7 +27,8 @@
               pageId: 'routes',
               templateUrl: templateUrl('SelectRoute'),
               controller: 'SelectRouteController',
-              resolve: { 'Layout': 'Layout' }
+              resolve: { 'Layout': 'Layout' },
+              reloadOnSearch: false
           })
           .when('/:period/routes/:routeId', {
               pageId: 'route',

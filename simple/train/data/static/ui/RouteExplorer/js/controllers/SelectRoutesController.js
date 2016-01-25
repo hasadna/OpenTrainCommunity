@@ -1,15 +1,41 @@
 angular.module('RouteExplorer').controller('SelectRouteController',
-['$scope', '$location', '$route', 'Layout', 'TimeParser',
-function($scope, $location, $route, Layout, TimeParser) {
+['$scope', '$http', '$location', '$route', 'Layout', 'TimeParser',
+function($scope, $http, $location, $route, Layout, TimeParser) {
     $scope.stops = Layout.getStops();
     var period = TimeParser.parsePeriod($route.current.params.period);
     var origin = Layout.findStop($route.current.params.origin);
     var destination = Layout.findStop($route.current.params.destination);
 
+    $http.get('/api/path-info-full', { params: {
+        origin: origin.id,
+        destination: destination.id,
+        from_date: period.from.getTime(),
+        to_date: period.end.getTime() }
+    }).success(function(data) {
+            loadStats(data);
+            $scope.loaded = true;
+    });
+
+    var statsMap = {};
+
+    function formatMonth(date) {
+        return Locale.months[date.getMonth()].name + ' ' + date.getFullYear()
+    }
+
+    function formatHour(hour) {
+        return ('0' + hour % 24 + '').slice(-2) + ':00';
+    }
+
+
+    function loadStats(data) {
+        $scope.stats = data;
+    }
+
     Layout.findRoutesByPeriod(origin.id, destination.id, period.from, period.end).then(function(routes) {
         if (routes.length > 1)
             collapseRoutes(routes);
         $scope.routes = routes;
+
     });
 
     function stopName(stopId) {

@@ -3,7 +3,10 @@
         <li><a href="#">מתחנת מוצא לתחנת יעד - חודש ושנה</a></li>
         <li class="active">בחירת מסלול נסיעה</li>
     </ol>
-    <h1 class="select-route-titel">בחירת מסלול נסיעה</h1>
+    <h1 class="select-route-title">סיכום</h1>
+    <times-details ng-if="stats" stats="stats">
+    </times-details>
+    <h1 class="select-route-title">בחירת מסלול נסיעה</h1>
     <div class="container content">
         <div class="paths-list" ng-if="routes">
             <div class="list-header">
