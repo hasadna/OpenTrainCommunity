@@ -22,5 +22,6 @@ angular.module('RouteExplorer').constant('Locale', {
       { abbr: 'ה', name: 'חמישי', id: 5 },
       { abbr: 'ו', name: 'שישי', id: 6 },
       { abbr: 'ש', name: 'שבת', id: 7 }
-  ]
+  ],
+  until: 'עד ל'
 });

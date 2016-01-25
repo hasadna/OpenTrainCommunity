@@ -25,7 +25,12 @@
                 </div>
                 <div class="row">
                   <div class="col-sm-12 selectBox">
-                    <select name="period" class="form-control" ng-model="period" ng-options="period as period.name for period in periods"></select>
+                    <select name="period" class="form-control" ng-model="startPeriod" ng-options="period as period.name for period in periods"></select>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-12 selectBox">
+                    <select name="period" class="form-control" ng-model="endPeriod" ng-options="period as period.toName for period in periods"></select>
                   </div>
                 </div>
                 <div class="row">
