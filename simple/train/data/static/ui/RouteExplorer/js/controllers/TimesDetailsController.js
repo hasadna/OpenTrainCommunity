@@ -1,9 +1,14 @@
 angular.module('RouteExplorer').controller('TimesDetailsController',
-    ['$scope', '$route', 'Locale','LocationBinder',
-function($scope, $route, Locale, LocationBinder) {
+    ['$scope', '$route', 'Locale','LocationBinder','Layout',
+function($scope, $route, Locale, LocationBinder, Layout) {
+    Layout.then(function(Layout) {
+        $scope.layout = Layout;
+    });
+    $scope.layout = null;
+
     var statsMap = {};
     var routeParams = $route.current.params;
-    console.log(routeParams);
+    $scope.stopIds = [parseInt(routeParams.origin), parseInt(routeParams.destination)];
     LocationBinder.bind($scope, 'selectedDay', 'day', function(val) { return val ? Number(val) : null; });
     LocationBinder.bind($scope, 'selectedTime', 'time');
     function formatHour(hour) {
@@ -13,6 +18,19 @@ function($scope, $route, Locale, LocationBinder) {
     function formatMonth(date) {
         return Locale.months[date.getMonth()].name + ' ' + date.getFullYear()
     }
+
+    $scope.stopName = function(stopId) {
+        if ($scope.layout) {
+            var stop = $scope.layout.findStop(stopId);
+            if (!stop)
+                return null;
+
+            return stop.name;
+        } else {
+            return null;
+        }
+    };
+
     $scope.selectedDay = null;
     $scope.days = Locale.days;
 

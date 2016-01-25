@@ -1,6 +1,6 @@
 angular.module('RouteExplorer').directive("timesDetails",
-['env','Locale',
-function(env) {
+['env','Layout',
+function(env, Layout) {
     return {
         restrict: 'E',
         scope: {
