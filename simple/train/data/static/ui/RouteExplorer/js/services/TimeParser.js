@@ -1,6 +1,13 @@
 angular.module('RouteExplorer').factory('TimeParser',
 [
 function() {
+    function createRequestString(date) {
+        var dd = date.getDate().toString();
+        var mm = (date.getMonth()+1).toString();
+        var yyyy = date.getFullYear().toString();
+        return dd + '/' + mm + '/' + yyyy;
+    }
+
     function parseMonth(monthString) {
         var year = Number(monthString.substr(0, 4));
         var month = Number(monthString.substr(4, 2));
@@ -28,6 +35,7 @@ function() {
     }
 
     return {
+        createRequestString: createRequestString,
         parseMonth: parseMonth,
         parsePeriod: parsePeriod,
         formatMonth: formatMonth,

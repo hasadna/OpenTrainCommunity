@@ -106,8 +106,8 @@ function($scope, $route, $http, $location, LocationBinder, Layout, Locale, TimeP
     var routeParams = $route.current.params;
 
     var period = TimeParser.parsePeriod(routeParams.period);
-    var startDate = period.from;
-    var endDate = period.end;
+    var startDate = TimeParser.createRequestString(period.from);
+    var endDate = TimeParser.createRequestString(period.end);
 
     var routeId = routeParams.routeId;
     var stopIds = Layout.findRoute(routeId).stops;
@@ -138,7 +138,7 @@ function($scope, $route, $http, $location, LocationBinder, Layout, Locale, TimeP
     $scope.previousPeriodUrl = bounds.min < previousPeriod.from ? '#/' + TimeParser.formatPeriod(previousPeriod) + '/routes/' + routeId : null;
     $scope.nextPeriodUrl = bounds.max > nextPeriod.to ? '#/' + TimeParser.formatPeriod(nextPeriod) + '/routes/' + routeId : null;
 
-    $http.get('/api/route-info-full', { params: { route_id: routeId, from_date: startDate.getTime(), to_date: endDate.getTime() } })
+    $http.get('/api/route-info-full', { params: { route_id: routeId, from_date: startDate, to_date: endDate } })
         .success(function(data) {
             loadStats(data);
             $scope.loaded = true;
@@ -275,8 +275,8 @@ function($scope, $http, $location, $route, Layout, TimeParser) {
     $http.get('/api/path-info-full', { params: {
         origin: origin.id,
         destination: destination.id,
-        from_date: period.from.getTime(),
-        to_date: period.end.getTime() }
+        from_date: TimeParser.createRequestString(period.from),
+        to_date: TimeParser.createRequestString(period.end) }
     }).success(function(data) {
             loadStats(data);
             $scope.loaded = true;
@@ -656,8 +656,8 @@ angular.module('RouteExplorer').filter('duration', function() {
 });
 
 angular.module('RouteExplorer').factory('Layout',
-['$http', '$q',
-function($http, $q) {
+['$http', '$q', 'TimeParser',
+function($http, $q, TimeParser) {
     var self = this;
     var stops = [];
     var stopsMap = {};
@@ -734,8 +734,8 @@ function($http, $q) {
 
             $http.get('/api/all-routes-by-date', {
                 params: {
-                    from_date: fromDate.getTime(),
-                    to_date: toDate.getTime()
+                    from_date: TimeParser.createRequestString(fromDate),
+                    to_date: TimeParser.createRequestString(toDate)
                 }
             }).then(function(response) {
                 var routesInDate = response.data.map(function(r) {
@@ -842,6 +842,13 @@ function($location) {
 angular.module('RouteExplorer').factory('TimeParser',
 [
 function() {
+    function createRequestString(date) {
+        var dd = date.getDate().toString();
+        var mm = (date.getMonth()+1).toString();
+        var yyyy = date.getFullYear().toString();
+        return dd + '/' + mm + '/' + yyyy;
+    }
+
     function parseMonth(monthString) {
         var year = Number(monthString.substr(0, 4));
         var month = Number(monthString.substr(4, 2));
@@ -869,6 +876,7 @@ function() {
     }
 
     return {
+        createRequestString: createRequestString,
         parseMonth: parseMonth,
         parsePeriod: parsePeriod,
         formatMonth: formatMonth,

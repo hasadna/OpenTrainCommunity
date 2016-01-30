@@ -4,8 +4,8 @@ function($scope, $route, $http, $location, LocationBinder, Layout, Locale, TimeP
     var routeParams = $route.current.params;
 
     var period = TimeParser.parsePeriod(routeParams.period);
-    var startDate = period.from;
-    var endDate = period.end;
+    var startDate = TimeParser.createRequestString(period.from);
+    var endDate = TimeParser.createRequestString(period.end);
 
     var routeId = routeParams.routeId;
     var stopIds = Layout.findRoute(routeId).stops;
@@ -36,7 +36,7 @@ function($scope, $route, $http, $location, LocationBinder, Layout, Locale, TimeP
     $scope.previousPeriodUrl = bounds.min < previousPeriod.from ? '#/' + TimeParser.formatPeriod(previousPeriod) + '/routes/' + routeId : null;
     $scope.nextPeriodUrl = bounds.max > nextPeriod.to ? '#/' + TimeParser.formatPeriod(nextPeriod) + '/routes/' + routeId : null;
 
-    $http.get('/api/route-info-full', { params: { route_id: routeId, from_date: startDate.getTime(), to_date: endDate.getTime() } })
+    $http.get('/api/route-info-full', { params: { route_id: routeId, from_date: startDate, to_date: endDate } })
         .success(function(data) {
             loadStats(data);
             $scope.loaded = true;
