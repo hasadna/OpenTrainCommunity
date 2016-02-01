@@ -71,6 +71,11 @@ class Sample(models.Model):
                                                                      self.id,
                                                                      anchor)
 
+
+    def get_stop(self):
+        from . import services
+        return services.get_stop(self.stop_id)
+
     def print_nice(self):
         print('%2d) %-20s %s' % (self.index,
                                  self.stop_name,

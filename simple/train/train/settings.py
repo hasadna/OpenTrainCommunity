@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import os
 import tempfile
 
+BASE_URL = 'http://otrain.org'
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 # Quick-start development settings - unsuitable for production
@@ -144,6 +146,8 @@ try:
     from local_settings import *
 except ImportError:
     pass
+
+
 
 USE_SQLITE3 = 'sqlite3' in DATABASES['default']['ENGINE']
 
