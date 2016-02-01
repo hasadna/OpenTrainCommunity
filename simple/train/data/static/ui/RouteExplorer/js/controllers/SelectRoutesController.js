@@ -9,8 +9,8 @@ function($scope, $http, $location, $route, Layout, TimeParser) {
     $http.get('/api/path-info-full', { params: {
         origin: origin.id,
         destination: destination.id,
-        from_date: period.from.getTime(),
-        to_date: period.end.getTime() }
+        from_date: TimeParser.createRequestString(period.from),
+        to_date: TimeParser.createRequestString(period.end) }
     }).success(function(data) {
             loadStats(data);
             $scope.loaded = true;

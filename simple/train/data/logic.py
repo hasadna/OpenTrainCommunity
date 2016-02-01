@@ -61,7 +61,7 @@ def parse_date(dt_str):
         d, m, y = [int(x) for x in dt_str.split('/')]
         if y < 2013:
             raise errors.InputError('Wrong year %s for param %s' % (y, dt_str))
-        return datetime.date(year=y, month=m, day=d)
+        return datetime.datetime(year=y, month=m, day=d)
     except ValueError as e:
         raise errors.InputError('Wrong date param %s: %s' % (dt_str, str(e)))
 

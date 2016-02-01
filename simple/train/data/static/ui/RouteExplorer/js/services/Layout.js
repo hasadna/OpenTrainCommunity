@@ -1,6 +1,6 @@
 angular.module('RouteExplorer').factory('Layout',
-['$http', '$q',
-function($http, $q) {
+['$http', '$q', 'TimeParser',
+function($http, $q, TimeParser) {
     var self = this;
     var stops = [];
     var stopsMap = {};
@@ -77,8 +77,8 @@ function($http, $q) {
 
             $http.get('/api/all-routes-by-date', {
                 params: {
-                    from_date: fromDate.getTime(),
-                    to_date: toDate.getTime()
+                    from_date: TimeParser.createRequestString(fromDate),
+                    to_date: TimeParser.createRequestString(toDate)
                 }
             }).then(function(response) {
                 var routesInDate = response.data.map(function(r) {
