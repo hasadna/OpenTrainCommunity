@@ -274,7 +274,7 @@ def _get_select_from_to_postgres(*, routes, filters, origin_id, destination_id, 
         SELECT  count(s.stop_id) as num_trips,
                 s.stop_id as stop_id,
                 t.x_week_day_local as week_day_local,
-                t.x_hour_local as hour_local,
+                extract(hour from orig.exp_departure) as hour_local,
                 sum(case when s.delay_arrival <= %(early_threshold)s then 1 else 0 end) as arrival_early_count,
                 sum(case when s.delay_arrival > %(early_threshold)s and s.delay_arrival < %(late_threshold)s then 1 else 0 end) as arrival_on_time_count,
                 sum(case when s.delay_arrival >= %(late_threshold)s then 1 else 0 end) as arrival_late_count,
@@ -286,13 +286,17 @@ def _get_select_from_to_postgres(*, routes, filters, origin_id, destination_id, 
         FROM
         data_route as r,
         data_trip as t,
-        data_sample as s
+        data_sample as s,
+        data_sample as orig
 
         WHERE
         r.id =  ANY(%(route_ids)s)
+        AND s.stop_id = ANY(%(stop_ids)s)
         AND t.route_id = r.id
         AND t.valid
         AND s.trip_id = t.id
+        AND orig.trip_id = t.id
+        AND orig.stop_id = %(origin_id)s
         ''' +
                    (' AND t.start_date >= %(start_date)s' if filters.from_date else '')
                    +
@@ -307,7 +311,8 @@ def _get_select_from_to_postgres(*, routes, filters, origin_id, destination_id, 
         'late_threshold': late_threshold,
         'stop_ids': [origin_id, destination_id],
         'start_date': filters.from_date,
-        'to_date': filters.to_date
+        'to_date': filters.to_date,
+        'origin_id': origin_id
     }
     return select_stmt, select_kwargs
 
