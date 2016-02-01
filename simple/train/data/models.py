@@ -1,11 +1,13 @@
+import logging
+
+import pytz
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db import transaction
-from django.conf import settings
-from data.fields import ArrayField
-import pytz
 from django.utils.translation import ugettext as _
-import logging
+
+from data.fields import ArrayField
 
 LOGGER = logging.getLogger(__name__)
 
@@ -53,7 +55,7 @@ class Sample(models.Model):
     data_file = models.CharField(max_length=100)  # the name of the data file (text file)
     data_file_line = models.IntegerField(null=True)  # the line number in the data file (text file)
     trip = models.ForeignKey('Trip', blank=True, null=True, related_name='samples')
-    version = models.IntegerField(default=1) # 1 for old text files, 2 for excel
+    version = models.IntegerField(default=1)  # 1 for old text files, 2 for excel
     is_planned = models.NullBooleanField()
     is_stopped = models.NullBooleanField()
 
@@ -70,7 +72,6 @@ class Sample(models.Model):
                                                                      line,
                                                                      self.id,
                                                                      anchor)
-
 
     def get_stop(self):
         from . import services
