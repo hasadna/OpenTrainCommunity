@@ -91,7 +91,7 @@ def get_route_info_full(req):
     return json_resp(logic.get_route_info_full(route_id, from_date, to_date))
 
 
-#@cache_page(settings.CACHE_TTL)
+@cache_page(settings.CACHE_TTL)
 def get_path_info_full(req):
     origin = int(req.GET['origin'])
     destination = int(req.GET['destination'])
