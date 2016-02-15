@@ -12,3 +12,5 @@ output.1/
 output.old/
 local_settings.py
 simple/train/perf/cur
+docs/html/
+docs/doctrees/
