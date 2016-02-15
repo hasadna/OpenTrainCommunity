@@ -2,10 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import json
-
+import sys
 import xlrd
 import os
-import csv
 import datetime
 import pytz
 import logging
@@ -118,6 +117,14 @@ HEADER_MAPPING['תאריך ושעת הגעה לתחנה בפועל'] = ('actual_
 
 
 if __name__ == '__main__':
-    import sys
-
     parse_xl(sys.argv[1])
+
+
+def parse_json(filename, fromline, toline):
+    with open(filename,'r') as fh:
+        for idx, line in enumerate(fh):
+            if fromline <= idx <= toline:
+                print(json.dumps(json.loads(line), indent=4, sort_keys=True))
+
+
+
