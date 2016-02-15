@@ -17,6 +17,7 @@ ISRAEL_TIMEZONE = pytz.timezone('Asia/Jerusalem')
 
 VERSION = 2
 
+
 class DtEncoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, datetime.datetime):
@@ -26,13 +27,12 @@ class DtEncoder(json.JSONEncoder):
         return super().default(o)
 
 
-
 def parse_xl(xlname):
     """
     :param xlname: xl file name
     :return: None
     creates xl file name and outputs two files, one is csv which we import,
-    and the otherone is txt file which is text representation of the excel file
+    and the other one is txt file which is text representation of the excel file
     used for the source ref in the browse app
     """
     base_xlname = os.path.basename(xlname)
