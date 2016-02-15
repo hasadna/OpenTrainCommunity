@@ -1,4 +1,4 @@
 Accessing the data using redash
 ========
 
-hasadna.redashapp.com
+http://hasadna.redashapp.com
