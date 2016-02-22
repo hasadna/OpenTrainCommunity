@@ -14,3 +14,4 @@ local_settings.py
 simple/train/perf/cur
 docs/html/
 docs/doctrees/
+db.sqlite3
