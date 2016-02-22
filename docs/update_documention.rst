@@ -4,7 +4,9 @@ Updating the documentation
 Simple instructions
 -------------------
 Simply commit and push the code to github.
+
 You can actually `edit <http://i.imgur.com/pilQZSL.png/>`_ and `preview <http://i.imgur.com/AGQfbDQ.png/>`_ changes directly in github!
+
 The changes will be uploaded to readthedocs automatically through webHooks.
 
 Difficult instructions
