@@ -1,6 +1,7 @@
 from django.db import models
 import common.fields
 
+
 class StopKind:
     MIDDLE = 'MIDDLE'
     DEST = 'DEST'
@@ -49,4 +50,4 @@ class Stop(models.Model):
     stop_name = models.CharField(max_length=50)
     lat = models.FloatField()
     lon = models.FloatField()
-    
+
