@@ -3,6 +3,8 @@
 
 import json
 import sys
+from collections import defaultdict
+
 import xlrd
 import os
 import datetime
@@ -124,6 +126,18 @@ def parse_json(filename, fromline, toline):
         for idx, line in enumerate(fh):
             if fromline <= idx <= toline:
                 print(json.dumps(json.loads(line), indent=4, sort_keys=True))
+
+
+
+def get_samples(filename):
+    with open(filename) as f:
+            return [json.loads(row) for row in f]
+
+def find_field_values(samples, field):
+    counter = defaultdict(int)
+    for s in samples:
+        counter[s[field]]+=1
+    return counter
 
 
 

@@ -128,7 +128,6 @@ STATIC_URL = '/static/'
 
 TMP_ROOT = tempfile.gettempdir()
 
-
 def find_ot_log_dir():
     ot_log_dir = '/var/log/opentrain'
     ot_log_dir2 = os.path.join(TMP_ROOT, 'opentrain_logs')
@@ -144,7 +143,7 @@ def find_ot_log_dir():
             os.makedirs(ot_log_dir2)
     return ot_log_dir2
 
-OT_LOG_DIR = '/tmp/xxx' #find_ot_log_dir()
+OT_LOG_DIR = find_ot_log_dir()
 
 CACHE_TTL = 30 * 24 * 60 * 60  # one month
 
