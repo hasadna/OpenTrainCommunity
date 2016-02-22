@@ -13,4 +13,4 @@ Update the documentation in with the .rst files, and then run::
 Open the index.html file in the browser to see the result.
 
 When you are done making changes, simply commit and push your code, and the changes will be uploaded to the site automatically
-(through webHooks)
+(through webHooks).
