@@ -1,6 +1,10 @@
 Opening the django shell on the server
 ========
 
-cd /home/opentrain/work/OpenTrainCommunity/simple/train
+Do the following:
 
-opentrain@otdata: ~/work/OpenTrainCommunity/simple/train$ python manage.py shell_plus
+1. ssh to the server (ask us for instructions).
+
+2. cd /home/opentrain/work/OpenTrainCommunity/simple/train
+
+3. opentrain@otdata: ~/work/OpenTrainCommunity/simple/train$ python manage.py shell_plus
