@@ -4,7 +4,7 @@ You can use the redash website to `run SQLs <http://i.imgur.com/XZmYzUq.png/>`_ 
 
 You can share the results with others.
 
-Pretty cool tool!
+Pretty cool tool! Check it out:
 
 http://hasadna.redashapp.com
 
