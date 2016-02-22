@@ -5,6 +5,6 @@ General Info
 
 **Website code**: https://github.com/hasadna/OpenTrainCommunity
 
-**Hosting at DigitalOcean, user**: hasadna.opentrain@gmail.com
+**Hosting is at DigitalOcean. The user is**: hasadna.opentrain@gmail.com
 
 **Excel data**: http://otrain.org/files/xl
