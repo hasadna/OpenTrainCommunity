@@ -1,10 +1,12 @@
 Updating the documentation
 ========
 
-For simple changes, commit and push the code to github. You can actually edit and preview changes directly in github!
+Simply commit and push the code to github. You can actually edit and preview changes directly in github!
 The changes will be uploaded to readthedocs automatically through webHooks.
 
-For more complex changes where you want to see the resulting html before you commit:
+
+
+If you want to see the resulting html before you commit (usually you don't need to):
 
 1. Run::
 
