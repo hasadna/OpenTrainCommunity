@@ -5,7 +5,7 @@ Get all networks (GET):
 http://gtfs.otrain.org/api/data/bssids
 
 Add new network (POST): 
-http://gtfs.otrain.org/api/data/bssids/add/::
+http://gtfs.otrain.org/api/data/bssids/add/ ::
 
   {
     bssid: "ab:cd:ef:gh:ij:kl
