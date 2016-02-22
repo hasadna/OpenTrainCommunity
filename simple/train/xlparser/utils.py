@@ -16,7 +16,6 @@ ISRAEL_TIMEZONE = pytz.timezone('Asia/Jerusalem')
 
 VERSION = 2
 
-
 class DtEncoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, datetime.datetime):
@@ -40,7 +39,6 @@ def parse_xl(xlname):
     wb = xlrd.open_workbook(xlname)
     sheet = wb.sheet_by_index(0)
     heb_header = [sheet.cell_value(3, colx) for colx in range(1, sheet.ncols)]
-    header = [HEADER_MAPPING[h][0] for h in heb_header]
     txtname = os.path.splitext(xlname)[0] + '.txt'
     jsonname = os.path.splitext(xlname)[0] + '.json'
     with open(jsonname, 'w') as jsonfh, open(txtname, 'w') as txt:
@@ -67,6 +65,7 @@ def parse_xl(xlname):
             if rowx % 20000 == 0:
                 LOGGER.info('Completed %s/%s rows', rowx, sheet.nrows)
         LOGGER.info('Wrote {0}'.format(jsonfh.name))
+        LOGGER.info('Wrote {0}'.format(txt.name))
 
 
 def to_dt(dt):
