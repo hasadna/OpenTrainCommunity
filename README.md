@@ -1,3 +1,6 @@
+###### Project Documentation
+http://opentraincommunity.readthedocs.org/en/latest/
+
 DEV ENV SETUP
 =============
 
