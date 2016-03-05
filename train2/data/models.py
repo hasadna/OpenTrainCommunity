@@ -3,23 +3,6 @@ from django.utils.translation import ugettext as _
 import common.fields
 
 
-class StopKind:
-    MIDDLE = 'MIDDLE'
-    DEST = 'DEST'
-    DEST_COMER = 'DEST_COMER'
-    DEST_OPER = 'DEST_OPER'
-    ORIG = 'ORIG'
-    ORIG_COMER = 'ORIG_COMER'
-    ORIG_OPER = 'ORIG_OPER'
-    choices = ((MIDDLE, 'middle'),
-               (DEST, 'destination'),
-               (DEST_COMER, 'destination commercial'),
-               (DEST_OPER, 'destination operational'),
-               (ORIG, 'origin'),
-               (ORIG_COMER, 'origin commercial'),
-               (ORIG_OPER, 'origin operational'))
-
-
 class Trip(models.Model):
     route = models.ForeignKey('Route', null=True)
     train_num = models.IntegerField(db_index=True)
@@ -40,10 +23,10 @@ class Sample(models.Model):
     actual_departure = models.DateTimeField(null=True)
     exp_departure = models.DateTimeField(null=True)
 
-    is_stopped = models.BooleanField()
-    is_planned = models.BooleanField()
     index = models.IntegerField()
-    stop_kind = models.CharField(max_length=30, choices=StopKind.choices)
+
+    filename = models.CharField(max_length=500)
+    line_number = models.IntegerField()
 
 
 class Stop(models.Model):
