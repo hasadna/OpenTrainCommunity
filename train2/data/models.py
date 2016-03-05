@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import ugettext as _
 import common.fields
 
 
@@ -46,8 +47,21 @@ class Sample(models.Model):
 
 
 class Stop(models.Model):
-    stop_id = models.IntegerField()
-    stop_name = models.CharField(max_length=50)
+    gtfs_stop_id = models.IntegerField(db_index=True, unique=True)
+    english = models.CharField(max_length=50)
+    hebrews = common.fields.ArrayField()
     lat = models.FloatField()
     lon = models.FloatField()
+
+    @property
+    def main_name(self):
+        if self.hebrews:
+            return self.hebrews[0]
+        return self.english
+
+    def __str__(self):
+        return '{} {} {}'.format(_('stop'),
+                                 self.main_name,
+                                 self.gtfs_stop_id
+                                 )
 
