@@ -4,10 +4,19 @@ import common.fields
 
 
 class Trip(models.Model):
-    route = models.ForeignKey('Route', null=True)
+    route = models.ForeignKey('Route', null=True, related_name='trips')
     train_num = models.IntegerField(db_index=True)
-    train_date = models.DateField(db_index=True)
-    is_planned_trip = models.BooleanField()
+    date = models.DateField(db_index=True)
+    valid = models.BooleanField(default=True)
+
+    def __str__(self):
+        return '{} #{} {}'.format(_('trip'),
+                                  self.train_num,
+                                  self.date
+                                  )
+
+    class Meta:
+        unique_together = (('train_num', 'date'),)
 
 
 class Route(models.Model):
@@ -15,8 +24,11 @@ class Route(models.Model):
 
 
 class Sample(models.Model):
-    stop = models.ForeignKey('Stop')
-    trip = models.ForeignKey('Trip')
+    stop = models.ForeignKey('Stop', related_name='samples')
+    trip = models.ForeignKey('Trip', related_name='samples')
+
+    is_source = models.BooleanField(default=False)
+    is_dest = models.BooleanField(default=False)
 
     actual_arrival = models.DateTimeField(null=True)
     exp_arrival = models.DateTimeField(null=True)
@@ -27,6 +39,13 @@ class Sample(models.Model):
 
     filename = models.CharField(max_length=500)
     line_number = models.IntegerField()
+
+    class Meta:
+        unique_together = (
+            ('trip', 'index'),
+            ('trip', 'stop'),
+            ('filename', 'line_number')
+        )
 
 
 class Stop(models.Model):
@@ -47,4 +66,3 @@ class Stop(models.Model):
                                  self.main_name,
                                  self.gtfs_stop_id
                                  )
-
