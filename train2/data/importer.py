@@ -17,7 +17,7 @@ def create_trip(*,
     assert isinstance(train_num, int) and train_num > 0
     trip = models.Trip.objects.create(train_num=train_num,
                                       date=date)
-    LOGGER.info("Created trip %s", trip)
+    #LOGGER.info("Created trip %s", trip)
     return trip
 
 
@@ -39,7 +39,9 @@ def create_sample(*,
                   actual_departure,
                   index,
                   filename,
-                  line_number):
+                  line_number,
+                  valid,
+                  invalid_reason):
     assert_valid_dates(exp_arrival, actual_arrival, exp_departure, actual_departure)
     assert isinstance(index, int) and index > 0
     assert isinstance(filename, str)
@@ -58,5 +60,8 @@ def create_sample(*,
                                           actual_departure=actual_departure,
                                           index=index,
                                           filename=filename,
-                                          line_number=line_number)
+                                          line_number=line_number,
+                                          valid=valid,
+                                          invalid_reason=invalid_reason
+                                          )
     return sample
