@@ -1,57 +1,53 @@
-###### Project Documentation
-http://opentraincommunity.readthedocs.org/en/latest/
+# Online Project Documentation
 
-DEV ENV SETUP
-=============
+Interactive documentation is available at http://opentraincommunity.readthedocs.org/en/latest/
 
-You need to work on python3.*. Best is to work on virtualenv
+# Developer Environment Setup
+
+The project runs on Python 3, and we recommend using a virtual environment for development. You can use the following command to setup a virtualenv called `opentrain`:
 ```
 mkvirtualenv -p $(which python3) opentrain
 ```
 
-You might need to install virtualenv package before, running:
+You might need to first install the virtualenv package, via:
 ```
 sudo pip install virtualenv
 ```
 
-Then run the environnement,
-
+Then activate the environment:
 ```
 cd opentrain
 source bin/activate
 ```
 
-Then from the virtualenv environment,
-you need to run
-
+Then install all of the required modules into your virtualenv using `pip`:
 ```
 cd OpenTrainCommunity/simple/train
 pip install -r requirements.txt
 ```
 
-**If you are working with postgres, make sure that you install the postgres server for your own OS (not only the psql client)**
+**NOTE:** If you are working with postgres, make sure that you install the postgres server, example command shown below
+```
+sudo apt-get install postgresql libpq-dev
+```
 
 **NOTE:** If you plan to work with sqlite3, do the following changes:
 
 1. Edit locally the requirements.txt and remove the line with psycopg2
 2. Copy the local_settings.py.sqlite3 into local_settings.py 
 
-DATA - Fresh install (on linux) with postgres (with DB restore)
-========================
+# Database setup and import
+## Option 1: postgres restore
+
 If you are working with postgres, you can just download the dump file from the server and install it.
 
-**Note: this is much faster and simpler, then building from the csv files (next section), so if you are working with postgres, use this one. It will also enable you to rebuild the DB easily if we change the DB on the server (all the process should take less than 5 minutes)**
+**NOTE:** this is much faster and simpler than building from the CSB files (next section), so if you are working with postgres, use this method. It will also enable you to rebuild the DB easily if we change the DB on the server (all the process should take less than 5 minutes)
 
-**If this does not work for you, you can skip to next section and rebuild everything from the raw data.**
+**NOTE:** If this does not work for you, you can skip to next section and rebuild everything from the raw data.
 
-
-
-- Download the latest sql dump from http://otrain.org/files/dumps/ 
-
-- gunzip it locally 
-
-- then run:
-
+1. Download the latest sql dump from http://otrain.org/files/dumps/ 
+2. gunzip it locally 
+3. Then run:
 ```
 python clean_all.py --restore <name-of-sql-file>
 ```
@@ -68,13 +64,11 @@ ERROR:  role "postgres" does not exist
 In this case, create a user name postgres before running the script.
 
 On linux platform you might also have to change l29 in clean_all.py to 
-
 ```
 postgres_cmd = "sudo -u your_macuser psql"
 ```
 
-e.g.:
-
+For example, on Linux run the following commands:
 ```
 cd /home/eran/work/pkw/OpenTrainCommunity/simple/train
 wget http://otrain.org/files/dumps/db_2015_12_09_02_35_04.sql.gz 
@@ -88,10 +82,7 @@ Now you can start the server.
 python manage.py runserver 
 ```
 
-
-
-DATA - Fresh install (on linux) - build all data from (almost) scratch
-========================
+## Option 2: build all data from (almost) scratch
 
 To clean everything and refresh the data to the following steps
 
@@ -133,7 +124,6 @@ Running migrations:
   Applying data.0001_initial... OK
   Applying sessions.0001_initial... OK
 ```
-
 
 * Next step is to import the csv files. If you don't have them locally, you copy them from the server.
 The url is: http://otrain.org/files/csv/ or http://otrain.org.files/xl
@@ -177,17 +167,14 @@ After you donwload gunzip
 If you have any errors, during the process, you can rerun it again.
 In this case, since you already copied the csv files, you just need to run:
 ```
-% python clean_all.py
-% python manage.py importall.py tmp/csv_data/*.csv
+python clean_all.py
+python manage.py importall.py tmp/csv_data/*.csv
 ```
 
-TEST SETUP
-========================
+# Test setup
 To test the setup, run the server locally:
 ```
-% python manage.py runserver 
+python manage.py runserver 
 ```
-Then go to this url:
-```
-http://localhost:8000
-```
+Then go to this URL: `http://localhost:8000`
+
