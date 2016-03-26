@@ -134,7 +134,7 @@ def _complete_table(table, stop_ids):
 def _get_select_postgres(*, route, filters, early_threshold, late_threshold):
     select_stmt = ('''
         SELECT  count(s.stop_id) as num_trips,
-                s.gtfs_stop_id as stop_id,
+                s.gtfs_stop_id as gtfs_stop_id,
                 t.x_week_day_local as week_day_local,
                 t.x_hour_local as hour_local,
                 sum(case when s.delay_arrival <= %(early_threshold)s then 1 else 0 end) as arrival_early_count,
@@ -161,7 +161,7 @@ def _get_select_postgres(*, route, filters, early_threshold, late_threshold):
                    (' AND t.date <= %(to_date)s' if filters.to_date else '')
                    +
                    '''
-                       GROUP BY s.stop_id,week_day_local,hour_local
+                       GROUP BY s.gtfs_stop_id,week_day_local,hour_local
                    ''')
     select_kwargs = {
         'route_id': route.id,

@@ -46,8 +46,8 @@ class StatViewSet(GenericViewSet):
     @list_route(url_path='route-info-full')
     def route_info(self, request):
         route_id = request.GET['route_id']
-        from_date = logic.parse_date(request.GET.get('from_date'))
-        to_date = logic.parse_date(request.GET.get('to_date'))
+        from_date = utils.parse_date(request.GET.get('from_date'))
+        to_date = utils.parse_date(request.GET.get('to_date'))
         if from_date and to_date and from_date > to_date:
             raise ValueError('from_date %s cannot be after to_date %s' % (from_date, to_date))
         result = logic.get_route_info_full(route_id, from_date, to_date)
