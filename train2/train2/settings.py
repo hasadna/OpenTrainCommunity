@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
     'data',
-    'xlparser'
+    'xlparser',
+  #  'ui',
 ]
 
 MIDDLEWARE_CLASSES = [
