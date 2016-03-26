@@ -4,7 +4,7 @@ rm data/migrations/0001_initial.py
 m makemigrations
 m migrate
 m build_stops
-m parsexl ../../data-feb-2016/times/201501_short.xlsx
+#m parsexl ../../data-feb-2016/times/201501_short.xlsx
 t2=$(date +"%s")
 echo "Time took = $(($t2-$t1))"
 
