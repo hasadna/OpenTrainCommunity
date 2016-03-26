@@ -2,10 +2,11 @@ from django.db.models import Count, Min, Max
 from rest_framework.decorators import list_route
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
-from rest_framework.viewsets import ReadOnlyModelViewSet
+from rest_framework.viewsets import ReadOnlyModelViewSet, GenericViewSet
 from . import models
 from . import serializers
 from . import utils
+from . import logic
 
 class UnderRouteMixin(object):
     def get_route(self):
@@ -25,6 +26,18 @@ class StopViewSet(ReadOnlyModelViewSet):
     serializer_class = serializers.StopSerializer
     pagination_class = None
 
+
+class StatViewSet(GenericViewSet):
+    @list_route(url_path="path-info-full")
+    def path_info(self, request):
+        origin = int(request.GET['origin'])
+        destination = int(request.GET['destination'])
+        from_date = utils.parse_date(request.GET.get('from_date'))
+        to_date = utils.parse_date(request.GET.get('to_date'))
+        if from_date and to_date and from_date > to_date:
+            raise ValueError('from_date %s cannot be after to_date %s' % (from_date, to_date))
+        result = logic.get_path_info_full(origin, destination, from_date, to_date)
+        return Response(result)
 
 class RoutesViewSet(ReadOnlyModelViewSet):
     queryset = models.Route.objects.all()

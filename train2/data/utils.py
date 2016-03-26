@@ -1,6 +1,6 @@
 import calendar
 import datetime
-
+import time
 
 def encode_date(date):
     if date is None:
@@ -32,3 +32,14 @@ def parse_date(dt_str):
         return datetime.datetime(year=y, month=m, day=d)
     except ValueError as e:
         raise ValueError('Wrong date param %s: %s' % (dt_str, str(e)))
+
+def benchit(func):
+    def wrap(*args, **kwargs):
+        t1 = time.time()
+        result = func(*args, **kwargs)
+        t2 = time.time()
+        print('%s took %.2f' % (func.__name__, t2 - t1))
+        return result
+
+    return wrap
+

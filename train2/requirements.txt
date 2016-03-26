@@ -4,3 +4,4 @@ django-extensions==1.6.1
 djangorestframework==3.3.3
 pytz==2016.3
 xlrd==0.9.4
+psycopg2==2.6.1
