@@ -1,0 +1,2 @@
+Django==1.9.4
+ipython==4.1.2
