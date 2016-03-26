@@ -27,7 +27,8 @@ is_stopped   															did the train actually stop in this stop (for debugg
 version   																data source version - for internal use
 ==============================  					=============================================
 .. [#] Note that there are gaps in the indexes since the original indexing includes operational stops.
-
+|
+|
 
 ==============================  					=============================================
 data_trip
@@ -38,6 +39,8 @@ route_id  																foreign key to the route table
 service_id   															foreign key to the service table [#]_
 ==============================  					=============================================
 .. [#] Service is a collection of trips of the same route and same hours. E.g. all trains from Beer Sheva to Nahariya at 8 am.
+|
+|
 
 ==============================  					=============================================
 data_route

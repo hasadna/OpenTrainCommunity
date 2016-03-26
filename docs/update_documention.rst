@@ -1,13 +1,24 @@
 Updating the documentation
 ========
 
-The build the docs, you'll need ``sphinx``. Run::
+Simple instructions
+-------------------
+Simply commit and push the code to github.
+
+You can actually `edit <http://i.imgur.com/pilQZSL.png/>`_ and `preview <http://i.imgur.com/AGQfbDQ.png/>`_ changes directly in github!
+
+The changes will be uploaded to readthedocs automatically through webHooks.
+
+Difficult instructions
+----------------------
+If you want to see the resulting html before you commit (usually you don't need to):
+
+1. Run::
 
     pip install sphinx
 
-Find the Spinx documentation here: http://www.sphinx-doc.org/en/stable/contents.html
-Update the documentation in with the .rst files, and then run::
+2. Make the updates you want to the .rst files, and then run::
 
     make html
 
-Open the index.html file in the browser to see the result.
+3. Open the index.html file in the browser to see the result.
