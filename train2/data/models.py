@@ -17,8 +17,20 @@ class Trip(models.Model):
     x_hour_local = models.IntegerField(blank=True, null=True)
 
     def complete_trip(self):
-        self.attach_to_route(save=False)
-        self.compute_cache(save=False)
+        try:
+            self.attach_to_route(save=False)
+        except Exception:
+            if not self.valid:
+                pass
+            else:
+                raise
+        try:
+            self.compute_cache(save=False)
+        except Exception:
+            if not self.valid:
+                pass
+            else:
+                raise
         self.save()
 
     def compute_cache(self, save=True):
@@ -29,9 +41,12 @@ class Trip(models.Model):
 
     def attach_to_route(self, save=True):
         stop_ids = list(self.samples.order_by('index').values_list('stop__gtfs_stop_id',flat=True))
-        self.route, _ = Route.objects.get_or_create(stop_ids=stop_ids)
-        if save:
-            self.save()
+        if stop_ids:
+            self.route, _ = Route.objects.get_or_create(stop_ids=stop_ids)
+            if save:
+                self.save()
+        else:
+            assert not self.valid,'valid without stops???'
 
     def set_invalid(self, reason):
         self.valid = False
@@ -42,7 +57,7 @@ class Trip(models.Model):
     def check_trip(self):
         samples = list(self.samples.all().order_by('index'))
         if not samples:
-            return self.set_invalid('no stops')
+            return self.set_invalid('no samples')
         for sample in samples:
             sample.check_sample()
         invalid = [s for s in samples if not s.valid]
