@@ -32,23 +32,40 @@ class RoutesViewSet(ReadOnlyModelViewSet):
 
     @list_route()
     def all(self, request):
-        min_count = self.request.GET.get('min_count',10)
+        min_count = int(self.request.GET.get('min_count',10))
         routes = list(models.Route.objects.all().order_by('id').annotate(
             trips_count=Count('trips'),
             min_date=Min('trips__date'),
             max_date=Max('trips__date')))
 
         routes = [r for r in routes if r.trips_count > min_count]
-        result = []
-        for r in routes:
-            result.append({
-                'id': r.id,
-                'stop_ids': r.stop_ids,
-                'count': r.trips_count,
-                'min_date': utils.encode_date(r.min_date),
-                'max_date': utils.encode_date(r.max_date)
-            })
+        result = [{
+            'id': r.id,
+            'stop_ids': r.stop_ids,
+            'count': r.trips_count,
+            'min_date': utils.encode_date(r.min_date),
+            'max_date': utils.encode_date(r.max_date)
+        } for r in routes]
 
+        return Response(result)
+
+    @list_route(url_path='all-by-date')
+    def all_by_date(self, request):
+        min_count = int(self.request.GET.get('min_count',10))
+        from_date = utils.parse_date(request.GET['from_date'])
+        to_date = utils.parse_date(request.GET['to_date'])
+
+        routes = list(models.Route.objects
+                    .filter(trips__date__gte=from_date, trips__date__lte=to_date)
+                    .annotate(trips_count=Count('trips'))
+                    .filter(trips_count__gt=min_count)
+                    .order_by('id'))
+
+        result = [{
+                      'id': r.id,
+                      'stop_ids': r.stop_ids,
+                      'count': r.trips_count
+                  } for r in routes]
         return Response(result)
 
 

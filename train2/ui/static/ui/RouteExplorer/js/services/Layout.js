@@ -75,7 +75,7 @@ function($http, $q, TimeParser) {
             var fromDate = from;
             var toDate = to;
 
-            $http.get('/api/all-routes-by-date', {
+            $http.get('/api/v1/routes/all-by-date', {
                 params: {
                     from_date: TimeParser.createRequestString(fromDate),
                     to_date: TimeParser.createRequestString(toDate)
