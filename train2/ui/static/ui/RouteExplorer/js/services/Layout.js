@@ -8,13 +8,13 @@ function($http, $q, TimeParser) {
     var routesMap = {};
 
     var loadedPromise = $q.all([
-        $http.get('/api/stops')
+        $http.get('/api/v1/stops')
             .then(function(response) {
                 stops = response.data.map(function(s) { return { id: s.stop_id, name: s.heb_stop_names[0], names: s.heb_stop_names }; });
                 stops.forEach(function(s) { stopsMap[s.id] = s; });
             }),
 
-        $http.get('/api/all-routes')
+        $http.get('/api/v1/routes/all/')
             .then(function(response) {
                 routes = response.data.map(function(r) { return {
                     id: r.id,

@@ -11,6 +11,11 @@ class Trip(models.Model):
     valid = models.BooleanField(default=True, db_index=True)
     invalid_reason = models.TextField(blank=True, null=True)
 
+    def attach_to_route(self):
+        stop_ids = list(self.samples.order_by('index').values_list('stop__gtfs_stop_id',flat=True))
+        self.route, _ = Route.objects.get_or_create(stop_ids=stop_ids)
+        self.save()
+
     def set_invalid(self, reason):
         self.valid = False
         self.invalid_reason = reason
@@ -54,6 +59,11 @@ class Trip(models.Model):
 class Route(models.Model):
     stop_ids = common.fields.ArrayField()
 
+    def get_stops(self):
+        stops_by_gtfs_id = dict((s.gtfs_stop_id, s) for s in Stop.objects.filter(gtfs_stop_id__in=self.stop_ids))
+        return [stops_by_gtfs_id[gtfs_id] for gtfs_id in self.stop_ids]
+
+
 
 class Sample(models.Model):
     stop = models.ForeignKey('Stop', related_name='samples')
@@ -90,8 +100,6 @@ class Sample(models.Model):
                 self.save()
                 return
 
-
-
     class Meta:
         unique_together = (
             ('trip', 'index'),
@@ -101,7 +109,6 @@ class Sample(models.Model):
 
     def __str__(self):
         return '{}'.format(self.stop.english)
-
 
 
 class Stop(models.Model):
@@ -116,6 +123,18 @@ class Stop(models.Model):
         if self.hebrews:
             return self.hebrews[0]
         return self.english
+
+    @property
+    def latlon(self):
+        return [self.lat, self.lon]
+
+    @property
+    def stop_name(self):
+        return self.english
+
+    @property
+    def stop_short_name(self):
+        return self.hebrews[0]
 
     def __str__(self):
         return '{} {} {}'.format(_('stop'),

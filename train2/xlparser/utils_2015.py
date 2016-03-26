@@ -132,6 +132,10 @@ def parse_xl(xlname):
     LOGGER.info("# of valid trips = %s", created_trips.filter(valid=True).count())
     LOGGER.info("# of invalid trips = %s", created_trips.filter(valid=False).count())
 
+    LOGGER.info("Creating routes")
+    for trip in created_trips:
+        trip.attach_to_route()
+
     invalid_summary = created_trips.filter(valid=False).values("invalid_reason").annotate(num=Count("id")).order_by()
     for line in invalid_summary:
         LOGGER.info("Reason: %s count = %s", line['invalid_reason'], line['num'])

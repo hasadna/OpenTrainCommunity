@@ -35,19 +35,27 @@ class RouteUrlAndIdField(serializers.ReadOnlyField):
         }
 
 
-class StopSerializer(serializers.Serializer):
-    latlon = fields.ListField(child=serializers.FloatField())
-    stop_id = fields.IntegerField()
-    stop_short_name = fields.CharField()
-    heb_stop_names = fields.ListField(child=serializers.CharField())
-    gtfs_stop_id = fields.IntegerField()
-    stop_name = fields.CharField()
+class StopSerializer(serializers.ModelSerializer):
+    stop_id = serializers.IntegerField(source='gtfs_stop_id')
+    heb_stop_names = serializers.ReadOnlyField(source='hebrews')
+    latlon = serializers.ReadOnlyField()
+
+    class Meta:
+        model = models.Stop
+        fields = (
+            'id',
+            'stop_id',
+            'heb_stop_names',
+            'latlon',
+            'stop_name',
+            'stop_short_name',
+        )
 
 
 class RouteSerializer(serializers.ModelSerializer):
     id = fields.IntegerField()
     stops = StopSerializer(many=True, source='get_stops')
-    services = RelationUrlField(name='route-services-list', mapping={'route_id': 'id'})
+    #services = RelationUrlField(name='route-services-list', mapping={'route_id': 'id'})
     trips = RelationUrlField(name='route-trips-list', mapping={'route_id':'id'})
 
     class Meta:
@@ -55,7 +63,7 @@ class RouteSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'stops',
-            'services',
+           # 'services',
             'trips',
             'stops',
         )

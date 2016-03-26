@@ -4,6 +4,7 @@ import data.drf
 
 router = routers.SimpleRouter()
 
+router.register('stops', data.drf.StopViewSet)
 router.register('routes', data.drf.RoutesViewSet)
 router.register('routes/(?P<route_id>\d+)/trips',
                 data.drf.RouteTripsViewSet,
