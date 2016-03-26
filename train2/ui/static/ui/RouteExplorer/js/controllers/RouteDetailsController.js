@@ -36,7 +36,7 @@ function($scope, $route, $http, $location, LocationBinder, Layout, Locale, TimeP
     $scope.previousPeriodUrl = bounds.min < previousPeriod.from ? '#/' + TimeParser.formatPeriod(previousPeriod) + '/routes/' + routeId : null;
     $scope.nextPeriodUrl = bounds.max > nextPeriod.to ? '#/' + TimeParser.formatPeriod(nextPeriod) + '/routes/' + routeId : null;
 
-    $http.get('/api/route-info-full', { params: { route_id: routeId, from_date: startDate, to_date: endDate } })
+    $http.get('/api/v1/stats/route-info-full', { params: { route_id: routeId, from_date: startDate, to_date: endDate } })
         .success(function(data) {
             loadStats(data);
             $scope.loaded = true;
