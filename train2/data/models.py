@@ -2,7 +2,9 @@ import datetime
 from django.db import models
 from django.utils.translation import ugettext as _
 import common.fields
+import pytz
 
+IST = pytz.timezone("Asia/Jerusalem")
 
 class Trip(models.Model):
     route = models.ForeignKey('Route', null=True, related_name='trips')
@@ -11,10 +13,25 @@ class Trip(models.Model):
     valid = models.BooleanField(default=True, db_index=True)
     invalid_reason = models.TextField(blank=True, null=True)
 
-    def attach_to_route(self):
+    x_week_day_local = models.IntegerField(blank=True, null=True)
+    x_hour_local = models.IntegerField(blank=True, null=True)
+
+    def complete_trip(self):
+        self.attach_to_route(save=False)
+        self.compute_cache(save=False)
+        self.save()
+
+    def compute_cache(self, save=True):
+        self.x_hour_local = self.samples.earliest('index').exp_departure.astimezone(IST).hour
+        self.x_week_day_local = self.date.isoweekday() % 7 #isoweekday is 1..7
+        if save:
+            self.save()
+
+    def attach_to_route(self, save=True):
         stop_ids = list(self.samples.order_by('index').values_list('stop__gtfs_stop_id',flat=True))
         self.route, _ = Route.objects.get_or_create(stop_ids=stop_ids)
-        self.save()
+        if save:
+            self.save()
 
     def set_invalid(self, reason):
         self.valid = False
