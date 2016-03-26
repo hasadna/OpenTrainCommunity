@@ -1,0 +1,87 @@
+body.rex-page-welcome {
+
+
+    .select-stops-form {
+        background-image: linear-gradient(to bottom, darken($rex-brand-dark-color, 5%), darken($rex-brand-dark-color, 10%));
+        position: absolute;
+        display: table;
+        height: 100%;
+        width: 100%;
+        top: 0;
+        bottom: 0;
+        margin: 0;
+        padding-top: 0;
+
+        .selectStopAll {
+            vertical-align: middle;
+            display: table-cell;
+        }
+
+        .mainImg{
+            margin: auto;
+            display: block;
+            max-width: 260px;
+            margin-bottom: 20px;
+            margin-top: 20px;
+        }
+
+        .opentrain-logo-title{
+            font-size: 23px;
+        }
+
+        h1 { color: $rex-brand-light-color; }
+
+        .container {
+            max-width: 400px;
+            .row { margin-bottom: 15px; }
+        }
+
+        form {
+            background-color: darken($rex-brand-dark-color, 5%);
+            border-color: darken($rex-brand-dark-color, 7%);
+            padding: 25px 15px 25px 15px;
+            margin: 0 auto;
+            position: relative;
+
+            .selctBoxTitel {
+                padding-bottom: 17px;
+                font-size: 18px;
+            }
+
+            .row {
+                .form-control, .btn-primary { height: 45px; border-radius: 0; font-size: 16px; border: none; }
+                .form-control {
+                    background-color: $rex-light-gray-color;
+                    -webkit-box-shadow: inset 0px 0px 5px 1px rgba(0,0,0,0.56);
+                    -moz-box-shadow: inset 0px 0px 5px 1px rgba(0,0,0,0.56);
+                    box-shadow: inset 0px 0px 5px 1px rgba(0,0,0,0.56);
+                    border-radius: 0;
+                    -webkit-appearance: none;
+                }
+
+                .selectBox {
+                    padding: 0 45px 0 45px;
+                }
+
+                .dropdown-menu{
+                    right: 59px;
+                    left: 59px !important;
+                }
+
+                .error-overlay {
+                    position: absolute; top: 0; left: 0; bottom: 0; right: 0; padding: 15px;
+                    background-color: white; color: black;
+                    display: flex; flex-direction: column; justify-content: center;
+                    text-align: center;
+                }
+
+                .icon-no-results {
+                    $no-results-icon-size: 270px;
+                    background-image: url("/static/ui/RouteExplorer/img/no-results.png");
+                    width: $no-results-icon-size; height: $no-results-icon-size;
+                    display: inline-block;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,167 @@
+// Container width
+@media (min-width: 1600px) {
+    .container { width: 1465px; }
+}
+
+// Page layout
+$header-height: 50px;
+body {
+    background-color: $rex-background-color;
+    padding-top: $header-height;
+}
+
+h1, h2 { text-align: center; }
+h1 { margin-bottom: 30px; margin-top: 0; font-size: 26px; font-weight: lighter; }
+h2 { margin: 0; font-size: 20px; font-weight: lighter; }
+.content { background-color: $rex-content-color; color: black; }
+
+// Header
+.navbar {
+padding-left: 10px;
+padding-right: 0;
+background-color: #D6DEE1;
+height: 70px;
+border: 0;
+-webkit-box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.32);
+-moz-box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.32);
+box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.32);
+
+.navbarRight{
+float: right;
+padding: 0 30px;
+line-height: 65px;
+height: 100%;
+background-color: #F9F9F9;
+border-left: solid 2px #C2CACD;
+
+.logo {
+vertical-align: middle;
+max-width: 70px;
+}
+
+}
+
+.navbarCenter{
+text-align: center;
+width: 100%;
+position: absolute;
+margin: 0;
+padding: 0;
+display: block;
+z-index: -1;
+line-height: 70px;
+}
+
+.navbarLeft{
+display: table;
+height: 100%;
+float: left;
+
+.aboutBtn{
+background-color: pink;
+height: 100%;
+display: table;
+margin-left: 15px;
+
+span{
+vertical-align: middle;
+display: table-cell;
+background-color: #3495C1;
+padding: 18px;
+color: white;
+font-size: 15px;
+}
+}
+
+.navbar-btn{
+margin: 0;
+display: table-cell;
+vertical-align: middle;
+padding: 2px;
+
+
+.fa-2x{
+font-size: 1.5em;
+}
+
+.fa-stack-2x{
+color: #3495C1;
+}
+
+.fa-stack-1x{
+color: white;
+}
+
+.fa-facebook{
+font-size: 20px;
+}
+
+.fa-github{
+font-size: 22px;
+}
+
+.fa-wikipedia-w{
+font-size: 16px;
+font-weight: bold;
+}
+}
+
+}
+
+}
+
+// Specific recurring components
+.duration {
+    // To make the direction display left-to-right, we wrap it in a left-to-right override
+    direction: ltr; &::before { content: '\202d'; } &::after { content: '\202c'; }
+}
+
+.btn-group-light {
+    .btn.btn-default {
+        &:active, &.active {
+            background-color: $rex-content-color;
+            color: $rex-accent-color;
+            border-top: 5px solid $rex-accent-color;
+            @include box-shadow(none);
+            -webkit-box-shadow: inset 0px 0px 1px 1px rgba(0,0,0,0.14);
+            -moz-box-shadow: inset 0px 0px 1px 1px rgba(0,0,0,0.14);
+            box-shadow: inset 0px 0px 1px 1px rgba(0,0,0,0.14);
+
+            &:hover{
+                background-color: white;
+            }
+        }
+
+        .btn-title {
+            font-family: $headings-font-family; font-size: 32px; font-weight: bold;
+            i.fa { font-size: 80%; }
+        }
+        .btn-text { font-size: 12px; font-weight: bold; }
+
+             &:hover{
+            background-color: #BFC9CD;
+            -webkit-box-shadow: inset 0px 0px 1px 1px rgba(0,0,0,0.14);
+            -moz-box-shadow: inset 0px 0px 1px 1px rgba(0,0,0,0.14);
+            box-shadow: inset 0px 0px 1px 1px rgba(0,0,0,0.14);
+        }
+    }
+
+    &.btn-group-tabs {
+        > .btn {
+            border-radius: 0 !important;
+            &.active {
+                border-bottom: 1px solid $rex-content-color;
+            }
+
+            &:first-child { border-right: none; }
+            &:last-child  { border-left: none; }
+        }
+    }
+}
+
+$table-column-border-color: #C4C9D0;
+table.table {
+    thead th { font-weight: normal; }
+    .table-header-primary th { font-size: 13pt; }
+    .table-header-secondary th { font-size: 9pt; }
+}
