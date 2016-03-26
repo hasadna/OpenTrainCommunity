@@ -86,6 +86,8 @@ class Sample(models.Model):
     stop = models.ForeignKey('Stop', related_name='samples')
     trip = models.ForeignKey('Trip', related_name='samples')
 
+    gtfs_stop_id = models.IntegerField()
+
     is_source = models.BooleanField(default=False)
     is_dest = models.BooleanField(default=False)
 
@@ -93,6 +95,9 @@ class Sample(models.Model):
     exp_arrival = models.DateTimeField(null=True)
     actual_departure = models.DateTimeField(null=True)
     exp_departure = models.DateTimeField(null=True)
+
+    delay_arrival = models.FloatField(null=True)
+    delay_departure = models.FloatField(null=True)
 
     index = models.IntegerField()
 

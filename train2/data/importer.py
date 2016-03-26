@@ -43,6 +43,17 @@ def create_sample(*,
                   valid,
                   invalid_reason):
     assert_valid_dates(exp_arrival, actual_arrival, exp_departure, actual_departure)
+
+    if exp_arrival and actual_arrival:
+        delay_arrival = (actual_arrival - exp_arrival).total_seconds()
+    else:
+        delay_arrival = None
+
+    if exp_departure and actual_departure:
+        delay_departure = (actual_departure - exp_departure).total_seconds()
+    else:
+        delay_departure = None
+
     assert isinstance(index, int) and index > 0
     assert isinstance(filename, str)
     assert isinstance(line_number, int) and line_number > 0
@@ -52,12 +63,15 @@ def create_sample(*,
         raise ValueError("Failed to find stop with gtfs_stop_id = {}".format(gtfs_stop_id))
     sample = models.Sample.objects.create(trip=trip,
                                           stop=stop,
+                                          gtfs_stop_id=stop.gtfs_stop_id,
                                           is_source=is_source,
                                           is_dest=is_dest,
                                           exp_arrival=exp_arrival,
                                           actual_arrival=actual_arrival,
+                                          delay_arrival=delay_arrival,
                                           exp_departure=exp_departure,
                                           actual_departure=actual_departure,
+                                          delay_departure=delay_departure,
                                           index=index,
                                           filename=filename,
                                           line_number=line_number,

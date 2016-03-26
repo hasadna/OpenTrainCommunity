@@ -8,6 +8,7 @@ from . import serializers
 from . import utils
 from . import logic
 
+
 class UnderRouteMixin(object):
     def get_route(self):
         route_id = int(self.kwargs['route_id'])
@@ -28,6 +29,9 @@ class StopViewSet(ReadOnlyModelViewSet):
 
 
 class StatViewSet(GenericViewSet):
+    def get_queryset(self):
+        return None
+
     @list_route(url_path="path-info-full")
     def path_info(self, request):
         origin = int(request.GET['origin'])

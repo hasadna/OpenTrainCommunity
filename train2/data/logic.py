@@ -131,54 +131,10 @@ def _complete_table(table, stop_ids):
     return result
 
 
-@functools.lru_cache()
-def get_service_stat(service):
-    if settings.USE_SQLITE3:
-        select_stmt = '''
-            SELECT s.stop_id as stop_id,
-            count(s.stop_id) as num_trips,
-            avg(s.delay_arrival) as avg_delay_arrival,
-            avg(s.delay_departure) as avg_delay_departure,
-            avg(strftime('%%s',s.actual_departure) - strftime('%%s',s.actual_arrival)) as time_in_stop
-            FROM
-            data_sample as s
-            where s.trip_id in %(trip_ids_str)s
-            GROUP by s.stop_id
-        '''
-    else:
-        select_stmt = '''
-            SELECT s.stop_id as stop_id,
-            count(s.stop_id) as num_trips,
-            avg(s.delay_arrival) as avg_delay_arrival,
-            avg(s.delay_departure) as avg_delay_departure,
-            avg(s.actual_departure-s.actual_arrival) as time_in_stop
-            FROM
-            data_sample as s
-            where s.trip_id in %(trip_ids_str)s
-            GROUP by s.stop_id
-        '''
-    trip_ids = list(service.trips.all().values_list('id', flat=True))
-    trip_ids_str = '({0})'.format(','.join(("'{0}'".format(tid) for tid in trip_ids)))
-    select_kwargs = {'trip_ids_str': trip_ids_str}
-    cursor = django.db.connection.cursor()
-    cursor.execute(select_stmt % select_kwargs)
-    cols = ['stop_id', 'num_trips', 'avg_delay_arrival', 'avg_delay_departure', 'time_in_stop']
-    result = []
-    for row in cursor:
-        row_dict = dict(zip(cols, row))
-        ts = row_dict['time_in_stop']
-        if ts is not None:
-            if not settings.USE_SQLITE3:
-                ts = ts.total_seconds()  # in postgres: timedelta object
-        row_dict['time_in_stop'] = ts
-        result.append(row_dict)
-    return result
-
-
 def _get_select_postgres(*, route, filters, early_threshold, late_threshold):
     select_stmt = ('''
         SELECT  count(s.stop_id) as num_trips,
-                s.stop_id as stop_id,
+                s.gtfs_stop_id as stop_id,
                 t.x_week_day_local as week_day_local,
                 t.x_hour_local as hour_local,
                 sum(case when s.delay_arrival <= %(early_threshold)s then 1 else 0 end) as arrival_early_count,
@@ -200,9 +156,9 @@ def _get_select_postgres(*, route, filters, early_threshold, late_threshold):
         AND t.valid
         AND s.trip_id = t.id
         ''' +
-                   (' AND t.start_date >= %(start_date)s' if filters.from_date else '')
+                   (' AND t.date >= %(start_date)s' if filters.from_date else '')
                    +
-                   (' AND t.start_date <= %(to_date)s' if filters.to_date else '')
+                   (' AND t.date <= %(to_date)s' if filters.to_date else '')
                    +
                    '''
                        GROUP BY s.stop_id,week_day_local,hour_local
@@ -222,7 +178,7 @@ def _get_select_from_to_postgres(*, routes, filters, origin_id, destination_id, 
     route_ids = [r.id for r in routes]
     select_stmt = ('''
         SELECT  count(s.stop_id) as num_trips,
-                s.stop_id as stop_id,
+                s.gtfs_stop_id as gtfs_stop_id,
                 t.x_week_day_local as week_day_local,
                 extract(hour from orig.exp_departure) as hour_local,
                 sum(case when s.delay_arrival <= %(early_threshold)s then 1 else 0 end) as arrival_early_count,
@@ -241,19 +197,19 @@ def _get_select_from_to_postgres(*, routes, filters, origin_id, destination_id, 
 
         WHERE
         r.id =  ANY(%(route_ids)s)
-        AND s.stop_id = ANY(%(stop_ids)s)
+        AND s.gtfs_stop_id = ANY(%(stop_ids)s)
         AND t.route_id = r.id
         AND t.valid
         AND s.trip_id = t.id
         AND orig.trip_id = t.id
-        AND orig.stop_id = %(origin_id)s
+        AND orig.gtfs_stop_id = %(origin_id)s
         ''' +
-                   (' AND t.start_date >= %(start_date)s' if filters.from_date else '')
+                   (' AND t.date >= %(start_date)s' if filters.from_date else '')
                    +
-                   (' AND t.start_date <= %(to_date)s' if filters.to_date else '')
+                   (' AND t.date <= %(to_date)s' if filters.to_date else '')
                    +
                    '''
-                       GROUP BY s.stop_id,week_day_local,hour_local
+                       GROUP BY s.gtfs_stop_id,week_day_local,hour_local
                    ''')
     select_kwargs = {
         'route_ids': route_ids,
@@ -267,50 +223,6 @@ def _get_select_from_to_postgres(*, routes, filters, origin_id, destination_id, 
     return select_stmt, select_kwargs
 
 
-
-def _get_select_sqlite3(*, route, filters, early_threshold, late_threshold):
-    select_stmt = ('''
-        SELECT  count(s.stop_id) as num_trips,
-                s.stop_id as stop_id,
-                t.x_week_day_local as week_day_local,
-                t.x_hour_local as hour_local,
-                sum(case when s.delay_arrival <= %(early_threshold)s then 1 else 0 end) as arrival_early_count,
-                sum(case when s.delay_arrival > %(early_threshold)s and s.delay_arrival < %(late_threshold)s then 1 else 0 end) as arrival_on_time_count,
-                sum(case when s.delay_arrival >= %(late_threshold)s then 1 else 0 end) as arrival_late_count,
-
-                sum(case when s.delay_departure <= %(early_threshold)s then 1 else 0 end) as departure_early_count,
-                sum(case when s.delay_departure > %(early_threshold)s and s.delay_departure < %(late_threshold)s then 1 else 0 end) as departure_on_time_count,
-                sum(case when s.delay_departure >= %(late_threshold)s then 1 else 0 end) as departure_late_count
-
-        FROM
-        data_route as r,
-        data_trip as t,
-        data_sample as s
-
-        WHERE
-        r.id = %(route_id)s
-        AND t.route_id = r.id
-        AND t.valid
-        AND s.trip_id = t.id
-        ''' +
-                   (''' AND t.start_date >= datetime('%(start_date)s')''' if filters.from_date else '')
-                   +
-                   (''' AND t.start_date <= datetime('%(to_date)s')''' if filters.to_date else '')
-                   +
-                   '''
-                       GROUP BY s.stop_id,week_day_local,hour_local
-                   ''')
-    select_kwargs = {
-        'route_id': route.id,
-        'early_threshold': early_threshold,
-        'late_threshold': late_threshold,
-        'stop_ids': route.stop_ids,
-        'start_date': filters.from_date,
-        'to_date': filters.to_date
-    }
-    return select_stmt % select_kwargs, {}
-
-
 @utils.benchit
 def _get_stats_table(*, route=None,
                      routes=None,
@@ -321,30 +233,16 @@ def _get_stats_table(*, route=None,
     early_threshold = -120
     late_threshold = 300
     if route:
-        if settings.USE_SQLITE3:
-            select_stmt, select_kwargs = _get_select_sqlite3(route=route, filters=filters,
-                                                             early_threshold=early_threshold,
-                                                             late_threshold=late_threshold)
-        else:
-            select_stmt, select_kwargs = _get_select_postgres(route=route, filters=filters,
-                                                              early_threshold=early_threshold,
-                                                              late_threshold=late_threshold)
+        select_stmt, select_kwargs = _get_select_postgres(route=route, filters=filters,
+                                                          early_threshold=early_threshold,
+                                                          late_threshold=late_threshold)
     else:
-        if settings.USE_SQLITE3:
-            assert False, 'not implemented for sqlite3 yet'
-            select_stmt, select_kwargs = _get_select_from_to_sqlite3(routes=routes,
-                                                                     filters=filters,
-                                                                     origin_id=origin_id,
-                                                                     destination_id=destination_id,
-                                                                     early_threshold=early_threshold,
-                                                                     late_threshold=late_threshold)
-        else:
-            select_stmt, select_kwargs = _get_select_from_to_postgres(routes=routes,
-                                                                      filters=filters,
-                                                                      origin_id=origin_id,
-                                                                      destination_id=destination_id,
-                                                                      early_threshold=early_threshold,
-                                                                      late_threshold=late_threshold)
+        select_stmt, select_kwargs = _get_select_from_to_postgres(routes=routes,
+                                                                  filters=filters,
+                                                                  origin_id=origin_id,
+                                                                  destination_id=destination_id,
+                                                                  early_threshold=early_threshold,
+                                                                  late_threshold=late_threshold)
 
     cursor = django.db.connection.cursor()
     cursor.execute(select_stmt, select_kwargs)
