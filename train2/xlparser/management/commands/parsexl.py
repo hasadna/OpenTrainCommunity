@@ -12,8 +12,20 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         files = options['files']
+        ok = []
+        bad = []
         for f in files:
             LOGGER.info('starting parse %s',f)
-            xlparser.utils_2015.parse_xl(f)
+            try:
+                xlparser.utils_2015.parse_xl(f)
+                ok.append(f)
+            except Exception as e:
+                LOGGER.exception(e)
+                bad.append((f,e))
             LOGGER.info('end parse %s',f)
+        if bad:
+            for f,e in bad:
+                LOGGER.error("failed in %s with %s", f,e)
+        else:
+            LOGGER.info("ALL %s files were parsed ok", len(ok))
 
