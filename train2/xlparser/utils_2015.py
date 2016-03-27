@@ -129,12 +129,15 @@ def parse_xl(xlname):
             LOGGER.info("checked %s / %s trips", idx+1, len(created_trips))
 
     created_trips = data.models.Trip.objects.filter(id__in=created_ids)
-    LOGGER.info("# of valid trips = %s", created_trips.filter(valid=True).count())
-    LOGGER.info("# of invalid trips = %s", created_trips.filter(valid=False).count())
 
     LOGGER.info("Creating routes")
     for trip in created_trips:
         trip.complete_trip()
+
+    LOGGER.info("# of valid trips = %s", created_trips.filter(valid=True).count())
+    LOGGER.info("# of invalid trips = %s", created_trips.filter(valid=False).count())
+
+
 
     invalid_summary = created_trips.filter(valid=False).values("invalid_reason").annotate(num=Count("id")).order_by()
     for line in invalid_summary:

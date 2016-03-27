@@ -52,9 +52,14 @@ class Trip(models.Model):
         self.valid = False
         self.invalid_reason = reason
         self.save()
+        self.samples.all().update(valid=False, invalid_reason="trip is invalid")
         return self
 
     def check_trip(self):
+        if not self.valid:
+            # make sure all mark as invalid
+            self.samples.filter(valid=True).update(valid=False, invalid_reason="trip is invalid")
+            return
         samples = list(self.samples.all().order_by('index'))
         if not samples:
             return self.set_invalid('no samples')
