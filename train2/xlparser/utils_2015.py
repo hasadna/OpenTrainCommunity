@@ -54,9 +54,6 @@ def parse_xl(xlname):
     and the other one is txt file which is text representation of the excel file
     used for the source ref in the browse app
     """
-    import data.models
-    data.models.Trip.objects.all().delete() ### DELETE THIS
-
     base_xlname = os.path.basename(xlname)
     wb = xlrd.open_workbook(xlname)
     sheet = wb.sheet_by_index(0)
