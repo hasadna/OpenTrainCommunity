@@ -39,6 +39,11 @@ class StopSerializer(serializers.ModelSerializer):
     stop_id = serializers.IntegerField(source='gtfs_stop_id')
     heb_stop_names = serializers.ReadOnlyField(source='hebrews')
     latlon = serializers.ReadOnlyField()
+    google_url = serializers.SerializerMethodField()
+
+    def get_google_url(self, obj):
+        return 'https://www.google.co.il/maps/@{lat},{lon},17z?hl=iw'.format(lat=obj.lat,
+                                                                             lon=obj.lon)
 
     class Meta:
         model = models.Stop
@@ -49,6 +54,7 @@ class StopSerializer(serializers.ModelSerializer):
             'latlon',
             'stop_name',
             'stop_short_name',
+            'google_url',
         )
 
 
@@ -71,6 +77,7 @@ class RouteSerializer(serializers.ModelSerializer):
 
 class SampleSerializer(serializers.ModelSerializer):
     stop = StopSerializer(source='get_stop')
+
     class Meta:
         model = models.Sample
         fields = (
@@ -83,7 +90,7 @@ class SampleSerializer(serializers.ModelSerializer):
             'actual_departure',
             'exp_departure',
             'delay_departure',
-            'stop'
+            'stop',
         )
 
 
