@@ -1,6 +1,6 @@
 [
     {
-        "stop_short_name": "\u05de\u05d5\u05d3\u05d9\u05e2\u05d9\u05df", 
+        "stop_short_name": "\u05e4\u05d0\u05ea\u05d9 \u05de\u05d5\u05d3\u05d9\u05e2\u05d9\u05df",
         "gtfs_stop_id": 300, 
         "latlon": [
             31.893661, 
@@ -13,7 +13,7 @@
         "stop_name": "Modiin"
     }, 
     {
-        "stop_short_name": "\u05e4\u05d0\u05ea\u05d9 \u05de\u05d5\u05d3\u05d9\u05e2\u05d9\u05df", 
+        "stop_short_name": "\u05de\u05d5\u05d3\u05d9\u05e2\u05d9\u05df",
         "gtfs_stop_id": 400, 
         "latlon": [
             31.901192, 

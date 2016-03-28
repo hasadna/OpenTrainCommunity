@@ -6,6 +6,7 @@ import pytz
 
 IST = pytz.timezone("Asia/Jerusalem")
 
+
 class Trip(models.Model):
     route = models.ForeignKey('Route', null=True, related_name='trips')
     train_num = models.IntegerField(db_index=True)
