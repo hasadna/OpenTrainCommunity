@@ -131,6 +131,8 @@ LOCALE_PATHS = (os.path.join(BASE_DIR, 'locale'),)
 
 STATIC_URL = '/static/'
 
+STATIC_ROOT = os.path.join(BASE_DIR,'static')
+
 TMP_ROOT = tempfile.gettempdir()
 
 def find_ot_log_dir():
