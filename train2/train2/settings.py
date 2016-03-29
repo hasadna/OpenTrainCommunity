@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'data',
     'xlparser',
     'ui',
+    'info',
 ]
 
 MIDDLEWARE_CLASSES = [

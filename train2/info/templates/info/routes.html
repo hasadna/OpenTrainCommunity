@@ -1,0 +1,37 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+<title>Routes</title>
+</head>
+
+<body>
+
+<form method="post">
+    <table>
+    {% csrf_token %}
+    {{ form }}
+        <tr>
+            <td colspan="2"><button type="submit">Find</button></td>
+        </tr>
+    </table>
+</form>
+
+{% if has_result %}
+<br/><br/><hr/>
+    <h1>Results</h1>
+    <h2>Route in old site (otrain.org): {{ old_route_id }}</h2>
+    <h2>Route in new site (next.otrain.org): {{ new_route_id }}</h2>
+    <h2>Stops</h2>
+    {% for stop in stops %}
+        <table>
+        <tr>
+            <td>{{ forloop.counter }}:</td><td>{{stop.gtfs_stop_id}}</td><td>{{ stop.main_name }}</td>
+        </tr>
+        </table>
+
+    {% endfor %}
+{% endif %}
+
+</body>
+</html>
