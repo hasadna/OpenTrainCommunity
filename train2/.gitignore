@@ -10,3 +10,6 @@ logdir
 db.sqlite3
 db*.sql
 db*.sql.gz
+/static
+/run_train2.sh
+
