@@ -19,12 +19,12 @@ Welcome to OpenTrainCommunity's documentation!
     general_info
     opening_the_django_shell_on_the_server
     installing_the_website
-    database_tables_schema
 
 .. toctree::
     :maxdepth: 2
     :caption: Data analysis
 
+    database_tables_schema
     connecting_to_the_server_db
     accessing_the_data_using_redash
 
