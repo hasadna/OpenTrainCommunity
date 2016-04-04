@@ -12,11 +12,16 @@ Welcome to OpenTrainCommunity's documentation!
     :caption: Website
 
     general_info
-    connecting_to_the_server_db
-    accessing_the_data_using_redash
     opening_the_django_shell_on_the_server
     installing_the_website
     database_tables_schema
+
+.. toctree::
+    :maxdepth: 2
+    :caption: Data analysis
+
+    connecting_to_the_server_db
+    accessing_the_data_using_redash
 
 .. toctree::
     :maxdepth: 2
