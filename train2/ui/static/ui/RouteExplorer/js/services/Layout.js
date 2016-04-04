@@ -104,7 +104,7 @@ function($http, $q, TimeParser) {
         var min = new Date(2100, 0, 1);
 
         for (var i in routes) {
-            route = routes[i];
+            var route = routes[i];
             if (route.count === 0)
               continue;
 
