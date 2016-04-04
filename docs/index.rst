@@ -6,6 +6,10 @@
 Welcome to OpenTrainCommunity's documentation!
 ==============================================
 
+.. toctree::
+    :maxdepth: 2
+    :caption: Overview
+    overview
 
 .. toctree::
     :maxdepth: 2
