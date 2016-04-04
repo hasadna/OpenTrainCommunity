@@ -10,7 +10,7 @@ Welcome to OpenTrainCommunity's documentation!
     :maxdepth: 2
     :caption: Overview
 
-    general_info
+    overview
 
 .. toctree::
     :maxdepth: 2
