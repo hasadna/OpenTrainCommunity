@@ -34,12 +34,12 @@ sudo apt-get install postgresql libpq-dev
 
 Best way to start is to download the POSTGRES dump file. 
 
-1. Download the latest sql dump from http://otrain.org/files/dumps/ 
-2. gunzip it locally 
-3. Then run:
+1. Download the latest sql dump from http://otrain.org/files/dumps/  (you can download the gz file)
+
 ```
-python clean_all.py --restore <name-of-sql-file>
+python restore.py <name-of-sql-file>
 ```
+Note that the script will gunzip the file.
 You might need to run,
 
 ```
@@ -56,16 +56,6 @@ On mac platform you might also have to change l29 in clean_all.py to
 ```
 postgres_cmd = "sudo -u your_macuser psql"
 ```
-
-For example, on Linux run the following commands:
-```
-cd /home/eran/work/pkw/OpenTrainCommunity/simple/train
-wget http://otrain.org/files/dumps/db_2015_12_09_02_35_04.sql.gz 
-gunzip db_2015_12_09_02_35_04.sql.gz
-python clean_all.py --restore db_2015_12_09_02_35_04.sql
-rm db_2015_12_09_02_35_04.sql # unless you want to keep it
-```
-
 Now you can start the server.
 ```
 python manage.py runserver 
