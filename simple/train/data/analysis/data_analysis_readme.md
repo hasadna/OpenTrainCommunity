@@ -16,7 +16,7 @@ The script will create a JSON file for each route, each file containing objects 
 
 The `find_interesting_urls.ipynb` file is an Jupyter notebook (aka IPython notebook). The notebook is a web interface to Python that allows for executing snippets of code, or cells, while keeping the output for all previous cells in memory. The notebook lends itself to separation of loading, pre-processing, exploring, and analyzing data.
 
-The default OTrain development environment should include IPython notebook functionality, which can be launched with the `ipython notebook` command. If running outside of the development environment, (installing Anaconda)[https://www.continuum.io/downloads] is the easiest way to get notebook functionality without effecting any other Python environments (works on Linux/OS X/Windows).
+The default OTrain development environment should include IPython notebook functionality, which can be launched with the `ipython notebook` command. If running outside of the development environment, [installing Anaconda](https://www.continuum.io/downloads) is the easiest way to get notebook functionality without effecting any other Python environments (works on Linux/OS X/Windows).
 
 Once IPython notebook is running, open the `find_interesting_urls.ipynb` file.
 
