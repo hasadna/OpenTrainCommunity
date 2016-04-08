@@ -21,7 +21,7 @@ API_ALL_ROUTES_URL = 'http://otrain.org/api/all-routes'
 API_BASE_URL = 'http://otrain.org/api/route-info-full'
 API_PARAMS = '?route_id={}&from_date={}&to_date={}'
 
-TIMEZONE_OFFSET = -2*60*60  # NB: this is not perfect due to daylight savings time
+TIMEZONE_OFFSET = -2*60*60  # NB: this is not perfect due to daylight savings time, only used if USE_MICROSECONDS is True
 
 USE_MICROSECONDS = False  # Use the new format d/m/yyyy instead of microseconds
 
