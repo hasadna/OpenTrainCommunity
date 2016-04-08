@@ -1,0 +1,6 @@
+% sudo -u postgres psql train2
+
+COPY data_stop TO '/home/opentrain/public_html/files/dumps-csv/stops.csv' DELIMITER ',' CSV HEADER;
+COPY data_route TO '/home/opentrain/public_html/files/dumps-csv/routes.csv' DELIMITER ',' CSV HEADER;                                                  
+COPY data_trip TO '/home/opentrain/public_html/files/dumps-csv/trips.csv' DELIMITER ',' CSV HEADER;                                                    
+COPY data_sample TO '/home/opentrain/public_html/files/dumps-csv/samples.csv' DELIMITER ',' CSV HEADER;                                                
