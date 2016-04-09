@@ -24,6 +24,7 @@ Welcome to OpenTrainCommunity's documentation!
     :maxdepth: 2
     :caption: Data analysis
 
+    our_data
     database_tables_schema
     connecting_to_the_server_db
     accessing_the_data_using_redash
