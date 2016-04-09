@@ -6,4 +6,6 @@ We take the raw Israel Railways data we receive and do minimal processing - main
 
 - Raw Excel data received from Israel Railways: http://otrain.org/files/xl
 
-- Dumps of our database: http://otrain.org/files/dumps-csv
+- Dump of our database: http://otrain.org/files/dumps
+
+- Our database in csv format: http://otrain.org/files/dumps-csv
