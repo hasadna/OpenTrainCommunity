@@ -51,6 +51,9 @@ INSTALLED_APPS = [
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.cache.UpdateCacheMiddleware', # cache - eran
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware', # cache - eran
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -153,12 +156,11 @@ def find_ot_log_dir():
 
 OT_LOG_DIR = find_ot_log_dir()
 
-CACHE_TTL = 30 * 24 * 60 * 60  # one month
-
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        'LOCATION': os.path.join(TMP_ROOT, 'opentrain_cache')
+        'LOCATION': os.path.join(TMP_ROOT, 'opentrain_cache'),
+        'TIMEOUT': 1*24*60*0 # one day
     }
 }
 

@@ -265,3 +265,4 @@ def _get_stats_table(*, route=None,
         stat = dict(zip(cols, row))
         result.append(stat)
     return result
+
