@@ -1,0 +1,67 @@
+body {
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+.stop_in_list {
+    display: inline-block;
+    margin: 5px 3px;
+    padding: 6px 17px;
+    border: 2px solid #d2d2d2;
+    border-radius: 17px;
+    background-color: #e8e9ed;
+    color: #8d8d8d;
+    font-size: 14px;
+    font-weight: bold; 
+}
+
+.stop_in_list_small {
+    display: inline-block;
+    margin: 5px 3px;
+    padding: 6px 5px;
+    border: 2px solid #d2d2d2;
+    border-radius: 13px;
+    background-color: #e8e9ed;
+    color: #8d8d8d;
+    font-size: 10px;
+}
+
+.stop_bad {
+    background-color: red;
+}
+
+.breadcrumb {
+    display: inline-block;
+    margin: 5px 3px;
+    padding: 6px 17px;
+    border: 2px solid #d2d2d2;
+    border-radius: 17px;
+    background-color: #e8e9ed;
+    color: #8d8d8d;
+    font-size: 14px;
+    font-weight: bold; 
+}    
+
+.breadcrumb-left {
+    float: left;
+}
+
+.hideit {
+	display: none;
+}
+
+td.bad {
+    background-color: red;
+}
+
+td.good {
+    background-color: green;
+}
+
+.compare-table td {
+    border: 2px solid black;
+}
+
+.compare-table tr {
+    border: 2px solid black;
+}

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: train 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-05 11:54+0200\n"
-"PO-Revision-Date: 2016-03-05 11:54+0200\n"
+"POT-Creation-Date: 2016-04-11 21:03+0300\n"
+"PO-Revision-Date: 2016-04-11 21:03+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: he\n"
@@ -17,6 +17,153 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.5.4\n"
+
+msgid "to"
+msgstr "אל"
+
+msgid "Bad Services"
+msgstr ""
+
+msgid "ID"
+msgstr "מזהה"
+
+msgid "Departure Time"
+msgstr ""
+
+msgid "Arrival Time"
+msgstr ""
+
+msgid "Total Time"
+msgstr ""
+
+msgid "trips"
+msgstr "נסיעות"
+
+msgid "Skipped Stops"
+msgstr ""
+
+msgid "File"
+msgstr ""
+
+msgid "prev"
+msgstr ""
+
+msgid "next"
+msgstr ""
+
+msgid "Line No"
+msgstr ""
+
+msgid "Line"
+msgstr ""
+
+msgid "Stops"
+msgstr "תחנות"
+
+msgid "Services"
+msgstr ""
+
+msgid "routes"
+msgstr "מסלולים"
+
+msgid "Compare Stops"
+msgstr ""
+
+msgid "Id"
+msgstr "מזהה"
+
+msgid "origin"
+msgstr "מקור"
+
+msgid "destination"
+msgstr "יעד"
+
+msgid "Trips"
+msgstr "נסיעות"
+
+msgid "earliest trip"
+msgstr "נסיעה ראשונה"
+
+msgid "latest trip"
+msgstr "נסיעה אחרונה"
+
+msgid "No routes. Please select route or source"
+msgstr ""
+
+msgid "Service"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+msgid "Train Num"
+msgstr ""
+
+msgid "Trip"
+msgstr ""
+
+msgid "in"
+msgstr ""
+
+msgid "Samples"
+msgstr ""
+
+msgid "Sample Id"
+msgstr ""
+
+msgid "Stop Name"
+msgstr ""
+
+msgid "Stop id"
+msgstr ""
+
+msgid "Expected Arrival"
+msgstr ""
+
+msgid "Actual Arrival"
+msgstr ""
+
+msgid "Delay Arrival"
+msgstr ""
+
+msgid "Expected Departure"
+msgstr ""
+
+msgid "Actual Departure"
+msgstr ""
+
+msgid "Delay Departure"
+msgstr ""
+
+msgid "Link"
+msgstr ""
+
+msgid "line"
+msgstr ""
+
+msgid "Compare Routes"
+msgstr ""
+
+msgid "route"
+msgstr ""
+
+msgid "# of stops"
+msgstr ""
+
+msgid "# of trips"
+msgstr ""
+
+msgid "checksum index"
+msgstr ""
+
+msgid "Routes"
+msgstr "מסלולים"
+
+msgid "Select only one of source and route"
+msgstr ""
+
+msgid "trip"
+msgstr ""
 
 msgid "stop"
 msgstr "תחנה"

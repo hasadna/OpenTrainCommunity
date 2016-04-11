@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'xlparser',
     'ui',
     'info',
+    'browse',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -54,7 +55,6 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.cache.UpdateCacheMiddleware', # cache - eran
     'django.middleware.common.CommonMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware', # cache - eran
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
@@ -164,6 +164,8 @@ CACHES = {
     }
 }
 
+NO_CACHE = False
+
 try:
     from .local_settings import *
 except ImportError:
@@ -173,6 +175,11 @@ try:
     from local_settings import *
 except ImportError:
     pass
+
+if NO_CACHE:
+    MIDDLEWARE_CLASSES.remove('django.middleware.cache.UpdateCacheMiddleware')
+    MIDDLEWARE_CLASSES.remove('django.middleware.cache.FetchFromCacheMiddleware')
+
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',

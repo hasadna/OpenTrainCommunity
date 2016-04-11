@@ -1,0 +1,46 @@
+{% load staticfiles %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>{{title | safe}}</title>
+
+    <!-- Bootstrap -->
+    <link href="{% static 'bs/css/bootstrap.min.css' %}" rel="stylesheet">
+    {% if not ltr %}
+        <link rel="stylesheet" href="{% static 'bs_rtl/css/bootstrap-rtl.min.css' %}">
+    {% endif %}
+    <link rel="stylesheet" href="{% static 'dataTables/1.10.2/css/jquery.dataTables.min.css' %}">
+    <link rel="stylesheet" href="{% static 'dataTables/1.10.2/css/dataTables.bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'browse/bower_components/select2/dist/css/select2.css' %}">
+    <link rel="stylesheet" href="{% static 'browse/ot.css' %}">
+    <!-- Load Bootstrap RTL theme from CDNJS -->
+
+  </head>
+  <body>
+  <ul>
+    {% for bc in breadcrumbs %}
+        <li class="breadcrumb"><a href="{{bc.1}}">{{ bc.0 | safe }}</a></li>
+        {% if not forloop.last %}
+        <b>/</b>
+        {% endif %}
+    {% endfor %}
+   </ul>
+    {% block content %}
+    {% endblock %}
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="{% static 'jquery/1.11.3/jquery.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'dataTables/1.10.2/js/jquery.dataTables.min.js' %}"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="{% static 'bs/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'dataTables/1.10.2/js/dataTables.bootstrap.js' %}"></script>
+    <script src="{% static 'browse/bower_components/select2/dist/js/select2.js' %}"></script>
+    {% block post_scripts %}
+    {% endblock %}
+  </body>
+</html>

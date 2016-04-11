@@ -101,6 +101,17 @@ class Route(models.Model):
         stops_by_gtfs_id = dict((s.gtfs_stop_id, s) for s in Stop.objects.filter(gtfs_stop_id__in=self.stop_ids))
         return [stops_by_gtfs_id[gtfs_id] for gtfs_id in self.stop_ids]
 
+    def get_first_stop(self):
+        return Stop.objects.get(gtfs_stop_id=self.stop_ids[0])
+
+    def get_last_stop(self):
+        return Stop.objects.get(gtfs_stop_id=self.stop_ids[-1])
+
+    def earliest_trip(self):
+        return self.trips.earliest('date')
+
+    def latest_trip(self):
+        return self.trips.latest('date')
 
 
 class Sample(models.Model):

@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% load ot_filters %}
+{% load i18n %}
+{% block content %}
+    <select id="from_stop">
+        {% for stop in all_stops %}
+            <option value="stop.gtfs_stop_id">{{ stop.main_name }}</option>
+        {% endfor %}
+    </select>
+    <select id="to_stop">
+        {% for stop in all_stops %}
+            <option value="stop.gtfs_stop_id">{{ stop.main_name }}</option>
+        {% endfor %}
+    </select>
+
+    {% if object_list %}
+    <h2>{{ object_list | length}} {% trans 'routes' %}</h2>
+    {% if view.is_route %}
+        <a class="btn btn-primary"
+           href="{% url 'browse:compare_routes' %}?routes={{ object_list | route_ids_json }}">
+            {% trans 'Compare Stops' %}</a>
+    {% endif %}
+    <table class="table" id="routesTable">
+        <thead>
+        <tr>
+            <th>
+                {% trans 'Id' %}
+            </th>
+            <th>
+                {% trans 'origin' %}
+            </th>
+            <th>
+                {% trans 'destination' %}
+            </th>
+            <th>
+                # {% trans 'Stops' %}
+            </th>
+            <th>
+                # {% trans 'Trips' %}
+            </th>
+            <th>
+                {% trans 'earliest trip' %}
+            </th>
+            <th>
+                {% trans 'latest trip' %}
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for route in object_list %}
+            <tr>
+            <td>
+                <a href="/browse/routes/{{ route.id }}/">{{ route.id }}</a>
+            </td>
+            <td>
+                {{ route.get_first_stop.main_name }}
+            </td>
+            <td>
+                {{ route.get_last_stop.main_name }}
+            </td>
+            <td>
+                {{ route.stop_ids | length }}
+            </td>
+            <td>
+                {{ route.trips.count }}
+            </td>
+            <td>
+                {{ route.earliest_trip | u }}
+            </td>
+            <td>
+                {{ route.latest_trip | u }}
+            </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <div class="row">
+            <div class="col-sm-12">
+                <br/><br/><br/>
+                <h2>
+                {% trans 'No routes. Please select stop and end destination' %}
+                </h2>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+
+{% block post_scripts %}
+    <script>
+        $(function () {
+            $('#routesTable').dataTable({
+                paging: false,
+                searching: false,
+                bInfo: false,
+            });
+        });
+        $(function() {
+            $('select').select2();
+        });
+    </script>
+{% endblock %}
