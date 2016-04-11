@@ -7,6 +7,4 @@ General Info
 
 **Hosting is at DigitalOcean. The user is**: hasadna.opentrain@gmail.com
 
-**Excel data**: http://otrain.org/files/xl
-
 **Server API (client is Angular)**: http://otrain.org/api/docs/
