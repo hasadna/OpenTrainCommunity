@@ -82,19 +82,25 @@ def parse_xl(xlname):
             created_ids.append(cur_trip.id)
         # we skip all sample whose stops are no commercial or if they are not stopped
         # or if this is non commerical source/dest
-        stop_kind = STOP_KIND[d['אופי התחנה']]
-        is_commercial_stop = STOP_IS_COMMERCIAL[d['האם תחנה מסחרית']] and stop_kind.is_commercial
-        is_stopped = is1(d['האם תחנת עצירה בפועל'])
+        try:
+            if d['אופי התחנה']: #might be empty string
+                stop_kind = STOP_KIND[d['אופי התחנה']]
+                is_commercial_stop = STOP_IS_COMMERCIAL[d['האם תחנה מסחרית']] and stop_kind.is_commercial
+                is_stopped = is1(d['האם תחנת עצירה בפועל'])
 
-        is_planned_stop = is1(d['האם תחנת עצירה מתוכננת'])
+                is_planned_stop = is1(d['האם תחנת עצירה מתוכננת'])
+            else:
+                is_commercial_stop = False
 
-        valid = True
-        invalid_reason = None
+            valid = True
+            invalid_reason = None
 
-        if is_commercial_stop:
-            if is_planned_stop != is_stopped:
-                valid = False
-                invalid_reason = 'sample has different planned and stopped'
+            if is_commercial_stop:
+                if is_planned_stop != is_stopped:
+                    valid = False
+                    invalid_reason = 'sample has different planned and stopped'
+        except Exception as e:
+            raise ValueError("Failed in row {} {}: {}".format(rowx, pprint.pformat(d), e))
 
         if is_commercial_stop and is_stopped:
             try:
