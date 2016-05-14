@@ -24,6 +24,8 @@ urlpatterns = [
     url(r'^$', ui.views.RouteExplorer.as_view()),
     url(r'api/v1/', include(api_urls.router.urls)),
     url(r'^info/',include('info.urls',namespace="info")),
-    url(r'^browse/',include('browse.urls',namespace='browse'))
+    url(r'^browse/',include('browse.urls',namespace='browse')),
+    url(r'^api/docs/', include('rest_framework_swagger.urls')),
+
 ]
 

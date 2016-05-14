@@ -6,3 +6,4 @@ pytz==2016.3
 xlrd==0.9.4
 psycopg2==2.6.1
 requests==2.9.1
+django-rest-swagger==0.3.6

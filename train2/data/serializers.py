@@ -82,7 +82,6 @@ class SampleSerializer(serializers.ModelSerializer):
         model = models.Sample
         fields = (
             'index',
-            'is_skipped',
             'valid',
             'actual_arrival',
             'exp_arrival',
@@ -109,7 +108,7 @@ class TripSerializer(serializers.ModelSerializer):
             'id',
             'valid',
             'train_num',
-            'start_date',
+            'date',
             'service',
             'route',
             'samples',

@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'ui',
     'info',
     'browse',
+    'rest_framework_swagger',
 ]
 
 MIDDLEWARE_CLASSES = [
