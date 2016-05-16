@@ -37,6 +37,11 @@
               resolve: { 'Layout': 'Layout' },
               reloadOnSearch: false
           })
+          .when('/explore', {
+              pageId: 'explore',
+              templateUrl: templateUrl('Explore'),
+              controller: 'ExploreController',
+          })
           .otherwise({
               redirectTo: '/'
           });
