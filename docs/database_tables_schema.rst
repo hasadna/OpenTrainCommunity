@@ -7,24 +7,21 @@ data_sample
 ==============================  					=============================================
 id	  																		automatic ID by DB
 index   																	the index of the stop in the trip [#]_
-stop_id  																	the station id
-stop_name   															station name
-is_skipped   															whether the train skipped that station
+gtfs_stop_id  										  			the station GTFS id
+stop_id  									              	the station id, a foreign key to the data_stops table
 valid   																	data sanity check
-is_first   																whether it the first passengers stop (there may be non-passenger stops before)
-is_last   																whether it the last passengers stop
+invalid_reason                            description of invalid reason, if invalid
+is_source   															whether it the first passengers stop (there may be non-passenger stops before)
+is_dest   																whether it the last passengers stop
 actual_arrival   													time of arrival
 exp_arrival   														the planned time
 delay_arrival   													the delta of actual_arrival – exp_arrival
-actual_departure   												time of departure
+actual_departure   											time of departure
 exp_departure   													planned departure
 delay_departure   												the delta of actual_departure – exp_departure
-data_file   															source of data (for debugging purposes)
-data_file_line   													the line in that file (for debugging purposes)
+filename     														source of data (for debugging purposes)
+line_number   													  the line in that file (for debugging purposes)
 trip_id   																the id of the trip <train, date> (train = route id)
-is_planned   															is this a planned stop (for debugging purposes)
-is_stopped   															did the train actually stop in this stop (for debugging purposes)
-version   																data source version - for internal use
 ==============================  					=============================================
 .. [#] Note that there are gaps in the indexes since the original indexing includes operational stops.
 |
