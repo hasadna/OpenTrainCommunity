@@ -48,12 +48,14 @@ INSTALLED_APPS = [
     'info',
     'browse',
     'rest_framework_swagger',
+    'corsheaders'
 ]
 
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.cache.UpdateCacheMiddleware', # cache - eran
+     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware', # cache - eran
     'django.middleware.csrf.CsrfViewMiddleware',
