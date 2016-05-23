@@ -18,7 +18,6 @@ BASE_URL = 'http://otrain.org'
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
@@ -29,7 +28,6 @@ SECRET_KEY = 'ei1vd+bsrw(vf!-c(8h_t^z%jm0k)&l!2s21cl8tl=pou0nq^g'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -54,10 +52,10 @@ INSTALLED_APPS = [
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.cache.UpdateCacheMiddleware', # cache - eran
-     'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.cache.UpdateCacheMiddleware',  # cache - eran
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.cache.FetchFromCacheMiddleware', # cache - eran
+    'django.middleware.cache.FetchFromCacheMiddleware',  # cache - eran
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
@@ -85,19 +83,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'train2.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
-DATABASES =  {
-     'default': {
-         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-         'NAME': 'train2',
-         'USER': 'train2',
-         'PASSWORD': 'somepassword',
-         'HOST': 'localhost',
-     }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'train2',
+        'USER': 'train2',
+        'PASSWORD': 'somepassword',
+        'HOST': 'localhost',
+    }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
@@ -116,7 +112,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
@@ -138,9 +133,10 @@ LOCALE_PATHS = (os.path.join(BASE_DIR, 'locale'),)
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = os.path.join(BASE_DIR,'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 TMP_ROOT = tempfile.gettempdir()
+
 
 def find_ot_log_dir():
     ot_log_dir = '/var/log/opentrain'
@@ -157,13 +153,14 @@ def find_ot_log_dir():
             os.makedirs(ot_log_dir2)
     return ot_log_dir2
 
+
 OT_LOG_DIR = find_ot_log_dir()
 
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
         'LOCATION': os.path.join(TMP_ROOT, 'opentrain_cache'),
-        'TIMEOUT': 1*24*60*0 # one day
+        'TIMEOUT': 1 * 24 * 60 * 0  # one day
     }
 }
 
@@ -183,12 +180,10 @@ if NO_CACHE:
     MIDDLEWARE_CLASSES.remove('django.middleware.cache.UpdateCacheMiddleware')
     MIDDLEWARE_CLASSES.remove('django.middleware.cache.FetchFromCacheMiddleware')
 
-
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 100,
 }
-
 
 LOGGING = {
     'version': 1,
