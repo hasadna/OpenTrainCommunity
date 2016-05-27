@@ -1,19 +1,43 @@
 $(function () {
-    var loadData = function() {
+    var loadData = function(config) {
         var routeId = 106;
         var url = 'http://otrain.org/api/v1/stats/route-info-full/';
-        var params = {
-            start_date: '1/3/2016',
-            end_date: '1/4/2016',
-            route_id: 106
-        };
-        $.ajax({
-            url: url,
-            data: params
-        }).done(function(data) {
+        var cbs = [
+            {
+                field: 'stat',
+                url: url,
+                data: {
+                    route_id: config.route_id,
+                    start_date: config.start_date,
+                    end_date: config.end_date,
+                },
+            },
+            {
+                field: 'stops',
+                url: 'http://otrain.org/api/v1/stops/'
+            },
+            {
+                field: 'route',
+                url: 'http://otrain.org/api/v1/routes/' + routeId + '/'
+            },
+        ];
+        var callbacks = cbs.map(function(x) {
+            return $.ajax({
+                url: x.url,
+                data: x.data,
+            });
+        });
+        console.log(callbacks.length);
+        $.when.apply($,callbacks).done(function (x1, x2, x3) {
+            var resps = [x1,x2,x3]
+            var data = {};
+            cbs.forEach(function(cb, idx) {
+                data[cb.field] = resps[idx][0];
+            })
             $("#spinner").remove();
             $("#canvas-div").show();
-            refreshChart(data);
+            console.log(data);
+            refreshChart(data)
         });
     };
     var refreshChart = function(data) {
@@ -71,5 +95,9 @@ $(function () {
             options: {}
         });
     };
-    loadData();
+    loadData({
+        route_id: 106,
+        start_date: '1/3/2016',
+        end_date: '1/4/2016'
+    });
 });
