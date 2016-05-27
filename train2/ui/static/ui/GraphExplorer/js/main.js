@@ -113,29 +113,85 @@ $(function () {
             });
         };
         buildForm() {
+            let monthNames = [
+                'dummy',
+                'ינואר',
+                'פברואר',
+                'מרץ',
+                'אפריל',
+                'מאי',
+                'יוני',
+                'יולי',
+                'אוגוסט',
+                'ספטמבר',
+                'אוקטובר',
+                'נובמבר',
+                'דצמבר'
+            ]
             let routes = this.getRoutes();
             for (let route of routes) {
-                $("#select_route").append($(`<option value="${route.id}">מ${route['from']} ל${route['to']}</option>`));
+                let option = $(`<option value="${route.id}">מ${route['from']} ל${route['to']}</option>`)
+                if (route.id == this.routeId) {
+                    option.prop('selected', true);
+                }
+                $("#select_route").append(option);
             }
+            let s = [1,2015];
+            let e = [4,2016];
+            let monthYears = [];
+            while (s.join('/') != e.join('/')) {
+                monthYears.push([s[0],s[1]]);
+                s[0] += 1;
+                if (s[0] == 13) {
+                    s[0] = 1
+                    s[1] += 1
+                }
+            }
+            for (let [m,y] of monthYears) {
+                let title = `${monthNames[m]} ${y}`
+                let [nm, ny] = m == 12 ? [1, y+1] : [m+1, y];
+                let val = `1/${m}/${y}`;
+                let option = $(`<option value=${val}>${title}</option>`);
+                if (val == this.startDate) {
+                    option.prop('selected', true);
+                }
+                let nval = `1/${nm}/${ny}`;
+                let noption = $(`<option value=${nval}>${title}</option>`)
+                if (nval == this.endDate) {
+                    noption.prop('selected', true);
+                }
+                $("#select_from_date").append(option);
+                $("#select_to_date").append(noption);
+            }
+            $("#explore-form").submit(() => {
+                let route_id = $("#select_route").val();
+                let from_date = $("#select_from_date").val();
+                let to_date = $("#select_to_date").val();
+                let newHref = window.location.pathname +
+                    `?route_id=${route_id}&from_date=${from_date}&to_date=${to_date}`;
+                console.log(newHref);
+                window.location.href = newHref;
+                return false;
+            });
         };
 
         refreshDetails(data) {
             $("#details").empty();
-            $("#details").append("<li class='list-group-item'>Route ID: " + this.route.id + "</li>");
-            $("#details").append("<li class='list-group-item'>Start date: " + this.startDate + "</li>");
-            $("#details").append("<li class='list-group-item'>End date: " + this.endDate + "</li>");
+            $("#details").append("<li class='list-group-item'>מזהה מסלול: " + this.route.id + "</li>");
+            $("#details").append("<li class='list-group-item'>תאריך התחלה: " + this.startDate + "</li>");
+            $("#details").append("<li class='list-group-item'>תאריך סיום: " + this.endDate + "</li>");
         }
     }
     var refreshChart = function(data) {
         var labels = {
-            '1': 'Sun',
-            '2': 'Mon',
-            '3': 'Tue',
-            '4': 'Wed',
-            '5': 'Thu',
-            '6': 'Fri',
-            '7': 'Sat',
-            'all': 'ALL'
+            '1': 'ראשון',
+            '2': 'שני',
+            '3': 'שלישי',
+            '4': 'רביעי',
+            '5': 'חמישי',
+            '6': 'שישי',
+            '7': 'שבת',
+            'all': 'הכל'
         };
         var stops = data.getStopNames();
         var ctx = $("#main-canvas");
@@ -148,7 +204,7 @@ $(function () {
             if (isTotal) {
                 color = "rgba(0,0,0,0.2)";
             }
-            let data = stat.stops.map(stop => (stop.arrival_late_pct*100).toFixed(1));
+            let data = stat.stops.map(stop => (stop.arrival_late_pct*100).toFixed(1)).reverse();
             var dataset = {
                 label: labels[stat.info.week_day],
                 fill: false,
@@ -165,7 +221,7 @@ $(function () {
             datasets.push(dataset);
         }
         var data = {
-            labels: stops,
+            labels: stops.map((x,i) => `${x} ${1+i}`).reverse(),
             datasets: datasets,
         };
         var myLineChart = new Chart(ctx, {
@@ -187,7 +243,7 @@ $(function () {
     };
     let params = getParams();
     let d = new Data(params.route_id || 106,
-                     params.start || '1/3/2016',
-                     params.end || '1/4/2016');
+                     params.from_date || '1/3/2016',
+                     params.to_date || '1/4/2016');
     d.loadData();
 });
