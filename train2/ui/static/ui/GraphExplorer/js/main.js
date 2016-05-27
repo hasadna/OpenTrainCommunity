@@ -23,6 +23,13 @@ $(function () {
             return this.route.stops.map(s=>s.heb_stop_names[0]);
         }
 
+        getStops() {
+            return this.route.stops.map(s => ({
+                name: s.heb_stop_names[0],
+                id: s.stop_id,
+            }));
+        }
+
         getStatByDay() {
             return this.stat.filter(st => st.info.hours == "all");
         }
@@ -61,8 +68,16 @@ $(function () {
                 $("#spinner").remove();
                 $("#canvas-div").show();
                 this.refreshDetails();
+                this.buildForm(this)
                 refreshChart(this)
             });
+        };
+        buildForm() {
+            let stops = this.getStops();
+            for (let stop of stops) {
+                $("#select_from").append($(`<option value="${stop.id}">${stop.name}</option>`));
+                $("#select_to").append($(`<option value="${stop.id}">${stop.name}</option>`));
+            }
         };
 
         refreshDetails(data) {
