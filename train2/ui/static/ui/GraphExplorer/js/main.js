@@ -45,8 +45,9 @@ $(function () {
             var result = this.routes.map(r => ({
                 id: r.id,
                 from: this.getStopName(r.stop_ids[0]),
-                to: this.getStopName(r.stop_ids[r.stop_ids.length-1])
-            }))
+                to: this.getStopName(r.stop_ids[r.stop_ids.length-1]),
+                count: r.count
+            }));
             result.sort((s1,s2) => {
                 if (s1.from < s2.from) {
                     return -1;
@@ -59,6 +60,12 @@ $(function () {
                 }
                 if (s1.to > s2.to) {
                     return 1;
+                }
+                if (s1.count > s2.count) {
+                    return -1; // reverse count
+                }
+                if (s1.count < s2.count) {
+                    return 1; //reverse count
                 }
                 return 0;
              });
@@ -130,7 +137,7 @@ $(function () {
             ]
             let routes = this.getRoutes();
             for (let route of routes) {
-                let option = $(`<option value="${route.id}">מ${route['from']} ל${route['to']}</option>`)
+                let option = $(`<option value="${route.id}">מ${route['from']} ל${route['to']} (${route['count']} נסיעות)</option>`)
                 if (route.id == this.routeId) {
                     option.prop('selected', true);
                 }
