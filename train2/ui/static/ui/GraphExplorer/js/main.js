@@ -33,15 +33,10 @@ $(function () {
                     field: 'stat',
                     url: 'http://otrain.org/api/v1/stats/route-info-full/?format=json',
                     data: {
-                        from_date:this.startDate,
-                        'to_date':this.endDate,
-                        'route_id':this.routeId,
+                        from_date: this.startDate,
+                        'to_date': this.endDate,
+                        'route_id': this.routeId,
                     }
-                    //data: {
-                    //    route_id: this.routeId,
-                    //    start_date: this.startDate,
-                    //    end_date: this.endDate,
-                    //},
                 },
                 {
                     field: 'stops',
@@ -65,9 +60,17 @@ $(function () {
                 });
                 $("#spinner").remove();
                 $("#canvas-div").show();
+                this.refreshDetails();
                 refreshChart(this)
             });
         };
+
+        refreshDetails(data) {
+            $("#details").empty();
+            $("#details").append("<li class='list-group-item'>Route ID: " + this.route.id + "</li>");
+            $("#details").append("<li class='list-group-item'>Start date: " + this.startDate + "</li>");
+            $("#details").append("<li class='list-group-item'>End date: " + this.endDate + "</li>");
+        }
     }
     var refreshChart = function(data) {
         var labels = {
@@ -85,14 +88,14 @@ $(function () {
         var datasets = [];
         var stats = data.getStatByDay();
         for (let i = 0 ; i < stats.length ; i++) {
-            let color = PALETTE20[i];
             let stat = stats[i];
-            let data = stat.stops.map(stop => (stop.arrival_late_pct*100).toFixed(1));
-            if (stat.info.week_day == 7) {
-                console.log(data);
-                console.log(JSON.stringify(stat));
+            var isTotal = stat.info.week_day == 'all';
+            let color = PALETTE20[i];
+            if (isTotal) {
+                color = "rgba(0,0,0,0.2)";
             }
-            datasets.push({
+            let data = stat.stops.map(stop => (stop.arrival_late_pct*100).toFixed(1));
+            var dataset = {
                 label: labels[stat.info.week_day],
                 fill: false,
                 data: data,
@@ -100,7 +103,12 @@ $(function () {
                 borderColor: color,
                 pointBorderColor: color,
                 pointRadius: 5,
-            });
+            }
+            if (isTotal) {
+                //dataset['borderDash'] = [5,5,5,5];
+                dataset['borderWidth'] = 20;
+            }
+            datasets.push(dataset);
         }
         var data = {
             labels: stops,
@@ -109,9 +117,23 @@ $(function () {
         var myLineChart = new Chart(ctx, {
             type: 'line',
             data: data,
-            options: {}
+            options: {
+            }
         });
     };
-    let d = new Data(106, '1/3/2016', '1/4/2016');
+    var getParams = function(){
+        var search = location.search.substring(1);
+        var parts = search.split("&");
+        var result = {};
+        for (let p of parts) {
+            let [key, value] = p.split("=");
+            result[key] = decodeURIComponent(value);
+        }
+        return result;
+    };
+    let params = getParams();
+    let d = new Data(params.route_id || 106,
+                     params.start || '1/3/2016',
+                     params.end || '1/4/2016');
     d.loadData();
 });
