@@ -3,18 +3,20 @@ $(function () {
         var routeId = 106;
         var url = 'http://otrain.org/api/v1/stats/route-info-full/';
         var params = {
-            'start_date': '1/3/2016',
-            'end_date': '1/4/2016',
+            start_date: '1/3/2016',
+            end_date: '1/4/2016',
+            route_id: 106
         };
         $.ajax({
             url: url,
-            params: params
+            data: params
         }).done(function(data) {
-            console.log(data);
+            $("#spinner").remove();
+            $("#canvas-div").show();
+            refreshChart(data);
         });
     };
-    loadData();
-    var refreshChart = function() {
+    var refreshChart = function(data) {
         var ctx = $("#main-canvas");
         var data = {
             labels: ["January", "February", "March", "April", "May", "June", "July"],
@@ -69,4 +71,5 @@ $(function () {
             options: {}
         });
     };
+    loadData();
 });
