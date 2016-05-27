@@ -30,6 +30,41 @@ $(function () {
             }));
         }
 
+        buildStops() {
+            this.stopsById = {};
+            for (let stop of this.stops) {
+                this.stopsById[stop.stop_id] = stop;
+            }
+        }
+
+        getStopName(stop_id) {
+            return this.stopsById[stop_id].heb_stop_names[0];
+        }
+
+        getRoutes() {
+            var result = this.routes.map(r => ({
+                id: r.id,
+                from: this.getStopName(r.stop_ids[0]),
+                to: this.getStopName(r.stop_ids[r.stop_ids.length-1])
+            }))
+            result.sort((s1,s2) => {
+                if (s1.from < s2.from) {
+                    return -1;
+                }
+                if (s1.from > s2.from) {
+                    return 1;
+                }
+                if (s1.to < s2.to) {
+                    return -1;
+                }
+                if (s1.to > s2.to) {
+                    return 1;
+                }
+                return 0;
+             });
+            return result;
+        }
+
         getStatByDay() {
             return this.stat.filter(st => st.info.hours == "all");
         }
@@ -53,6 +88,10 @@ $(function () {
                     field: 'route',
                     url: 'http://otrain.org/api/v1/routes/' + this.routeId + '/'
                 },
+                {
+                    field: 'routes',
+                    url: 'http://otrain.org/api/v1/routes/all/'
+                }
             ];
             var callbacks = cbs.map(function (x) {
                 return $.ajax({
@@ -65,6 +104,7 @@ $(function () {
                 cbs.forEach((cb, idx) => {
                     this[cb.field] = resps[idx][0];
                 });
+                this.buildStops();
                 $("#spinner").remove();
                 $("#canvas-div").show();
                 this.refreshDetails();
@@ -73,10 +113,9 @@ $(function () {
             });
         };
         buildForm() {
-            let stops = this.getStops();
-            for (let stop of stops) {
-                $("#select_from").append($(`<option value="${stop.id}">${stop.name}</option>`));
-                $("#select_to").append($(`<option value="${stop.id}">${stop.name}</option>`));
+            let routes = this.getRoutes();
+            for (let route of routes) {
+                $("#select_route").append($(`<option value="${route.id}">מ${route['from']} ל${route['to']}</option>`));
             }
         };
 
