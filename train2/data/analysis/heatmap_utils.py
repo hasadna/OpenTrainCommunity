@@ -78,7 +78,8 @@ def create_heatmap(station_scores, plot_width=1000, plot_height=600):
         pass
     output_file("/tmp/map.html",title="otrain heatmap")
     save(plot)
-    with open('/tmp/map.html') as f:
+    from django.conf import settings
+    with open(settings.BASE_DIR,'map2.html') as f:
         return f.read()
 
 ### ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -102,7 +103,7 @@ def run():
 
     wait_vec, path_vec = dynamic_all_to_one(G, target, time_len)
 
-    station_scores = evaluate_stations(wait_vec, day_part='morning')
+    station_scores = evaluate_stations(wait_vec, day_part='all')
 
     return create_heatmap(station_scores)
 
