@@ -102,7 +102,7 @@ def run():
 
     wait_vec, path_vec = dynamic_all_to_one(G, target, time_len)
 
-    station_scores = evaluate_stations(wait_vec, day_part='monrning')
+    station_scores = evaluate_stations(wait_vec, day_part='morning')
 
     return create_heatmap(station_scores)
 
