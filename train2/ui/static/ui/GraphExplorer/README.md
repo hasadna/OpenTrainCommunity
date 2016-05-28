@@ -12,8 +12,7 @@ TODO
 -----
 
 1. add comparision based on hours
-2. improve the form to show only relevant selection 
-3. unify routes?
-4. 
+1. improve the form to show only relevant selection 
+1. unify routes?
 
 
