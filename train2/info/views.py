@@ -1,6 +1,7 @@
 from django.core.urlresolvers import reverse
+from django.http import HttpResponse
 from django.shortcuts import render
-from django.views.generic import TemplateView, FormView
+from django.views.generic import TemplateView, FormView, View
 from django import forms
 
 from functools import lru_cache
@@ -98,3 +99,9 @@ class RoutesView(FormView):
                                                              1 if is_new else 0,
                                                              route_id)
         return super().form_valid(form)
+
+
+class HeatView(View):
+    def get(self, request):
+        return HttpResponse('ok')
+
