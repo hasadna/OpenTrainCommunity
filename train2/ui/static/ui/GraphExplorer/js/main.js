@@ -6,10 +6,22 @@ $(function () {
             '#d62728', '#ff9896', '#9467bd', '#c5b0d5', '#8c564b', '#c49c94',
             '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d',
             '#17becf', '#9edae5'];
-        return [...palette.filter((e, idx) => idx % 2 == 0),...palette.filter((e, idx) => idx % 2 == 1)]
+        return [...palette.filter((e, idx) => idx % 2 == 0), ...palette.filter((e, idx) => idx % 2 == 1)]
     }
 
     const PALETTE20 = getPalette20();
+
+    const DAYS = {
+        '1': 'ראשון',
+        '2': 'שני',
+        '3': 'שלישי',
+        '4': 'רביעי',
+        '5': 'חמישי',
+        '6': 'שישי',
+        '7': 'שבת',
+        'all': 'הכל'
+    };
+
 
     class Data {
         constructor(routeId, startDate, endDate) {
@@ -73,7 +85,36 @@ $(function () {
         }
 
         getStatByDay() {
-            return this.stat.filter(st => st.info.hours == "all");
+            let result = this.stat.filter(st => st.info.hours == "all");
+            result.sort((st1, st2) => {
+                let wd1 = st1.info.week_day;
+                let wd2 = st2.info.week_day;
+                if (wd1 == 'all') {
+                    return 1;
+                }
+                if (wd2 == 'all') {
+                    return -1;
+                }
+                if (wd1 < wd2) {
+                    return -1;
+                }
+                if (wd1 > wd2) {
+                    return 1;
+                }
+                return 0;
+            });
+            return result;
+        }
+
+        getStatInfoForLabel(stopIndex, seqIndex) {
+            let stop_id = this.route.stops[stopIndex].gtfs_stop_id;
+            let week_day = seqIndex == 7 ? 'all' : seqIndex + 1;
+            for (let stat of this.getStatByDay()) {
+                if (stat.info.stop_id == stop_id && stat.info.week_day == week_day) {
+                    return stat.info;
+                }
+            }
+            console.error(`ooops did not found for ${stopIndex} ${seqIndex}`);
         }
 
         loadData() {
@@ -149,7 +190,7 @@ $(function () {
             let monthYears = [];
             while (s.join('/') != e.join('/')) {
                 monthYears.push([s[0], s[1]]);
-                s = s[0] == 12 ? [1,s[1]+1] : [s[0]+1,s[1]];
+                s = s[0] == 12 ? [1, s[1] + 1] : [s[0] + 1, s[1]];
             }
             for (let [m,y] of monthYears) {
                 let title = `${monthNames[m]} ${y}`
@@ -190,20 +231,10 @@ $(function () {
             $("#details").append(this.li(`<b>מזהה מסלול</b>: ${this.route.id}`));
             $("#details").append(this.li(`<b>תאריך התחלה</b>: ${this.startDate}`));
             $("#details").append(this.li(`<b>תאריך סיום</b>: ${this.endDate}`));
-            $("#details").append(this.li(`<b>מספר נסיעות</b>: ${this.endDate}`));
+            $("#details").append(this.li(`<b>מספר נסיעות</b>: ${this.route.trips_count}`));
         }
 
         refreshChart() {
-            var labels = {
-                '1': 'ראשון',
-                '2': 'שני',
-                '3': 'שלישי',
-                '4': 'רביעי',
-                '5': 'חמישי',
-                '6': 'שישי',
-                '7': 'שבת',
-                'all': 'הכל'
-            };
             var stops = this.getStopNames();
             var ctx = $("#main-canvas");
             var datasets = [];
@@ -217,7 +248,7 @@ $(function () {
                 }
                 let data = stat.stops.map(stop => (stop.arrival_late_pct * 100).toFixed(1)).reverse();
                 var dataset = {
-                    label: labels[stat.info.week_day],
+                    label: DAYS[stat.info.week_day],
                     fill: false,
                     data: data,
                     backgroundColor: color,
@@ -246,6 +277,31 @@ $(function () {
                                 labelString: '% רכבות באיחור'
                             }
                         }]
+                    },
+                    tooltips: {
+                        callbacks: {
+                            title: (tooltipItems, data) => {
+                                if (tooltipItems.length != 1) {
+                                    return '???';
+                                }
+                                let tooltipItem = tooltipItems[0];
+                                let day = data.datasets[tooltipItem.datasetIndex].label;
+                                if (day != DAYS['all']) {
+                                    day = 'יום ' + day;
+                                }
+                                return `${tooltipItem.xLabel} - ${day}`;
+                            },
+                            label: (tooltipItem, data) => {
+                                let realIndex = data.labels.length - tooltipItem.index - 1; // we reverse the list
+                                let info = this.getStatInfoForLabel(realIndex, tooltipItem.datasetIndex);
+                                let day = DAYS[info.week_day];
+                                let day2 = data.datasets[tooltipItem.datasetIndex].label;
+                                if (day2 != day) {
+                                    throw `Internal Error ${day} != ${day2}`;
+                                }
+                                return `${tooltipItem.yLabel}% איחורים (מתוך ${info.num_trips} נסיעות)`
+                            }
+                        }
                     }
                 }
             });
@@ -263,7 +319,7 @@ $(function () {
     };
     let params = getParams();
     let d = new Data(params.route_id || 106,
-            params.from_date || '1/3/2016',
-            params.to_date || '1/4/2016');
+        params.from_date || '1/3/2016',
+        params.to_date || '1/4/2016');
     d.loadData();
 });
