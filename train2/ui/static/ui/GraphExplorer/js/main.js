@@ -28,7 +28,6 @@ $(function () {
             this.routeId = routeId;
             this.startDate = startDate;
             this.endDate = endDate;
-            window.data = this;
         }
 
         getStopNames() {
@@ -84,33 +83,31 @@ $(function () {
             return result;
         }
 
-        getStatByDay() {
-            let result = this.stat.filter(st => st.info.hours == "all");
+        getStatsByKind(kind) {
+            if (kind != 'week_day' && kind != 'hours') {
+                throw `Illegal kind ${kind}`;
+            }
+            let other_kind = kind == 'hours' ? 'week_day' : 'hours';
+            let result = this.stat.filter(st => st.info[other_kind] == "all");
             result.sort((st1, st2) => {
-                let wd1 = st1.info.week_day;
-                let wd2 = st2.info.week_day;
-                if (wd1 == 'all') {
-                    return 1;
+                let v1, v2;
+                if (kind == 'hours') {
+                    v1 = st1.info.hours == 'all' ? 100 : st1.info.hours[0];
+                    v2 = st2.info.hours == 'all' ? 100 : st2.info.hours[0];
+                } else {
+                    v1 = st1.info.week_day == 'all' ? 100 : st1.info.week_day;
+                    v2 = st2.info.week_day == 'all' ? 100 : st2.info.week_day;
                 }
-                if (wd2 == 'all') {
-                    return -1;
-                }
-                if (wd1 < wd2) {
-                    return -1;
-                }
-                if (wd1 > wd2) {
-                    return 1;
-                }
-                return 0;
+                return v1 - v2;
             });
             return result;
         }
 
-        getStatInfoForLabel(stopIndex, seqIndex) {
+        getStatInfoForLabel(kind, config, stopIndex, kindVal) {
             let stop_id = this.route.stops[stopIndex].gtfs_stop_id;
-            let week_day = seqIndex == 7 ? 'all' : seqIndex + 1;
-            for (let stat of this.getStatByDay()) {
-                if (stat.info.stop_id == stop_id && stat.info.week_day == week_day) {
+            let stats = this.getStatsByKind(kind);
+            for (let stat of stats) {
+                if (stat.info.stop_id == stop_id && config.getLabel(stat.info[kind]) == kindVal ) {
                     return stat.info;
                 }
             }
@@ -154,10 +151,15 @@ $(function () {
                 });
                 this.buildStops();
                 $("#spinner").remove();
-                $("#main-div").find(".wait-map").show();
+                $("#main-div").show();
                 this.refreshDetails();
                 this.buildForm(this)
-                this.refreshChart(this)
+                this.refreshChart('week_day',{
+                    getLabel: v => DAYS[v]
+                });
+                this.refreshChart('hours', {
+                    getLabel: v => v == 'all'? 'הכל' : `${v[1]} - ${v[0]}`
+                });
             });
         };
 
@@ -234,21 +236,21 @@ $(function () {
             $("#details").append(this.li(`<b>מספר נסיעות</b>: ${this.route.trips_count}`));
         }
 
-        refreshChart() {
+        refreshChart(kind, config) { // kind week_day or hours
             var stops = this.getStopNames();
-            var ctx = $("#main-canvas");
+            var ctx = $(`#${kind} canvas`);
             var datasets = [];
-            var stats = this.getStatByDay();
+            var stats = this.getStatsByKind(kind);
             for (let i = 0; i < stats.length; i++) {
                 let stat = stats[i];
-                var isTotal = stat.info.week_day == 'all';
+                var isTotal = stat.info[kind] == 'all';
                 let color = PALETTE20[i];
                 if (isTotal) {
                     color = "rgba(0,0,0,0.2)";
                 }
                 let data = stat.stops.map(stop => (stop.arrival_late_pct * 100).toFixed(1)).reverse();
                 var dataset = {
-                    label: DAYS[stat.info.week_day],
+                    label: config.getLabel(stat.info[kind]),
                     fill: false,
                     data: data,
                     backgroundColor: color,
@@ -262,11 +264,11 @@ $(function () {
                 }
                 datasets.push(dataset);
             }
-            var data = {
+            let data = {
                 labels: stops.map((x, i) => ` ${1 + i} - ${x}`).reverse(),
                 datasets: datasets,
             };
-            var myLineChart = new Chart(ctx, {
+            let myLineChart = new Chart(ctx, {
                 type: 'line',
                 data: data,
                 options: {
@@ -286,19 +288,15 @@ $(function () {
                                 }
                                 let tooltipItem = tooltipItems[0];
                                 let day = data.datasets[tooltipItem.datasetIndex].label;
-                                if (day != DAYS['all']) {
+                                if (kind == 'week_day' && day != DAYS['all']) {
                                     day = 'יום ' + day;
                                 }
                                 return `${tooltipItem.xLabel} - ${day}`;
                             },
                             label: (tooltipItem, data) => {
                                 let realIndex = data.labels.length - tooltipItem.index - 1; // we reverse the list
-                                let info = this.getStatInfoForLabel(realIndex, tooltipItem.datasetIndex);
-                                let day = DAYS[info.week_day];
-                                let day2 = data.datasets[tooltipItem.datasetIndex].label;
-                                if (day2 != day) {
-                                    throw `Internal Error ${day} != ${day2}`;
-                                }
+                                let kindVal = data.datasets[tooltipItem.datasetIndex].label;
+                                let info = this.getStatInfoForLabel(kind, config, realIndex, kindVal);
                                 return `${tooltipItem.yLabel}% איחורים (מתוך ${info.num_trips} נסיעות)`
                             }
                         }
