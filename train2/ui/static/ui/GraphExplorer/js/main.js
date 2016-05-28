@@ -107,7 +107,7 @@ $(function () {
             let stop_id = this.route.stops[stopIndex].gtfs_stop_id;
             let stats = this.getStatsByKind(kind);
             for (let stat of stats) {
-                if (stat.info.stop_id == stop_id && config.getLabel(stat.info[kind]) == kindVal ) {
+                if (stat.info.stop_id == stop_id && config.getLabel(stat.info[kind]) == kindVal) {
                     return stat.info;
                 }
             }
@@ -154,11 +154,11 @@ $(function () {
                 $("#main-div").show();
                 this.refreshDetails();
                 this.buildForm(this)
-                this.refreshChart('week_day',{
+                this.refreshChart('week_day', {
                     getLabel: v => DAYS[v]
                 });
                 this.refreshChart('hours', {
-                    getLabel: v => v == 'all'? 'הכל' : `${v[1]} - ${v[0]}`
+                    getLabel: v => v == 'all' ? 'הכל' : `${v[1]} - ${v[0]}`
                 });
             });
         };
@@ -316,7 +316,7 @@ $(function () {
         return result;
     };
     let params = getParams();
-    let d = new Data(params.route_id || 105,
+    let d = new Data(params.route_id || 10,
         params.from_date || '1/3/2016',
         params.to_date || '1/4/2016');
     d.loadData();
