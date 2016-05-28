@@ -11,6 +11,9 @@ function($scope, $route, $http, $location, LocationBinder, Layout, Locale, TimeP
     var stopIds = Layout.findRoute(routeId).stops;
     var statsMap = {};
 
+    $scope.exploreHref = 'http://otrain.org/graphs/?route_id=' + routeId +
+    '&from_date=' + startDate + '&to_date=' + endDate;
+
     $scope.loaded = false;
     $scope.stopIds = stopIds;
     $scope.origin = stopIds[0];
