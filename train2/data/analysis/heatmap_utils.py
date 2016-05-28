@@ -1,3 +1,5 @@
+import logging
+logger = logging.getLogger(__name__)
 from bokeh.io import output_file, show, save
 from bokeh.models import (GMapPlot, GMapOptions, ColumnDataSource, Circle, \
                           DataRange1d, PanTool, WheelZoomTool, BoxSelectTool)
@@ -53,7 +55,8 @@ def create_heatmap(station_scores, plot_width=1000, plot_height=600):
     plot.plot_height = plot_height
     lat_vec = list(map(lambda x: get_loc_by_id(x).lat, station_scores.keys()))
     lon_vec = list(map(lambda x: get_loc_by_id(x).lon, station_scores.keys()))
-
+    import json
+    logger.info(json.dumps(station_scores))
     for ind, station in enumerate(station_scores):
 
         source = ColumnDataSource(
