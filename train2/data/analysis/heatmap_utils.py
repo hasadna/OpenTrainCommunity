@@ -68,6 +68,11 @@ def create_heatmap(station_scores, plot_width=1000, plot_height=600):
         plot.add_glyph(source, circle)
 
     plot.add_tools(PanTool(), WheelZoomTool())
+    import os
+    try:
+        os.unlink('/tmp/map.html')
+    except:
+        pass
     save(plot,"/tmp/map.html")
     with open('/tmp/map.html') as f:
         return f.read()
