@@ -75,8 +75,8 @@ def create_heatmap(station_scores, plot_width=1000, plot_height=600):
 ### ---------------------------------------------------------------------------------------------------------------------------------------------
 
 def run():
-    date_val1 = datetime.date(2015, 5, 18)
-    date_val2 = datetime.date(2015, 5, 18)
+    date_val1 = datetime.date(2016, 3, 8)
+    date_val2 = datetime.date(2016, 3, 8)
 
     max_trips = 10 ** 6
     trips = get_samples_by_trip(date_val1, date_val2, max_trips)
