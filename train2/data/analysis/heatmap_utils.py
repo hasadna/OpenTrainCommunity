@@ -56,7 +56,7 @@ def create_heatmap(station_scores, plot_width=1000, plot_height=600):
     lat_vec = list(map(lambda x: get_loc_by_id(x).lat, station_scores.keys()))
     lon_vec = list(map(lambda x: get_loc_by_id(x).lon, station_scores.keys()))
     import json
-    logger.info(json.dumps(station_scores))
+    logger.error(json.dumps(station_scores, indent=4))
     for ind, station in enumerate(station_scores):
 
         source = ColumnDataSource(
@@ -76,7 +76,8 @@ def create_heatmap(station_scores, plot_width=1000, plot_height=600):
         os.unlink('/tmp/map.html')
     except:
         pass
-    save(plot,"/tmp/map.html")
+    output_file("/tmp/map.html",title="otrain heatmap")
+    save(plot)
     with open('/tmp/map.html') as f:
         return f.read()
 
