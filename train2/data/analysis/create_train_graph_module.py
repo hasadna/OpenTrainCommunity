@@ -49,7 +49,7 @@ def create_train_graph(trips):
 
   # Initialization
   G = nx.DiGraph()
-  time_vec_template = np.zeros(24*60)
+  time_vec_template = np.zeros(24*60, dtype=np.int)
   edge_dict = OrderedDict()
   id2name = {}
 

@@ -6,6 +6,9 @@ import datetime
 import django
 django.setup()
 
+# start postgres server on mac:
+# postgres -D /usr/local/var/postgres
+
 from data import models
 from collections import OrderedDict, namedtuple
 

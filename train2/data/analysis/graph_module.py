@@ -100,8 +100,8 @@ def find_shortest_path(G, source, target):
 
     # Main iterative loop
     while len(q) > 0:
-        dist_vec = map(lambda x: dist[x], q)
-        u = q[np.argmin(dist_vec)]
+        wait_vec = map(lambda x: dist[x], q)
+        u = q[np.argmin(wait_vec)]
         if u == target:
             course = backtrack_path(prev, target)
 
@@ -123,21 +123,21 @@ def find_shortest_path(G, source, target):
 
 def static_all_to_one(G, target):
     node_list = G.node.keys()
-    dist_vec = OrderedDict(zip(node_list, np.inf * np.ones_like(list(node_list))))
+    wait_vec = OrderedDict(zip(node_list, np.inf * np.ones_like(list(node_list))))
     path_vec = OrderedDict(zip(node_list, np.inf * np.ones_like(list(node_list))))
-    dist_vec[target] = 0
+    wait_vec[target] = 0
     for node in node_list:
         print("Processing node %d" % (node))
         if node != target:
             dist_tmp, course = find_shortest_path(G, node, target)
-            dist_vec[node] = dist_tmp[target]
+            wait_vec[node] = dist_tmp[target]
             path_vec[node] = course
             # display_graph(G, path)
         else:
-            dist_vec[node] = 0
+            wait_vec[node] = 0
             path_vec[node] = [node]
 
-    return dist_vec, path_vec
+    return wait_vec, path_vec
 
 ### -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -148,14 +148,14 @@ def dynamic_all_to_one(G, target, M=3):
     # Initalization
     node_list = G.node.keys()
     time_vec = np.ones(M, dtype=np.int)
-    dist_vec = OrderedDict(zip(node_list, np.inf * np.array([time_vec for xi in node_list])))
+    wait_vec = OrderedDict(zip(node_list, np.inf * np.array([time_vec for xi in node_list])))
     path_vec = OrderedDict(zip(node_list,  np.array([OrderedDict() for xi in node_list])))
-    dist_vec_static, path_vec_static = static_all_to_one(G, target)
-    for node in dist_vec:
-        dist_vec[node][M-1] = dist_vec_static[node]
+    wait_vec_static, path_vec_static = static_all_to_one(G, target)
+    for node in wait_vec:
+        wait_vec[node][M-1] = wait_vec_static[node]
         path_vec[node][M-1] = path_vec_static[node]
     for t in range(M-2, -1, -1):
-        dist_vec[target][t] = 0
+        wait_vec[target][t] = 0
         path_vec[target][t] = [target]
 
     # Main loop
@@ -163,13 +163,13 @@ def dynamic_all_to_one(G, target, M=3):
         for edge in G.edges():
             i, j = edge
             time_next = np.min([t + G[i][j]['w'][t], M-1])
-            tmp_vec = [dist_vec[i][t], G[i][j]['w'][t] + dist_vec[j][time_next]]
+            tmp_vec = [wait_vec[i][t], G[i][j]['w'][t] + wait_vec[j][int(time_next)]]
             tmp_ind = np.argmin(tmp_vec)
             if tmp_ind == 1:
-                dist_vec[i][t] = tmp_vec[tmp_ind]
+                wait_vec[i][t] = tmp_vec[tmp_ind]
                 path_vec[i][t] = [i] + path_vec[j][time_next]
 
-    return dist_vec, path_vec
+    return wait_vec, path_vec
 
 ### -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -201,7 +201,7 @@ if __name__ == '__main__':
 
     # G = create_toy_graph(10, 25, time_len=time_len)
 
-    # dist_vec, path_vec = dynamic_all_to_one(G, target, time_len)
+    # wait_vec, path_vec = dynamic_all_to_one(G, target, time_len)
 
     display_graph(G, draw_edge_label=False)
 
