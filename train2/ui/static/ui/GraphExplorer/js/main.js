@@ -45,10 +45,10 @@ $(function () {
             var result = this.routes.map(r => ({
                 id: r.id,
                 from: this.getStopName(r.stop_ids[0]),
-                to: this.getStopName(r.stop_ids[r.stop_ids.length-1]),
+                to: this.getStopName(r.stop_ids[r.stop_ids.length - 1]),
                 count: r.count
             }));
-            result.sort((s1,s2) => {
+            result.sort((s1, s2) => {
                 if (s1.from < s2.from) {
                     return -1;
                 }
@@ -68,7 +68,7 @@ $(function () {
                     return 1; //reverse count
                 }
                 return 0;
-             });
+            });
             return result;
         }
 
@@ -80,7 +80,7 @@ $(function () {
             var cbs = [
                 {
                     field: 'stat',
-                    url: 'http://otrain.org/api/v1/stats/route-info-full/?format=json',
+                    url: 'http://otrain.org/api/v1/stats/route-info-full/',
                     data: {
                         from_date: this.startDate,
                         'to_date': this.endDate,
@@ -113,12 +113,13 @@ $(function () {
                 });
                 this.buildStops();
                 $("#spinner").remove();
-                $("#canvas-div").show();
+                $("#main-div").find(".wait-map").show();
                 this.refreshDetails();
                 this.buildForm(this)
-                refreshChart(this)
+                this.refreshChart(this)
             });
         };
+
         buildForm() {
             let monthNames = [
                 'dummy',
@@ -134,7 +135,7 @@ $(function () {
                 'אוקטובר',
                 'נובמבר',
                 'דצמבר'
-            ]
+            ];
             let routes = this.getRoutes();
             for (let route of routes) {
                 let option = $(`<option value="${route.id}">מ${route['from']} ל${route['to']} (${route['count']} נסיעות)</option>`)
@@ -143,20 +144,16 @@ $(function () {
                 }
                 $("#select_route").append(option);
             }
-            let s = [1,2015];
-            let e = [4,2016];
+            let s = [1, 2015];
+            let e = [4, 2016];
             let monthYears = [];
             while (s.join('/') != e.join('/')) {
-                monthYears.push([s[0],s[1]]);
-                s[0] += 1;
-                if (s[0] == 13) {
-                    s[0] = 1
-                    s[1] += 1
-                }
+                monthYears.push([s[0], s[1]]);
+                s = s[0] == 12 ? [1,s[1]+1] : [s[0]+1,s[1]];
             }
             for (let [m,y] of monthYears) {
                 let title = `${monthNames[m]} ${y}`
-                let [nm, ny] = m == 12 ? [1, y+1] : [m+1, y];
+                let [nm, ny] = m == 12 ? [1, y + 1] : [m + 1, y];
                 let val = `1/${m}/${y}`;
                 let option = $(`<option value=${val}>${title}</option>`);
                 if (val == this.startDate) {
@@ -182,63 +179,79 @@ $(function () {
             });
         };
 
+        li(html) {
+            let li = $('<li class="list-group-item"></li>');
+            li.html(html);
+            return li;
+        }
+
         refreshDetails(data) {
             $("#details").empty();
-            $("#details").append("<li class='list-group-item'>מזהה מסלול: " + this.route.id + "</li>");
-            $("#details").append("<li class='list-group-item'>תאריך התחלה: " + this.startDate + "</li>");
-            $("#details").append("<li class='list-group-item'>תאריך סיום: " + this.endDate + "</li>");
+            $("#details").append(this.li(`<b>מזהה מסלול</b>: ${this.route.id}`));
+            $("#details").append(this.li(`<b>תאריך התחלה</b>: ${this.startDate}`));
+            $("#details").append(this.li(`<b>תאריך סיום</b>: ${this.endDate}`));
+            $("#details").append(this.li(`<b>מספר נסיעות</b>: ${this.endDate}`));
         }
-    }
-    var refreshChart = function(data) {
-        var labels = {
-            '1': 'ראשון',
-            '2': 'שני',
-            '3': 'שלישי',
-            '4': 'רביעי',
-            '5': 'חמישי',
-            '6': 'שישי',
-            '7': 'שבת',
-            'all': 'הכל'
-        };
-        var stops = data.getStopNames();
-        var ctx = $("#main-canvas");
-        var datasets = [];
-        var stats = data.getStatByDay();
-        for (let i = 0 ; i < stats.length ; i++) {
-            let stat = stats[i];
-            var isTotal = stat.info.week_day == 'all';
-            let color = PALETTE20[i];
-            if (isTotal) {
-                color = "rgba(0,0,0,0.2)";
+
+        refreshChart() {
+            var labels = {
+                '1': 'ראשון',
+                '2': 'שני',
+                '3': 'שלישי',
+                '4': 'רביעי',
+                '5': 'חמישי',
+                '6': 'שישי',
+                '7': 'שבת',
+                'all': 'הכל'
+            };
+            var stops = this.getStopNames();
+            var ctx = $("#main-canvas");
+            var datasets = [];
+            var stats = this.getStatByDay();
+            for (let i = 0; i < stats.length; i++) {
+                let stat = stats[i];
+                var isTotal = stat.info.week_day == 'all';
+                let color = PALETTE20[i];
+                if (isTotal) {
+                    color = "rgba(0,0,0,0.2)";
+                }
+                let data = stat.stops.map(stop => (stop.arrival_late_pct * 100).toFixed(1)).reverse();
+                var dataset = {
+                    label: labels[stat.info.week_day],
+                    fill: false,
+                    data: data,
+                    backgroundColor: color,
+                    borderColor: color,
+                    pointBorderColor: color,
+                    pointRadius: 5,
+                }
+                if (isTotal) {
+                    //dataset['borderDash'] = [5,5,5,5];
+                    dataset['borderWidth'] = 20;
+                }
+                datasets.push(dataset);
             }
-            let data = stat.stops.map(stop => (stop.arrival_late_pct*100).toFixed(1)).reverse();
-            var dataset = {
-                label: labels[stat.info.week_day],
-                fill: false,
+            var data = {
+                labels: stops.map((x, i) => ` ${1 + i} - ${x}`).reverse(),
+                datasets: datasets,
+            };
+            var myLineChart = new Chart(ctx, {
+                type: 'line',
                 data: data,
-                backgroundColor: color,
-                borderColor: color,
-                pointBorderColor: color,
-                pointRadius: 5,
-            }
-            if (isTotal) {
-                //dataset['borderDash'] = [5,5,5,5];
-                dataset['borderWidth'] = 20;
-            }
-            datasets.push(dataset);
-        }
-        var data = {
-            labels: stops.map((x,i) => `${x} ${1+i}`).reverse(),
-            datasets: datasets,
+                options: {
+                    scales: {
+                        yAxes: [{
+                            scaleLabel: {
+                                display: true,
+                                labelString: '% רכבות באיחור'
+                            }
+                        }]
+                    }
+                }
+            });
         };
-        var myLineChart = new Chart(ctx, {
-            type: 'line',
-            data: data,
-            options: {
-            }
-        });
-    };
-    var getParams = function(){
+    }
+    var getParams = function () {
         var search = location.search.substring(1);
         var parts = search.split("&");
         var result = {};
@@ -250,7 +263,7 @@ $(function () {
     };
     let params = getParams();
     let d = new Data(params.route_id || 106,
-                     params.from_date || '1/3/2016',
-                     params.to_date || '1/4/2016');
+            params.from_date || '1/3/2016',
+            params.to_date || '1/4/2016');
     d.loadData();
 });
