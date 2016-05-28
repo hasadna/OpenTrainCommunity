@@ -86,7 +86,8 @@ def create_heatmap(station_scores, plot_width=1000, plot_height=600):
 
 def run():
     from django.conf import settings
-    with open(settings.BASE_DIR,'map2.html') as f:
+    import os
+    with open(os.path.join(settings.BASE_DIR,'map2.html')) as f:
         return f.read()
 
     date_val1 = datetime.date(2016, 3, 8)
