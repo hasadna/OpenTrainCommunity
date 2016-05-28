@@ -316,7 +316,7 @@ $(function () {
         return result;
     };
     let params = getParams();
-    let d = new Data(params.route_id || 106,
+    let d = new Data(params.route_id || 105,
         params.from_date || '1/3/2016',
         params.to_date || '1/4/2016');
     d.loadData();
