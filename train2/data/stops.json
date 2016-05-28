@@ -1,713 +1,723 @@
 [
-    {
-        "stop_short_name": "\u05e4\u05d0\u05ea\u05d9 \u05de\u05d5\u05d3\u05d9\u05e2\u05d9\u05df",
-        "gtfs_stop_id": 300, 
-        "latlon": [
-            31.893661, 
-            34.96079
-        ], 
-        "bssids": [
-            "b4c7999c5b80", 
-            "b4c799a3e120"
-        ], 
-        "stop_name": "Modiin"
-    }, 
-    {
-        "stop_short_name": "\u05de\u05d5\u05d3\u05d9\u05e2\u05d9\u05df",
-        "gtfs_stop_id": 400, 
-        "latlon": [
-            31.901192, 
-            35.005744
-        ], 
-        "bssids": [
-            "b4c799a3dbf0", 
-            "b4c799a3ddb0", 
-            "b4c799a3de90", 
-            "b4c7998313c0"
-        ], 
-        "stop_name": "Modiin Center"
-    }, 
-    {
-        "stop_short_name": "\u05e7\u05e8\u05d9\u05d9\u05ea \u05d7\u05d9\u05d9\u05dd", 
-        "gtfs_stop_id": 700, 
-        "latlon": [
-            32.824873, 
-            35.064296
-        ], 
-        "bssids": [
-            "b4c7998250c0", 
-            "b4c79982aac0", 
-            "b4c7999c43d0"
-        ], 
-        "stop_name": "Kiryat Hayyim"
-    }, 
-    {
-        "stop_short_name": "\u05e7\u05e8\u05d9\u05d9\u05ea \u05de\u05d5\u05e6\u05e7\u05d9\u05df", 
-        "gtfs_stop_id": 800, 
-        "latlon": [
-            32.833081, 
-            35.069947
-        ], 
-        "bssids": [
-            "b4c79982aab0", 
-            "b4c79982b950"
-        ], 
-        "stop_name": "Kiryat Motzkin"
-    }, 
-    {
-        "stop_short_name": "\u05dc\u05d1 \u05d4\u05de\u05e4\u05e8\u05e5", 
-        "gtfs_stop_id": 1220, 
-        "latlon": [
-            32.793891, 
-            35.037152
-        ], 
-        "bssids": [
-            "b4c7991ffd10", 
-            "b4c79982bcd0"
-        ], 
-        "stop_name": "Leb Hmifratz"
-    }, 
-    {
-        "stop_short_name": "\u05d7\u05d5\u05e6\u05d5\u05ea \u05d4\u05de\u05e4\u05e8\u05e5", 
-        "gtfs_stop_id": 1300, 
-        "latlon": [
-            32.809439, 
-            35.054525
-        ], 
-        "bssids": [], 
-        "stop_name": "Hutsot HaMifrats"
-    }, 
-    {
-        "stop_short_name": "\u05e2\u05db\u05d5", 
-        "gtfs_stop_id": 1500, 
-        "latlon": [
-            32.928293, 
-            35.082959
-        ], 
-        "bssids": [
-            "b4c7999c4e50", 
-            "b4c799a3e1d0", 
-            "b4c7999c59c0", 
-            "b4c7998311f0"
-        ], 
-        "stop_name": "Akko"
-    }, 
-    {
-        "stop_short_name": "\u05e0\u05d4\u05e8\u05d9\u05d4", 
-        "gtfs_stop_id": 1600, 
-        "latlon": [
-            33.005016, 
-            35.098722
-        ], 
-        "bssids": [], 
-        "stop_name": "Nahariyya"
-    }, 
-    {
-        "stop_short_name": "\u05d7\u05d9\u05e4\u05d4 \u05de\u05e8\u05db\u05d6", 
-        "gtfs_stop_id": 2100, 
-        "latlon": [
-            32.822229, 
-            34.997102
-        ], 
-        "bssids": [
-            "b4c7998286b0", 
-            "b4c7999c5200"
-        ], 
-        "stop_name": "Haifa Center HaShmona"
-    }, 
-    {
-        "stop_short_name": "\u05d1\u05ea \u05d2\u05dc\u05d9\u05dd", 
-        "gtfs_stop_id": 2200, 
-        "latlon": [
-            32.83061, 
-            34.98187
-        ], 
-        "bssids": [
-            "b4c799825300", 
-            "b4c79982a1a0", 
-            "b4c79982bd90", 
-            "b4c799830840"
-        ], 
-        "stop_name": "Haifa Bat Gallim"
-    }, 
-    {
-        "stop_short_name": "\u05d7\u05d5\u05e3 \u05d4\u05db\u05e8\u05de\u05dc", 
-        "gtfs_stop_id": 2300, 
-        "latlon": [
-            32.793539, 
-            34.957531
-        ], 
-        "bssids": [
-            "b4c79982aaa0", 
-            "b4c79982b980", 
-            "b4c79982bc30", 
-            "b4c79982b980", 
-            "b4c799830850"
-        ], 
-        "stop_name": "Haifa Hof HaKarmel (Razi'el)"
-    }, 
-    {
-        "stop_short_name": "\u05e2\u05ea\u05dc\u05d9\u05ea", 
-        "gtfs_stop_id": 2500, 
-        "latlon": [
-            32.692895, 
-            34.940439
-        ], 
-        "bssids": [], 
-        "stop_name": "Atlit"
-    }, 
-    {
-        "stop_short_name": "\u05d1\u05e0\u05d9\u05de\u05d9\u05e0\u05d4", 
-        "gtfs_stop_id": 2800, 
-        "latlon": [
-            32.514484, 
-            34.949991
-        ], 
-        "bssids": [
-            "b4c79982ba70", 
-            "b4c79982b7d0", 
-            "b4c79982abc0"
-        ], 
-        "stop_name": "Binyamina"
-    }, 
-    {
-        "stop_short_name": "\u05e7\u05d9\u05e1\u05e8\u05d9\u05d4", 
-        "gtfs_stop_id": 2820, 
-        "latlon": [
-            32.485366, 
-            34.95406
-        ], 
-        "bssids": [
-            "b4c799a3dd40", 
-            "b4c799a3e170"
-        ], 
-        "stop_name": "Kesariyya - Pardes Hanna"
-    }, 
-    {
-        "stop_short_name": "\u05d7\u05d3\u05e8\u05d4 \u05de\u05e2\u05e8\u05d1", 
-        "gtfs_stop_id": 3100, 
-        "latlon": [
-            32.438221, 
-            34.899365
-        ], 
-        "bssids": [
-            "b4c79982ab10", 
-            "b4c79982a110"
-        ], 
-        "stop_name": "Hadera West"
-    }, 
-    {
-        "stop_short_name": "\u05e0\u05ea\u05e0\u05d9\u05d4", 
-        "gtfs_stop_id": 3300, 
-        "latlon": [
-            32.320032, 
-            34.869243
-        ], 
-        "bssids": [
-            "b4c79982a160", 
-            "b4c799a3dc90", 
-            "b4c799a3dee0"
-        ], 
-        "stop_name": "Natanya"
-    }, 
-    {
-        "stop_short_name": "\u05d1\u05d9\u05ea \u05d9\u05d4\u05d5\u05e9\u05e2", 
-        "gtfs_stop_id": 3400, 
-        "latlon": [
-            32.262489, 
-            34.860115
-        ], 
-        "bssids": [
-            "b4c799a3dd90", 
-            "b4c799a3db40"
-        ], 
-        "stop_name": "Bet Yehoshua"
-    }, 
-    {
-        "stop_short_name": "\u05d4\u05e8\u05e6\u05dc\u05d9\u05d4", 
-        "gtfs_stop_id": 3500, 
-        "latlon": [
-            32.163804, 
-            34.818448
-        ], 
-        "bssids": [
-            "b4c7999bbf00", 
-            "b4c799be1fe0"
-        ], 
-        "stop_name": "Herzliyya"
-    }, 
-    {
-        "stop_short_name": "\u05d0\u05d5\u05e0\u05d9\u05d1\u05e8\u05e1\u05d9\u05d8\u05d4", 
-        "gtfs_stop_id": 3600, 
-        "latlon": [
-            32.103661, 
-            34.804613
-        ], 
-        "bssids": [
-            "b4c7990bd7c0", 
-            "b4c7990bd490", 
-            "b4c7990baac1", 
-            "b4c7990bd5c0", 
-            "b4c7990bd750"
-        ], 
-        "stop_name": "Tel Aviv - University"
-    }, 
-    {
-        "stop_short_name": "\u05ea\"\u05d0 \u05de\u05e8\u05db\u05d6", 
-        "gtfs_stop_id": 3700, 
-        "latlon": [
-            32.083882, 
-            34.798322
-        ], 
-        "bssids": [
-            "b4c7990bc960", 
-            "b4c7990be070", 
-            "b4c7990bc070", 
-            "b4c7990bdce0", 
-            "b4c7990bdd70", 
-            "b4c7990be410", 
-            "b4c7990bde41"
-        ], 
-        "stop_name": "Tel Aviv Center - Savidor"
-    }, 
-    {
-        "stop_short_name": "\u05d1\u05e0\u05d9 \u05d1\u05e8\u05e7", 
-        "gtfs_stop_id": 4100, 
-        "latlon": [
-            32.103098, 
-            34.830143
-        ], 
-        "bssids": [
-            "b4c79982b730", 
-            "b4c79982b660"
-        ], 
-        "stop_name": "Bne Brak"
-    }, 
-    {
-        "stop_short_name": "\u05e7\u05e8\u05d9\u05ea \u05d0\u05e8\u05d9\u05d4", 
-        "gtfs_stop_id": 4170, 
-        "latlon": [
-            32.1062, 
-            34.863172
-        ], 
-        "bssids": [
-            "b4c79982bae0", 
-            "b4c799830e90"
-        ], 
-        "stop_name": "Petah Tikva   Kiryat Arye"
-    }, 
-    {
-        "stop_short_name": "\u05e1\u05d2\u05d5\u05dc\u05d4", 
-        "gtfs_stop_id": 4250, 
-        "latlon": [
-            32.112064, 
-            34.901297
-        ], 
-        "bssids": [
-            "b4c79982b780", 
-            "b4c79982ba60"
-        ], 
-        "stop_name": "Petah Tikva Sgulla"
-    }, 
-    {
-        "stop_short_name": "\u05ea\"\u05d0 \u05d4\u05e9\u05dc\u05d5\u05dd", 
-        "gtfs_stop_id": 4600, 
-        "latlon": [
-            32.073515, 
-            34.793211
-        ], 
-        "bssids": [
-            "b4c79982ba10", 
-            "b4c799828010", 
-            "b4c799828920", 
-            "b4c799830e80"
-        ], 
-        "stop_name": "Tel Aviv HaShalom"
-    }, 
-    {
-        "stop_short_name": "\u05e6\u05d5\u05de\u05ea \u05d7\u05d5\u05dc\u05d5\u05df", 
-        "gtfs_stop_id": 4640, 
-        "latlon": [
-            32.037112, 
-            34.776478
-        ], 
-        "bssids": [
-            "b4c799828000", 
-            "b4c799827fa0"
-        ], 
-        "stop_name": "Holon Junction"
-    }, 
-    {
-        "stop_short_name": "\u05d5\u05d5\u05dc\u05e4\u05e1\u05d5\u05df", 
-        "gtfs_stop_id": 4660, 
-        "latlon": [
-            32.035412, 
-            34.759706
-        ], 
-        "bssids": [
-            "b4c79982be10", 
-            "b4c79982b630", 
-            "b4c799830f40"
-        ], 
-        "stop_name": "Holon - Wolfson"
-    }, 
-    {
-        "stop_short_name": "\u05d9\u05d5\u05e1\u05e4\u05d8\u05dc", 
-        "gtfs_stop_id": 4680, 
-        "latlon": [
-            32.014591, 
-            34.762116
-        ], 
-        "bssids": [
-            "b4c79982bc80", 
-            "b4c79982b690", 
-            "b4c7998310b0"
-        ], 
-        "stop_name": "Bat Yam - Yoseftal"
-    }, 
-    {
-        "stop_short_name": "\u05e7\u05d5\u05de\u05de\u05d9\u05d5\u05ea", 
-        "gtfs_stop_id": 4690, 
-        "latlon": [
-            32.000934, 
-            34.759487
-        ], 
-        "bssids": [], 
-        "stop_name": "Bat Yam - Komemiyyut"
-    }, 
-    {
-        "stop_short_name": "\u05db\u05e4\u05e8 \u05d7\u05d1\u05d3", 
-        "gtfs_stop_id": 4800, 
-        "latlon": [
-            31.993192, 
-            34.853015
-        ], 
-        "bssids": [], 
-        "stop_name": "Kfar Habbad"
-    }, 
-    {
-        "stop_short_name": "\u05d4\u05d4\u05d2\u05e0\u05d4", 
-        "gtfs_stop_id": 4900, 
-        "latlon": [
-            32.054145, 
-            34.784816
-        ], 
-        "bssids": [
-            "b4c79982b960", 
-            "b4c79982b7c0", 
-            "b4c79982b700", 
-            "b4c79982ff70"
-        ], 
-        "stop_name": "Tel Aviv HaHagana"
-    }, 
-    {
-        "stop_short_name": "\u05dc\u05d5\u05d3", 
-        "gtfs_stop_id": 5000, 
-        "latlon": [
-            31.945267, 
-            34.875158
-        ], 
-        "bssids": [
-            "b4c79982bd50", 
-            "b4c7998312e0", 
-            "b4c79982bbf0", 
-            "b4c7999bc1b0", 
-            "b4c7991ffcd0"
-        ], 
-        "stop_name": "Lod"
-    }, 
-    {
-        "stop_short_name": "\u05e8\u05de\u05dc\u05d4", 
-        "gtfs_stop_id": 5010, 
-        "latlon": [
-            31.928837, 
-            34.877257
-        ], 
-        "bssids": [
-            "b4c79982aad0"
-        ], 
-        "stop_name": "Ramla"
-    }, 
-    {
-        "stop_short_name": "\u05d2\u05e0\u05d9 \u05d0\u05d1\u05d9\u05d1", 
-        "gtfs_stop_id": 5150, 
-        "latlon": [
-            31.967008, 
-            34.878718
-        ], 
-        "bssids": [
-            "b4c799a3dd60"
-        ], 
-        "stop_name": "Ganey Aviv"
-    }, 
-    {
-        "stop_short_name": "\u05e8\u05d7\u05d5\u05d1\u05d5\u05ea", 
-        "gtfs_stop_id": 5200, 
-        "latlon": [
-            31.908648, 
-            34.806404
-        ], 
-        "bssids": [
-            "b4c7991ff120", 
-            "b4c7991ffd00", 
-            "b4c79982fff0"
-        ], 
-        "stop_name": "Rehovot E. Hadar"
-    }, 
-    {
-        "stop_short_name": "\u05d1\u05d0\u05e8 \u05d9\u05e2\u05e7\u05d1", 
-        "gtfs_stop_id": 5300, 
-        "latlon": [
-            31.932913, 
-            34.828616
-        ], 
-        "bssids": [
-            "b4c79982bcf0", 
-            "b4c7991ff160"
-        ], 
-        "stop_name": "Be'er Ya'akov"
-    }, 
-    {
-        "stop_short_name": "\u05d9\u05d1\u05e0\u05d4", 
-        "gtfs_stop_id": 5410, 
-        "latlon": [
-            31.861859, 
-            34.744094
-        ], 
-        "bssids": [], 
-        "stop_name": "Yavne"
-    }, 
-    {
-        "stop_short_name": "\u05d0\u05e9\u05d3\u05d5\u05d3", 
-        "gtfs_stop_id": 5800, 
-        "latlon": [
-            31.774014, 
-            34.666071
-        ], 
-        "bssids": [
-            "b4c7999bbdb0", 
-            "b4c799a3ddd0"
-        ], 
-        "stop_name": "Ashdod Ad Halom"
-    }, 
-    {
-        "stop_short_name": "\u05d0\u05e9\u05e7\u05dc\u05d5\u05df", 
-        "gtfs_stop_id": 5900, 
-        "latlon": [
-            31.676738, 
-            34.604851
-        ], 
-        "bssids": [
-            "b4c79982b970", 
-            "b4c79982b8a0"
-        ], 
-        "stop_name": "Ashkelon"
-    }, 
-    {
-        "stop_short_name": "\u05d1\u05d9\u05ea \u05e9\u05de\u05e9", 
-        "gtfs_stop_id": 6300, 
-        "latlon": [
-            31.757807, 
-            34.989518
-        ], 
-        "bssids": [], 
-        "stop_name": "Bet Shemesh"
-    }, 
-    {
-        "stop_short_name": "\u05d2\u05df \u05d4\u05d7\u05d9\u05d5\u05ea", 
-        "gtfs_stop_id": 6500, 
-        "latlon": [
-            31.744952, 
-            35.178132
-        ], 
-        "bssids": [], 
-        "stop_name": "Jerusalem Biblical Zoo"
-    }, 
-    {
-        "stop_short_name": "\u05de\u05dc\u05d7\u05d4", 
-        "gtfs_stop_id": 6700, 
-        "latlon": [
-            31.747813, 
-            35.188161
-        ], 
-        "bssids": [], 
-        "stop_name": "Jerusalem Malha"
-    }, 
-    {
-        "stop_short_name": "\u05e7\u05e8\u05d9\u05ea \u05d2\u05ea", 
-        "gtfs_stop_id": 7000, 
-        "latlon": [
-            31.603481, 
-            34.777918
-        ], 
-        "bssids": [], 
-        "stop_name": "Kiryat Gat"
-    }, 
-    {
-        "stop_short_name": "\u05d0\u05d5\u05e0\u05d9\u05d1\u05e8\u05e1\u05d9\u05d8\u05d4", 
-        "gtfs_stop_id": 7300, 
-        "latlon": [
-            31.262021, 
-            34.809283
-        ], 
-        "bssids": [
-            "b4c799a3dd20", 
-            "b4c799a3df10"
-        ], 
-        "stop_name": "Be'er Sheva North University"
-    }, 
-    {
-        "stop_short_name": "\u05d1\"\u05e9 \u05de\u05e8\u05db\u05d6", 
-        "gtfs_stop_id": 7320, 
-        "latlon": [
-            31.243285, 
-            34.798395
-        ], 
-        "bssids": [
-            "b4c799a3de10", 
-            "b4c799a3e030", 
-            "b4c7999c4ef0", 
-            "b4c799831350"
-        ], 
-        "stop_name": "Be'er Sheva Center"
-    }, 
-    {
-        "stop_short_name": "\u05d3\u05d9\u05de\u05d5\u05e0\u05d4", 
-        "gtfs_stop_id": 7500, 
-        "latlon": [
-            31.069142, 
-            35.011876
-        ], 
-        "bssids": [], 
-        "stop_name": "Dimona"
-    }, 
-    {
-        "stop_short_name": "\u05dc\u05d4\u05d1\u05d9\u05dd", 
-        "gtfs_stop_id": 8550, 
-        "latlon": [
-            31.369865, 
-            34.798277
-        ], 
-        "bssids": [], 
-        "stop_name": "Lehavim - Rahat"
-    }, 
-    {
-        "stop_short_name": "\u05e0\u05ea\u05d1\"\u05d2", 
-        "gtfs_stop_id": 8600, 
-        "latlon": [
-            32.000733, 
-            34.870728
-        ], 
-        "bssids": [
-            "b4c7998307e0", 
-            "b4c799830f70"
-        ], 
-        "stop_name": "Ben Gurion Airport"
-    }, 
-    {
-        "stop_short_name": "\u05db\u05e4\u05e8 \u05e1\u05d1\u05d0", 
-        "gtfs_stop_id": 8700, 
-        "latlon": [
-            32.167476, 
-            34.917376
-        ], 
-        "bssids": [
-            "b4c79982a1b0", 
-            "b4c79982b6d0", 
-            "b4c79982fe40"
-        ], 
-        "stop_name": "Kfar Sava"
-    }, 
-    {
-        "stop_short_name": "\u05e8\u05d0\u05e9 \u05d4\u05e2\u05d9\u05df", 
-        "gtfs_stop_id": 8800, 
-        "latlon": [
-            32.120813, 
-            34.934787
-        ], 
-        "bssids": [
-            "b4c799830ee0", 
-            "b4c79982ba00"
-        ], 
-        "stop_name": "Rosh Ha'Ayin North"
-    }, 
-    {
-        "stop_short_name": "\u05d9\u05d1\u05e0\u05d4 \u05de\u05e2\u05e8\u05d1", 
-        "gtfs_stop_id": 9000, 
-        "latlon": [
-            31.891235, 
-            34.73154
-        ], 
-        "bssids": [
-            "b4c799830e70", 
-            "b4c799a3de60", 
-            "b4c799a3df90"
-        ], 
-        "stop_name": "Yavne - West"
-    }, 
-    {
-        "stop_short_name": "\u05d4\u05e8\u05d0\u05e9\u05d5\u05e0\u05d9\u05dd", 
-        "gtfs_stop_id": 9100, 
-        "latlon": [
-            31.948947, 
-            34.802676
-        ], 
-        "bssids": [
-            "b4c79982bdb0", 
-            "b4c79982bd70", 
-            "b4c79982be20", 
-            "b4c7999c5a60", 
-            "b4c79982bd60", 
-            "b4c7998313e0"
-        ], 
-        "stop_name": "Rishon LeTsiyyon HaRishonim"
-    }, 
-    {
-        "stop_short_name": "\u05d4\u05d5\u05d3 \u05d4\u05e9\u05e8\u05d5\u05df", 
-        "gtfs_stop_id": 9200, 
-        "latlon": [
-            32.17027, 
-            34.901554
-        ], 
-        "bssids": [
-            "b4c79982b840", 
-            "b4c79982b990", 
-            "b4c799830690"
-        ], 
-        "stop_name": "Hod HaSharon"
-    }, 
-    {
-        "stop_short_name": "\u05e9\u05d3\u05e8\u05d5\u05ea", 
-        "gtfs_stop_id": 9600, 
-        "latlon": [
-            31.515933, 
-            34.587523
-        ], 
-        "bssids": [
-            "b4c7998313d0", 
-            "b4c799d11c50", 
-            "b4c799d16400"
-        ], 
-        "stop_name": "Sderot"
-    }, 
-    {
-        "stop_short_name": "\u05de\u05e9\u05d4 \u05d3\u05d9\u05d9\u05df", 
-        "gtfs_stop_id": 9800, 
-        "latlon": [
-            31.987929, 
-            34.75745
-        ], 
-        "bssids": [], 
-        "stop_name": "Rishon LeTsiyyon - Moshe Dayan"
-    },
-    {
-        "stop_short_name": "\u05e0\u05ea\u05d9\u05d1\u05d5\u05ea",
-        "gtfs_stop_id": 9650,
-        "latlon": [
-            31.410595,
-            34.571191
-        ],
-        "bssids": [],
-        "stop_name": "Netivot"
-    }
+  {
+    "stop_short_name": "\u05e4\u05d0\u05ea\u05d9 \u05de\u05d5\u05d3\u05d9\u05e2\u05d9\u05df",
+    "gtfs_stop_id": 300,
+    "latlon": [
+      31.893661,
+      34.96079
+    ],
+    "bssids": [
+      "b4c7999c5b80",
+      "b4c799a3e120"
+    ],
+    "stop_name": "Modiin"
+  },
+  {
+    "stop_short_name": "\u05de\u05d5\u05d3\u05d9\u05e2\u05d9\u05df",
+    "gtfs_stop_id": 400,
+    "latlon": [
+      31.901192,
+      35.005744
+    ],
+    "bssids": [
+      "b4c799a3dbf0",
+      "b4c799a3ddb0",
+      "b4c799a3de90",
+      "b4c7998313c0"
+    ],
+    "stop_name": "Modiin Center"
+  },
+  {
+    "stop_short_name": "\u05e7\u05e8\u05d9\u05d9\u05ea \u05d7\u05d9\u05d9\u05dd",
+    "gtfs_stop_id": 700,
+    "latlon": [
+      32.824873,
+      35.064296
+    ],
+    "bssids": [
+      "b4c7998250c0",
+      "b4c79982aac0",
+      "b4c7999c43d0"
+    ],
+    "stop_name": "Kiryat Hayyim"
+  },
+  {
+    "stop_short_name": "\u05e7\u05e8\u05d9\u05d9\u05ea \u05de\u05d5\u05e6\u05e7\u05d9\u05df",
+    "gtfs_stop_id": 800,
+    "latlon": [
+      32.833081,
+      35.069947
+    ],
+    "bssids": [
+      "b4c79982aab0",
+      "b4c79982b950"
+    ],
+    "stop_name": "Kiryat Motzkin"
+  },
+  {
+    "stop_short_name": "\u05dc\u05d1 \u05d4\u05de\u05e4\u05e8\u05e5",
+    "gtfs_stop_id": 1220,
+    "latlon": [
+      32.793891,
+      35.037152
+    ],
+    "bssids": [
+      "b4c7991ffd10",
+      "b4c79982bcd0"
+    ],
+    "stop_name": "Leb Hmifratz"
+  },
+  {
+    "stop_short_name": "\u05d7\u05d5\u05e6\u05d5\u05ea \u05d4\u05de\u05e4\u05e8\u05e5",
+    "gtfs_stop_id": 1300,
+    "latlon": [
+      32.809439,
+      35.054525
+    ],
+    "bssids": [],
+    "stop_name": "Hutsot HaMifrats"
+  },
+  {
+    "stop_short_name": "\u05e2\u05db\u05d5",
+    "gtfs_stop_id": 1500,
+    "latlon": [
+      32.928293,
+      35.082959
+    ],
+    "bssids": [
+      "b4c7999c4e50",
+      "b4c799a3e1d0",
+      "b4c7999c59c0",
+      "b4c7998311f0"
+    ],
+    "stop_name": "Akko"
+  },
+  {
+    "stop_short_name": "\u05e0\u05d4\u05e8\u05d9\u05d4",
+    "gtfs_stop_id": 1600,
+    "latlon": [
+      33.005016,
+      35.098722
+    ],
+    "bssids": [],
+    "stop_name": "Nahariyya"
+  },
+  {
+    "stop_short_name": "\u05d7\u05d9\u05e4\u05d4 \u05de\u05e8\u05db\u05d6",
+    "gtfs_stop_id": 2100,
+    "latlon": [
+      32.822229,
+      34.997102
+    ],
+    "bssids": [
+      "b4c7998286b0",
+      "b4c7999c5200"
+    ],
+    "stop_name": "Haifa Center HaShmona"
+  },
+  {
+    "stop_short_name": "\u05d1\u05ea \u05d2\u05dc\u05d9\u05dd",
+    "gtfs_stop_id": 2200,
+    "latlon": [
+      32.83061,
+      34.98187
+    ],
+    "bssids": [
+      "b4c799825300",
+      "b4c79982a1a0",
+      "b4c79982bd90",
+      "b4c799830840"
+    ],
+    "stop_name": "Haifa Bat Gallim"
+  },
+  {
+    "stop_short_name": "\u05d7\u05d5\u05e3 \u05d4\u05db\u05e8\u05de\u05dc",
+    "gtfs_stop_id": 2300,
+    "latlon": [
+      32.793539,
+      34.957531
+    ],
+    "bssids": [
+      "b4c79982aaa0",
+      "b4c79982b980",
+      "b4c79982bc30",
+      "b4c79982b980",
+      "b4c799830850"
+    ],
+    "stop_name": "Haifa Hof HaKarmel (Razi'el)"
+  },
+  {
+    "stop_short_name": "\u05e2\u05ea\u05dc\u05d9\u05ea",
+    "gtfs_stop_id": 2500,
+    "latlon": [
+      32.692895,
+      34.940439
+    ],
+    "bssids": [],
+    "stop_name": "Atlit"
+  },
+  {
+    "stop_short_name": "\u05d1\u05e0\u05d9\u05de\u05d9\u05e0\u05d4",
+    "gtfs_stop_id": 2800,
+    "latlon": [
+      32.514484,
+      34.949991
+    ],
+    "bssids": [
+      "b4c79982ba70",
+      "b4c79982b7d0",
+      "b4c79982abc0"
+    ],
+    "stop_name": "Binyamina"
+  },
+  {
+    "stop_short_name": "\u05e7\u05d9\u05e1\u05e8\u05d9\u05d4",
+    "gtfs_stop_id": 2820,
+    "latlon": [
+      32.485366,
+      34.95406
+    ],
+    "bssids": [
+      "b4c799a3dd40",
+      "b4c799a3e170"
+    ],
+    "stop_name": "Kesariyya - Pardes Hanna"
+  },
+  {
+    "stop_short_name": "\u05d7\u05d3\u05e8\u05d4 \u05de\u05e2\u05e8\u05d1",
+    "gtfs_stop_id": 3100,
+    "latlon": [
+      32.438221,
+      34.899365
+    ],
+    "bssids": [
+      "b4c79982ab10",
+      "b4c79982a110"
+    ],
+    "stop_name": "Hadera West"
+  },
+  {
+    "stop_short_name": "\u05e0\u05ea\u05e0\u05d9\u05d4",
+    "gtfs_stop_id": 3300,
+    "latlon": [
+      32.320032,
+      34.869243
+    ],
+    "bssids": [
+      "b4c79982a160",
+      "b4c799a3dc90",
+      "b4c799a3dee0"
+    ],
+    "stop_name": "Natanya"
+  },
+  {
+    "stop_short_name": "\u05d1\u05d9\u05ea \u05d9\u05d4\u05d5\u05e9\u05e2",
+    "gtfs_stop_id": 3400,
+    "latlon": [
+      32.262489,
+      34.860115
+    ],
+    "bssids": [
+      "b4c799a3dd90",
+      "b4c799a3db40"
+    ],
+    "stop_name": "Bet Yehoshua"
+  },
+  {
+    "stop_short_name": "\u05d4\u05e8\u05e6\u05dc\u05d9\u05d4",
+    "gtfs_stop_id": 3500,
+    "latlon": [
+      32.163804,
+      34.818448
+    ],
+    "bssids": [
+      "b4c7999bbf00",
+      "b4c799be1fe0"
+    ],
+    "stop_name": "Herzliyya"
+  },
+  {
+    "stop_short_name": "\u05d0\u05d5\u05e0\u05d9\u05d1\u05e8\u05e1\u05d9\u05d8\u05d4",
+    "gtfs_stop_id": 3600,
+    "latlon": [
+      32.103661,
+      34.804613
+    ],
+    "bssids": [
+      "b4c7990bd7c0",
+      "b4c7990bd490",
+      "b4c7990baac1",
+      "b4c7990bd5c0",
+      "b4c7990bd750"
+    ],
+    "stop_name": "Tel Aviv - University"
+  },
+  {
+    "stop_short_name": "\u05ea\"\u05d0 \u05de\u05e8\u05db\u05d6",
+    "gtfs_stop_id": 3700,
+    "latlon": [
+      32.083882,
+      34.798322
+    ],
+    "bssids": [
+      "b4c7990bc960",
+      "b4c7990be070",
+      "b4c7990bc070",
+      "b4c7990bdce0",
+      "b4c7990bdd70",
+      "b4c7990be410",
+      "b4c7990bde41"
+    ],
+    "stop_name": "Tel Aviv Center - Savidor"
+  },
+  {
+    "stop_short_name": "\u05d1\u05e0\u05d9 \u05d1\u05e8\u05e7",
+    "gtfs_stop_id": 4100,
+    "latlon": [
+      32.103098,
+      34.830143
+    ],
+    "bssids": [
+      "b4c79982b730",
+      "b4c79982b660"
+    ],
+    "stop_name": "Bne Brak"
+  },
+  {
+    "stop_short_name": "\u05e7\u05e8\u05d9\u05ea \u05d0\u05e8\u05d9\u05d4",
+    "gtfs_stop_id": 4170,
+    "latlon": [
+      32.1062,
+      34.863172
+    ],
+    "bssids": [
+      "b4c79982bae0",
+      "b4c799830e90"
+    ],
+    "stop_name": "Petah Tikva   Kiryat Arye"
+  },
+  {
+    "stop_short_name": "\u05e1\u05d2\u05d5\u05dc\u05d4",
+    "gtfs_stop_id": 4250,
+    "latlon": [
+      32.112064,
+      34.901297
+    ],
+    "bssids": [
+      "b4c79982b780",
+      "b4c79982ba60"
+    ],
+    "stop_name": "Petah Tikva Sgulla"
+  },
+  {
+    "stop_short_name": "\u05ea\"\u05d0 \u05d4\u05e9\u05dc\u05d5\u05dd",
+    "gtfs_stop_id": 4600,
+    "latlon": [
+      32.073515,
+      34.793211
+    ],
+    "bssids": [
+      "b4c79982ba10",
+      "b4c799828010",
+      "b4c799828920",
+      "b4c799830e80"
+    ],
+    "stop_name": "Tel Aviv HaShalom"
+  },
+  {
+    "stop_short_name": "\u05e6\u05d5\u05de\u05ea \u05d7\u05d5\u05dc\u05d5\u05df",
+    "gtfs_stop_id": 4640,
+    "latlon": [
+      32.037112,
+      34.776478
+    ],
+    "bssids": [
+      "b4c799828000",
+      "b4c799827fa0"
+    ],
+    "stop_name": "Holon Junction"
+  },
+  {
+    "stop_short_name": "\u05d5\u05d5\u05dc\u05e4\u05e1\u05d5\u05df",
+    "gtfs_stop_id": 4660,
+    "latlon": [
+      32.035412,
+      34.759706
+    ],
+    "bssids": [
+      "b4c79982be10",
+      "b4c79982b630",
+      "b4c799830f40"
+    ],
+    "stop_name": "Holon - Wolfson"
+  },
+  {
+    "stop_short_name": "\u05d9\u05d5\u05e1\u05e4\u05d8\u05dc",
+    "gtfs_stop_id": 4680,
+    "latlon": [
+      32.014591,
+      34.762116
+    ],
+    "bssids": [
+      "b4c79982bc80",
+      "b4c79982b690",
+      "b4c7998310b0"
+    ],
+    "stop_name": "Bat Yam - Yoseftal"
+  },
+  {
+    "stop_short_name": "\u05e7\u05d5\u05de\u05de\u05d9\u05d5\u05ea",
+    "gtfs_stop_id": 4690,
+    "latlon": [
+      32.000934,
+      34.759487
+    ],
+    "bssids": [],
+    "stop_name": "Bat Yam - Komemiyyut"
+  },
+  {
+    "stop_short_name": "\u05db\u05e4\u05e8 \u05d7\u05d1\u05d3",
+    "gtfs_stop_id": 4800,
+    "latlon": [
+      31.993192,
+      34.853015
+    ],
+    "bssids": [],
+    "stop_name": "Kfar Habbad"
+  },
+  {
+    "stop_short_name": "\u05d4\u05d4\u05d2\u05e0\u05d4",
+    "gtfs_stop_id": 4900,
+    "latlon": [
+      32.054145,
+      34.784816
+    ],
+    "bssids": [
+      "b4c79982b960",
+      "b4c79982b7c0",
+      "b4c79982b700",
+      "b4c79982ff70"
+    ],
+    "stop_name": "Tel Aviv HaHagana"
+  },
+  {
+    "stop_short_name": "\u05dc\u05d5\u05d3",
+    "gtfs_stop_id": 5000,
+    "latlon": [
+      31.945267,
+      34.875158
+    ],
+    "bssids": [
+      "b4c79982bd50",
+      "b4c7998312e0",
+      "b4c79982bbf0",
+      "b4c7999bc1b0",
+      "b4c7991ffcd0"
+    ],
+    "stop_name": "Lod"
+  },
+  {
+    "stop_short_name": "\u05e8\u05de\u05dc\u05d4",
+    "gtfs_stop_id": 5010,
+    "latlon": [
+      31.928837,
+      34.877257
+    ],
+    "bssids": [
+      "b4c79982aad0"
+    ],
+    "stop_name": "Ramla"
+  },
+  {
+    "stop_short_name": "\u05d2\u05e0\u05d9 \u05d0\u05d1\u05d9\u05d1",
+    "gtfs_stop_id": 5150,
+    "latlon": [
+      31.967008,
+      34.878718
+    ],
+    "bssids": [
+      "b4c799a3dd60"
+    ],
+    "stop_name": "Ganey Aviv"
+  },
+  {
+    "stop_short_name": "\u05e8\u05d7\u05d5\u05d1\u05d5\u05ea",
+    "gtfs_stop_id": 5200,
+    "latlon": [
+      31.908648,
+      34.806404
+    ],
+    "bssids": [
+      "b4c7991ff120",
+      "b4c7991ffd00",
+      "b4c79982fff0"
+    ],
+    "stop_name": "Rehovot E. Hadar"
+  },
+  {
+    "stop_short_name": "\u05d1\u05d0\u05e8 \u05d9\u05e2\u05e7\u05d1",
+    "gtfs_stop_id": 5300,
+    "latlon": [
+      31.932913,
+      34.828616
+    ],
+    "bssids": [
+      "b4c79982bcf0",
+      "b4c7991ff160"
+    ],
+    "stop_name": "Be'er Ya'akov"
+  },
+  {
+    "stop_short_name": "\u05d9\u05d1\u05e0\u05d4",
+    "gtfs_stop_id": 5410,
+    "latlon": [
+      31.861859,
+      34.744094
+    ],
+    "bssids": [],
+    "stop_name": "Yavne"
+  },
+  {
+    "stop_short_name": "\u05d0\u05e9\u05d3\u05d5\u05d3",
+    "gtfs_stop_id": 5800,
+    "latlon": [
+      31.774014,
+      34.666071
+    ],
+    "bssids": [
+      "b4c7999bbdb0",
+      "b4c799a3ddd0"
+    ],
+    "stop_name": "Ashdod Ad Halom"
+  },
+  {
+    "stop_short_name": "\u05d0\u05e9\u05e7\u05dc\u05d5\u05df",
+    "gtfs_stop_id": 5900,
+    "latlon": [
+      31.676738,
+      34.604851
+    ],
+    "bssids": [
+      "b4c79982b970",
+      "b4c79982b8a0"
+    ],
+    "stop_name": "Ashkelon"
+  },
+  {
+    "stop_short_name": "\u05d1\u05d9\u05ea \u05e9\u05de\u05e9",
+    "gtfs_stop_id": 6300,
+    "latlon": [
+      31.757807,
+      34.989518
+    ],
+    "bssids": [],
+    "stop_name": "Bet Shemesh"
+  },
+  {
+    "stop_short_name": "\u05d2\u05df \u05d4\u05d7\u05d9\u05d5\u05ea",
+    "gtfs_stop_id": 6500,
+    "latlon": [
+      31.744952,
+      35.178132
+    ],
+    "bssids": [],
+    "stop_name": "Jerusalem Biblical Zoo"
+  },
+  {
+    "stop_short_name": "\u05de\u05dc\u05d7\u05d4",
+    "gtfs_stop_id": 6700,
+    "latlon": [
+      31.747813,
+      35.188161
+    ],
+    "bssids": [],
+    "stop_name": "Jerusalem Malha"
+  },
+  {
+    "stop_short_name": "\u05e7\u05e8\u05d9\u05ea \u05d2\u05ea",
+    "gtfs_stop_id": 7000,
+    "latlon": [
+      31.603481,
+      34.777918
+    ],
+    "bssids": [],
+    "stop_name": "Kiryat Gat"
+  },
+  {
+    "stop_short_name": "\u05d0\u05d5\u05e0\u05d9\u05d1\u05e8\u05e1\u05d9\u05d8\u05d4",
+    "gtfs_stop_id": 7300,
+    "latlon": [
+      31.262021,
+      34.809283
+    ],
+    "bssids": [
+      "b4c799a3dd20",
+      "b4c799a3df10"
+    ],
+    "stop_name": "Be'er Sheva North University"
+  },
+  {
+    "stop_short_name": "\u05d1\"\u05e9 \u05de\u05e8\u05db\u05d6",
+    "gtfs_stop_id": 7320,
+    "latlon": [
+      31.243285,
+      34.798395
+    ],
+    "bssids": [
+      "b4c799a3de10",
+      "b4c799a3e030",
+      "b4c7999c4ef0",
+      "b4c799831350"
+    ],
+    "stop_name": "Be'er Sheva Center"
+  },
+  {
+    "stop_short_name": "\u05d3\u05d9\u05de\u05d5\u05e0\u05d4",
+    "gtfs_stop_id": 7500,
+    "latlon": [
+      31.069142,
+      35.011876
+    ],
+    "bssids": [],
+    "stop_name": "Dimona"
+  },
+  {
+    "stop_short_name": "\u05dc\u05d4\u05d1\u05d9\u05dd",
+    "gtfs_stop_id": 8550,
+    "latlon": [
+      31.369865,
+      34.798277
+    ],
+    "bssids": [],
+    "stop_name": "Lehavim - Rahat"
+  },
+  {
+    "stop_short_name": "\u05e0\u05ea\u05d1\"\u05d2",
+    "gtfs_stop_id": 8600,
+    "latlon": [
+      32.000733,
+      34.870728
+    ],
+    "bssids": [
+      "b4c7998307e0",
+      "b4c799830f70"
+    ],
+    "stop_name": "Ben Gurion Airport"
+  },
+  {
+    "stop_short_name": "\u05db\u05e4\u05e8 \u05e1\u05d1\u05d0",
+    "gtfs_stop_id": 8700,
+    "latlon": [
+      32.167476,
+      34.917376
+    ],
+    "bssids": [
+      "b4c79982a1b0",
+      "b4c79982b6d0",
+      "b4c79982fe40"
+    ],
+    "stop_name": "Kfar Sava"
+  },
+  {
+    "stop_short_name": "\u05e8\u05d0\u05e9 \u05d4\u05e2\u05d9\u05df",
+    "gtfs_stop_id": 8800,
+    "latlon": [
+      32.120813,
+      34.934787
+    ],
+    "bssids": [
+      "b4c799830ee0",
+      "b4c79982ba00"
+    ],
+    "stop_name": "Rosh Ha'Ayin North"
+  },
+  {
+    "stop_short_name": "\u05d9\u05d1\u05e0\u05d4 \u05de\u05e2\u05e8\u05d1",
+    "gtfs_stop_id": 9000,
+    "latlon": [
+      31.891235,
+      34.73154
+    ],
+    "bssids": [
+      "b4c799830e70",
+      "b4c799a3de60",
+      "b4c799a3df90"
+    ],
+    "stop_name": "Yavne - West"
+  },
+  {
+    "stop_short_name": "\u05d4\u05e8\u05d0\u05e9\u05d5\u05e0\u05d9\u05dd",
+    "gtfs_stop_id": 9100,
+    "latlon": [
+      31.948947,
+      34.802676
+    ],
+    "bssids": [
+      "b4c79982bdb0",
+      "b4c79982bd70",
+      "b4c79982be20",
+      "b4c7999c5a60",
+      "b4c79982bd60",
+      "b4c7998313e0"
+    ],
+    "stop_name": "Rishon LeTsiyyon HaRishonim"
+  },
+  {
+    "stop_short_name": "\u05d4\u05d5\u05d3 \u05d4\u05e9\u05e8\u05d5\u05df",
+    "gtfs_stop_id": 9200,
+    "latlon": [
+      32.17027,
+      34.901554
+    ],
+    "bssids": [
+      "b4c79982b840",
+      "b4c79982b990",
+      "b4c799830690"
+    ],
+    "stop_name": "Hod HaSharon"
+  },
+  {
+    "stop_short_name": "\u05e9\u05d3\u05e8\u05d5\u05ea",
+    "gtfs_stop_id": 9600,
+    "latlon": [
+      31.515933,
+      34.587523
+    ],
+    "bssids": [
+      "b4c7998313d0",
+      "b4c799d11c50",
+      "b4c799d16400"
+    ],
+    "stop_name": "Sderot"
+  },
+  {
+    "stop_short_name": "\u05de\u05e9\u05d4 \u05d3\u05d9\u05d9\u05df",
+    "gtfs_stop_id": 9800,
+    "latlon": [
+      31.987929,
+      34.75745
+    ],
+    "bssids": [],
+    "stop_name": "Rishon LeTsiyyon - Moshe Dayan"
+  },
+  {
+    "stop_short_name": "\u05e0\u05ea\u05d9\u05d1\u05d5\u05ea",
+    "gtfs_stop_id": 9650,
+    "latlon": [
+      31.410595,
+      34.571191
+    ],
+    "bssids": [],
+    "stop_name": "Netivot"
+  },
+  {
+    "bssids": [],
+    "stop_short_name": "\u05d0\u05d5\u05e4\u05e7\u05d9\u05dd",
+    "gtfs_stop_id": 9700,
+    "latlon": [
+      31.322628,
+      34.634078
+    ],
+    "stop_name": "Ofakim"
+  }
 ]

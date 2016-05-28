@@ -63,6 +63,10 @@ class RouteSerializer(serializers.ModelSerializer):
     stops = StopSerializer(many=True, source='get_stops')
     #services = RelationUrlField(name='route-services-list', mapping={'route_id': 'id'})
     trips = RelationUrlField(name='route-trips-list', mapping={'route_id':'id'})
+    trips_count = serializers.SerializerMethodField()
+
+    def get_trips_count(self, obj):
+        return obj.trips.count()
 
     class Meta:
         model = models.Route
@@ -71,6 +75,7 @@ class RouteSerializer(serializers.ModelSerializer):
             'stops',
            # 'services',
             'trips',
+            'trips_count',
             'stops',
         )
 
@@ -82,7 +87,6 @@ class SampleSerializer(serializers.ModelSerializer):
         model = models.Sample
         fields = (
             'index',
-            'is_skipped',
             'valid',
             'actual_arrival',
             'exp_arrival',
@@ -109,7 +113,7 @@ class TripSerializer(serializers.ModelSerializer):
             'id',
             'valid',
             'train_num',
-            'start_date',
+            'date',
             'service',
             'route',
             'samples',
