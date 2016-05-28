@@ -39,8 +39,10 @@ def get_name_by_id(id):
 
     return name
 
+GeoLoc = namedtuple('GeoLoc', ['lat', 'lon'])
+
 def get_loc_by_id(id):
-    GeoLoc = namedtuple('GeoLoc', ['lat', 'lon'], verbose=True)
+
     stop = list(models.Stop.objects.filter(gtfs_stop_id=id))
     if len(stop) != 1:
         raise AssertionError('Problem with id to name in stop %d' % id)

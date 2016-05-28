@@ -103,5 +103,7 @@ class RoutesView(FormView):
 
 class HeatView(View):
     def get(self, request):
-        return HttpResponse('ok')
+        from data.analysis.heatmap_utils import run
+        html = run()
+        return HttpResponse(html)
 
