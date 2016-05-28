@@ -1,6 +1,8 @@
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView, FormView, View
 from django import forms
 
@@ -102,6 +104,7 @@ class RoutesView(FormView):
 
 
 class HeatView(View):
+    @method_decorator(never_cache)
     def get(self, request):
         from data.analysis.heatmap_utils import run
         html = run()

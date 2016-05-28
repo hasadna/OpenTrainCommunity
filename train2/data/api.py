@@ -27,8 +27,8 @@ class StopViewSet(ReadOnlyModelViewSet):
     serializer_class = serializers.StopSerializer
     pagination_class = None
 
-    # def list(self, request, *args, **kwargs):
-    #     return super().list(request, *args, **kwargs)
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 class StatViewSet(GenericViewSet):

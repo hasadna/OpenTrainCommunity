@@ -1,4 +1,6 @@
 import logging
+import os
+
 logger = logging.getLogger(__name__)
 from bokeh.io import output_file, show, save
 from bokeh.models import (GMapPlot, GMapOptions, ColumnDataSource, Circle, \
@@ -56,7 +58,7 @@ def create_heatmap(station_scores, plot_width=1000, plot_height=600):
     lat_vec = list(map(lambda x: get_loc_by_id(x).lat, station_scores.keys()))
     lon_vec = list(map(lambda x: get_loc_by_id(x).lon, station_scores.keys()))
     import json
-    logger.error(json.dumps(station_scores, indent=4))
+    logger.info(json.dumps(station_scores, indent=4))
     for ind, station in enumerate(station_scores):
 
         source = ColumnDataSource(
@@ -71,24 +73,26 @@ def create_heatmap(station_scores, plot_width=1000, plot_height=600):
         plot.add_glyph(source, circle)
 
     plot.add_tools(PanTool(), WheelZoomTool())
-    import os
-    try:
-        os.unlink('/tmp/map.html')
-    except:
-        pass
-    output_file("/tmp/map.html",title="otrain heatmap")
-    with open('/tmp/map.html') as f:
+    path = '/tmp/map.html'
+    if os.path.exists(path):
+        os.unlink(path)
+
+    output_file(path, title="otrain heatmap")
+    save(plot)
+
+    with open(path) as f:
         return f.read()
 
-    save(plot)
+
 
 ### ---------------------------------------------------------------------------------------------------------------------------------------------
 
 def run():
     from django.conf import settings
     import os
-    with open(os.path.join(settings.BASE_DIR,'map2.html')) as f:
-        return f.read()
+    if not settings.DEBUG:
+        with open(os.path.join(settings.BASE_DIR,'map2.html')) as f:
+            return f.read()
 
     date_val1 = datetime.date(2016, 3, 8)
     date_val2 = datetime.date(2016, 3, 8)
