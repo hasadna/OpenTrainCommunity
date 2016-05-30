@@ -16,10 +16,11 @@ import requests
 import calendar
 import datetime
 
-API_ALL_ROUTES_URL = 'http://otrain.org/api/all-routes'
+API_ALL_ROUTES_URL = 'http://otrain.org/api/v1/routes/all/'
 
-API_BASE_URL = 'http://otrain.org/api/route-info-full'
-API_PARAMS = '?route_id={}&from_date={}&to_date={}'
+API_BASE_URL = 'http://otrain.org/api/v1/stats/route-info-full/'
+API_PARAMS = '?from_date={}&route_id={}&to_date={}' # '?route_id={}&from_date={}&to_date={}'
+
 
 TIMEZONE_OFFSET = -2*60*60  # NB: this is not perfect due to daylight savings time, only used if USE_MICROSECONDS is True
 
@@ -60,11 +61,11 @@ for route_id in routes_all:
                from_date = (calendar.timegm(from_date.timetuple())+TIMEZONE_OFFSET)
                to_date = datetime.datetime(year, month, days, 0, 0, 0, 0)
                to_date = (calendar.timegm(to_date.timetuple())+TIMEZONE_OFFSET)
-               url = API_BASE_URL+API_PARAMS.format(route_id, from_date*1000, to_date*1000)
+               url = API_BASE_URL + API_PARAMS.format(from_date * 1000, route_id, to_date * 1000)
             else:
                from_date = "%d/%d/%d" % (1, month, year)
                to_date = "%d/%d/%d" % (days, month, year)
-               url = API_BASE_URL+API_PARAMS.format(route_id, from_date, to_date)
+               url = API_BASE_URL + API_PARAMS.format(from_date, route_id, to_date)
 
             print(url)
             try:
