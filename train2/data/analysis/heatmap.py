@@ -14,7 +14,26 @@ from  data.analysis.create_train_graph_module import create_train_graph
 from data.analysis.graph_module import dynamic_all_to_one
 
 
-def evaluate_stations(wait_vec, day_part='all'):
+def evaluate_station_coverage(date_val1, date_val2, target_station_id,  day_part='monrning', max_trips=10**6):
+    # Scores each station by its averge wait+commute to the given target function
+    # INPUT:
+    # dateval1 - start date of trips
+    # dateval2 - end date of trips
+    # target_station_id - relative to this station all the shortest paths will be calculated
+    # day_part- slice the statistics as 'all', 'morning', 'noon' or 'evening'
+    # max_trips - limits the number of trips analyzed
+
+    trips = get_samples_by_trip(date_val1, date_val2, max_trips)
+
+    print("Got %d trip.." % (len(trips)))
+    G = create_train_graph(trips)
+
+    time_len = 60 * 24
+    hour_vec = np.array(range(24 * 60)) / 60
+    minuete_vec = np.array(range(24 * 60)) % 60
+    time_indx_real = map(lambda x: '%04d' % x, hour_vec * 100 + minuete_vec)
+
+    wait_vec, path_vec = dynamic_all_to_one(G, target_station, time_len)
 
     station_scores = OrderedDict()
     morning_indx = [7*60, 12*60]
@@ -73,25 +92,13 @@ def create_heatmap(station_scores, plot_width=1000, plot_height=600):
 
 ### ---------------------------------------------------------------------------------------------------------------------------------------------
 
+
 if __name__ == '__main__':
     date_val1 = datetime.date(2015, 5, 18)
     date_val2 = datetime.date(2015, 5, 18)
-
-    max_trips = 10 ** 6
-    trips = get_samples_by_trip(date_val1, date_val2, max_trips)
+    target_station = 4600
 
 
-    print("Got %d trip.." % (len(trips)))
-    G = create_train_graph(trips)
-
-    target = 4600
-    time_len = 60 * 24
-    hour_vec = np.array(range(24 * 60)) / 60
-    minuete_vec = np.array(range(24 * 60)) % 60
-    time_indx_real = map(lambda x: '%04d' % x, hour_vec * 100 + minuete_vec)
-
-    wait_vec, path_vec = dynamic_all_to_one(G, target, time_len)
-
-    station_scores = evaluate_stations(wait_vec, day_part='monrning')
+    station_scores = evaluate_station_coverage(date_val1, date_val2, target_station,  day_part='monrning', max_trips=10**6)
 
     create_heatmap(station_scores)

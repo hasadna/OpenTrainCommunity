@@ -12,6 +12,8 @@ django.setup()
 from data import models
 from collections import OrderedDict, namedtuple
 
+GeoLoc = namedtuple('GeoLoc', ['lat', 'lon'])
+
 
 def get_samples(date1, date2, max_samples=10**9):
     res = models.Sample.objects.filter(exp_arrival__gte=date1).filter(exp_arrival__lte=date2)[:max_samples]
@@ -40,7 +42,6 @@ def get_name_by_id(id):
     return name
 
 def get_loc_by_id(id):
-    GeoLoc = namedtuple('GeoLoc', ['lat', 'lon'], verbose=True)
     stop = list(models.Stop.objects.filter(gtfs_stop_id=id))
     if len(stop) != 1:
         raise AssertionError('Problem with id to name in stop %d' % id)
