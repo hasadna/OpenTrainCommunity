@@ -1,5 +1,7 @@
 """
-Downloads route data from the otrain.org server API.
+Downloads route data from the server API. Set DOMAIN to SERVER_DOMAIN for
+otrain.org, or to LOCAL_DOMAIN in case you're running a server locally, for faster
+processing.
 Data is cached in individual files per route in the format shown below, with
 the filename route_<route_id>.json
 
@@ -16,9 +18,12 @@ import requests
 import calendar
 import datetime
 
-API_ALL_ROUTES_URL = 'http://otrain.org/api/v1/routes/all/'
+SERVER_DOMAIN = 'otrain.org'
+LOCAL_DOMAIN = '127.0.0.1:8000'
+DOMAIN = LOCAL_DOMAIN
 
-API_BASE_URL = 'http://otrain.org/api/v1/stats/route-info-full/'
+API_ALL_ROUTES_URL = 'http://{}/api/v1/routes/all/'.format(DOMAIN)
+API_BASE_URL = 'http://{}/api/v1/stats/route-info-full/'.format(DOMAIN)
 API_PARAMS = '?from_date={}&route_id={}&to_date={}' # '?route_id={}&from_date={}&to_date={}'
 
 
@@ -31,9 +36,8 @@ ROUTES = False
 # otherwise iterate over all routes.
 #ROUTES = [672]
 
-TIME_PERIODS = [[2015, [1, 2, 3, 4, 5, 6]],
-                [2014, range(1, 13)],
-                [2013, range(1, 13)]]
+TIME_PERIODS = [[2016, [1, 2, 3]],
+                [2015, range(1, 13)]]
 
 if not os.path.exists('cache'):
    print('Creating cache directory...')
