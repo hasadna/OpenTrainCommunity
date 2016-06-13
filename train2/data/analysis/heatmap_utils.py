@@ -1,5 +1,6 @@
 import logging
 import os
+from functools import lru_cache
 
 logger = logging.getLogger(__name__)
 
@@ -62,6 +63,7 @@ def evaluate_station_coverage(date_val1, date_val2, target_station,  day_part='m
 ### ---------------------------------------------------------------------------------------------------------------------------------------------
 
 
+@lru_cache()
 def run(date_val1 = datetime.date(2016, 3, 8),
         date_val2=datetime.date(2016, 3, 8),
         target_station_id = 4600,
