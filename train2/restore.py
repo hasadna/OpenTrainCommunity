@@ -22,7 +22,7 @@ def main():
     filename = options.file
 
     use_sudo = platform.system().lower() == 'Linux'
-    postgres_cmd = "sudo -u neuberg psql"
+    postgres_cmd = "sudo -u postgres psql"
     if options.file.endswith(".gz"):
         run_cmd("gunzip --keep {}".format(options.file))
         filename = options.file[:-3]
