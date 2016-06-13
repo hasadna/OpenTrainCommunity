@@ -26,6 +26,7 @@ angular.module('RouteExplorer').controller('HeatMapController',
 
             $scope.heatmapData.forEach(function (score) {
                 var latlng = $scope.Layout.findStop(score.stop_id).latlon;
+                console.log(score.score);
                 var g = 255-Math.floor(255 * score.score);
                 var color = 'rgb(255,' + g + ',0)';
                 $scope.paths.push({
