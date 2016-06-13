@@ -1,11 +1,14 @@
 (function () {
-    var app = angular.module('RouteExplorer', ['ngRoute', 'ui.bootstrap', 'ui.bootstrap.buttons']);
+    var app = angular.module('RouteExplorer', ['ngRoute',
+        'ui.bootstrap',
+        'ui.bootstrap.buttons',
+        'leaflet-directive']);
 
     app.constant('env', {
         baseDir: '/static/ui/RouteExplorer'
     });
 
-    app.config(['$routeProvider', 'env',
+    app.config(['$routeProvider','env',
         function ($routeProvider, env) {
 
             var templateUrl = function (templateName) {
@@ -41,6 +44,7 @@
                     templateUrl: templateUrl('HeatMap'),
                     controller: 'HeatMapController',
                     reloadOnSearch: false,
+                    resolve: {'Layout': 'Layout'},
                 })
                 .otherwise({
                     redirectTo: '/'

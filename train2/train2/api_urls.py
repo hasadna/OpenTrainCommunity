@@ -11,6 +11,11 @@ router.register('routes/(?P<route_id>\d+)/trips',
                 data.api.RouteTripsViewSet,
                 base_name='route-trips')
 
+router.register('heat-map',
+                data.api.HeatMapViewSet,
+                base_name='heat-map')
+print("=======================================")
+
 # router.register('routes/(?P<route_id>\d+)/services',
 #                 data.api.RouteServicesViewSet,
 #                 base_name='route-services')

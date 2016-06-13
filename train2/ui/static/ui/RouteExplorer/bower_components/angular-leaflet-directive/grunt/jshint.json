@@ -1,0 +1,14 @@
+ {
+  "options": {
+    "jshintrc": true
+  },
+  "source": {
+    "src": ["src/directives/*.js", "src/services/**/*.js"]
+  },
+  "tests": {
+    "src": ["test/unit/*.js", "test/e2e/*.js"]
+  },
+  "grunt": {
+    "src": ["Gruntfile.js"]
+  }
+}

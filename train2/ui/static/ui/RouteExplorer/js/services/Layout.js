@@ -10,7 +10,12 @@ function($http, $q, TimeParser) {
     var loadedPromise = $q.all([
         $http.get('/api/v1/stops')
             .then(function(response) {
-                stops = response.data.map(function(s) { return { id: s.stop_id, name: s.heb_stop_names[0], names: s.heb_stop_names }; });
+                stops = response.data.map(function(s) { return {
+                    id: s.stop_id,
+                    name: s.heb_stop_names[0],
+                    names: s.heb_stop_names,
+                    latlon: s.latlon,
+                }; });
                 stops.forEach(function(s) { stopsMap[s.id] = s; });
             }),
 

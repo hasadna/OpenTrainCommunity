@@ -1,0 +1,54 @@
+test:
+    - 'jshint'
+    - 'test-unit'
+    - 'test-e2e'
+
+test-unit:
+    - 'karma:unit'
+
+test-e2e:
+    - 'shell:protractor_update'
+    - 'connect:testserver'
+    - 'protractor:run'
+
+test-e2e-firefox:
+    - 'shell:protractor_update'
+    - 'connect:testserver'
+    - 'protractor:firefox'
+
+coverage:
+    - 'karma:unit_coverage'
+    - 'open:coverage'
+    - 'connect:coverage'
+
+install:
+    - 'shell:npm_install'
+    - 'bower:install'
+    - 'shell:protractor_update'
+
+default:
+    - 'build'
+
+fast-build:
+    - 'clean:dist'
+    - 'jshint'
+    - 'jscs'
+    - 'concat:dist'
+    - 'ngAnnotate'
+    - 'uglify'
+    - 'concat:license'
+    - 'concat:license-minified'
+
+build:
+    - 'fast-build'
+    - 'test-unit'
+    - 'clean:pre'
+
+travis:
+    - 'fast-build'
+    - 'bower:install'
+    - 'test-unit'
+
+examples:
+    - 'shell:examples'
+    - 'concat:examples'

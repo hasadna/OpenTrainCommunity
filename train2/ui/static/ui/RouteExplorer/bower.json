@@ -17,11 +17,13 @@
   ],
   "dependencies": {
     "angular": "1.4",
-    "angular-route": "1.4",
     "angular-bootstrap": "0.14",
+    "angular-leaflet-directive": "~0.10.0",
+    "angular-route": "1.4",
     "bootstrap-rtl": "~3.3.1",
     "bootstrap-sass": "~3.3.2",
-    "fontawesome": "~4.3.0"
+    "fontawesome": "~4.3.0",
+    "leaflet": "~0.7.7"
   },
   "resolutions": {
     "angular": "1.4"

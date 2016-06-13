@@ -62,12 +62,19 @@ def evaluate_station_coverage(date_val1, date_val2, target_station,  day_part='m
 ### ---------------------------------------------------------------------------------------------------------------------------------------------
 
 
-def run(date_val1 = datetime.date(2016, 3, 8), date_val2=datetime.date(2016, 3, 8), target_station_id = 4600, day_part='all'):
+def run(date_val1 = datetime.date(2016, 3, 8),
+        date_val2=datetime.date(2016, 3, 8),
+        target_station_id = 4600,
+        day_part='all'):
 
     from django.conf import settings
     import os
 
-    station_scores = evaluate_station_coverage(date_val1, date_val2, target_station_id,  day_part='all', max_trips=10**6)
+    station_scores = evaluate_station_coverage(date_val1,
+                                               date_val2,
+                                               target_station_id,
+                                               day_part='all',
+                                               max_trips=10**6)
 
     return station_scores
 

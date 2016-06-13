@@ -2,7 +2,7 @@ from django.db.models import Count, Min, Max
 from rest_framework.decorators import list_route
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
-from rest_framework.viewsets import ReadOnlyModelViewSet, GenericViewSet
+from rest_framework.viewsets import ReadOnlyModelViewSet, GenericViewSet, ViewSet
 from . import models
 from . import serializers
 from . import utils
@@ -107,6 +107,18 @@ class RouteTripsViewSet(UnderRouteMixin, ReadOnlyModelViewSet):
     def get_queryset(self):
         return self.get_route().trips.all()
 
+
+class HeatMapViewSet(ViewSet):
+    def list(self, request):
+        import data.analysis.heatmap_utils
+        heatmap_dict = data.analysis.heatmap_utils.run()
+        heatmap = [
+            {
+                'stop_id': k,
+                'score': v,
+            } for k,v in heatmap_dict.items()
+        ]
+        return Response(data=heatmap)
 
 # class ServiceTripsViewSet(UnderServiceMixin, ReadOnlyModelViewSet):
 #     queryset = models.Trip.objects.all()

@@ -26,6 +26,5 @@ urlpatterns = [
     url(r'^info/',include('info.urls',namespace="info")),
     url(r'^browse/',include('browse.urls',namespace='browse')),
     url(r'^api/docs/', include('rest_framework_swagger.urls')),
-
 ]
 

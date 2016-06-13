@@ -14,6 +14,7 @@
         <link rel="stylesheet" href="/static/ui/RouteExplorer/bower_components/bootstrap-rtl/dist/css/bootstrap-rtl.min.css">
         <link rel="icon" type="image/png" href="/static/ui/RouteExplorer/img/opentrain-favicon.png">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="/static/ui/RouteExplorer/bower_components/leaflet/dist/leaflet.css">
     </head>
     <body ng-class="bodyClass">
         <nav class="navbar navbar-default navbar-fixed-top">
@@ -56,9 +57,14 @@
         <div class="view" ng-view>
         </div>
 
-        <script src="/static/ui/RouteExplorer/bower_components/angular/angular.min.js"></script>
+        <script src="/static/ui/RouteExplorer/bower_components/angular/angular.js"></script>
         <script src="/static/ui/RouteExplorer/bower_components/angular-route/angular-route.min.js"></script>
         <script src="/static/ui/RouteExplorer/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+
+        <!-- for maps -->
+        <script src="/static/ui/RouteExplorer/bower_components/leaflet/dist/leaflet.js"></script>
+        <script src="/static/ui/RouteExplorer/bower_components/angular-leaflet-directive/dist/angular-leaflet-directive.js">
+        </script>
 
         <script src="/static/ui/RouteExplorer/dist/js/app.js"></script>
     </body>
