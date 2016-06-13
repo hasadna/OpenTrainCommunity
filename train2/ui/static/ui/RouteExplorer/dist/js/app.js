@@ -96,6 +96,32 @@ if (!String.prototype.repeat) {
   };
 }
 
+angular.module('RouteExplorer').directive("rexPercentBar",
+['env',
+function(env) {
+    return {
+        restrict: 'E',
+        scope: {
+          value: '=value',
+          type: '=type'
+        },
+        templateUrl: env.baseDir + '/tpls/PercentBar.html'
+      };
+}]);
+
+angular.module('RouteExplorer').directive("timesDetails",
+['env','Layout',
+function(env, Layout) {
+    return {
+        restrict: 'E',
+        scope: {
+            stats: '='
+        },
+        controller: 'TimesDetailsController',
+        templateUrl: env.baseDir + '/tpls/TimesDetails.html'
+      };
+}]);
+
 angular.module('RouteExplorer').controller('AppController',
 ['$scope', '$location',
 function($scope, $location) {
@@ -143,9 +169,9 @@ angular.module('RouteExplorer').controller('HeatMapController',
                     color: color,
                     fillColor: color,
                     fillOpacity: 1,
-                    type: "circle",
+                    type: "circleMarker",
                     stroke: false,
-                    radius: 500,
+                    radius: 10,
                     latlngs: latlng
                 });
             });
@@ -658,32 +684,6 @@ function($scope, $route, Locale, LocationBinder, Layout) {
     $scope.loadStats();
 }]);
 
-
-angular.module('RouteExplorer').directive("rexPercentBar",
-['env',
-function(env) {
-    return {
-        restrict: 'E',
-        scope: {
-          value: '=value',
-          type: '=type'
-        },
-        templateUrl: env.baseDir + '/tpls/PercentBar.html'
-      };
-}]);
-
-angular.module('RouteExplorer').directive("timesDetails",
-['env','Layout',
-function(env, Layout) {
-    return {
-        restrict: 'E',
-        scope: {
-            stats: '='
-        },
-        controller: 'TimesDetailsController',
-        templateUrl: env.baseDir + '/tpls/TimesDetails.html'
-      };
-}]);
 
 angular.module('RouteExplorer').filter('duration', function() {
     return function(seconds) {

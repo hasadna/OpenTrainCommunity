@@ -32,9 +32,9 @@ angular.module('RouteExplorer').controller('HeatMapController',
                     color: color,
                     fillColor: color,
                     fillOpacity: 1,
-                    type: "circle",
+                    type: "circleMarker",
                     stroke: false,
-                    radius: 500,
+                    radius: 10,
                     latlngs: latlng
                 });
             });
