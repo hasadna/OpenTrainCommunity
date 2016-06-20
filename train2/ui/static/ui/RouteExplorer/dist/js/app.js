@@ -124,6 +124,10 @@ angular.module('RouteExplorer').controller('HeatMapController',
                 zoom: 10,
             }
         });
+        $scope.stops = Layout.getStops();
+        $scope.input = {
+            stop: $scope.stops[0]
+        }
         $scope.paths = [];
         $http.get('/api/v1/heat-map/').then(function (resp) {
             $scope.heatmapData = resp.data;
