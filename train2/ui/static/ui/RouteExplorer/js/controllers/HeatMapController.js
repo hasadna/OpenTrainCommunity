@@ -38,6 +38,9 @@ angular.module('RouteExplorer').controller('HeatMapController',
                     radius: 10,
                     latlngs: latlng,
                     message: message,
+                    popupOptions: {
+                        className: 'ot-popup'
+                    }
                 });
             });
         });
