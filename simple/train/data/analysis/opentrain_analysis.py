@@ -30,7 +30,7 @@ def get_stops():
 def get_routes_above_threshold(num_trips_threshold):
   """Return a list of route ids with trip count above @num_trips_threshold"""
   result = []
-  for route_id in xrange(0, 10000):
+  for route_id in range(0, 10000):
     passed_filter = False
     if os.path.isfile("%scache_%s.json" % (CACHE_PATH, route_id)):
       with open("%scache_%s.json" % (CACHE_PATH, route_id), 'r') as input_file:
