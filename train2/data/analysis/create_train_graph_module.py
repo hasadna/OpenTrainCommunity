@@ -83,6 +83,9 @@ def create_train_graph(trips):
           edge_dict[hop_str] = time_vec_template.copy()
         edge_dict[hop_str][time_indx] = hop_time_expected
 
+  # print edges for sanity
+  print({k: np.max(v) for k, v in edge_dict.items()})
+
   # Insert edge dictionary into graph structure
   for hop in edge_dict:
     station_id1 = int(hop.partition('_')[0])
