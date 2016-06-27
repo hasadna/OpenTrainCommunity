@@ -45,6 +45,12 @@
                     controller: 'HeatMapController',
                     reloadOnSearch: false,
                     resolve: {'Layout': 'Layout'},
+                }).when("/graphs", {
+                    pageId: 'graphs',
+                    templateUrl: templateUrl('Graphs'),
+                    controller: 'GraphsController',
+                    reloadOnSearch: false,
+                    resolve: {'Layout': 'Layout'},
                 })
                 .otherwise({
                     redirectTo: '/'
@@ -108,6 +114,16 @@ function($scope, $location) {
         $scope.bodyClass = route.pageId ? 'rex-page-' + route.pageId : null;
     });
 }]);
+
+angular.module('RouteExplorer').controller('GraphsController',
+    ['$scope', '$http', 'Layout', function ($scope, $http, Layout) {
+        $scope.Layout = Layout;
+
+    }]);
+
+
+
+
 
 angular.module('RouteExplorer').controller('HeatMapController',
     ['$scope', '$http', 'Layout', function ($scope, $http, Layout) {

@@ -1,0 +1,75 @@
+<h1 style="padding-top: 50px">גרפים</h1>
+<div class="row">
+    <div class="col-xs-3" style="padding-right: 30px">
+        <h1 class="page-header">
+            מחקר מסלולים
+        </h1>
+        <ul class="list-group">
+            <li class="list-group-item">
+                מזהה מסלול: {{ route.id }}
+            </li>
+            <li class="list-group-item">
+            <b>תאריך התחלה</b>: {{ startDate}}
+                </li>
+            <li class="list-group-item">
+                <b>תאריך סיום</b>: {{  endDate}}
+            </li>
+            <li class="list-group-item">
+                <b>מספר נסיעות</b>: {{ route.trips_count}}
+            </li>
+        </ul>
+        <form class="form" id="explore-form">
+            <div class="form-group">
+                <label>
+                    מסלול
+                </label>
+                <select class="form-control" id="select_route"></select>
+            </div>
+            <div class="form-group">
+                <label>
+                    מחודש
+                </label>
+                <select class="form-control" id="select_from_date"></select>
+            </div>
+            <div class="form-group">
+                <label>
+                    עד חודש
+                </label>
+                <select class="form-control" id="select_to_date"></select>
+            </div>
+            <button class="btn btn-success btn-block" type="submit">קדימה</button>
+        </form>
+    </div>
+    <div class="col-xs-9" id="spinner">
+        <i class="fa fa-spin fa-5x fa-spinner"></i> טוען מידע...
+    </div>
+    <div class="col-xs-9" id="main-div" style="display:none">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active">
+                <a href="#week_day" aria-controls="settings" role="tab" data-toggle="tab" class="active">לפי ימים</a>
+            </li>
+            <li role="presentation">
+                <a href="#hours" aria-controls="settings" role="tab" data-toggle="tab">לפי שעות</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="week_day">
+                <canvas></canvas>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="hours">
+                <canvas></canvas>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="well">
+                    <h2>הסבר</h2>
+                    <p>ציר ה X מייצג את התחנות לאורך המסלול</p>
+                    <p>ציר ה Y מייצג את אחוז הרכבות שמאחרות ביותר מ 5 דקות</p>
+                    <p>באפשרותכם לבחור בטופס מסלול אחר או תקופה אחרת</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

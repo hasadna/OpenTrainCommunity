@@ -45,6 +45,12 @@
                     controller: 'HeatMapController',
                     reloadOnSearch: false,
                     resolve: {'Layout': 'Layout'},
+                }).when("/graphs", {
+                    pageId: 'graphs',
+                    templateUrl: templateUrl('Graphs'),
+                    controller: 'GraphsController',
+                    reloadOnSearch: false,
+                    resolve: {'Layout': 'Layout'},
                 })
                 .otherwise({
                     redirectTo: '/'
