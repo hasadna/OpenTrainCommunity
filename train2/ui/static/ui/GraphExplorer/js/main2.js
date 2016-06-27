@@ -115,35 +115,6 @@ $(function () {
         }
 
         loadData() {
-            var cbs = [
-                {
-                    field: 'stat',
-                    url: 'http://otrain.org/api/v1/stats/route-info-full/',
-                    data: {
-                        from_date: this.startDate,
-                        'to_date': this.endDate,
-                        'route_id': this.routeId,
-                    }
-                },
-                {
-                    field: 'stops',
-                    url: 'http://otrain.org/api/v1/stops/'
-                },
-                {
-                    field: 'route',
-                    url: 'http://otrain.org/api/v1/routes/' + this.routeId + '/'
-                },
-                {
-                    field: 'routes',
-                    url: 'http://otrain.org/api/v1/routes/all/'
-                }
-            ];
-            var callbacks = cbs.map(function (x) {
-                return $.ajax({
-                    url: x.url,
-                    data: x.data,
-                });
-            });
             $.when(...callbacks).done((...resps) => {
                 var data = {};
                 cbs.forEach((cb, idx) => {
@@ -181,7 +152,7 @@ $(function () {
             ];
             let routes = this.getRoutes();
             for (let route of routes) {
-                let option = $(`<option value="${route.id}">מ${route['from']} ל ${route['to']} (${route['count']} נסיעות)</option>`)
+                let option = $(`<option value="${route.id}">מ${route['from']} ל${route['to']} (${route['count']} נסיעות)</option>`)
                 if (route.id == this.routeId) {
                     option.prop('selected', true);
                 }
