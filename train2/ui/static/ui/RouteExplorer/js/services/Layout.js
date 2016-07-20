@@ -37,6 +37,10 @@ function($http, $q, TimeParser) {
         return stopsMap[stopId] || null;
     };
 
+    var findStopName = function(stopId) {
+        return findStop(stopId).name;
+    };
+
     var findRoutes = function(routes, originId, destinationId) {
         var matchingRoutes = {};
 
@@ -127,6 +131,7 @@ function($http, $q, TimeParser) {
         getRoutes: function() { return routes; },
         findRoute: findRoute,
         findStop: findStop,
+        findStopName: findStopName,
         findRoutes: function(origin, destination) { return findRoutes(routes, origin, destination); },
         findRoutesByPeriod: findRoutesByPeriod,
         getRoutesDateRange: getRoutesDateRange
