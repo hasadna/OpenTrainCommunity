@@ -325,8 +325,9 @@ angular.module('RouteExplorer').controller('GraphsController',
                             text: 'איחור בחתך יומי'
                         }
                     },
-                    xAxis: {},
-                    categories: stopNames,
+                    xAxis: {
+                        categories: stopNames,
+                    },
                     series: []
                 };
                 $scope.chartPerHour = {
@@ -338,8 +339,9 @@ angular.module('RouteExplorer').controller('GraphsController',
                             text: 'אישור בחתך שעתי'
                         }
                     },
-                    xAxis: {},
-                    categories: stopNames,
+                    xAxis: {
+                        categories: stopNames,
+                    },
                     series: []
                 };
                 daysTable.forEach(function (di) {
