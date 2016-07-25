@@ -2,7 +2,9 @@
     var app = angular.module('RouteExplorer', ['ngRoute',
         'ui.bootstrap',
         'ui.bootstrap.buttons',
-        'leaflet-directive']);
+        'leaflet-directive',
+        "highcharts-ng"
+    ]);
 
     app.constant('env', {
         baseDir: '/static/ui/RouteExplorer'
