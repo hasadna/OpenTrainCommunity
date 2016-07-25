@@ -94,8 +94,8 @@ def create_heatmap(station_scores, plot_width=1000, plot_height=600):
 
 
 if __name__ == '__main__':
-    date_val1 = datetime.date(2015, 5, 18)
-    date_val2 = datetime.date(2015, 5, 18)
+    date_val1 = datetime.date(2016, 1, 1)
+    date_val2 = datetime.date(2016, 1, 1)
     target_station = 4600
 
 

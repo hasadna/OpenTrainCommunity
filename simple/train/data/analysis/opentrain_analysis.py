@@ -1,4 +1,5 @@
 """Functions to help in analysis of website data using ipython notebook"""
+import collections
 import json
 import os
 import requests
@@ -72,3 +73,54 @@ def get_route_by_id(route_id, num_trips_threshold):
             result = result.append(tmp_df, ignore_index=True)
 
   return result
+
+
+def get_stats_table():
+  """Returns a data table of routes with stats"""
+  table = pd.DataFrame()
+  for route_id in range(0, 100000):
+    print(route_id)
+    if os.path.isfile("%scache_%s.json" % (CACHE_PATH, route_id)):
+      with open("%scache_%s.json" % (CACHE_PATH, route_id), 'r') as input_file:
+        route_data = json.load(input_file)
+        for year_month, data in route_data:
+          for entry in data:          
+            keys = collections.OrderedDict()
+            keys["route_id"] = route_id
+            keys["year"] = year_month[0]
+            keys["month"] = year_month[1]
+            keys["week_day"] = entry["info"]["week_day"]
+            keys["hours"] = entry["info"]["hours"]
+            keys["num_trips"] = entry["info"]["num_trips"]
+            url_day = '' if entry['info']['week_day'] == 'all' else entry['info']['week_day']
+            url_hours = '' if keys["hours"] == 'all' else '%d-%d' % (keys["hours"][0], keys["hours"][1])            
+            keys["url"] = URL_GUI % (int(year_month[0]), int(year_month[1]), int(route_id), url_day, url_hours)            
+            if keys["num_trips"] == 0 or keys["num_trips"] < 30:
+              continue
+            keys = pd.Series(keys)
+
+            stats = pd.Series()
+            stops = pd.DataFrame(entry["stops"])            
+            get_stat = lambda series, name: series.drop('stop_id').add_prefix(name + '_')
+            stats = stats.append(get_stat(stops.mean(), 'mean'))
+            stats = stats.append(get_stat(stops.median(), 'median'))
+            stats = stats.append(get_stat(stops.std(), 'std'))
+            stats = stats.append(get_stat(stops.min(), 'min'))
+            stats = stats.append(get_stat(stops.max(), 'max'))
+            
+            row = pd.Series()
+            row = row.append(keys)
+            row = row.append(stats)
+            if table.columns.size == 0:
+              table = pd.DataFrame(index=row.index.tolist())
+            table = pd.concat([table, row], axis=1)
+  table = table.transpose()
+  return table
+
+stats_table = get_stats_table()
+print stats_table.shape
+print ""
+# TODO: Add "sudo pip install XlsxWriter" to installation
+writer = pd.ExcelWriter('output.xlsx', engine='xlsxwriter')
+stats_table.to_excel(writer, sheet_name='Sheet1')
+writer.save()
