@@ -49,35 +49,36 @@
             <button class="btn btn-success btn-block" type="submit">קדימה</button>
         </form>
     </div>
-    <div class="col-xs-9" id="spinner">
+    <div ng-show="wip" class="col-xs-9">
         <i class="fa fa-spin fa-5x fa-spinner"></i> טוען מידע...
     </div>
-    <div class="col-xs-9" id="main-div" style="display:none">
-        <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active">
-                <a href="#week_day" aria-controls="settings" role="tab" data-toggle="tab" class="active">לפי ימים</a>
-            </li>
-            <li role="presentation">
-                <a href="#hours" aria-controls="settings" role="tab" data-toggle="tab">לפי שעות</a>
-            </li>
-        </ul>
-        <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="week_day">
-                <canvas></canvas>
+    <div ng-hide="wip" class="col-xs-9" id="main-div">
+        <div class="row">
+            <div class="col-xs-11" ng-if="chartPerDay && input.graphKind == 'perDay'">
+                <highchart id="chart-per-day" config="chartPerDay"></highchart>
             </div>
-            <div role="tabpanel" class="tab-pane" id="hours">
-                <canvas></canvas>
+            <div class="col-xs-11" ng-if="chartPerHour && input.graphKind == 'perHour'">
+                <highchart id="chart-per-hour" config="chartPerHour"></highchart>
             </div>
-
         </div>
         <div class="row">
-            <div class="col-xs-12">
-                <div class="well">
-                    <h2>הסבר</h2>
-                    <p>ציר ה X מייצג את התחנות לאורך המסלול</p>
-                    <p>ציר ה Y מייצג את אחוז הרכבות שמאחרות ביותר מ 5 דקות</p>
-                    <p>באפשרותכם לבחור בטופס מסלול אחר או תקופה אחרת</p>
-                </div>
+            <div class="col-xs-11">
+                <label>
+                    תצוגה בחתך יומי
+                </label>
+                <input type="radio" value="perDay" ng-model="input.graphKind">
+                <label>
+                    תצוגה בחתך שעתי
+                </label>
+                <input type="radio" value="perHour" ng-model="input.graphKind">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-11">
+                <h2>הסבר</h2>
+                <p>ציר ה X מייצג את התחנות לאורך המסלול</p>
+                <p>ציר ה Y מייצג את אחוז הרכבות שמאחרות ביותר מ 5 דקות</p>
+                <p>באפשרותכם לבחור בטופס מסלול אחר או תקופה אחרת</p>
             </div>
         </div>
     </div>

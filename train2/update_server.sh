@@ -4,7 +4,7 @@ source /home/opentrain/.virtualenvs/train2/bin/activate
 git pull
 pip install -r requirements.txt
 
-(cd /home/opentrain/work/OpenTrainCommunity/train2/ui/static/ui/RouteExplorer && bower install)
+#(cd /home/opentrain/work/OpenTrainCommunity/train2/ui/static/ui/RouteExplorer && bower install)
 
 python manage.py migrate
 
