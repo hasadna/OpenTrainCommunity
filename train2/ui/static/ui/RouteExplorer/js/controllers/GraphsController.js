@@ -268,7 +268,6 @@ angular.module('RouteExplorer').controller('GraphsController',
                         //    return $scope.perDayDict[di.value].info.num_trips;
                         //}),
                     });
-                    console.log(angular.toJson($scope.chartPerDay.series));
                 });
                 hoursList.forEach(function (hl) {
                     var hlName = "";
