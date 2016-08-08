@@ -20,7 +20,7 @@ angular.module('RouteExplorer').constant('daysTable',
         name: 'שישי',
     }, {
         value: 7,
-        name: 'שביעי',
+        name: 'שבת',
     }, {
         value: 'all',
         name: 'שבועי'
@@ -55,10 +55,11 @@ angular.module('RouteExplorer').constant('daysTable',
 
 
 angular.module('RouteExplorer').controller('GraphsController',
-    ['$scope', '$http', '$q', 'Layout', 'daysTable', 'hoursList', 'monthNames',
+    ['$scope', '$http', '$q', '$timeout', 'Layout', 'daysTable', 'hoursList', 'monthNames',
         function ($scope,
                   $http,
                   $q,
+                  $timeout,
                   Layout,
                   daysTable,
                   hoursList,
@@ -197,6 +198,14 @@ angular.module('RouteExplorer').controller('GraphsController',
                 var stopNames = $scope.route.stops.map(function (stop, idx) {
                     return '' + (1 + idx) + ' - ' + stop.heb_stop_names[0];
                 });
+                var tooltip = {
+                    formatter: function () {
+                        var prec = Math.round(this.y*100)/100;
+                        return '<b>' + this.x + '</b>' + '<br/>' +
+                            '<span>' + prec + '%' + ' רכבות מאחרות' + '</span>';
+                    },
+                    useHTML: true,
+                };
                 $scope.chartPerDay = {
                     options: {
                         chart: {
@@ -204,10 +213,20 @@ angular.module('RouteExplorer').controller('GraphsController',
                         },
                         title: {
                             text: 'איחור בחתך יומי'
-                        }
+                        },
+                        tooltip: tooltip,
                     },
                     xAxis: {
+                        reversed: true,
                         categories: stopNames,
+                        useHTML: true,
+                    },
+                    yAxis: {
+                        opposite: true,
+                        useHTML: true,
+                        title: {
+                            text: 'אחוזי איחור'
+                        }
                     },
                     series: []
                 };
@@ -218,25 +237,43 @@ angular.module('RouteExplorer').controller('GraphsController',
                         },
                         title: {
                             text: 'אישור בחתך שעתי'
+                        },
+                        tooltip: tooltip,
+                    },
+                    yAxis: {
+                        useHTML: true,
+                        opposite: true,
+                        title: {
+                            text: 'אחוזי איחור'
                         }
                     },
                     xAxis: {
+                        useHTML: true,
+                        reversed: true,
                         categories: stopNames,
+                    },
+                    tooltip: {
+                        useHTML: true
                     },
                     series: []
                 };
                 daysTable.forEach(function (di) {
+                    var data = $scope.perDayDict[di.value].stops.map(function (si, idx) {
+                        return 100 * si.arrival_late_pct
+                    });
                     $scope.chartPerDay.series.push({
                         name: di.name,
-                        data: $scope.perDayDict[di.value].stops.map(function (si) {
-                            return 100 * si.arrival_late_pct;
-                        })
-                    })
+                        data: data,
+                        //numTrips: $scope.perDayDict[di.value].stops.map(function () {
+                        //    return $scope.perDayDict[di.value].info.num_trips;
+                        //}),
+                    });
+                    console.log(angular.toJson($scope.chartPerDay.series));
                 });
                 hoursList.forEach(function (hl) {
                     var hlName = "";
                     if (angular.isArray(hl)) {
-                        hlName = ''  + hl[0] % 24 + '-' + hl[1] % 24;
+                        hlName = '' + hl[0] % 24 + '-' + hl[1] % 24;
                     } else {
                         hlName = 'שבועי';
                     }
