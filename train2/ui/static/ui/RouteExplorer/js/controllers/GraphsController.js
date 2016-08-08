@@ -259,7 +259,11 @@ angular.module('RouteExplorer').controller('GraphsController',
                 };
                 daysTable.forEach(function (di) {
                     var data = $scope.perDayDict[di.value].stops.map(function (si, idx) {
-                        return 100 * si.arrival_late_pct
+                        return {
+                            'y': 100 * (si.arrival_late_pct || 0),
+                            'enabled': !angular.isUndefined(si.arrival_late_pct)
+                        }
+                        //return
                     });
                     $scope.chartPerDay.series.push({
                         name: di.name,
