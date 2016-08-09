@@ -201,8 +201,10 @@ angular.module('RouteExplorer').controller('GraphsController',
                 var tooltip = {
                     formatter: function () {
                         var prec = Math.round(this.y*100)/100;
-                        return '<b>' + this.x + '</b>' + '<br/>' +
-                            '<span>' + prec + '%' + ' רכבות מאחרות' + '</span>';
+                        return '<span dir="rtl"><b>' + this.x + '</b>' + '<br/>' +
+                            '<span>רכבות מאחרות:</span>' + prec + '%' + '<br/>' +
+                            '<span>מספר רכבות: </span>' + this.point.numTrips +
+                            '</span>';
                     },
                     useHTML: true,
                 };
@@ -261,9 +263,9 @@ angular.module('RouteExplorer').controller('GraphsController',
                     var data = $scope.perDayDict[di.value].stops.map(function (si, idx) {
                         return {
                             'y': 100 * (si.arrival_late_pct || 0),
-                            'enabled': !angular.isUndefined(si.arrival_late_pct)
+                            'enabled': !angular.isUndefined(si.arrival_late_pct),
+                            'numTrips': $scope.perDayDict[di.value].info.num_trips
                         }
-                        //return
                     });
                     $scope.chartPerDay.series.push({
                         name: di.name,
@@ -280,11 +282,16 @@ angular.module('RouteExplorer').controller('GraphsController',
                     } else {
                         hlName = 'שבועי';
                     }
+                    var data = $scope.perHourDict[hl.toString()].stops.map(function (si) {
+                        return {
+                            'y': 100 * (si.arrival_late_pct || 0),
+                            'enabled': !angular.isUndefined(si.arrival_late_pct),
+                            'numTrips': $scope.perHourDict[hl.toString()].info.num_trips
+                        }
+                    });
                     $scope.chartPerHour.series.push({
                         name: hlName,
-                        data: $scope.perHourDict[hl.toString()].stops.map(function (si) {
-                            return 100 * si.arrival_late_pct;
-                        })
+                        data: data
                     })
                 });
             };
