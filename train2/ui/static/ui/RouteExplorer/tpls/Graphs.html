@@ -18,7 +18,7 @@
                 <b>מספר נסיעות</b>: {{ route.trips_count}}
             </li>
         </ul>
-        <form class="form" id="explore-form">
+        <form class="form" id="explore-form" ng-submit="refresh()">
             <div class="form-group">
                 <label>
                     מסלול
@@ -49,16 +49,18 @@
             <button class="btn btn-success btn-block" type="submit">קדימה</button>
         </form>
     </div>
-    <div ng-show="wip" class="col-xs-9">
+    <div ng-if="wip" class="col-xs-9">
         <i class="fa fa-spin fa-5x fa-spinner"></i> טוען מידע...
     </div>
-    <div ng-hide="wip" class="col-xs-9" id="main-div">
+    <div ng-if="!wip" class="col-xs-9" id="main-div">
         <div class="row">
-            <div class="col-xs-11" ng-if="chartPerDay && input.graphKind == 'perDay'">
-                <highchart id="chart-per-day" config="chartPerDay"></highchart>
-            </div>
-            <div class="col-xs-11" ng-if="chartPerHour && input.graphKind == 'perHour'">
-                <highchart id="chart-per-hour" config="chartPerHour"></highchart>
+            <div class="col-xs-11">
+                <div ng-if="chartPerDay && input.graphKind == 'perDay'" dir="ltr">
+                    <highchart id="chart-per-day" config="chartPerDay"></highchart>
+                </div>
+                <div ng-if="chartPerHour && input.graphKind == 'perHour'" dir="ltr">
+                    <highchart id="chart-per-hour" config="chartPerHour"></highchart>
+                </div>
             </div>
         </div>
         <div class="row">
