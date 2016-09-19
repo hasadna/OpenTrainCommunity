@@ -13,7 +13,7 @@ DOMAIN = LOCAL_DOMAIN
 CACHE_PATH = 'cache/'
           
 URL_GUI = 'http://{}/#/%d%02d/select-route/%d/%d?day=%s&time=%s'.format(DOMAIN)
-WEEK_DAYS = [1, 2, 3, 4, 5, 6, 7]
+WEEK_DAYS = ['all', 1, 2, 3, 4, 5, 6, 7]
 HOURS = ['all',
          [4, 7],
          [7, 9],
@@ -24,6 +24,7 @@ HOURS = ['all',
          [21, 24],
          [24, 28],
          ]
+LATENESS_FILTER = 0.10
 
 import logging
 
@@ -40,6 +41,7 @@ ch.setFormatter(formatter)
 # add ch to logger
 logger.addHandler(ch)
 
+
 def get_connected_stop_id_pairs():
   routes = requests.get('http://{}/api/v1/routes/all'.format(DOMAIN)).json()
   pairs = set()
@@ -51,30 +53,37 @@ def get_connected_stop_id_pairs():
   return list(pairs)
 
 
-def get_stops_ids():
+def get_stops_ids_to_heb_name(all_stops):
   """Return a list stop ids from the website API"""
-  all_stops = json.loads(requests.get('http://{}/api/v1/stops'.format(DOMAIN)).text)
-  result = []
-  for stop_info in all_stops:
-    result.append(stop_info['stop_id'])
-  return result
-
-
-def get_stops_ids_to_heb_name():
-  """Return a list stop ids from the website API"""
-  all_stops = json.loads(requests.get('http://{}/api/v1/stops'.format(DOMAIN)).text)
   result = {}
   for stop_info in all_stops:
     result[stop_info['stop_id']] = stop_info['stop_short_name']
   return result
 
 
-def get_stats_table():
+def get_hebrew_description(origin, destination, keys, stats, stop_id_to_name):
+  month = "חודש "
+  heb_to = " ל"
+  everyday_heb = " כל יום "
+  aleph = "א"
+  bet = "ב"
+  gimel = "ג"
+  daled = "ד"
+  hey = "ה"
+  vav = "ו"
+  shabbat = "ש"
+  days = ["stub", aleph, bet, gimel, daled, hey, vav, shabbat]
+  between_hours = "בין השעות "
+  delays = " איחורים"
+  day_heb = "" if keys["week_day"] == 'all' else days[keys["week_day"]] + " "
+  hours_heb = "" if keys["hours"] == 'all' else between_hours + str(keys["hours"][0]) + "-" + str(keys["hours"][1])
+  return str(keys["month"]) + "/" + str(keys["year"]) + ": " + stop_id_to_name[origin] + heb_to + stop_id_to_name[destination] + ";" + everyday_heb + day_heb + hours_heb + "; " + "{0:.0f}%".format(stats['arrival_late_pct'] * 100) + delays
+  
+
+
+def get_stats_table(stop_id_pairs, stop_id_to_name):
   """Returns a data table of routes with stats"""
   table = pd.DataFrame()
-  stop_id_pairs = get_connected_stop_id_pairs()
-  stop_id_to_name = get_stops_ids_to_heb_name()
-  #stop_id_pairs = stop_id_pairs[0:50]
   count = 0
   all_rows = []
   columns = []
@@ -103,6 +112,8 @@ def get_stats_table():
             keys["week_day"] = entry["info"]["week_day"]
             keys["hours"] = entry["info"]["hours"]
             keys["num_trips"] = entry["info"]["num_trips"]
+            keys["origin_is_tel_aviv"] = "yes" if origin in [3600, 3700, 4600, 4900] else "no"
+            keys["dest_is_tel_aviv"] = "yes" if destination in [3600, 3700, 4600, 4900] else "no"
 
             url_day = '' if entry['info']['week_day'] == 'all' else entry['info']['week_day']
             url_hours = '' if keys["hours"] == 'all' else '%d-%d' % (keys["hours"][0], keys["hours"][1])            
@@ -117,25 +128,10 @@ def get_stats_table():
             stats['departure_early_pct'] = stop1['departure_early_pct']
             stats['departure_late_pct'] = stop1['departure_late_pct']
 
-
-            heb_to = " ל"
-            everyday_heb = " כל יום "
-            aleph = "א"
-            bet = "ב"
-            gimel = "ג"
-            daled = "ד"
-            hey = "ה"
-            vav = "ו"
-            shabbat = "ש"
-            days = ["stub", aleph, bet, gimel, daled, hey, vav, shabbat]
-            between_hours = "בין השעות "
-            delays = " איחורים"
-            day_heb = "" if keys["week_day"] == 'all' else days[keys["week_day"]] + " "
-            hours_heb = "" if keys["hours"] == 'all' else between_hours + str(keys["hours"][0]) + "-" + str(keys["hours"][1])
-            keys["heb_sentence"] = stop_id_to_name[origin] + heb_to + stop_id_to_name[destination] + everyday_heb + day_heb + hours_heb + " " + "{0:.0f}%".format(stats['arrival_late_pct'] * 100) + delays
-
+            stats["heb_description"] = get_hebrew_description(origin, destination, keys, stats, stop_id_to_name) 
 
             row = []
+            keys["hours"] = str(keys["hours"])
             row += keys.values()
             row += stats.values()
             
@@ -148,28 +144,49 @@ def get_stats_table():
   return table
 
 
-def get_all_data():
-  """Returns a data table of routes with stats"""
-  stop_id_pairs = get_connected_stop_id_pairs()
-  count = 0
-  all_data = []
-  for origin, destination in stop_id_pairs:
-    filename = '%scache_%d_%d.json' % (CACHE_PATH, origin, destination)
-    logmsg = '%d/%d: %d_%d' % (count, len(stop_id_pairs), origin, destination)
-    print(logmsg)
-    count += 1
-    if os.path.isfile(filename):
-      with open(filename, 'r') as input_file:
-        route_data = json.load(input_file)
-        all_data.append(route_data)
-  return all_data
+def save_highlights_html(table):
+  # Copy table as sorting inplace will change its order
+  table = table.copy()
+  sort_columns = ['arrival_late_pct', 'month']
+  # 'year', 'month', 'week_day', 'hour'
+  highlights_table = pd.DataFrame([], columns=table.columns)
+  with open('highlights.html', 'w') as html_file:  
+    for late in [True, False]:
+      table.sort_values(sort_columns, ascending=[not late, True], inplace=True)    
+      html_file.write('<!DOCTYPE html><html><body dir="rtl">')
+      html_file.write('<h1 dir="ltr">2016, at least 30 stops per month, minimum lateness {}%</h1>'.format(str(LATENESS_FILTER*100)))
+      for week_day in WEEK_DAYS:
+        for hours in HOURS:
+          html_file.write('<h3>Week day {}, hours {}</h3>'.format(week_day, hours))
+          #print(table)
+          filtered_table = table[table.year == 2016][table.week_day == week_day]
+          #import pdb; pdb.set_trace()
+          try:
+            filtered_table = filtered_table[filtered_table.hours == str(hours)]
+            for i in range(0, 10):
+              #import  pdb; pdb.set_trace()
+              if (filtered_table.iloc[i]['arrival_late_pct'] > LATENESS_FILTER or not late):
+                highlights_table = highlights_table.append(filtered_table.iloc[i])
+                url = filtered_table.iloc[i]['url']
+                text = filtered_table.iloc[i]['heb_description']
+                html_file.write('<a href="{}" target="_blank">{}</a><p>'.format(url, text))
+          except:
+            pass    
+    html_file.write('</body></html>')
+  return highlights_table
 
+all_stops = json.loads(requests.get('http://{}/api/v1/stops'.format(DOMAIN)).text)
+stop_id_pairs = get_connected_stop_id_pairs()
+stop_id_to_name = get_stops_ids_to_heb_name(all_stops)
+#stop_id_pairs = stop_id_pairs[0:50]
+stats_table = get_stats_table(stop_id_pairs, stop_id_to_name)
 
-stats_table = get_stats_table()
-print(stats_table.shape)
+highlights_table = save_highlights_html(stats_table)
+
+print(highlights_table.shape)
 print("")
-stats_table.to_csv('output_stations.csv', sep='\t')
+highlights_table.to_csv('output_stations.csv', sep='\t')
 # TODO: Add "sudo pip install XlsxWriter", "pip install xlsxwriter" to installation
 writer = pd.ExcelWriter('output_stations.xlsx', engine='xlsxwriter')
-stats_table.to_excel(writer, sheet_name='Sheet1')
+highlights_table.to_excel(writer, sheet_name='Sheet1')
 writer.save()
