@@ -104,6 +104,32 @@ if (!String.prototype.repeat) {
   };
 }
 
+angular.module('RouteExplorer').directive("rexPercentBar",
+['env',
+function(env) {
+    return {
+        restrict: 'E',
+        scope: {
+          value: '=value',
+          type: '=type'
+        },
+        templateUrl: env.baseDir + '/tpls/PercentBar.html'
+      };
+}]);
+
+angular.module('RouteExplorer').directive("timesDetails",
+['env','Layout',
+function(env, Layout) {
+    return {
+        restrict: 'E',
+        scope: {
+            stats: '='
+        },
+        controller: 'TimesDetailsController',
+        templateUrl: env.baseDir + '/tpls/TimesDetails.html'
+      };
+}]);
+
 angular.module('RouteExplorer').controller('AppController',
 ['$scope', '$location',
 function($scope, $location) {
@@ -174,11 +200,12 @@ angular.module('RouteExplorer').constant('daysTable',
 
 
 angular.module('RouteExplorer').controller('GraphsController',
-    ['$scope', '$http', '$q', '$timeout', 'Layout', 'daysTable', 'hoursList', 'monthNames',
+    ['$scope', '$http', '$q', '$timeout', '$location', 'Layout', 'daysTable', 'hoursList', 'monthNames',
         function ($scope,
                   $http,
                   $q,
                   $timeout,
+                  $location,
                   Layout,
                   daysTable,
                   hoursList,
@@ -194,6 +221,11 @@ angular.module('RouteExplorer').controller('GraphsController',
                 $scope.routeId = routeId;
                 $scope.startDate = $scope.input.startDate.value;
                 $scope.endDate = $scope.input.endDate.value;
+                $location.search({
+                    routeId: $scope.routeId,
+                    startDate: $scope.startDate,
+                    endDate: $scope.endDate,
+                });
                 $scope.stops = Layout.getStops();
                 var cbs = [
                     $http.get('/api/v1/stats/route-info-full/', {
@@ -267,12 +299,12 @@ angular.module('RouteExplorer').controller('GraphsController',
                 while (s[0] != e[0] || s[1] != e[1]) {
                     $scope.startDates.push({
                         name: monthNames[s[0]] + ' ' + s[1],
-                        value: '1/' + s[0] + '/' + s[1],
+                        value: '1-' + s[0] + '-' + s[1],
                     });
                     var ns = s[0] == 12 ? [1, s[1] + 1] : [s[0] + 1, s[1]];
                     $scope.endDates.push({
                         name: monthNames[s[0]] + ' ' + s[1],
-                        value: '1/' + ns[0] + '/' + ns[1],
+                        value: '1-' + ns[0] + '-' + ns[1],
                     });
                     s[0] = s[0] + 1;
                     if (s[0] > 12) {
@@ -289,12 +321,6 @@ angular.module('RouteExplorer').controller('GraphsController',
                 }
                 throw "could not find route (from " + $scope.routes.length + ") with id = " + rid;
             };
-            $scope.initData().then(function () {
-                $scope.input.startDate = $scope.startDates[10];
-                $scope.input.endDate = $scope.endDates[11];
-                $scope.input.selectedRoute = $scope.findRoute(10);
-                $scope.refresh();
-            });
             $scope.buildStatDict = function () {
                 var perDay = $scope.stat.filter(function (st) {
                     return st.info.hours == 'all'
@@ -414,6 +440,21 @@ angular.module('RouteExplorer').controller('GraphsController',
                     })
                 });
             };
+            $scope.findDate = function(dates, value) {
+                for (var i = 0 ; i < dates.length ; i++) {
+                    if (dates[i].value == value) {
+                        return dates[i];
+                    }
+                }
+                return null;
+            };
+            $scope.initData().then(function () {
+                var params = $location.search();
+                $scope.input.startDate = $scope.findDate($scope.startDates, params.startDate) || $scope.startDates[$scope.startDates.length-1];
+                $scope.input.endDate = $scope.findDate($scope.endDates, params.endDate) || $scope.endDates[$scope.endDates.length-1];
+                $scope.input.selectedRoute = $scope.findRoute(params.routeId || 10);
+                $scope.refresh();
+            });
         }]);
 
 
@@ -979,32 +1020,6 @@ function($scope, $route, Locale, LocationBinder, Layout) {
     $scope.loadStats();
 }]);
 
-
-angular.module('RouteExplorer').directive("rexPercentBar",
-['env',
-function(env) {
-    return {
-        restrict: 'E',
-        scope: {
-          value: '=value',
-          type: '=type'
-        },
-        templateUrl: env.baseDir + '/tpls/PercentBar.html'
-      };
-}]);
-
-angular.module('RouteExplorer').directive("timesDetails",
-['env','Layout',
-function(env, Layout) {
-    return {
-        restrict: 'E',
-        scope: {
-            stats: '='
-        },
-        controller: 'TimesDetailsController',
-        templateUrl: env.baseDir + '/tpls/TimesDetails.html'
-      };
-}]);
 
 angular.module('RouteExplorer').filter('duration', function() {
     return function(seconds) {

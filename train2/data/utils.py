@@ -2,6 +2,9 @@ import calendar
 import datetime
 import time
 
+import re
+
+
 def encode_date(date):
     if date is None:
         return None
@@ -26,7 +29,7 @@ def parse_date(dt_str):
         return datetime.datetime.fromtimestamp(timestamp)
 
     try:
-        d, m, y = [int(x) for x in dt_str.split('/')]
+        d, m, y = [int(x) for x in re.split("[-/]",dt_str)]
         if y < 2013:
             raise ValueError('Wrong year %s for param %s' % (y, dt_str))
         return datetime.datetime(year=y, month=m, day=d)
