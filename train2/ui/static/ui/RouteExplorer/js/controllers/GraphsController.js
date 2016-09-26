@@ -65,6 +65,7 @@ angular.module('RouteExplorer').controller('GraphsController',
                   daysTable,
                   hoursList,
                   monthNames) {
+            window.scope = $scope;
             $scope.wip = true;
             $scope.Layout = Layout;
             $scope.input = {
@@ -72,12 +73,13 @@ angular.module('RouteExplorer').controller('GraphsController',
             };
             $scope.refresh = function () {
                 $scope.wip = true;
-                var routeId = $scope.input.selectedRoute.id;
-                $scope.routeId = routeId;
+                $scope.startStop = $scope.input.startStop;
+                $scope.endStop = $scope.input.endStop;
                 $scope.startDate = $scope.input.startDate.value;
                 $scope.endDate = $scope.input.endDate.value;
                 $location.search({
-                    routeId: $scope.routeId,
+                    startStop: $scope.startStop.id,
+                    endStop: $scope.endStop.id,
                     startDate: $scope.startDate,
                     endDate: $scope.endDate,
                 });
@@ -87,7 +89,8 @@ angular.module('RouteExplorer').controller('GraphsController',
                         params: {
                             from_date: $scope.startDate,
                             to_date: $scope.endDate,
-                            route_id: $scope.routeId,
+                            from_stop: $scope.startStop.id,
+                            to_stop: $scope.endStop.id,
                         }
                     }).then(function (resp) {
                         $scope.stat = resp.data;
@@ -194,7 +197,6 @@ angular.module('RouteExplorer').controller('GraphsController',
                 });
             };
             $scope.updateChart = function () {
-                window.scope = $scope;
                 var stopNames = $scope.route.stops.map(function (stop, idx) {
                     return '' + (1 + idx) + ' - ' + stop.heb_stop_names[0];
                 });
@@ -307,7 +309,8 @@ angular.module('RouteExplorer').controller('GraphsController',
                 var params = $location.search();
                 $scope.input.startDate = $scope.findDate($scope.startDates, params.startDate) || $scope.startDates[$scope.startDates.length-1];
                 $scope.input.endDate = $scope.findDate($scope.endDates, params.endDate) || $scope.endDates[$scope.endDates.length-1];
-                $scope.input.selectedRoute = $scope.findRoute(params.routeId || 10);
+                $scope.input.startStop = Layout.findStop(params.fromStop || 400);
+                $scope.input.endStop = Layout.findStop(params.toStop || 3700)
                 $scope.refresh();
             });
         }]);

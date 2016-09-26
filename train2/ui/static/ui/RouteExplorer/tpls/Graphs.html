@@ -6,9 +6,6 @@
         </h1>
         <ul class="list-group" style="color: blue">
             <li class="list-group-item">
-                <b>מזהה מסלול</b>: {{ route.id }}
-            </li>
-            <li class="list-group-item">
             <b>תאריך התחלה</b>: {{ startDate}}
                 </li>
             <li class="list-group-item">
@@ -24,8 +21,12 @@
                     מסלול
                 </label>
                 <select class="form-control"
-                    ng-options="getRouteTitle(route) for route in routes"
-                    ng-model="input.selectedRoute"
+                    ng-options="stop.name for stop in stops"
+                    ng-model="input.startStop"
+                ></select>
+                <select class="form-control"
+                    ng-options="stop.name for stop in stops"
+                    ng-model="input.endStop"
                 ></select>
             </div>
             <div class="form-group">
