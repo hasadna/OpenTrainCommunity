@@ -204,7 +204,7 @@ angular.module('RouteExplorer').controller('GraphsController',
                 });
                 $scope.stops = Layout.getStops();
                 var cbs = [
-                    $http.get('/api/v1/stats/route-info-full/', {
+                    $http.get('/api/v1/stats/from-to-full/', {
                         params: {
                             from_date: $scope.startDate,
                             to_date: $scope.endDate,
@@ -215,9 +215,14 @@ angular.module('RouteExplorer').controller('GraphsController',
                         $scope.stat = resp.data;
                         $scope.buildStatDict();
                     }),
-                    $http.get('/api/v1/routes/' + $scope.routeId + '/').then(function (resp) {
-                        $scope.route = resp.data;
-                    }),
+                    $http.get('/api/v1/stops/from-to/', {
+                        params: {
+                            from_stop: $scope.startStop.id,
+                            to_stop: $scope.endStop.id,
+                        }
+                    }).then(function(resp) {
+                        $scope.fromToStops = resp.data;
+                    })
                 ];
                 $q.all(cbs).then(function () {
                     $scope.wip = false;

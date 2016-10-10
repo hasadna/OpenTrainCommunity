@@ -30,6 +30,12 @@ class StopViewSet(ReadOnlyModelViewSet):
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
+    @list_route(methods=['GET'], url_path='from-to')
+    def from_to(self, request):
+        from_id = int(request.GET['from_stop'])
+        to_id = int(request.GET['to_stop'])
+        return logic.get_stops_from_to(from_id, to_id)
+
 
 class StatViewSet(GenericViewSet):
     def get_queryset(self):
@@ -54,6 +60,18 @@ class StatViewSet(GenericViewSet):
         if from_date and to_date and from_date > to_date:
             raise ValueError('from_date %s cannot be after to_date %s' % (from_date, to_date))
         result = logic.get_route_info_full(route_id, from_date, to_date)
+        return Response(result)
+
+    @list_route(url_path='from-to-full')
+    def from_to_full(self, request):
+        from_id = int(request.GET['from_stop'])
+        to_id = int(request.GET['to_stop'])
+        from_date = utils.parse_date(request.GET['from_date'])
+        to_date = utils.parse_date(request.GET['to_date'])
+        result = logic.get_from_to_info_full(origin_id=from_id,
+                                             destination_id=to_id,
+                                             from_date=from_date,
+                                             to_date=to_date)
         return Response(result)
 
 

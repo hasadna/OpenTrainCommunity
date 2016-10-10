@@ -1,10 +1,9 @@
-import functools
 from collections import namedtuple
-from . import utils
-import django.db
-from django.conf import settings
 
-from .models import Route
+import django.db
+
+from . import utils
+from .models import Route, Trip, Sample
 
 Filters = namedtuple('Filters', ['from_date', 'to_date'])
 
@@ -41,11 +40,36 @@ def get_route_info_full(route_id, from_date, to_date):
     return stats
 
 
+def get_stops_from_to(origin_id, destination_id):
+    return [origin_id, destination_id]
+
+
+def get_from_to_info_full(*, origin_id, destination_id, from_date, to_date):
+    routes = get_routes_from_to(origin_id, destination_id)
+    filters = Filters(from_date=from_date, to_date=to_date)
+    table = _get_stats_table(routes=routes, filters=filters,origin_id=origin_id, destination_id=destination_id, all_stops=True)
+    fields = ['week_day_local',
+              'hour_local',
+              'arrival_late_count',
+              'num_trips',
+              'stop_id'
+              ]
+    # we don't need all the fields
+    result = []
+    for t in table:
+        entry = dict()
+        for f in fields:
+            entry[f] = t[f]
+        result.append(entry)
+    assert len(result) == len(table)
+    return result
+
+
 def get_path_info_full(origin_id, destination_id, from_date, to_date):
     routes = get_routes_from_to(origin_id, destination_id)
     filters = Filters(from_date=from_date, to_date=to_date)
     table = _get_stats_table(routes=routes, filters=filters,origin_id=origin_id, destination_id=destination_id)
-    stats = _complete_table(table, [origin_id, destination_id])
+    stats = _complete_table([origin_id, destination_id])
     stats.sort(key=_get_info_sort_key)
     return stats
 
@@ -131,6 +155,35 @@ def _complete_table(table, stop_ids):
     return result
 
 
+def _complete_table_for_all_stops(table):
+    result = []
+    for week_day in WEEK_DAYS + ['all']:
+        for hours in HOURS + ['all']:
+            entries = _find_relevant_entries(table, week_day, hours)
+            stops = []
+            num_trips = None
+            for stop_id in stop_ids:
+                stop_id_entries = [entry for entry in entries if entry['stop_id'] == stop_id]
+                prev_num_trips = num_trips
+                num_trips = sum(e['num_trips'] for e in stop_id_entries)
+                if prev_num_trips is not None:
+                    assert num_trips == prev_num_trips, 'inconsistency in num trips'
+                if num_trips == 0:
+                    stops.append({})
+                else:
+                    stops.append(_avg_entries(stop_id, stop_id_entries))
+            stat = {
+                'info': {
+                    'num_trips': num_trips or 0,
+                    'week_day': week_day,
+                    'hours': list(hours) if isinstance(hours, tuple) else hours
+                },
+                'stops': stops
+            }
+            result.append(stat)
+    return result
+
+
 def _get_select_postgres(*, route, filters, early_threshold, late_threshold):
     select_stmt = ('''
         SELECT  count(s.stop_id) as num_trips,
@@ -174,7 +227,7 @@ def _get_select_postgres(*, route, filters, early_threshold, late_threshold):
     return select_stmt, select_kwargs
 
 
-def _get_select_from_to_postgres(*, routes, filters, origin_id, destination_id, early_threshold, late_threshold):
+def _get_select_from_to_postgres(*, routes, filters, origin_id, destination_id, early_threshold, late_threshold, all_stops):
     route_ids = [r.id for r in routes]
     select_stmt = ('''
         SELECT  count(s.stop_id) as num_trips,
@@ -197,7 +250,9 @@ def _get_select_from_to_postgres(*, routes, filters, origin_id, destination_id, 
 
         WHERE
         r.id =  ANY(%(route_ids)s)
-        AND s.gtfs_stop_id = ANY(%(stop_ids)s)
+        ''' +
+        (' AND s.gtfs_stop_id = ANY(%(stop_ids)s) ' if not all_stops else '')
+        + '''
         AND t.route_id = r.id
         AND t.valid
         AND s.trip_id = t.id
@@ -228,7 +283,8 @@ def _get_stats_table(*, route=None,
                      routes=None,
                      origin_id=None,
                      destination_id=None,
-                     filters=None):
+                     filters=None,
+                     all_stops=False):
     assert (route is None) ^ (routes is None), 'exactly one of route, routes must be None'
     early_threshold = -120
     late_threshold = 300
@@ -242,7 +298,8 @@ def _get_stats_table(*, route=None,
                                                                   origin_id=origin_id,
                                                                   destination_id=destination_id,
                                                                   early_threshold=early_threshold,
-                                                                  late_threshold=late_threshold)
+                                                                  late_threshold=late_threshold,
+                                                                  all_stops=all_stops)
 
     cursor = django.db.connection.cursor()
     cursor.execute(select_stmt, select_kwargs)
