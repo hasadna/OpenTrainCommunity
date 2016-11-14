@@ -34,7 +34,7 @@ class StopViewSet(ReadOnlyModelViewSet):
     def from_to(self, request):
         from_id = int(request.GET['from_stop'])
         to_id = int(request.GET['to_stop'])
-        return logic.get_stops_from_to(from_id, to_id)
+        return Response(data=logic.get_stops_from_to(from_id, to_id))
 
 
 class StatViewSet(GenericViewSet):

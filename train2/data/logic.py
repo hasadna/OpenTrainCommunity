@@ -1,4 +1,5 @@
 from collections import namedtuple
+from functools import cmp_to_key
 
 import django.db
 
@@ -41,7 +42,31 @@ def get_route_info_full(route_id, from_date, to_date):
 
 
 def get_stops_from_to(origin_id, destination_id):
-    return [origin_id, destination_id]
+    """
+    :param origin_id: return list of all stop ids between origin_id to destination_id
+    :param destination_id:
+    :return:
+    """
+    routes = get_routes_from_to(origin_id, destination_id)
+    all_stop_ids = set()
+    for r in routes:
+        idx1 = r.stop_ids.index(origin_id)
+        idx2 = r.stop_ids.index(destination_id)
+        all_stop_ids |= set(r.stop_ids[idx1:idx2+1])
+    all_stop_ids = list(all_stop_ids)
+
+    def cmp_stop_ids(stop1, stop2):
+        for r in routes:
+            try:
+                idx_stop1 = r.stop_ids.index(stop1)
+                idx_stop2 = r.stop_ids.index(stop2)
+                if idx_stop1 == idx_stop2:
+                    return 0
+                return (idx_stop1 - idx_stop2) // abs(idx_stop1 - idx_stop2)
+            except ValueError:
+                pass
+
+    return sorted(all_stop_ids,key=cmp_to_key(cmp_stop_ids))
 
 
 def get_from_to_info_full(*, origin_id, destination_id, from_date, to_date):

@@ -203,6 +203,10 @@ angular.module('RouteExplorer').controller('GraphsController',
                     endDate: $scope.endDate,
                 });
                 $scope.stops = Layout.getStops();
+                $scope.stopsById = {};
+                $scope.stops.forEach(function(st) {
+                    $scope.stopsById[st.id] = st;
+                });
                 var cbs = [
                     $http.get('/api/v1/stats/from-to-full/', {
                         params: {
@@ -221,7 +225,10 @@ angular.module('RouteExplorer').controller('GraphsController',
                             to_stop: $scope.endStop.id,
                         }
                     }).then(function(resp) {
-                        $scope.fromToStops = resp.data;
+                        $scope.fromToStopsIds = resp.data;
+                        $scope.fromToStops = $scope.fromToStopsIds.map(function(stop_id) {
+                            return $scope.stopsById[stop_id];
+                        });
                     })
                 ];
                 $q.all(cbs).then(function () {
@@ -235,44 +242,8 @@ angular.module('RouteExplorer').controller('GraphsController',
 
             $scope.initData = function () {
                 $scope.buildDates();
-                return $scope.buildRoutes();
             };
 
-            $scope.buildRoutes = function () {
-                return $http.get('/api/v1/routes/all/').then(function (resp) {
-                    var routes = resp.data;
-                    var sortedRoutes = routes.map(function (r) {
-                        return {
-                            id: r.id,
-                            from: Layout.findStopName(r.stop_ids[0]),
-                            to: Layout.findStopName(r.stop_ids[r.stop_ids.length - 1]),
-                            count: r.count
-                        }
-                    });
-                    sortedRoutes.sort(function (s1, s2) {
-                        if (s1.from < s2.from) {
-                            return -1;
-                        }
-                        if (s1.from > s2.from) {
-                            return 1;
-                        }
-                        if (s1.to < s2.to) {
-                            return -1;
-                        }
-                        if (s1.to > s2.to) {
-                            return 1;
-                        }
-                        if (s1.count > s2.count) {
-                            return -1; // reverse count
-                        }
-                        if (s1.count < s2.count) {
-                            return 1; //reverse count
-                        }
-                        return 0;
-                    });
-                    $scope.routes = sortedRoutes;
-                });
-            };
             $scope.buildDates = function () {
                 var s = [1, 2015];
                 var e = [4, 2016];
@@ -295,35 +266,9 @@ angular.module('RouteExplorer').controller('GraphsController',
                     }
                 }
             };
-            $scope.findRoute = function (rid) {
-                for (var i = 0; i < $scope.routes.length; i++) {
-                    if ($scope.routes[i].id == rid) {
-                        return $scope.routes[i];
-                    }
-                }
-                throw "could not find route (from " + $scope.routes.length + ") with id = " + rid;
-            };
             $scope.buildStatDict = function () {
-                var perDay = $scope.stat.filter(function (st) {
-                    return st.info.hours == 'all'
-                });
-                $scope.perDayDict = {};
-                perDay.forEach(function (st) {
-                    $scope.perDayDict[st.info.week_day] = st;
-                });
-                var perHour = $scope.stat.filter(function (st) {
-                    return st.info.week_day == 'all'
-                });
-                $scope.perHourDict = {};
-                perHour.forEach(function (st) {
-                    var hkey = st.info.hours.toString();
-                    $scope.perHourDict[hkey] = st;
-                });
             };
             $scope.updateChart = function () {
-                var stopNames = $scope.route.stops.map(function (stop, idx) {
-                    return '' + (1 + idx) + ' - ' + stop.heb_stop_names[0];
-                });
                 var tooltip = {
                     formatter: function () {
                         var prec = Math.round(this.y*100)/100;
@@ -385,41 +330,6 @@ angular.module('RouteExplorer').controller('GraphsController',
                     },
                     series: []
                 };
-                daysTable.forEach(function (di) {
-                    var data = $scope.perDayDict[di.value].stops.map(function (si, idx) {
-                        return {
-                            'y': 100 * (si.arrival_late_pct || 0),
-                            'enabled': !angular.isUndefined(si.arrival_late_pct),
-                            'numTrips': $scope.perDayDict[di.value].info.num_trips
-                        }
-                    });
-                    $scope.chartPerDay.series.push({
-                        name: di.name,
-                        data: data,
-                        //numTrips: $scope.perDayDict[di.value].stops.map(function () {
-                        //    return $scope.perDayDict[di.value].info.num_trips;
-                        //}),
-                    });
-                });
-                hoursList.forEach(function (hl) {
-                    var hlName = "";
-                    if (angular.isArray(hl)) {
-                        hlName = '' + hl[0] % 24 + '-' + hl[1] % 24;
-                    } else {
-                        hlName = 'שבועי';
-                    }
-                    var data = $scope.perHourDict[hl.toString()].stops.map(function (si) {
-                        return {
-                            'y': 100 * (si.arrival_late_pct || 0),
-                            'enabled': !angular.isUndefined(si.arrival_late_pct),
-                            'numTrips': $scope.perHourDict[hl.toString()].info.num_trips
-                        }
-                    });
-                    $scope.chartPerHour.series.push({
-                        name: hlName,
-                        data: data
-                    })
-                });
             };
             $scope.findDate = function(dates, value) {
                 for (var i = 0 ; i < dates.length ; i++) {
@@ -429,14 +339,15 @@ angular.module('RouteExplorer').controller('GraphsController',
                 }
                 return null;
             };
-            $scope.initData().then(function () {
-                var params = $location.search();
-                $scope.input.startDate = $scope.findDate($scope.startDates, params.startDate) || $scope.startDates[$scope.startDates.length-1];
-                $scope.input.endDate = $scope.findDate($scope.endDates, params.endDate) || $scope.endDates[$scope.endDates.length-1];
-                $scope.input.startStop = Layout.findStop(params.fromStop || 400);
-                $scope.input.endStop = Layout.findStop(params.toStop || 3700)
-                $scope.refresh();
-            });
+
+            $scope.initData();
+
+            var params = $location.search();
+            $scope.input.startDate = $scope.findDate($scope.startDates, params.startDate) || $scope.startDates[$scope.startDates.length-1];
+            $scope.input.endDate = $scope.findDate($scope.endDates, params.endDate) || $scope.endDates[$scope.endDates.length-1];
+            $scope.input.startStop = Layout.findStop(params.fromStop || 400);
+            $scope.input.endStop = Layout.findStop(params.toStop || 3700)
+            $scope.refresh();
         }]);
 
 
