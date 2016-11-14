@@ -147,9 +147,10 @@ angular.module('RouteExplorer').controller('GraphsController',
                     }
                 }
             };
-            $scope.buildStatDict = function () {
-            };
             $scope.updateChart = function () {
+                var stopNames = $scope.fromToStops.map(function(st) {
+                    return st.name;
+                });
                 var tooltip = {
                     formatter: function () {
                         var prec = Math.round(this.y*100)/100;
