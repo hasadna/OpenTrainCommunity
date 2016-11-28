@@ -14,7 +14,7 @@ class Trip(models.Model):
     valid = models.BooleanField(default=True, db_index=True)
     invalid_reason = models.TextField(blank=True, null=True)
 
-    x_week_day_local = models.IntegerField(blank=True, null=True)
+    x_week_day_local = models.IntegerField(blank=True, null=True) # sunday 0 to saturday 6
     x_hour_local = models.IntegerField(blank=True, null=True)
 
     def complete_trip(self):

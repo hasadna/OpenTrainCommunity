@@ -120,31 +120,32 @@ function($scope, $location) {
 'use strict';
 angular.module('RouteExplorer').constant('daysTable',
     [{
-        value: 1,
+        value: 0,
         name: 'ראשון',
     }, {
-        value: 2,
+        value: 1,
         name: 'שני',
     }, {
-        value: 3,
+        value: 2,
         name: 'שלישי',
     }, {
-        value: 4,
+        value: 3,
         name: 'רביעי',
     }, {
-        value: 5,
+        value: 4,
         name: 'חמישי',
     }, {
-        value: 6,
+        value: 5,
         name: 'שישי',
     }, {
-        value: 7,
+        value: 6,
         name: 'שבת',
-    }, {
-        value: 'all',
-        name: 'שבועי'
-    }
-    ])
+    }])
+    //}], {
+    //    value: 'all',
+    //    name: 'שבועי'
+    //}
+    //])
     .constant("monthNames", [
         'dummy',
         'ינואר',
@@ -160,16 +161,39 @@ angular.module('RouteExplorer').constant('daysTable',
         'נובמבר',
         'דצמבר'
     ]).constant("hoursList", [
-        [4, 7],
-        [7, 9],
-        [9, 12],
-        [12, 15],
-        [15, 18],
-        [18, 21],
-        [21, 24],
-        [24, 28],
-        "all"
-    ]
+    {
+        name: '4-7',
+        values: [4, 5, 6]
+    },
+    {
+        name: '7-9',
+        values: [7, 8]
+    },
+    {
+        name: '9-12',
+        values: [9,10,11],
+    },
+    {
+        name: '12-15',
+        values: [12,13,14],
+    },
+    {
+        name: '15-18',
+        values: [15,16,17],
+    },
+    {
+        name: '18-21',
+        values: [18, 19,20],
+    },
+    {
+        name: '21-24',
+        values: [21, 22,23],
+    },
+    {
+        name: '24-4',
+        values: [0, 1, 2, 3],
+    }
+]
 );
 
 
@@ -204,7 +228,7 @@ angular.module('RouteExplorer').controller('GraphsController',
                 });
                 $scope.stops = Layout.getStops();
                 $scope.stopsById = {};
-                $scope.stops.forEach(function(st) {
+                $scope.stops.forEach(function (st) {
                     $scope.stopsById[st.id] = st;
                 });
                 var cbs = [
@@ -217,16 +241,15 @@ angular.module('RouteExplorer').controller('GraphsController',
                         }
                     }).then(function (resp) {
                         $scope.stat = resp.data;
-                        $scope.buildStatDict();
                     }),
                     $http.get('/api/v1/stops/from-to/', {
                         params: {
                             from_stop: $scope.startStop.id,
                             to_stop: $scope.endStop.id,
                         }
-                    }).then(function(resp) {
+                    }).then(function (resp) {
                         $scope.fromToStopsIds = resp.data;
-                        $scope.fromToStops = $scope.fromToStopsIds.map(function(stop_id) {
+                        $scope.fromToStops = $scope.fromToStopsIds.map(function (stop_id) {
                             return $scope.stopsById[stop_id];
                         });
                     })
@@ -266,13 +289,93 @@ angular.module('RouteExplorer').controller('GraphsController',
                     }
                 }
             };
-            $scope.updateChart = function () {
-                var stopNames = $scope.fromToStops.map(function(st) {
-                    return st.name;
+            $scope.computePerDaySeries = function () {
+                var perDay = {};
+                $scope.stat.forEach(function (st) {
+                    var key = st.stop_id + '-' + st.week_day_local;
+                    perDay[key] = perDay[key] || {
+                            num_trips: 0,
+                            arrival_late_count: 0
+                        };
+                    perDay[key].num_trips += st.num_trips;
+                    perDay[key].arrival_late_count += st.arrival_late_count;
+
                 });
+                var result = [];
+                daysTable.forEach(function (d) {
+                    var data = $scope.fromToStops.map(function (st) {
+                        var entry = perDay[st.id + '-' + d.value];
+                        if (!entry) {
+                            console.log('no entry for ' + st.id + ' ' + d.value);
+                            return {
+                                y: 0,
+                                numTrips: 0,
+                            }
+                        }
+                        return {
+                            y: entry.arrival_late_count * 100.0 / entry.num_trips,
+                            numTrips: entry.num_trips,
+                        }
+                    });
+                    result.push({
+                        name: d.name,
+                        data: data
+                    })
+                });
+                return result;
+            };
+            $scope.computePerHoursSeries = function () {
+                var perHour = {};
+                var hoursMapping = {}
+                hoursList.forEach(function(e) {
+                    e.values.forEach(function(h) {
+                        hoursMapping[h] = e;
+                    })
+                });
+                $scope.stat.forEach(function (st) {
+                    var hour_key = hoursMapping[st.hour_local].name;
+                    var key = st.stop_id + '-' + hour_key;
+                    perHour[key] = perHour[key] || {
+                            num_trips: 0,
+                            arrival_late_count: 0
+                        };
+                    perHour[key].num_trips += st.num_trips;
+                    perHour[key].arrival_late_count += st.arrival_late_count;
+
+                });
+                var result = [];
+                hoursList.forEach(function (hl) {
+                    var data = $scope.fromToStops.map(function (st) {
+                        var entry = perHour[st.id + '-' + hl.name];
+                        if (!entry) {
+                            console.log('no entry for ' + st.id + ' ' + hl.name);
+                            return {
+                                y: 0,
+                                numTrips: 0,
+                            }
+                        }
+                        return {
+                            y: entry.arrival_late_count * 100.0 / entry.num_trips,
+                            numTrips: entry.num_trips,
+                        }
+                    });
+                    result.push({
+                        name: hl.name,
+                        data: data
+                    })
+                });
+                return result;
+            }
+            $scope.updateChart = function () {
+                var stopNames = $scope.fromToStops.map(function (st, idx) {
+                    return st.name + ' - ' + (idx + 1);
+                });
+                $scope.perDaySeries = $scope.computePerDaySeries();
+                $scope.perHoursSeries = $scope.computePerHoursSeries();
+
                 var tooltip = {
                     formatter: function () {
-                        var prec = Math.round(this.y*100)/100;
+                        var prec = Math.round(this.y * 100) / 100;
                         return '<span dir="rtl"><b>' + this.x + '</b>' + '<br/>' +
                             '<span>רכבות מאחרות:</span>' + prec + '%' + '<br/>' +
                             '<span>מספר רכבות: </span>' + this.point.numTrips +
@@ -280,6 +383,16 @@ angular.module('RouteExplorer').controller('GraphsController',
                     },
                     useHTML: true,
                 };
+                var series = [
+                    {
+                        name: '123',
+                        data: [10, 20, 5, 5, 5, 10, 20, 30, 15, 15, 15]
+                    },
+                    {
+                        name: '456',
+                        data: [8, 8, 8, 12, 7, 20]
+                    },
+                ]
                 $scope.chartPerDay = {
                     options: {
                         chart: {
@@ -302,7 +415,7 @@ angular.module('RouteExplorer').controller('GraphsController',
                             text: 'אחוזי איחור'
                         }
                     },
-                    series: []
+                    series: $scope.perDaySeries,
                 };
                 $scope.chartPerHour = {
                     options: {
@@ -329,11 +442,11 @@ angular.module('RouteExplorer').controller('GraphsController',
                     tooltip: {
                         useHTML: true
                     },
-                    series: []
+                    series: $scope.perHoursSeries,
                 };
             };
-            $scope.findDate = function(dates, value) {
-                for (var i = 0 ; i < dates.length ; i++) {
+            $scope.findDate = function (dates, value) {
+                for (var i = 0; i < dates.length; i++) {
                     if (dates[i].value == value) {
                         return dates[i];
                     }
@@ -344,8 +457,8 @@ angular.module('RouteExplorer').controller('GraphsController',
             $scope.initData();
 
             var params = $location.search();
-            $scope.input.startDate = $scope.findDate($scope.startDates, params.startDate) || $scope.startDates[$scope.startDates.length-1];
-            $scope.input.endDate = $scope.findDate($scope.endDates, params.endDate) || $scope.endDates[$scope.endDates.length-1];
+            $scope.input.startDate = $scope.findDate($scope.startDates, params.startDate) || $scope.startDates[$scope.startDates.length - 1];
+            $scope.input.endDate = $scope.findDate($scope.endDates, params.endDate) || $scope.endDates[$scope.endDates.length - 1];
             $scope.input.startStop = Layout.findStop(params.fromStop || 400);
             $scope.input.endStop = Layout.findStop(params.toStop || 3700)
             $scope.refresh();

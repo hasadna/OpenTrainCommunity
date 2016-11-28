@@ -86,6 +86,7 @@ def get_from_to_info_full(*, origin_id, destination_id, from_date, to_date):
         for f in fields:
             entry[f] = t[f]
         result.append(entry)
+
     assert len(result) == len(table)
     return result
 
