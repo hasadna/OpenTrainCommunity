@@ -28,6 +28,7 @@ Welcome to OpenTrainCommunity's documentation!
     database_tables_schema
     connecting_to_the_server_db
     accessing_the_data_using_redash
+    visual_data_views
 
 .. toctree::
     :maxdepth: 2
