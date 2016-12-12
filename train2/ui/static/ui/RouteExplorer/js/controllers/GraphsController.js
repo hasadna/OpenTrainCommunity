@@ -186,17 +186,17 @@ angular.module('RouteExplorer').controller('GraphsController',
                 daysTable.forEach(function (d) {
                     var data = $scope.fromToStops.map(function (st) {
                         var entry = perDay[st.id + '-' + d.value];
+                        var result = {};
                         if (!entry) {
+                            result.y = 0;
+                            result.numTrips = 0;
                             console.log('no entry for ' + st.id + ' ' + d.value);
-                            return {
-                                y: 0,
-                                numTrips: 0,
-                            }
+                        } else {
+                            result.y = entry.arrival_late_count * 100.0 / entry.num_trips;
+                            result.numTrips = entry.num_trips;
                         }
-                        return {
-                            y: entry.arrival_late_count * 100.0 / entry.num_trips,
-                            numTrips: entry.num_trips,
-                        }
+                        result.lineName = d.name;
+                        return result;
                     });
                     result.push({
                         name: d.name,
@@ -228,17 +228,17 @@ angular.module('RouteExplorer').controller('GraphsController',
                 hoursList.forEach(function (hl) {
                     var data = $scope.fromToStops.map(function (st) {
                         var entry = perHour[st.id + '-' + hl.name];
+                        var result = {};
                         if (!entry) {
                             console.log('no entry for ' + st.id + ' ' + hl.name);
-                            return {
-                                y: 0,
-                                numTrips: 0,
-                            }
+                            result.y = 0;
+                            result.numTrips = 0;
+                        } else {
+                            result.y = entry.arrival_late_count * 100.0 / entry.num_trips;
+                            result.numTrips = entry.num_trips;
                         }
-                        return {
-                            y: entry.arrival_late_count * 100.0 / entry.num_trips,
-                            numTrips: entry.num_trips,
-                        }
+                        result.lineName = hl.name;
+                        return result;
                     });
                     result.push({
                         name: hl.name,
@@ -257,7 +257,9 @@ angular.module('RouteExplorer').controller('GraphsController',
                 var tooltip = {
                     formatter: function () {
                         var prec = Math.round(this.y * 100) / 100;
+                        console.log(this);
                         return '<span dir="rtl"><b>' + this.x + '</b>' + '<br/>' +
+                                '<span>' + this.point.lineName + '</span><br/>' + 
                             '<span>רכבות מאחרות:</span>' + prec + '%' + '<br/>' +
                             '<span>מספר רכבות: </span>' + this.point.numTrips +
                             '</span>';
