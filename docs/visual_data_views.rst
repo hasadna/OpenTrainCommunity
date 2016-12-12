@@ -1,16 +1,16 @@
 Visual Data Views
 ========
- `TrainArrivalbyYear-Quarter`_.
+ `TrainArrivalbyYear-Quarter`_
  
- `MostTendingStations2014`_.
+ `MostTendingStations2014`_
  
- `TrainArrival-ByStationYear`_.
+ `TrainArrival-ByStationYear`_
  
- `DelaysRateByDayHour`_.
+ `DelaysRateByDayHour`_
  
- `StationsTainAccuracy2015-v1`_.
+ `StationsTainAccuracy2015-v1`_
  
- `StationsTainAccuracy2015-v2`_.
+ `StationsTainAccuracy2015-v2`_
 
 
 
