@@ -52,7 +52,8 @@ def get_stops_from_to(origin_id, destination_id):
     for r in routes:
         idx1 = r.stop_ids.index(origin_id)
         idx2 = r.stop_ids.index(destination_id)
-        all_stop_ids |= set(r.stop_ids[idx1:idx2+1])
+        cur_stop_ids = r.stop_ids[idx1:idx2+1]
+        all_stop_ids |= set(cur_stop_ids)
     all_stop_ids = list(all_stop_ids)
 
     def cmp_stop_ids(stop1, stop2):
@@ -65,6 +66,7 @@ def get_stops_from_to(origin_id, destination_id):
                 return (idx_stop1 - idx_stop2) // abs(idx_stop1 - idx_stop2)
             except ValueError:
                 pass
+        return None
 
     return sorted(all_stop_ids,key=cmp_to_key(cmp_stop_ids))
 
@@ -112,7 +114,8 @@ def get_routes_from_to(origin_id, destination_id):
             pass
         else:
             if idx1 < idx2:
-                result.append(route)
+                if route.trips.count() > 10:
+                    result.append(route)
     return result
 
 
