@@ -66,7 +66,7 @@ def get_stops_from_to(origin_id, destination_id):
                 return (idx_stop1 - idx_stop2) // abs(idx_stop1 - idx_stop2)
             except ValueError:
                 pass
-        return None
+        return 0 # they don't share any path - consider them as equal
 
     return sorted(all_stop_ids,key=cmp_to_key(cmp_stop_ids))
 
