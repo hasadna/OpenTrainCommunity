@@ -240,7 +240,7 @@ angular.module('RouteExplorer').controller('GraphsController',
                             to_stop: $scope.endStop.id,
                         }
                     }).then(function (resp) {
-                        $scope.stat = resp.data;
+                        $scope.stat = resp.data.table;
                     }),
                     $http.get('/api/v1/stops/from-to/', {
                         params: {
@@ -269,7 +269,7 @@ angular.module('RouteExplorer').controller('GraphsController',
 
             $scope.buildDates = function () {
                 var s = [1, 2015];
-                var e = [4, 2016];
+                var e = [5, 2016];
                 $scope.startDates = [];
                 $scope.endDates = [];
                 while (s[0] != e[0] || s[1] != e[1]) {

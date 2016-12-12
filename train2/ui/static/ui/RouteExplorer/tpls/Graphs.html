@@ -6,13 +6,13 @@
         </h1>
         <ul class="list-group" style="color: blue">
             <li class="list-group-item">
-            <b>תאריך התחלה</b>: {{ startDate}}
+            <b>תאריך התחלה</b>: {{ startDate }}
                 </li>
             <li class="list-group-item">
-                <b>תאריך סיום</b>: {{  endDate}}
+                <b>תאריך סיום</b>: {{  endDate }}
             </li>
             <li class="list-group-item">
-                <b>מספר נסיעות</b>: {{ route.trips_count}}
+                <b>מספר נסיעות</b>: {{ trips_count }}
             </li>
         </ul>
         <form class="form" id="explore-form" ng-submit="refresh()">
@@ -21,11 +21,11 @@
                     מסלול
                 </label>
                 <select class="form-control"
-                    ng-options="stop.name for stop in stops"
+                    ng-options="stop.name for stop in stops | orderBy:'name'"
                     ng-model="input.startStop"
                 ></select>
                 <select class="form-control"
-                    ng-options="stop.name for stop in stops"
+                    ng-options="stop.name for stop in stops | orderBy:'name'"
                     ng-model="input.endStop"
                 ></select>
             </div>

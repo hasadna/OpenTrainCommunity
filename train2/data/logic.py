@@ -80,16 +80,18 @@ def get_from_to_info_full(*, origin_id, destination_id, from_date, to_date):
               'stop_id'
               ]
     # we don't need all the fields
-    result = []
+    table_list = []
     for t in table:
         entry = dict()
         for f in fields:
             entry[f] = t[f]
-        result.append(entry)
+        table_list.append(entry)
 
-    assert len(result) == len(table)
+    assert len(table_list) == len(table)
+    result = {
+        'table': table_list
+    }
     return result
-
 
 def get_path_info_full(origin_id, destination_id, from_date, to_date):
     routes = get_routes_from_to(origin_id, destination_id)
