@@ -2,6 +2,7 @@
 
 source /home/opentrain/.virtualenvs/train2/bin/activate
 git pull
+pip install --upgrade pip
 pip install -r requirements.txt
 
 #(cd /home/opentrain/work/OpenTrainCommunity/train2/ui/static/ui/RouteExplorer && bower install)

@@ -259,7 +259,7 @@ angular.module('RouteExplorer').controller('GraphsController',
                         var prec = Math.round(this.y * 100) / 100;
                         console.log(this);
                         return '<span dir="rtl"><b>' + this.x + '</b>' + '<br/>' +
-                                '<span>' + this.point.lineName + '</span><br/>' + 
+                                '<span>' + this.point.lineName + '</span><br/>' +
                             '<span>רכבות מאחרות:</span>' + prec + '%' + '<br/>' +
                             '<span>מספר רכבות: </span>' + this.point.numTrips +
                             '</span>';
