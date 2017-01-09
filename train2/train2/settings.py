@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'xlparser',
     'ui',
     'info',
-    'browse',
     'rest_framework_swagger',
     'corsheaders'
 ]
@@ -52,16 +51,14 @@ INSTALLED_APPS = [
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.cache.UpdateCacheMiddleware',  # cache - eran
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.cache.FetchFromCacheMiddleware',  # cache - eran
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 
 CORS_ORIGIN_ALLOW_ALL = True
 
@@ -139,34 +136,13 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 TMP_ROOT = tempfile.gettempdir()
 
-
-def find_ot_log_dir():
-    ot_log_dir = '/var/log/opentrain'
-    ot_log_dir2 = os.path.join(TMP_ROOT, 'opentrain_logs')
-    try:
-        if not os.path.exists(ot_log_dir):
-            os.makedirs(ot_log_dir)
-        return ot_log_dir
-    except (OSError, IOError) as e:
-        # print('>>> Failed to create {0}: {1} - falling back to {2}'.format(ot_log_dir,
-        #                                                                    e,
-        #                                                                    ot_log_dir2))
-        if not os.path.exists(ot_log_dir2):
-            os.makedirs(ot_log_dir2)
-    return ot_log_dir2
-
-
-OT_LOG_DIR = find_ot_log_dir()
-
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        'LOCATION': os.path.join(TMP_ROOT, 'opentrain_cache'),
-        'TIMEOUT': 1 * 24 * 60 * 0  # one day
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'otrain_cache',
+        'TIMEOUT': 24 * 3600
     }
 }
-
-NO_CACHE = False
 
 try:
     from .local_settings import *
@@ -177,10 +153,6 @@ try:
     from local_settings import *
 except ImportError:
     pass
-
-if NO_CACHE:
-    MIDDLEWARE_CLASSES.remove('django.middleware.cache.UpdateCacheMiddleware')
-    MIDDLEWARE_CLASSES.remove('django.middleware.cache.FetchFromCacheMiddleware')
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
@@ -200,11 +172,6 @@ LOGGING = {
         },
     },
     'handlers': {
-        'file': {
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(OT_LOG_DIR, 'error.log'),
-            'formatter': 'simple',
-        },
         'console': {
             'class': 'logging.StreamHandler',
             'formatter': 'verbose',
@@ -214,9 +181,6 @@ LOGGING = {
         '': {
             'handlers': ['console'],
             'level': 'INFO',
-        },
-        'errors': {
-            'handlers': ['file'],
         },
     },
 }

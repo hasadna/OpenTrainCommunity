@@ -11,12 +11,15 @@ python manage.py migrate
 
 python manage.py collectstatic --noinput
 
+python manage.py createcachetable
+
 python manage.py clear_cache
 
 kill -HUP $(cat /home/opentrain/train2.pid)
 
 sudo service nginx reload
 sudo service nginx restart
+
 
 
 
