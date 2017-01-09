@@ -6,6 +6,14 @@ function($scope, $http, $location, $route, Layout, TimeParser) {
     var origin = Layout.findStop($route.current.params.origin);
     var destination = Layout.findStop($route.current.params.destination);
 
+    var graphsUrlParams = [
+        'startStop=' + origin.id,
+        'endStop=' + destination.id,
+        'startDate='+TimeParser.createRequestString(period.from,'-'),
+        'endDate='+TimeParser.createRequestString(period.end,'-'),
+    ];
+    $scope.graphsUrl = "#/graphs?" + graphsUrlParams.join("&");
+
     $http.get('/api/v1/stats/path-info-full/', { params: {
         origin: origin.id,
         destination: destination.id,

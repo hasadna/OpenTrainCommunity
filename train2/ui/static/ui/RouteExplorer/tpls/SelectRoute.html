@@ -3,7 +3,13 @@
         <li><a href="#">מתחנת מוצא לתחנת יעד - חודש ושנה</a></li>
         <li class="active">בחירת מסלול נסיעה</li>
     </ol>
-    <h1 class="select-route-title">סיכום</h1>
+    <h1 class="select-route-title">
+      <span class="pull-left"><a target="_blank" style="color:white; cursor:pointer"
+                                 ng-href="{{ graphsUrl }}">
+          <i class="fa fa-bar-chart"></i>
+      </a></span>
+            סיכום
+    </h1>
     <times-details ng-if="stats" stats="stats">
     </times-details>
     <p ng-if="!stats" class="text-center">

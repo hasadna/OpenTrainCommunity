@@ -342,8 +342,8 @@ angular.module('RouteExplorer').controller('GraphsController',
             var params = $location.search();
             $scope.input.startDate = $scope.findDate($scope.startDates, params.startDate) || $scope.startDates[$scope.startDates.length - 1];
             $scope.input.endDate = $scope.findDate($scope.endDates, params.endDate) || $scope.endDates[$scope.endDates.length - 1];
-            $scope.input.startStop = Layout.findStop(params.fromStop || 400);
-            $scope.input.endStop = Layout.findStop(params.toStop || 3700)
+            $scope.input.startStop = Layout.findStop(params.startStop || 400);
+            $scope.input.endStop = Layout.findStop(params.endStop|| 3700)
             $scope.refresh();
         }]);
 

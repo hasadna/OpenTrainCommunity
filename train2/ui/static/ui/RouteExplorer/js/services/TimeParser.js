@@ -1,11 +1,12 @@
 angular.module('RouteExplorer').factory('TimeParser',
 [
 function() {
-    function createRequestString(date) {
+    function createRequestString(date, sep) {
+        sep = sep || '/';
         var dd = date.getDate().toString();
         var mm = (date.getMonth()+1).toString();
         var yyyy = date.getFullYear().toString();
-        return dd + '/' + mm + '/' + yyyy;
+        return dd + sep + mm + sep + yyyy;
     }
 
     function parseMonth(monthString) {
