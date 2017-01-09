@@ -32,15 +32,6 @@ def _check_hours():
 _check_hours()
 
 
-def get_route_info_full(route_id, from_date, to_date):
-    filters = Filters(from_date=from_date, to_date=to_date)
-    route = Route.objects.get(id=route_id)
-    table = _get_stats_table(route=route, filters=filters)
-    stats = _complete_table(table, route.stop_ids)
-    stats.sort(key=_get_info_sort_key)
-    return stats
-
-
 def get_stops_from_to(origin_id, destination_id):
     """
     :param origin_id: return list of all stop ids between origin_id to destination_id
@@ -71,6 +62,17 @@ def get_stops_from_to(origin_id, destination_id):
     return sorted(all_stop_ids,key=cmp_to_key(cmp_stop_ids))
 
 
+def get_route_info_full(route_id, from_date, to_date):
+    filters = Filters(from_date=from_date, to_date=to_date)
+    route = Route.objects.get(id=route_id)
+    table = _get_stats_table(route=route, filters=filters)
+    stats = _complete_table(table, route.stop_ids)
+    stats.sort(key=_get_info_sort_key)
+    return stats
+
+
+
+
 def get_from_to_info_full(*, origin_id, destination_id, from_date, to_date):
     routes = get_routes_from_to(origin_id, destination_id)
     filters = Filters(from_date=from_date, to_date=to_date)
@@ -95,11 +97,12 @@ def get_from_to_info_full(*, origin_id, destination_id, from_date, to_date):
     }
     return result
 
+
 def get_path_info_full(origin_id, destination_id, from_date, to_date):
     routes = get_routes_from_to(origin_id, destination_id)
     filters = Filters(from_date=from_date, to_date=to_date)
     table = _get_stats_table(routes=routes, filters=filters,origin_id=origin_id, destination_id=destination_id)
-    stats = _complete_table([origin_id, destination_id])
+    stats = _complete_table(table, [origin_id, destination_id])
     stats.sort(key=_get_info_sort_key)
     return stats
 

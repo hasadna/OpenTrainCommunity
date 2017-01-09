@@ -6,7 +6,7 @@ function($scope, $http, $location, $route, Layout, TimeParser) {
     var origin = Layout.findStop($route.current.params.origin);
     var destination = Layout.findStop($route.current.params.destination);
 
-    $http.get('/api/v1/stats/path-info-full', { params: {
+    $http.get('/api/v1/stats/path-info-full/', { params: {
         origin: origin.id,
         destination: destination.id,
         from_date: TimeParser.createRequestString(period.from),

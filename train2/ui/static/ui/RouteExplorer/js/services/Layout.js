@@ -8,7 +8,7 @@ function($http, $q, TimeParser) {
     var routesMap = {};
 
     var loadedPromise = $q.all([
-        $http.get('/api/v1/stops')
+        $http.get('/api/v1/stops/')
             .then(function(response) {
                 stops = response.data.map(function(s) { return {
                     id: s.stop_id,
@@ -84,7 +84,7 @@ function($http, $q, TimeParser) {
             var fromDate = from;
             var toDate = to;
 
-            $http.get('/api/v1/routes/all-by-date', {
+            $http.get('/api/v1/routes/all-by-date/', {
                 params: {
                     from_date: TimeParser.createRequestString(fromDate),
                     to_date: TimeParser.createRequestString(toDate)

@@ -701,7 +701,7 @@ function($scope, $http, $location, $route, Layout, TimeParser) {
     var origin = Layout.findStop($route.current.params.origin);
     var destination = Layout.findStop($route.current.params.destination);
 
-    $http.get('/api/v1/stats/path-info-full', { params: {
+    $http.get('/api/v1/stats/path-info-full/', { params: {
         origin: origin.id,
         destination: destination.id,
         from_date: TimeParser.createRequestString(period.from),
@@ -1094,7 +1094,7 @@ function($http, $q, TimeParser) {
     var routesMap = {};
 
     var loadedPromise = $q.all([
-        $http.get('/api/v1/stops')
+        $http.get('/api/v1/stops/')
             .then(function(response) {
                 stops = response.data.map(function(s) { return {
                     id: s.stop_id,
@@ -1170,7 +1170,7 @@ function($http, $q, TimeParser) {
             var fromDate = from;
             var toDate = to;
 
-            $http.get('/api/v1/routes/all-by-date', {
+            $http.get('/api/v1/routes/all-by-date/', {
                 params: {
                     from_date: TimeParser.createRequestString(fromDate),
                     to_date: TimeParser.createRequestString(toDate)

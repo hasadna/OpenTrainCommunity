@@ -5,7 +5,7 @@ import time
 import re
 
 
-def encode_date(date):
+def date_to_millis_since_epoch(date):
     if date is None:
         return None
 
