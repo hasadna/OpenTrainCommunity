@@ -2,18 +2,18 @@
     'use strict';
 
     var config = {
-      scripts: {
-        src: 'js/**/*.js',
-        out: 'dist/js/',
-        map: '.'
-      },
+        scripts: {
+            src: 'js/**/*.js',
+            out: 'dist/js/',
+            map: '.'
+        },
 
-      styles: {
-        src: 'scss/**/*.scss',
-        include: ['bower_components/bootstrap-sass/assets/stylesheets/', 'bower_components/fontawesome/scss'],
-        out: 'dist/css/',
-        map: '.'
-      }
+        styles: {
+            src: 'scss/**/*.scss',
+            include: ['bower_components/bootstrap-sass/assets/stylesheets/', 'bower_components/fontawesome/scss'],
+            out: 'dist/css/',
+            map: '.'
+        }
     };
 
     var gulp = require('gulp'),
@@ -21,16 +21,21 @@
         uglify = require('gulp-uglify'),
         sass = require('gulp-sass'),
         sourcemaps = require('gulp-sourcemaps'),
-        plumber = require('gulp-plumber');
+        babel = require('gulp-babel'),
+        plumber = require('gulp-plumber'),
+        del = require('del');
 
-    gulp.task('scripts', function (){
+    gulp.task('scripts', function () {
         console.log('Minifying Scripts...');
 
         gulp.src(config.scripts.src)
             .pipe(plumber())
             .pipe(sourcemaps.init())
-              .pipe(concat('app.js'))
-              //.pipe(uglify())
+            .pipe(babel({
+                presets: ['es2015']
+             }))
+            .pipe(concat('app.js'))
+            //.pipe(uglify())
             .pipe(sourcemaps.write(config.scripts.map))
             .pipe(gulp.dest(config.scripts.out));
     });
@@ -41,10 +46,14 @@
         gulp.src(config.styles.src)
             .pipe(plumber())
             .pipe(sourcemaps.init())
-              .pipe(sass({ outputStyle: 'compressed', includePaths: config.styles.include }))
-                .on('error', sass.logError)
+            .pipe(sass({outputStyle: 'compressed', includePaths: config.styles.include}))
+            .on('error', sass.logError)
             .pipe(sourcemaps.write(config.styles.map))
             .pipe(gulp.dest(config.styles.out));
+    });
+
+    gulp.task('clean', function() {
+        del([config.scripts.out, config.styles.out]);
     });
 
     // watch task to check files for changes

@@ -1,70 +1,63 @@
+'use strict';
+
 (function () {
-    var app = angular.module('RouteExplorer', ['ngRoute',
-        'ui.bootstrap',
-        'ui.bootstrap.buttons',
-        'leaflet-directive',
-        "highcharts-ng"
-    ]);
+    var app = angular.module('RouteExplorer', ['ngRoute', 'ui.bootstrap', 'ui.bootstrap.buttons', 'leaflet-directive', "highcharts-ng"]);
 
     app.constant('env', {
         baseDir: '/static/ui/RouteExplorer'
     });
 
-    app.config(['$routeProvider','env',
-        function ($routeProvider, env) {
+    app.config(['$routeProvider', 'env', function ($routeProvider, env) {
 
-            var templateUrl = function (templateName) {
-                return env.baseDir + '/tpls/' + templateName + '.html';
-            };
+        var templateUrl = function templateUrl(templateName) {
+            return env.baseDir + '/tpls/' + templateName + '.html';
+        };
 
-            $routeProvider
-                .when('/', {
-                    pageId: 'welcome',
-                    templateUrl: templateUrl('SelectStops'),
-                    controller: 'SelectStopsController',
-                    resolve: {'Layout': 'Layout'}
-                })
-                .when('/about', {
-                    pageId: 'about',
-                    templateUrl: templateUrl('About')
-                })
-                .when('/:period/select-route/:origin/:destination', {
-                    pageId: 'routes',
-                    templateUrl: templateUrl('SelectRoute'),
-                    controller: 'SelectRouteController',
-                    resolve: {'Layout': 'Layout'},
-                    reloadOnSearch: false
-                })
-                .when('/:period/routes/:routeId', {
-                    pageId: 'route',
-                    templateUrl: templateUrl('RouteDetails'),
-                    controller: 'RouteDetailsController',
-                    resolve: {'Layout': 'Layout'},
-                    reloadOnSearch: false
-                }).when("/heat-map", {
-                    pageId: 'heatMap',
-                    templateUrl: templateUrl('HeatMap'),
-                    controller: 'HeatMapController',
-                    reloadOnSearch: false,
-                    resolve: {'Layout': 'Layout'},
-                }).when("/graphs", {
-                    pageId: 'graphs',
-                    templateUrl: templateUrl('Graphs'),
-                    controller: 'GraphsController',
-                    reloadOnSearch: false,
-                    resolve: {'Layout': 'Layout'},
-                })
-                .otherwise({
-                    redirectTo: '/'
-                });
-        }]);
+        $routeProvider.when('/', {
+            pageId: 'welcome',
+            templateUrl: templateUrl('SelectStops'),
+            controller: 'SelectStopsController',
+            resolve: { 'Layout': 'Layout' }
+        }).when('/about', {
+            pageId: 'about',
+            templateUrl: templateUrl('About')
+        }).when('/:period/select-route/:origin/:destination', {
+            pageId: 'routes',
+            templateUrl: templateUrl('SelectRoute'),
+            controller: 'SelectRouteController',
+            resolve: { 'Layout': 'Layout' },
+            reloadOnSearch: false
+        }).when('/:period/routes/:routeId', {
+            pageId: 'route',
+            templateUrl: templateUrl('RouteDetails'),
+            controller: 'RouteDetailsController',
+            resolve: { 'Layout': 'Layout' },
+            reloadOnSearch: false
+        }).when("/heat-map", {
+            pageId: 'heatMap',
+            templateUrl: templateUrl('HeatMap'),
+            controller: 'HeatMapController',
+            reloadOnSearch: false,
+            resolve: { 'Layout': 'Layout' }
+        }).when("/graphs", {
+            pageId: 'graphs',
+            templateUrl: templateUrl('Graphs'),
+            controller: 'GraphsController',
+            reloadOnSearch: false,
+            resolve: { 'Layout': 'Layout' }
+        }).otherwise({
+            redirectTo: '/'
+        });
+    }]);
 })();
+'use strict';
 
 // String.repeat polyfill
 // taken from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/repeat#Polyfill
 if (!String.prototype.repeat) {
-  String.prototype.repeat = function(count) {
+  String.prototype.repeat = function (count) {
     'use strict';
+
     if (this === null) {
       throw new TypeError('can\'t convert ' + this + ' to object');
     }
@@ -103,726 +96,374 @@ if (!String.prototype.repeat) {
     return rpt;
   };
 }
+'use strict';
 
-angular.module('RouteExplorer').directive("rexPercentBar",
-['env',
-function(env) {
-    return {
-        restrict: 'E',
-        scope: {
-          value: '=value',
-          type: '=type'
-        },
-        templateUrl: env.baseDir + '/tpls/PercentBar.html'
-      };
-}]);
-
-angular.module('RouteExplorer').directive("timesDetails",
-['env','Layout',
-function(env, Layout) {
-    return {
-        restrict: 'E',
-        scope: {
-            stats: '='
-        },
-        controller: 'TimesDetailsController',
-        templateUrl: env.baseDir + '/tpls/TimesDetails.html'
-      };
-}]);
-
-angular.module('RouteExplorer').filter('duration', function() {
-    return function(seconds) {
-        var negative = false;
-        seconds = Math.trunc(seconds);
-        if (seconds < 0) {
-            negative = true;
-            seconds = -seconds;
-        }
-
-        var minutes = Math.trunc(seconds / 60);
-        seconds -= minutes * 60;
-        var hours = Math.trunc(minutes / 60);
-        minutes -= hours * 60;
-
-        if (seconds < 10) seconds = '0' + seconds;
-        if (minutes < 10 && hours !== 0) minutes = '0' + minutes;
-
-        var res = minutes + ':' + seconds;
-        if (hours !== 0)
-            res = hours + ':' + res;
-
-        if (negative)
-            res = '-' + res;
-
-        return res;
-    };
-});
-
-angular.module('RouteExplorer').factory('Layout',
-['$http', '$q', 'TimeParser',
-function($http, $q, TimeParser) {
-    var self = this;
-    var stops = [];
-    var stopsMap = {};
-    var routes = [];
-    var routesMap = {};
-
-    var loadedPromise = $q.all([
-        $http.get('/api/v1/stops/')
-            .then(function(response) {
-                stops = response.data.map(function(s) { return {
-                    id: s.stop_id,
-                    name: s.heb_stop_names[0],
-                    names: s.heb_stop_names,
-                    latlon: s.latlon,
-                }; });
-                stops.forEach(function(s) { stopsMap[s.id] = s; });
-            }),
-
-        $http.get('/api/v1/routes/all/')
-            .then(function(response) {
-                routes = response.data.map(function(r) { return {
-                    id: r.id,
-                    stops: r.stop_ids,
-                    count: r.count,
-                    minDate: new Date(r.min_date),
-                    maxDate: new Date(r.max_date)
-                }; });
-
-                routesMap = routes.reduce(function(m, r) { m[r.id] = r; return m; }, {});
-            })
-    ]);
-
-    var findStop = function(stopId) {
-        return stopsMap[stopId] || null;
-    };
-
-    var findStopName = function(stopId) {
-        return findStop(stopId).name;
-    };
-
-    var findRoutes = function(routes, originId, destinationId) {
-        var matchingRoutes = {};
-
-        routes.forEach(function(r) {
-            var originIndex = r.stops.indexOf(originId);
-            var destinationIndex = r.stops.indexOf(destinationId);
-
-            if (originIndex < 0 || destinationIndex < 0)
-                return;
-
-            if (originIndex > destinationIndex)
-                return;
-
-            var routeStops = r.stops;
-            var routeId = r.id;
-
-            if (routeId in matchingRoutes)
-                matchingRoutes[routeId].count += r.count;
-            else {
-                matchingRoutes[routeId] = {
-                    id: routeId,
-                    stops: routeStops,
-                    count: r.count
-                };
-            }
-        });
-
-        matchingRoutes = Object.keys(matchingRoutes).map(function(routeId) { return matchingRoutes[routeId]; });
-        matchingRoutes.sort(function(r1, r2) { return r2.count - r1.count; });
-        return matchingRoutes;
-    };
-
-    var findRoutesByPeriod = function(origin, destination, from, to) {
-        // TODO use minDate and maxDate from our cached routes to avoid the http request
-
-        var d = $q.defer();
-        var matchingRoutes = findRoutes(routes, origin, destination);
-        if (matchingRoutes.length === 0) {
-            d.resolve([]);
-        } else {
-            var fromDate = from;
-            var toDate = to;
-
-            $http.get('/api/v1/routes/all-by-date/', {
-                params: {
-                    from_date: TimeParser.createRequestString(fromDate),
-                    to_date: TimeParser.createRequestString(toDate)
-                }
-            }).then(function(response) {
-                var routesInDate = response.data.map(function(r) {
-                    return {
-                        id: r.id,
-                        stops: r.stop_ids,
-                        count: r.count
-                    };
-                });
-                d.resolve(findRoutes(routesInDate, origin, destination));
-            }, function(response) { d.reject({ 'msg': 'Error fetching routes', 'response': response }); });
-        }
-
-        return d.promise;
-    };
-
-    var findRoute = function(routeId) {
-        return routesMap[routeId] || null;
-    };
-
-    var getRoutesDateRange = function() {
-        var max = new Date(1900, 0, 1);
-        var min = new Date(2100, 0, 1);
-
-        for (var i in routes) {
-            var route = routes[i];
-            if (route.count === 0)
-              continue;
-
-            if (route.minDate && route.minDate < min) min = route.minDate;
-            if (route.maxDate && route.maxDate > max) max = route.maxDate;
-        }
-        return {
-          min: min,
-          max: max
-        };
-    };
-
-    service = {
-        getStops: function() { return stops; },
-        getRoutes: function() { return routes; },
-        findRoute: findRoute,
-        findStop: findStop,
-        findStopName: findStopName,
-        findRoutes: function(origin, destination) { return findRoutes(routes, origin, destination); },
-        findRoutesByPeriod: findRoutesByPeriod,
-        getRoutesDateRange: getRoutesDateRange
-    };
-
-    return loadedPromise.then(function() { return service; });
-}]);
-
-angular.module('RouteExplorer').constant('Locale', {
-  months: [
-      'ינואר',
-      'פברואר',
-      'מרץ',
-      'אפריל',
-      'מאי',
-      'יוני',
-      'יולי',
-      'אוגוסט',
-      'ספטמבר',
-      'אוקטובר',
-      'נובמבר',
-      'דצמבר'
-  ].map(function(v, i) { return { id: i + 1, name: v }; }),
-
-  days: [
-      { abbr: 'א', name: 'ראשון', id: 1 },
-      { abbr: 'ב', name: 'שני', id: 2 },
-      { abbr: 'ג', name: 'שלישי', id: 3 },
-      { abbr: 'ד', name: 'רביעי', id: 4 },
-      { abbr: 'ה', name: 'חמישי', id: 5 },
-      { abbr: 'ו', name: 'שישי', id: 6 },
-      { abbr: 'ש', name: 'שבת', id: 7 }
-  ],
-  until: 'עד ל'
-});
-
-angular.module('RouteExplorer').factory('LocationBinder',
-['$location',
-function($location) {
-    return {
-        bind: function(scope, scopeProperty, locationProperty, parser, formatter) {
-            scope[scopeProperty] = $location.search()[locationProperty] || null;
-
-            scope.$watch(scopeProperty, function(value) {
-                if (formatter)
-                    value = formatter(value);
-
-                $location.search(locationProperty, value);
-            });
-
-            scope.$watch(function() { return $location.search()[locationProperty] || null; }, function(value) {
-                if (parser)
-                    value = parser(value);
-
-                scope[scopeProperty] = value;
-            });
-        }
-    };
-}]);
-
-angular.module('RouteExplorer').factory('TimeParser',
-[
-function() {
-    function createRequestString(date, sep) {
-        sep = sep || '/';
-        var dd = date.getDate().toString();
-        var mm = (date.getMonth()+1).toString();
-        var yyyy = date.getFullYear().toString();
-        return dd + sep + mm + sep + yyyy;
-    }
-
-    function parseMonth(monthString) {
-        var year = Number(monthString.substr(0, 4));
-        var month = Number(monthString.substr(4, 2));
-        return new Date(year, month - 1, 1);
-    }
-
-    function parsePeriod(periodString) {
-        var parts = periodString.split('-', 2);
-        var from = parseMonth(parts[0]);
-        var to = parts.length > 1 ? parseMonth(parts[1]) : from;
-        var end = new Date(to.getFullYear(), to.getMonth() + 1, 1);
-        return { from: from, to: to, end: end };
-    }
-
-    function formatMonth(date) {
-        return date.getFullYear() + ('0' + (date.getMonth() + 1)).slice(-2);
-    }
-
-    function formatPeriod(period) {
-        var f = formatMonth(period.from);
-        if (period.from < period.to)
-            f += '-' + formatMonth(period.to);
-
-        return f;
-    }
-
-    return {
-        createRequestString: createRequestString,
-        parseMonth: parseMonth,
-        parsePeriod: parsePeriod,
-        formatMonth: formatMonth,
-        formatPeriod: formatPeriod
-    }
-}]);
-
-angular.module('RouteExplorer').controller('AppController',
-['$scope', '$location',
-function($scope, $location) {
-    $scope.share = function(prefix) {
+angular.module('RouteExplorer').controller('AppController', ['$scope', '$location', function ($scope, $location) {
+    $scope.share = function (prefix) {
         var url = prefix + encodeURIComponent('http://otrain.org/#' + $location.url());
         window.open(url, 'sharePopup', 'width=600,height=550,top=100,left=100,location=no,scrollbar=no,status=no,menubar=no');
     };
 
-    $scope.$on('$routeChangeSuccess', function(e, route) {
+    $scope.$on('$routeChangeSuccess', function (e, route) {
         $scope.bodyClass = route.pageId ? 'rex-page-' + route.pageId : null;
     });
 }]);
-
 'use strict';
-angular.module('RouteExplorer').constant('daysTable',
-    [{
-        value: 0,
-        name: 'ראשון',
-    }, {
-        value: 1,
-        name: 'שני',
-    }, {
-        value: 2,
-        name: 'שלישי',
-    }, {
-        value: 3,
-        name: 'רביעי',
-    }, {
-        value: 4,
-        name: 'חמישי',
-    }, {
-        value: 5,
-        name: 'שישי',
-    }, {
-        value: 6,
-        name: 'שבת',
-    }])
-    //}], {
-    //    value: 'all',
-    //    name: 'שבועי'
-    //}
-    //])
-    .constant("monthNames", [
-        'dummy',
-        'ינואר',
-        'פברואר',
-        'מרץ',
-        'אפריל',
-        'מאי',
-        'יוני',
-        'יולי',
-        'אוגוסט',
-        'ספטמבר',
-        'אוקטובר',
-        'נובמבר',
-        'דצמבר'
-    ]).constant("hoursList", [
-    {
-        name: '4-7',
-        values: [4, 5, 6]
-    },
-    {
-        name: '7-9',
-        values: [7, 8]
-    },
-    {
-        name: '9-12',
-        values: [9,10,11],
-    },
-    {
-        name: '12-15',
-        values: [12,13,14],
-    },
-    {
-        name: '15-18',
-        values: [15,16,17],
-    },
-    {
-        name: '18-21',
-        values: [18, 19,20],
-    },
-    {
-        name: '21-24',
-        values: [21, 22,23],
-    },
-    {
-        name: '24-4',
-        values: [0, 1, 2, 3],
-    }
-]
-);
 
+angular.module('RouteExplorer').constant('daysTable', [{
+    value: 0,
+    name: 'ראשון'
+}, {
+    value: 1,
+    name: 'שני'
+}, {
+    value: 2,
+    name: 'שלישי'
+}, {
+    value: 3,
+    name: 'רביעי'
+}, {
+    value: 4,
+    name: 'חמישי'
+}, {
+    value: 5,
+    name: 'שישי'
+}, {
+    value: 6,
+    name: 'שבת'
+}])
+//}], {
+//    value: 'all',
+//    name: 'שבועי'
+//}
+//])
+.constant("monthNames", ['dummy', 'ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני', 'יולי', 'אוגוסט', 'ספטמבר', 'אוקטובר', 'נובמבר', 'דצמבר']).constant("hoursList", [{
+    name: '4-7',
+    values: [4, 5, 6]
+}, {
+    name: '7-9',
+    values: [7, 8]
+}, {
+    name: '9-12',
+    values: [9, 10, 11]
+}, {
+    name: '12-15',
+    values: [12, 13, 14]
+}, {
+    name: '15-18',
+    values: [15, 16, 17]
+}, {
+    name: '18-21',
+    values: [18, 19, 20]
+}, {
+    name: '21-24',
+    values: [21, 22, 23]
+}, {
+    name: '24-4',
+    values: [0, 1, 2, 3]
+}]);
 
-angular.module('RouteExplorer').controller('GraphsController',
-    ['$scope', '$http', '$q', '$timeout', '$location', 'Layout', 'daysTable', 'hoursList', 'monthNames',
-        function ($scope,
-                  $http,
-                  $q,
-                  $timeout,
-                  $location,
-                  Layout,
-                  daysTable,
-                  hoursList,
-                  monthNames) {
-            window.scope = $scope;
-            $scope.wip = true;
-            $scope.Layout = Layout;
-            $scope.input = {
-                graphKind: 'perDay'
-            };
-            $scope.refresh = function () {
-                $scope.wip = true;
-                $scope.startStop = $scope.input.startStop;
-                $scope.endStop = $scope.input.endStop;
-                $scope.startDate = $scope.input.startDate.value;
-                $scope.endDate = $scope.input.endDate.value;
-                $location.search({
-                    startStop: $scope.startStop.id,
-                    endStop: $scope.endStop.id,
-                    startDate: $scope.startDate,
-                    endDate: $scope.endDate,
-                });
-                $scope.stops = Layout.getStops();
-                $scope.stopsById = {};
-                $scope.stops.forEach(function (st) {
-                    $scope.stopsById[st.id] = st;
-                });
-                var cbs = [
-                    $http.get('/api/v1/stats/from-to-full/', {
-                        params: {
-                            from_date: $scope.startDate,
-                            to_date: $scope.endDate,
-                            from_stop: $scope.startStop.id,
-                            to_stop: $scope.endStop.id,
-                        }
-                    }).then(function (resp) {
-                        $scope.stat = resp.data.table;
-                    }),
-                    $http.get('/api/v1/stops/from-to/', {
-                        params: {
-                            from_stop: $scope.startStop.id,
-                            to_stop: $scope.endStop.id,
-                        }
-                    }).then(function (resp) {
-                        $scope.fromToStopsIds = resp.data;
-                        $scope.fromToStops = $scope.fromToStopsIds.map(function (stop_id) {
-                            return $scope.stopsById[stop_id];
-                        });
-                    })
-                ];
-                $q.all(cbs).then(function () {
-                    $scope.wip = false;
-                    $scope.updateChart();
-                });
-            };
-            $scope.getRouteTitle = function (route) {
-                return 'מ' + route.from + ' ל' + route.to + ' (' + route.count + ' ' + 'נסיעות' + ')';
-            }
-
-            $scope.initData = function () {
-                $scope.buildDates();
-            };
-
-            $scope.buildDates = function () {
-                var s = [1, 2015];
-                var e = [5, 2016];
-                $scope.startDates = [];
-                $scope.endDates = [];
-                while (s[0] != e[0] || s[1] != e[1]) {
-                    $scope.startDates.push({
-                        name: monthNames[s[0]] + ' ' + s[1],
-                        value: '1-' + s[0] + '-' + s[1],
-                    });
-                    var ns = s[0] == 12 ? [1, s[1] + 1] : [s[0] + 1, s[1]];
-                    $scope.endDates.push({
-                        name: monthNames[s[0]] + ' ' + s[1],
-                        value: '1-' + ns[0] + '-' + ns[1],
-                    });
-                    s[0] = s[0] + 1;
-                    if (s[0] > 12) {
-                        s[0] = 1;
-                        s[1]++;
-                    }
-                }
-            };
-            $scope.computePerDaySeries = function () {
-                var perDay = {};
-                $scope.stat.forEach(function (st) {
-                    var key = st.stop_id + '-' + st.week_day_local;
-                    perDay[key] = perDay[key] || {
-                            num_trips: 0,
-                            arrival_late_count: 0
-                        };
-                    perDay[key].num_trips += st.num_trips;
-                    perDay[key].arrival_late_count += st.arrival_late_count;
-
-                });
-                var result = [];
-                daysTable.forEach(function (d) {
-                    var data = $scope.fromToStops.map(function (st) {
-                        var entry = perDay[st.id + '-' + d.value];
-                        var result = {};
-                        if (!entry) {
-                            result.y = 0;
-                            result.numTrips = 0;
-                            console.log('no entry for ' + st.id + ' ' + d.value);
-                        } else {
-                            result.y = entry.arrival_late_count * 100.0 / entry.num_trips;
-                            result.numTrips = entry.num_trips;
-                        }
-                        result.lineName = d.name;
-                        return result;
-                    });
-                    result.push({
-                        name: d.name,
-                        data: data
-                    })
-                });
-                return result;
-            };
-            $scope.computePerHoursSeries = function () {
-                var perHour = {};
-                var hoursMapping = {}
-                hoursList.forEach(function(e) {
-                    e.values.forEach(function(h) {
-                        hoursMapping[h] = e;
-                    })
-                });
-                $scope.stat.forEach(function (st) {
-                    var hour_key = hoursMapping[st.hour_local].name;
-                    var key = st.stop_id + '-' + hour_key;
-                    perHour[key] = perHour[key] || {
-                            num_trips: 0,
-                            arrival_late_count: 0
-                        };
-                    perHour[key].num_trips += st.num_trips;
-                    perHour[key].arrival_late_count += st.arrival_late_count;
-
-                });
-                var result = [];
-                hoursList.forEach(function (hl) {
-                    var data = $scope.fromToStops.map(function (st) {
-                        var entry = perHour[st.id + '-' + hl.name];
-                        var result = {};
-                        if (!entry) {
-                            console.log('no entry for ' + st.id + ' ' + hl.name);
-                            result.y = 0;
-                            result.numTrips = 0;
-                        } else {
-                            result.y = entry.arrival_late_count * 100.0 / entry.num_trips;
-                            result.numTrips = entry.num_trips;
-                        }
-                        result.lineName = hl.name;
-                        return result;
-                    });
-                    result.push({
-                        name: hl.name,
-                        data: data
-                    })
-                });
-                return result;
-            }
-            $scope.updateChart = function () {
-                var stopNames = $scope.fromToStops.map(function (st, idx) {
-                    return st.name + ' - ' + (idx + 1);
-                });
-                $scope.perDaySeries = $scope.computePerDaySeries();
-                $scope.perHoursSeries = $scope.computePerHoursSeries();
-
-                var tooltip = {
-                    formatter: function () {
-                        var prec = Math.round(this.y * 100) / 100;
-                        console.log(this);
-                        return '<span dir="rtl"><b>' + this.x + '</b>' + '<br/>' +
-                                '<span>' + this.point.lineName + '</span><br/>' +
-                            '<span>רכבות מאחרות:</span>' + prec + '%' + '<br/>' +
-                            '<span>מספר רכבות: </span>' + this.point.numTrips +
-                            '</span>';
-                    },
-                    useHTML: true,
-                };
-                var series = [
-                    {
-                        name: '123',
-                        data: [10, 20, 5, 5, 5, 10, 20, 30, 15, 15, 15]
-                    },
-                    {
-                        name: '456',
-                        data: [8, 8, 8, 12, 7, 20]
-                    },
-                ]
-                $scope.chartPerDay = {
-                    options: {
-                        chart: {
-                            type: 'line'
-                        },
-                        title: {
-                            text: 'איחור בחתך יומי'
-                        },
-                        tooltip: tooltip,
-                    },
-                    xAxis: {
-                        reversed: true,
-                        categories: stopNames,
-                        useHTML: true,
-                    },
-                    yAxis: {
-                        opposite: true,
-                        useHTML: true,
-                        title: {
-                            text: 'אחוזי איחור'
-                        }
-                    },
-                    series: $scope.perDaySeries,
-                };
-                $scope.chartPerHour = {
-                    options: {
-                        chart: {
-                            type: 'line'
-                        },
-                        title: {
-                            text: 'אישור בחתך שעתי'
-                        },
-                        tooltip: tooltip,
-                    },
-                    yAxis: {
-                        useHTML: true,
-                        opposite: true,
-                        title: {
-                            text: 'אחוזי איחור'
-                        }
-                    },
-                    xAxis: {
-                        useHTML: true,
-                        reversed: true,
-                        categories: stopNames,
-                    },
-                    tooltip: {
-                        useHTML: true
-                    },
-                    series: $scope.perHoursSeries,
-                };
-            };
-            $scope.findDate = function (dates, value) {
-                for (var i = 0; i < dates.length; i++) {
-                    if (dates[i].value == value) {
-                        return dates[i];
-                    }
-                }
-                return null;
-            };
-
-            $scope.initData();
-
-            var params = $location.search();
-            $scope.input.startDate = $scope.findDate($scope.startDates, params.startDate) || $scope.startDates[$scope.startDates.length - 1];
-            $scope.input.endDate = $scope.findDate($scope.endDates, params.endDate) || $scope.endDates[$scope.endDates.length - 1];
-            $scope.input.startStop = Layout.findStop(params.startStop || 400);
-            $scope.input.endStop = Layout.findStop(params.endStop|| 3700)
-            $scope.refresh();
-        }]);
-
-
-
-
-
-
-angular.module('RouteExplorer').controller('HeatMapController',
-    ['$scope', '$http', 'Layout', function ($scope, $http, Layout) {
-        $scope.Layout = Layout;
-        var ta = $scope.Layout.findStop(4600); // TA HASHALOM
-        console.log(ta);
-        angular.extend($scope, {
-            defaults: {
-                scrollWheelZoom: false
-            },
-            center: {
-                lat: ta.latlon[0],
-                lng: ta.latlon[1],
-                zoom: 10,
-            }
+angular.module('RouteExplorer').controller('GraphsController', ['$scope', '$http', '$q', '$timeout', '$location', 'Layout', 'daysTable', 'hoursList', 'monthNames', function ($scope, $http, $q, $timeout, $location, Layout, daysTable, hoursList, monthNames) {
+    window.scope = $scope;
+    $scope.wip = true;
+    $scope.Layout = Layout;
+    $scope.input = {
+        graphKind: 'perDay'
+    };
+    $scope.refresh = function () {
+        $scope.wip = true;
+        $scope.startStop = $scope.input.startStop;
+        $scope.endStop = $scope.input.endStop;
+        $scope.startDate = $scope.input.startDate.value;
+        $scope.endDate = $scope.input.endDate.value;
+        $location.search({
+            startStop: $scope.startStop.id,
+            endStop: $scope.endStop.id,
+            startDate: $scope.startDate,
+            endDate: $scope.endDate
         });
         $scope.stops = Layout.getStops();
-        $scope.input = {
-            stop: $scope.stops[0]
+        $scope.stopsById = {};
+        $scope.stops.forEach(function (st) {
+            $scope.stopsById[st.id] = st;
+        });
+        var cbs = [$http.get('/api/v1/stats/from-to-full/', {
+            params: {
+                from_date: $scope.startDate,
+                to_date: $scope.endDate,
+                from_stop: $scope.startStop.id,
+                to_stop: $scope.endStop.id
+            }
+        }).then(function (resp) {
+            $scope.stat = resp.data.table;
+        }), $http.get('/api/v1/stops/from-to/', {
+            params: {
+                from_stop: $scope.startStop.id,
+                to_stop: $scope.endStop.id
+            }
+        }).then(function (resp) {
+            $scope.fromToStopsIds = resp.data;
+            $scope.fromToStops = $scope.fromToStopsIds.map(function (stop_id) {
+                return $scope.stopsById[stop_id];
+            });
+        })];
+        $q.all(cbs).then(function () {
+            $scope.wip = false;
+            $scope.updateChart();
+        });
+    };
+    $scope.getRouteTitle = function (route) {
+        return 'מ' + route.from + ' ל' + route.to + ' (' + route.count + ' ' + 'נסיעות' + ')';
+    };
+
+    $scope.initData = function () {
+        $scope.buildDates();
+    };
+
+    $scope.buildDates = function () {
+        var s = [1, 2015];
+        var e = [5, 2016];
+        $scope.startDates = [];
+        $scope.endDates = [];
+        while (s[0] != e[0] || s[1] != e[1]) {
+            $scope.startDates.push({
+                name: monthNames[s[0]] + ' ' + s[1],
+                value: '1-' + s[0] + '-' + s[1]
+            });
+            var ns = s[0] == 12 ? [1, s[1] + 1] : [s[0] + 1, s[1]];
+            $scope.endDates.push({
+                name: monthNames[s[0]] + ' ' + s[1],
+                value: '1-' + ns[0] + '-' + ns[1]
+            });
+            s[0] = s[0] + 1;
+            if (s[0] > 12) {
+                s[0] = 1;
+                s[1]++;
+            }
         }
-        $scope.paths = [];
-        $http.get('/api/v1/heat-map/').then(function (resp) {
-            $scope.heatmapData = resp.data;
-            //var maxScore = 0;
-            //var minScore = 1;
-
-            //$scope.heatmapData.forEach(function(score) {
-            //    maxScore = Math.max(score.score, maxScore);
-            //    minScore = Math.min(score.score, minScore);
-            //});
-
-            $scope.heatmapData.forEach(function (score) {
-                var latlng = $scope.Layout.findStop(score.stop_id).latlon;
-                var g = 255-Math.floor(255 * score.score);
-                var color = 'rgb(255,' + g + ',0)';
-                var message = $scope.Layout.findStop(score.stop_id).name + '<br/>' + Math.floor(score.score * 100) / 100;
-                $scope.paths.push({
-                    color: color,
-                    fillColor: color,
-                    fillOpacity: 1,
-                    type: "circleMarker",
-                    stroke: false,
-                    radius: 10,
-                    latlngs: latlng,
-                    message: message,
-                    popupOptions: {
-                        className: 'ot-popup'
-                    }
-                });
+    };
+    $scope.computePerDaySeries = function () {
+        var perDay = {};
+        $scope.stat.forEach(function (st) {
+            var key = st.stop_id + '-' + st.week_day_local;
+            perDay[key] = perDay[key] || {
+                num_trips: 0,
+                arrival_late_count: 0
+            };
+            perDay[key].num_trips += st.num_trips;
+            perDay[key].arrival_late_count += st.arrival_late_count;
+        });
+        var result = [];
+        daysTable.forEach(function (d) {
+            var data = $scope.fromToStops.map(function (st) {
+                var entry = perDay[st.id + '-' + d.value];
+                var result = {};
+                if (!entry) {
+                    result.y = 0;
+                    result.numTrips = 0;
+                    console.log('no entry for ' + st.id + ' ' + d.value);
+                } else {
+                    result.y = entry.arrival_late_count * 100.0 / entry.num_trips;
+                    result.numTrips = entry.num_trips;
+                }
+                result.lineName = d.name;
+                return result;
+            });
+            result.push({
+                name: d.name,
+                data: data
             });
         });
+        return result;
+    };
+    $scope.computePerHoursSeries = function () {
+        var perHour = {};
+        var hoursMapping = {};
+        hoursList.forEach(function (e) {
+            e.values.forEach(function (h) {
+                hoursMapping[h] = e;
+            });
+        });
+        $scope.stat.forEach(function (st) {
+            var hour_key = hoursMapping[st.hour_local].name;
+            var key = st.stop_id + '-' + hour_key;
+            perHour[key] = perHour[key] || {
+                num_trips: 0,
+                arrival_late_count: 0
+            };
+            perHour[key].num_trips += st.num_trips;
+            perHour[key].arrival_late_count += st.arrival_late_count;
+        });
+        var result = [];
+        hoursList.forEach(function (hl) {
+            var data = $scope.fromToStops.map(function (st) {
+                var entry = perHour[st.id + '-' + hl.name];
+                var result = {};
+                if (!entry) {
+                    console.log('no entry for ' + st.id + ' ' + hl.name);
+                    result.y = 0;
+                    result.numTrips = 0;
+                } else {
+                    result.y = entry.arrival_late_count * 100.0 / entry.num_trips;
+                    result.numTrips = entry.num_trips;
+                }
+                result.lineName = hl.name;
+                return result;
+            });
+            result.push({
+                name: hl.name,
+                data: data
+            });
+        });
+        return result;
+    };
+    $scope.updateChart = function () {
+        var stopNames = $scope.fromToStops.map(function (st, idx) {
+            return st.name + ' - ' + (idx + 1);
+        });
+        $scope.perDaySeries = $scope.computePerDaySeries();
+        $scope.perHoursSeries = $scope.computePerHoursSeries();
 
-    }]);
+        var tooltip = {
+            formatter: function formatter() {
+                var prec = Math.round(this.y * 100) / 100;
+                console.log(this);
+                return '<span dir="rtl"><b>' + this.x + '</b>' + '<br/>' + '<span>' + this.point.lineName + '</span><br/>' + '<span>רכבות מאחרות:</span>' + prec + '%' + '<br/>' + '<span>מספר רכבות: </span>' + this.point.numTrips + '</span>';
+            },
+            useHTML: true
+        };
+        var series = [{
+            name: '123',
+            data: [10, 20, 5, 5, 5, 10, 20, 30, 15, 15, 15]
+        }, {
+            name: '456',
+            data: [8, 8, 8, 12, 7, 20]
+        }];
+        $scope.chartPerDay = {
+            options: {
+                chart: {
+                    type: 'line'
+                },
+                title: {
+                    text: 'איחור בחתך יומי'
+                },
+                tooltip: tooltip
+            },
+            xAxis: {
+                reversed: true,
+                categories: stopNames,
+                useHTML: true
+            },
+            yAxis: {
+                opposite: true,
+                useHTML: true,
+                title: {
+                    text: 'אחוזי איחור'
+                }
+            },
+            series: $scope.perDaySeries
+        };
+        $scope.chartPerHour = {
+            options: {
+                chart: {
+                    type: 'line'
+                },
+                title: {
+                    text: 'אישור בחתך שעתי'
+                },
+                tooltip: tooltip
+            },
+            yAxis: {
+                useHTML: true,
+                opposite: true,
+                title: {
+                    text: 'אחוזי איחור'
+                }
+            },
+            xAxis: {
+                useHTML: true,
+                reversed: true,
+                categories: stopNames
+            },
+            tooltip: {
+                useHTML: true
+            },
+            series: $scope.perHoursSeries
+        };
+    };
+    $scope.findDate = function (dates, value) {
+        for (var i = 0; i < dates.length; i++) {
+            if (dates[i].value == value) {
+                return dates[i];
+            }
+        }
+        return null;
+    };
 
+    $scope.initData();
 
+    var params = $location.search();
+    $scope.input.startDate = $scope.findDate($scope.startDates, params.startDate) || $scope.startDates[$scope.startDates.length - 1];
+    $scope.input.endDate = $scope.findDate($scope.endDates, params.endDate) || $scope.endDates[$scope.endDates.length - 1];
+    $scope.input.startStop = Layout.findStop(params.startStop || 400);
+    $scope.input.endStop = Layout.findStop(params.endStop || 3700);
+    $scope.refresh();
+}]);
+'use strict';
 
-angular.module('RouteExplorer').controller('RouteDetailsController',
-['$scope', '$route', '$http', '$location', 'LocationBinder', 'Layout', 'Locale', 'TimeParser',
-function($scope, $route, $http, $location, LocationBinder, Layout, Locale, TimeParser) {
+angular.module('RouteExplorer').controller('HeatMapController', ['$scope', '$http', 'Layout', function ($scope, $http, Layout) {
+    $scope.Layout = Layout;
+    var ta = $scope.Layout.findStop(4600); // TA HASHALOM
+    console.log(ta);
+    angular.extend($scope, {
+        defaults: {
+            scrollWheelZoom: false
+        },
+        center: {
+            lat: ta.latlon[0],
+            lng: ta.latlon[1],
+            zoom: 10
+        }
+    });
+    $scope.stops = Layout.getStops();
+    $scope.input = {
+        stop: $scope.stops[0]
+    };
+    $scope.paths = [];
+    $http.get('/api/v1/heat-map/').then(function (resp) {
+        $scope.heatmapData = resp.data;
+        //var maxScore = 0;
+        //var minScore = 1;
+
+        //$scope.heatmapData.forEach(function(score) {
+        //    maxScore = Math.max(score.score, maxScore);
+        //    minScore = Math.min(score.score, minScore);
+        //});
+
+        $scope.heatmapData.forEach(function (score) {
+            var latlng = $scope.Layout.findStop(score.stop_id).latlon;
+            var g = 255 - Math.floor(255 * score.score);
+            var color = 'rgb(255,' + g + ',0)';
+            var message = $scope.Layout.findStop(score.stop_id).name + '<br/>' + Math.floor(score.score * 100) / 100;
+            $scope.paths.push({
+                color: color,
+                fillColor: color,
+                fillOpacity: 1,
+                type: "circleMarker",
+                stroke: false,
+                radius: 10,
+                latlngs: latlng,
+                message: message,
+                popupOptions: {
+                    className: 'ot-popup'
+                }
+            });
+        });
+    });
+}]);
+'use strict';
+
+angular.module('RouteExplorer').controller('RouteDetailsController', ['$scope', '$route', '$http', '$location', 'LocationBinder', 'Layout', 'Locale', 'TimeParser', function ($scope, $route, $http, $location, LocationBinder, Layout, Locale, TimeParser) {
     var routeParams = $route.current.params;
 
     var period = TimeParser.parsePeriod(routeParams.period);
@@ -840,7 +481,7 @@ function($scope, $route, $http, $location, LocationBinder, Layout, Locale, TimeP
 
     $scope.selectedPeriod = formatMonth(period.from);
     if (period.to > period.from) {
-        $scope.selectedPeriod += " \u2014 " + formatMonth(period.to)
+        $scope.selectedPeriod += ' \u2014 ' + formatMonth(period.to);
     }
 
     $scope.selectedDay = null;
@@ -858,75 +499,68 @@ function($scope, $route, $http, $location, LocationBinder, Layout, Locale, TimeP
     $scope.previousPeriodUrl = bounds.min.getTime() - day < previousPeriod.from.getTime() ? '#/' + TimeParser.formatPeriod(previousPeriod) + '/routes/' + routeId : null;
     $scope.nextPeriodUrl = bounds.max > nextPeriod.to ? '#/' + TimeParser.formatPeriod(nextPeriod) + '/routes/' + routeId : null;
 
-    $http.get('/api/v1/stats/route-info-full', { params: { route_id: routeId, from_date: startDate, to_date: endDate } })
-        .success(function(data) {
-            loadStats(data);
-            $scope.loaded = true;
-        });
+    $http.get('/api/v1/stats/route-info-full', { params: { route_id: routeId, from_date: startDate, to_date: endDate } }).success(function (data) {
+        loadStats(data);
+        $scope.loaded = true;
+    });
 
-    LocationBinder.bind($scope, 'selectedDay', 'day', function(val) { return val ? Number(val) : null; });
+    LocationBinder.bind($scope, 'selectedDay', 'day', function (val) {
+        return val ? Number(val) : null;
+    });
     LocationBinder.bind($scope, 'selectedTime', 'time');
 
-    $scope.stopStats = function(stopId) {
+    $scope.stopStats = function (stopId) {
         var stats = selectedStats();
         for (var i in stats) {
-            if (stats[i].stop_id == stopId)
-                return stats[i];
+            if (stats[i].stop_id == stopId) return stats[i];
         }
         return null;
     };
 
-    $scope.stopName = function(stopId) {
+    $scope.stopName = function (stopId) {
         var stop = Layout.findStop(stopId);
-        if (!stop)
-            return null;
+        if (!stop) return null;
 
-            return stop.name;
+        return stop.name;
     };
 
-    $scope.isDayEmpty = function(day) {
+    $scope.isDayEmpty = function (day) {
         var dayId = day.id;
         var dayTimes = statsMap[dayId];
 
-        if (!dayTimes)
-            return true;
+        if (!dayTimes) return true;
 
-        for (var time in dayTimes)
-            if (dayTimes[time].info.num_trips > 0)
-                return false;
-
-        return true;
+        for (var time in dayTimes) {
+            if (dayTimes[time].info.num_trips > 0) return false;
+        }return true;
     };
 
-    $scope.isTimeEmpty = function(time) {
+    $scope.isTimeEmpty = function (time) {
         var dayId = $scope.selectedDay || 'all';
         var timeId = time.id;
 
         var timeStats = statsMap[dayId] && statsMap[dayId][timeId];
-        if (timeStats && timeStats.info.num_trips > 0)
-            return false;
+        if (timeStats && timeStats.info.num_trips > 0) return false;
 
         return true;
     };
 
-    $scope.tripCount = function(dayId, timeId) {
-      var stats = getStats(dayId, timeId);
-      if (!stats)
-        return 0;
+    $scope.tripCount = function (dayId, timeId) {
+        var stats = getStats(dayId, timeId);
+        if (!stats) return 0;
 
-      return stats.info.num_trips;
+        return stats.info.num_trips;
     };
 
     function getStats(dayId, timeId) {
-      dayId = dayId || 'all';
-      timeId = timeId || 'all';
-      return statsMap[dayId] && statsMap[dayId][timeId] ? statsMap[dayId][timeId] : null;
+        dayId = dayId || 'all';
+        timeId = timeId || 'all';
+        return statsMap[dayId] && statsMap[dayId][timeId] ? statsMap[dayId][timeId] : null;
     }
 
     function selectedStats() {
         var stats = getStats($scope.selectedDay, $scope.selectedTime);
-        if (stats)
-          return stats.stops;
+        if (stats) return stats.stops;
 
         return [];
     }
@@ -940,8 +574,7 @@ function($scope, $route, $http, $location, LocationBinder, Layout, Locale, TimeP
             var timeId = statGroup.info.hours == 'all' ? 'all' : statGroup.info.hours[0] + '-' + statGroup.info.hours[1];
             var dayId = statGroup.info.week_day;
 
-            if (!statsMap[dayId])
-                statsMap[dayId] = {};
+            if (!statsMap[dayId]) statsMap[dayId] = {};
 
             statsMap[dayId][timeId] = statGroup;
 
@@ -962,7 +595,7 @@ function($scope, $route, $http, $location, LocationBinder, Layout, Locale, TimeP
     }
 
     function formatMonth(date) {
-        return Locale.months[date.getMonth()].name + ' ' + date.getFullYear()
+        return Locale.months[date.getMonth()].name + ' ' + date.getFullYear();
     }
 
     function offsetMonth(date, offset) {
@@ -972,9 +605,7 @@ function($scope, $route, $http, $location, LocationBinder, Layout, Locale, TimeP
     }
 
     function offsetPeriod(period, offset) {
-        var size =
-            (period.to.getFullYear() - period.from.getFullYear()) * 12 +
-            period.to.getMonth() - period.from.getMonth() + 1;
+        var size = (period.to.getFullYear() - period.from.getFullYear()) * 12 + period.to.getMonth() - period.from.getMonth() + 1;
 
         return {
             from: offsetMonth(period.from, size * offset),
@@ -983,99 +614,86 @@ function($scope, $route, $http, $location, LocationBinder, Layout, Locale, TimeP
         };
     }
 }]);
+'use strict';
 
-angular.module('RouteExplorer').controller('SelectRouteController',
-['$scope', '$http', '$location', '$route', 'Layout', 'TimeParser',
-function($scope, $http, $location, $route, Layout, TimeParser) {
+angular.module('RouteExplorer').controller('SelectRouteController', ['$scope', '$http', '$location', '$route', 'Layout', 'TimeParser', function ($scope, $http, $location, $route, Layout, TimeParser) {
     $scope.stops = Layout.getStops();
     var period = TimeParser.parsePeriod($route.current.params.period);
     var origin = Layout.findStop($route.current.params.origin);
     var destination = Layout.findStop($route.current.params.destination);
 
-    var graphsUrlParams = [
-        'startStop=' + origin.id,
-        'endStop=' + destination.id,
-        'startDate='+TimeParser.createRequestString(period.from,'-'),
-        'endDate='+TimeParser.createRequestString(period.end,'-'),
-    ];
+    var graphsUrlParams = ['startStop=' + origin.id, 'endStop=' + destination.id, 'startDate=' + TimeParser.createRequestString(period.from, '-'), 'endDate=' + TimeParser.createRequestString(period.end, '-')];
     $scope.graphsUrl = "#/graphs?" + graphsUrlParams.join("&");
 
     $http.get('/api/v1/stats/path-info-full/', { params: {
-        origin: origin.id,
-        destination: destination.id,
-        from_date: TimeParser.createRequestString(period.from),
-        to_date: TimeParser.createRequestString(period.end) }
-    }).success(function(data) {
-            loadStats(data);
-            $scope.loaded = true;
+            origin: origin.id,
+            destination: destination.id,
+            from_date: TimeParser.createRequestString(period.from),
+            to_date: TimeParser.createRequestString(period.end) }
+    }).success(function (data) {
+        loadStats(data);
+        $scope.loaded = true;
     });
 
     var statsMap = {};
 
     function formatMonth(date) {
-        return Locale.months[date.getMonth()].name + ' ' + date.getFullYear()
+        return Locale.months[date.getMonth()].name + ' ' + date.getFullYear();
     }
 
     function formatHour(hour) {
         return ('0' + hour % 24 + '').slice(-2) + ':00';
     }
 
-
     function loadStats(data) {
         $scope.stats = data;
     }
 
-    Layout.findRoutesByPeriod(origin.id, destination.id, period.from, period.end).then(function(routes) {
-        if (routes.length > 1)
-            collapseRoutes(routes);
+    Layout.findRoutesByPeriod(origin.id, destination.id, period.from, period.end).then(function (routes) {
+        if (routes.length > 1) collapseRoutes(routes);
         $scope.routes = routes;
-
     });
 
     function stopName(stopId) {
         var stop = Layout.findStop(stopId);
-        if (!stop)
-            return null;
+        if (!stop) return null;
 
         return stop.name;
     }
 
-    $scope.isCollapsed = function(value) {
+    $scope.isCollapsed = function (value) {
         return angular.isArray(value);
     };
 
-    $scope.isOrigin = function(stopId) {
+    $scope.isOrigin = function (stopId) {
         return stopId == origin.id;
     };
 
-    $scope.isDestination = function(stopId) {
+    $scope.isDestination = function (stopId) {
         return stopId == destination.id;
     };
 
-    $scope.stopText = function(stopId) {
-        if ($scope.isCollapsed(stopId))
-            return "\u2022".repeat(stopId.length);
+    $scope.stopText = function (stopId) {
+        if ($scope.isCollapsed(stopId)) return '\u2022'.repeat(stopId.length);
 
         return stopName(stopId);
     };
 
-    $scope.stopTooltip = function(stopId) {
-        if (!$scope.isCollapsed(stopId))
-            return null;
+    $scope.stopTooltip = function (stopId) {
+        if (!$scope.isCollapsed(stopId)) return null;
 
         return stopId.map(stopName).join(", ");
     };
 
-    $scope.barWidth = function(route) {
+    $scope.barWidth = function (route) {
         var percentWidth = route.count * 100.0 / $scope.routes[0].count;
 
-        if (percentWidth < 1.0)
-            return "1px";
+        if (percentWidth < 1.0) return "1px";
 
         return percentWidth + "%";
     };
 
-    $scope.routeUrl = function(route) {
+    $scope.routeUrl = function (route) {
         return '/#/' + $route.current.params.period + '/routes/' + route.id;
     };
 
@@ -1094,8 +712,7 @@ function($scope, $http, $location, $route, Layout, TimeParser) {
                 var route = routes[routeIndex];
                 for (var i in route.stops) {
                     var stopId = route.stops[i];
-                    if (!stopFrequencies[stopId])
-                        stopFrequencies[stopId] = 0;
+                    if (!stopFrequencies[stopId]) stopFrequencies[stopId] = 0;
                     stopFrequencies[stopId]++;
                 }
             }
@@ -1105,11 +722,9 @@ function($scope, $http, $location, $route, Layout, TimeParser) {
 
         function findCommonStops(stopFrequencies, routesCount) {
             var commonStops = {};
-            for (var stopId in stopFrequencies)
-                if (stopFrequencies[stopId] == routesCount)
-                    commonStops[stopId] = true;
-
-            return commonStops;
+            for (var stopId in stopFrequencies) {
+                if (stopFrequencies[stopId] == routesCount) commonStops[stopId] = true;
+            }return commonStops;
         }
 
         function collapseStops(stops, collapsibleStops) {
@@ -1134,10 +749,9 @@ function($scope, $http, $location, $route, Layout, TimeParser) {
         }
     }
 }]);
+'use strict';
 
-angular.module('RouteExplorer').controller('SelectStopsController',
-['$scope', '$rootScope', '$location', 'Layout', 'Locale', 'TimeParser',
-function($scope, $rootScope, $location, Layout, Locale, TimeParser) {
+angular.module('RouteExplorer').controller('SelectStopsController', ['$scope', '$rootScope', '$location', 'Layout', 'Locale', 'TimeParser', function ($scope, $rootScope, $location, Layout, Locale, TimeParser) {
     $scope.stops = Layout.getStops();
     $scope.origin = null;
     $scope.destination = null;
@@ -1148,80 +762,71 @@ function($scope, $rootScope, $location, Layout, Locale, TimeParser) {
     $scope.startPeriod = $scope.periods[0];
     $scope.endPeriod = $scope.periods[0];
 
-    $scope.formValid = function() {
-        return (
-            !!$scope.origin &&
-            !!$scope.destination &&
-            $scope.origin != $scope.destination &&
-            $scope.startPeriod.from <= $scope.endPeriod.to
-        );
+    $scope.formValid = function () {
+        return !!$scope.origin && !!$scope.destination && $scope.origin != $scope.destination && $scope.startPeriod.from <= $scope.endPeriod.to;
     };
 
-    $scope.stopName = function(stopId) {
+    $scope.stopName = function (stopId) {
         var stop = Layout.findStop(stopId);
-        if (!stop)
-            return null;
+        if (!stop) return null;
 
         return stop.name;
     };
 
-    $scope.goToRoutes = function() {
+    $scope.goToRoutes = function () {
         $scope.noRoutes = false;
         $scope.loading = true;
         var period = {
             from: $scope.startPeriod.from,
             to: $scope.endPeriod.to,
-            end: $scope.endPeriod.end,
+            end: $scope.endPeriod.end
         };
         var fromDate = period.from;
         var toDate = period.end;
         var periodStr = TimeParser.formatPeriod(period);
-        Layout.findRoutesByPeriod($scope.origin.id, $scope.destination.id, fromDate, toDate)
-            .then(function(routes) {
-                if (routes.length === 0) {
-                    $scope.noRoutes = true;
-                } else if (routes.length == 1) {
-                    $location.path('/' + periodStr + '/routes/' + routes[0].id);
-                } else {
-                    $location.path('/' + periodStr + '/select-route/' + $scope.origin.id + '/' + $scope.destination.id);
-                }
-            })
-            .finally(function() {
-                $scope.loading = false;
-            });
+        Layout.findRoutesByPeriod($scope.origin.id, $scope.destination.id, fromDate, toDate).then(function (routes) {
+            if (routes.length === 0) {
+                $scope.noRoutes = true;
+            } else if (routes.length == 1) {
+                $location.path('/' + periodStr + '/routes/' + routes[0].id);
+            } else {
+                $location.path('/' + periodStr + '/select-route/' + $scope.origin.id + '/' + $scope.destination.id);
+            }
+        }).finally(function () {
+            $scope.loading = false;
+        });
     };
 
-    $scope.dismissError = function() {
+    $scope.dismissError = function () {
         $scope.noRoutes = false;
     };
 
     function generatePeriods(fromDate, toDate) {
-      // fromDate=1970-1-1 due to a data bug. This is a quick temporary workaround
-      if (fromDate.getFullYear() < 2013) fromDate = new Date(2013, 0, 1);
+        // fromDate=1970-1-1 due to a data bug. This is a quick temporary workaround
+        if (fromDate.getFullYear() < 2013) fromDate = new Date(2013, 0, 1);
 
-      var periods = [];
-      var start = new Date(fromDate.getFullYear(), fromDate.getMonth(), 1);
-      while (start < toDate) {
-        end = new Date(start.getFullYear(), start.getMonth() + 1, start.getDate());
-        var period = {
-          from: start,
-          to: start,
-          end: end,
-          name: Locale.months[start.getMonth()].name + " " + start.getFullYear()
-        };
-        period.toName = Locale.until + period.name;
-        periods.push(period);
-        start = end;
-      }
-      periods.reverse();
-      return periods;
+        var periods = [];
+        var start = new Date(fromDate.getFullYear(), fromDate.getMonth(), 1);
+        while (start < toDate) {
+            end = new Date(start.getFullYear(), start.getMonth() + 1, start.getDate());
+            var period = {
+                from: start,
+                to: start,
+                end: end,
+                name: Locale.months[start.getMonth()].name + " " + start.getFullYear()
+            };
+            period.toName = Locale.until + period.name;
+            periods.push(period);
+            start = end;
+        }
+        periods.reverse();
+        return periods;
     }
 }]);
+'use strict';
 
-angular.module('RouteExplorer').controller('TimesDetailsController',
-    ['$scope', '$route', 'Locale','LocationBinder','Layout',
-function($scope, $route, Locale, LocationBinder, Layout) {
-    Layout.then(function(Layout) {
+angular.module('RouteExplorer').controller('TimesDetailsController', ['$scope', '$route', 'Locale', 'LocationBinder', 'Layout', function ($scope, $route, Locale, LocationBinder, Layout) {
+    Layout.then(function (Layout) {
         $scope.layout = Layout;
     });
     $scope.layout = null;
@@ -1229,29 +834,29 @@ function($scope, $route, Locale, LocationBinder, Layout) {
     var statsMap = {};
     var routeParams = $route.current.params;
     $scope.stopIds = [parseInt(routeParams.origin), parseInt(routeParams.destination)];
-    LocationBinder.bind($scope, 'selectedDay', 'day', function(val) { return val ? Number(val) : null; });
+    LocationBinder.bind($scope, 'selectedDay', 'day', function (val) {
+        return val ? Number(val) : null;
+    });
     LocationBinder.bind($scope, 'selectedTime', 'time');
     function formatHour(hour) {
         return ('0' + hour % 24 + '').slice(-2) + ':00';
     }
 
     function formatMonth(date) {
-        return Locale.months[date.getMonth()].name + ' ' + date.getFullYear()
+        return Locale.months[date.getMonth()].name + ' ' + date.getFullYear();
     }
 
     function selectedStats() {
         var stats = getStats($scope.selectedDay, $scope.selectedTime);
-        if (stats)
-          return stats.stops;
+        if (stats) return stats.stops;
 
         return [];
     }
 
-    $scope.stopName = function(stopId) {
+    $scope.stopName = function (stopId) {
         if ($scope.layout) {
             var stop = $scope.layout.findStop(stopId);
-            if (!stop)
-                return null;
+            if (!stop) return null;
 
             return stop.name;
         } else {
@@ -1265,7 +870,7 @@ function($scope, $route, Locale, LocationBinder, Layout) {
     $scope.selectedTime = null;
     $scope.times = [];
 
-    $scope.loadStats = function() {
+    $scope.loadStats = function () {
         var data = $scope.stats;
         $scope.times = [];
         var timesMap = {};
@@ -1275,8 +880,7 @@ function($scope, $route, Locale, LocationBinder, Layout) {
             var timeId = statGroup.info.hours == 'all' ? 'all' : statGroup.info.hours[0] + '-' + statGroup.info.hours[1];
             var dayId = statGroup.info.week_day;
 
-            if (!statsMap[dayId])
-                statsMap[dayId] = {};
+            if (!statsMap[dayId]) statsMap[dayId] = {};
 
             statsMap[dayId][timeId] = statGroup;
 
@@ -1291,42 +895,317 @@ function($scope, $route, Locale, LocationBinder, Layout) {
             }
         }
     };
-    $scope.tripCount = function(dayId, timeId) {
-      var stats = getStats(dayId, timeId);
-      if (!stats)
-        return 0;
+    $scope.tripCount = function (dayId, timeId) {
+        var stats = getStats(dayId, timeId);
+        if (!stats) return 0;
 
-      return stats.info.num_trips;
+        return stats.info.num_trips;
     };
 
     function getStats(dayId, timeId) {
-      dayId = dayId || 'all';
-      timeId = timeId || 'all';
-      return statsMap[dayId] && statsMap[dayId][timeId] ? statsMap[dayId][timeId] : null;
+        dayId = dayId || 'all';
+        timeId = timeId || 'all';
+        return statsMap[dayId] && statsMap[dayId][timeId] ? statsMap[dayId][timeId] : null;
     }
 
-    $scope.isTimeEmpty = function(time) {
+    $scope.isTimeEmpty = function (time) {
         var dayId = $scope.selectedDay || 'all';
         var timeId = time.id;
 
         var timeStats = statsMap[dayId] && statsMap[dayId][timeId];
-        if (timeStats && timeStats.info.num_trips > 0)
-            return false;
+        if (timeStats && timeStats.info.num_trips > 0) return false;
 
         return true;
     };
 
-    $scope.stopStats = function(stopId) {
+    $scope.stopStats = function (stopId) {
         var stats = selectedStats();
         for (var i in stats) {
-            if (stats[i].stop_id == stopId)
-                return stats[i];
+            if (stats[i].stop_id == stopId) return stats[i];
         }
         return null;
     };
 
     $scope.loadStats();
 }]);
+'use strict';
 
+angular.module('RouteExplorer').directive("rexPercentBar", ['env', function (env) {
+  return {
+    restrict: 'E',
+    scope: {
+      value: '=value',
+      type: '=type'
+    },
+    templateUrl: env.baseDir + '/tpls/PercentBar.html'
+  };
+}]);
+'use strict';
 
+angular.module('RouteExplorer').directive("timesDetails", ['env', 'Layout', function (env, Layout) {
+    return {
+        restrict: 'E',
+        scope: {
+            stats: '='
+        },
+        controller: 'TimesDetailsController',
+        templateUrl: env.baseDir + '/tpls/TimesDetails.html'
+    };
+}]);
+'use strict';
+
+angular.module('RouteExplorer').filter('duration', function () {
+    return function (seconds) {
+        var negative = false;
+        seconds = Math.trunc(seconds);
+        if (seconds < 0) {
+            negative = true;
+            seconds = -seconds;
+        }
+
+        var minutes = Math.trunc(seconds / 60);
+        seconds -= minutes * 60;
+        var hours = Math.trunc(minutes / 60);
+        minutes -= hours * 60;
+
+        if (seconds < 10) seconds = '0' + seconds;
+        if (minutes < 10 && hours !== 0) minutes = '0' + minutes;
+
+        var res = minutes + ':' + seconds;
+        if (hours !== 0) res = hours + ':' + res;
+
+        if (negative) res = '-' + res;
+
+        return res;
+    };
+});
+'use strict';
+
+angular.module('RouteExplorer').factory('Layout', ['$http', '$q', 'TimeParser', function ($http, $q, TimeParser) {
+    var self = this;
+    var stops = [];
+    var stopsMap = {};
+    var routes = [];
+    var routesMap = {};
+
+    var loadedPromise = $q.all([$http.get('/api/v1/stops/').then(function (response) {
+        stops = response.data.map(function (s) {
+            return {
+                id: s.stop_id,
+                name: s.heb_stop_names[0],
+                names: s.heb_stop_names,
+                latlon: s.latlon
+            };
+        });
+        stops.forEach(function (s) {
+            stopsMap[s.id] = s;
+        });
+    }), $http.get('/api/v1/routes/all/').then(function (response) {
+        routes = response.data.map(function (r) {
+            return {
+                id: r.id,
+                stops: r.stop_ids,
+                count: r.count,
+                minDate: new Date(r.min_date),
+                maxDate: new Date(r.max_date)
+            };
+        });
+
+        routesMap = routes.reduce(function (m, r) {
+            m[r.id] = r;return m;
+        }, {});
+    })]);
+
+    var findStop = function findStop(stopId) {
+        return stopsMap[stopId] || null;
+    };
+
+    var findStopName = function findStopName(stopId) {
+        return findStop(stopId).name;
+    };
+
+    var _findRoutes = function _findRoutes(routes, originId, destinationId) {
+        var matchingRoutes = {};
+
+        routes.forEach(function (r) {
+            var originIndex = r.stops.indexOf(originId);
+            var destinationIndex = r.stops.indexOf(destinationId);
+
+            if (originIndex < 0 || destinationIndex < 0) return;
+
+            if (originIndex > destinationIndex) return;
+
+            var routeStops = r.stops;
+            var routeId = r.id;
+
+            if (routeId in matchingRoutes) matchingRoutes[routeId].count += r.count;else {
+                matchingRoutes[routeId] = {
+                    id: routeId,
+                    stops: routeStops,
+                    count: r.count
+                };
+            }
+        });
+
+        matchingRoutes = Object.keys(matchingRoutes).map(function (routeId) {
+            return matchingRoutes[routeId];
+        });
+        matchingRoutes.sort(function (r1, r2) {
+            return r2.count - r1.count;
+        });
+        return matchingRoutes;
+    };
+
+    var findRoutesByPeriod = function findRoutesByPeriod(origin, destination, from, to) {
+        // TODO use minDate and maxDate from our cached routes to avoid the http request
+
+        var d = $q.defer();
+        var matchingRoutes = _findRoutes(routes, origin, destination);
+        if (matchingRoutes.length === 0) {
+            d.resolve([]);
+        } else {
+            var fromDate = from;
+            var toDate = to;
+
+            $http.get('/api/v1/routes/all-by-date/', {
+                params: {
+                    from_date: TimeParser.createRequestString(fromDate),
+                    to_date: TimeParser.createRequestString(toDate)
+                }
+            }).then(function (response) {
+                var routesInDate = response.data.map(function (r) {
+                    return {
+                        id: r.id,
+                        stops: r.stop_ids,
+                        count: r.count
+                    };
+                });
+                d.resolve(_findRoutes(routesInDate, origin, destination));
+            }, function (response) {
+                d.reject({ 'msg': 'Error fetching routes', 'response': response });
+            });
+        }
+
+        return d.promise;
+    };
+
+    var findRoute = function findRoute(routeId) {
+        return routesMap[routeId] || null;
+    };
+
+    var getRoutesDateRange = function getRoutesDateRange() {
+        var max = new Date(1900, 0, 1);
+        var min = new Date(2100, 0, 1);
+
+        for (var i in routes) {
+            var route = routes[i];
+            if (route.count === 0) continue;
+
+            if (route.minDate && route.minDate < min) min = route.minDate;
+            if (route.maxDate && route.maxDate > max) max = route.maxDate;
+        }
+        return {
+            min: min,
+            max: max
+        };
+    };
+
+    service = {
+        getStops: function getStops() {
+            return stops;
+        },
+        getRoutes: function getRoutes() {
+            return routes;
+        },
+        findRoute: findRoute,
+        findStop: findStop,
+        findStopName: findStopName,
+        findRoutes: function findRoutes(origin, destination) {
+            return _findRoutes(routes, origin, destination);
+        },
+        findRoutesByPeriod: findRoutesByPeriod,
+        getRoutesDateRange: getRoutesDateRange
+    };
+
+    return loadedPromise.then(function () {
+        return service;
+    });
+}]);
+'use strict';
+
+angular.module('RouteExplorer').constant('Locale', {
+    months: ['ינואר', 'פברואר', 'מרץ', 'אפריל', 'מאי', 'יוני', 'יולי', 'אוגוסט', 'ספטמבר', 'אוקטובר', 'נובמבר', 'דצמבר'].map(function (v, i) {
+        return { id: i + 1, name: v };
+    }),
+
+    days: [{ abbr: 'א', name: 'ראשון', id: 1 }, { abbr: 'ב', name: 'שני', id: 2 }, { abbr: 'ג', name: 'שלישי', id: 3 }, { abbr: 'ד', name: 'רביעי', id: 4 }, { abbr: 'ה', name: 'חמישי', id: 5 }, { abbr: 'ו', name: 'שישי', id: 6 }, { abbr: 'ש', name: 'שבת', id: 7 }],
+    until: 'עד ל'
+});
+'use strict';
+
+angular.module('RouteExplorer').factory('LocationBinder', ['$location', function ($location) {
+    return {
+        bind: function bind(scope, scopeProperty, locationProperty, parser, formatter) {
+            scope[scopeProperty] = $location.search()[locationProperty] || null;
+
+            scope.$watch(scopeProperty, function (value) {
+                if (formatter) value = formatter(value);
+
+                $location.search(locationProperty, value);
+            });
+
+            scope.$watch(function () {
+                return $location.search()[locationProperty] || null;
+            }, function (value) {
+                if (parser) value = parser(value);
+
+                scope[scopeProperty] = value;
+            });
+        }
+    };
+}]);
+'use strict';
+
+angular.module('RouteExplorer').factory('TimeParser', [function () {
+    function createRequestString(date, sep) {
+        sep = sep || '/';
+        var dd = date.getDate().toString();
+        var mm = (date.getMonth() + 1).toString();
+        var yyyy = date.getFullYear().toString();
+        return dd + sep + mm + sep + yyyy;
+    }
+
+    function parseMonth(monthString) {
+        var year = Number(monthString.substr(0, 4));
+        var month = Number(monthString.substr(4, 2));
+        return new Date(year, month - 1, 1);
+    }
+
+    function parsePeriod(periodString) {
+        var parts = periodString.split('-', 2);
+        var from = parseMonth(parts[0]);
+        var to = parts.length > 1 ? parseMonth(parts[1]) : from;
+        var end = new Date(to.getFullYear(), to.getMonth() + 1, 1);
+        return { from: from, to: to, end: end };
+    }
+
+    function formatMonth(date) {
+        return date.getFullYear() + ('0' + (date.getMonth() + 1)).slice(-2);
+    }
+
+    function formatPeriod(period) {
+        var f = formatMonth(period.from);
+        if (period.from < period.to) f += '-' + formatMonth(period.to);
+
+        return f;
+    }
+
+    return {
+        createRequestString: createRequestString,
+        parseMonth: parseMonth,
+        parsePeriod: parsePeriod,
+        formatMonth: formatMonth,
+        formatPeriod: formatPeriod
+    };
+}]);
 //# sourceMappingURL=app.js.map
