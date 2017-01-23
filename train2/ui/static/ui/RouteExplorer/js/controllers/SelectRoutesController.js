@@ -1,6 +1,6 @@
 angular.module('RouteExplorer').controller('SelectRouteController',
-['$scope', '$http', '$location', '$route', 'Layout', 'TimeParser',
 function($scope, $http, $location, $route, Layout, TimeParser) {
+    'ngInject';
     $scope.stops = Layout.getStops();
     var period = TimeParser.parsePeriod($route.current.params.period);
     var origin = Layout.findStop($route.current.params.origin);
@@ -147,4 +147,4 @@ function($scope, $http, $location, $route, Layout, TimeParser) {
             return collapsed;
         }
     }
-}]);
+});

@@ -1,5 +1,6 @@
 angular.module('RouteExplorer').controller('HeatMapController',
-    ['$scope', '$http', 'Layout', function ($scope, $http, Layout) {
+    function ($scope, $http, Layout) {
+        "ngInject";
         $scope.Layout = Layout;
         var ta = $scope.Layout.findStop(4600); // TA HASHALOM
         console.log(ta);
@@ -49,6 +50,6 @@ angular.module('RouteExplorer').controller('HeatMapController',
             });
         });
 
-    }]);
+    });
 
 

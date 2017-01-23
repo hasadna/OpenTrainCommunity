@@ -79,7 +79,6 @@ angular.module('RouteExplorer').constant('daysTable',
 
 
 angular.module('RouteExplorer').controller('GraphsController',
-    ['$scope', '$http', '$q', '$timeout', '$location', 'Layout', 'daysTable', 'hoursList', 'monthNames',
         function ($scope,
                   $http,
                   $q,
@@ -89,7 +88,7 @@ angular.module('RouteExplorer').controller('GraphsController',
                   daysTable,
                   hoursList,
                   monthNames) {
-            window.scope = $scope;
+            'ngInject';
             $scope.wip = true;
             $scope.Layout = Layout;
             $scope.input = {
@@ -345,7 +344,7 @@ angular.module('RouteExplorer').controller('GraphsController',
             $scope.input.startStop = Layout.findStop(params.startStop || 400);
             $scope.input.endStop = Layout.findStop(params.endStop|| 3700)
             $scope.refresh();
-        }]);
+        });
 
 
 

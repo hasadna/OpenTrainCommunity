@@ -1,6 +1,7 @@
 angular.module('RouteExplorer').controller('SelectStopsController',
 ['$scope', '$rootScope', '$location', 'Layout', 'Locale', 'TimeParser',
 function($scope, $rootScope, $location, Layout, Locale, TimeParser) {
+    'ngInject';
     $scope.stops = Layout.getStops();
     $scope.origin = null;
     $scope.destination = null;

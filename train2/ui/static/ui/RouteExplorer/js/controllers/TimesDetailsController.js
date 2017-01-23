@@ -1,6 +1,6 @@
 angular.module('RouteExplorer').controller('TimesDetailsController',
-    ['$scope', '$route', 'Locale','LocationBinder','Layout',
 function($scope, $route, Locale, LocationBinder, Layout) {
+    'ngInject';
     Layout.then(function(Layout) {
         $scope.layout = Layout;
     });
@@ -106,5 +106,5 @@ function($scope, $route, Locale, LocationBinder, Layout) {
     };
 
     $scope.loadStats();
-}]);
+});
 

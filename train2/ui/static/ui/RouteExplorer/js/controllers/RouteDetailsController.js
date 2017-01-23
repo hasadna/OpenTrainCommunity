@@ -1,6 +1,6 @@
 angular.module('RouteExplorer').controller('RouteDetailsController',
-['$scope', '$route', '$http', '$location', 'LocationBinder', 'Layout', 'Locale', 'TimeParser',
 function($scope, $route, $http, $location, LocationBinder, Layout, Locale, TimeParser) {
+    "ngInject";
     var routeParams = $route.current.params;
 
     var period = TimeParser.parsePeriod(routeParams.period);
@@ -160,4 +160,4 @@ function($scope, $route, $http, $location, LocationBinder, Layout, Locale, TimeP
             end: offsetMonth(period.end, size * offset)
         };
     }
-}]);
+});
