@@ -274,7 +274,7 @@ angular.module('RouteExplorer').controller('GraphsController',
                         name: '456',
                         data: [8, 8, 8, 12, 7, 20]
                     },
-                ]
+                ];
                 $scope.chartPerDay = {
                     options: {
                         chart: {
