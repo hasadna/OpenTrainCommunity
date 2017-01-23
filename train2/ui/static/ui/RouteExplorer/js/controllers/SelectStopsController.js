@@ -65,7 +65,7 @@ function($scope, $rootScope, $location, Layout, Locale, TimeParser) {
       var periods = [];
       var start = new Date(fromDate.getFullYear(), fromDate.getMonth(), 1);
       while (start < toDate) {
-        end = new Date(start.getFullYear(), start.getMonth() + 1, start.getDate());
+        let end = new Date(start.getFullYear(), start.getMonth() + 1, start.getDate());
         var period = {
           from: start,
           to: start,

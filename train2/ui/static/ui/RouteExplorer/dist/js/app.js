@@ -98,7 +98,9 @@ if (!String.prototype.repeat) {
 }
 'use strict';
 
-angular.module('RouteExplorer').controller('AppController', ['$scope', '$location', function ($scope, $location) {
+angular.module('RouteExplorer').controller('AppController', ["$scope", "$location", function ($scope, $location) {
+    'ngInject';
+
     $scope.share = function (prefix) {
         var url = prefix + encodeURIComponent('http://otrain.org/#' + $location.url());
         window.open(url, 'sharePopup', 'width=600,height=550,top=100,left=100,location=no,scrollbar=no,status=no,menubar=no');
@@ -808,7 +810,7 @@ angular.module('RouteExplorer').controller('SelectStopsController', ['$scope', '
         var periods = [];
         var start = new Date(fromDate.getFullYear(), fromDate.getMonth(), 1);
         while (start < toDate) {
-            end = new Date(start.getFullYear(), start.getMonth() + 1, start.getDate());
+            var end = new Date(start.getFullYear(), start.getMonth() + 1, start.getDate());
             var period = {
                 from: start,
                 to: start,
@@ -1110,7 +1112,7 @@ angular.module('RouteExplorer').factory('Layout', ['$http', '$q', 'TimeParser', 
         };
     };
 
-    service = {
+    var service = {
         getStops: function getStops() {
             return stops;
         },

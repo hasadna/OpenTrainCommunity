@@ -23,6 +23,7 @@
         sourcemaps = require('gulp-sourcemaps'),
         babel = require('gulp-babel'),
         plumber = require('gulp-plumber'),
+        ngAnnotate = require('gulp-ng-annotate'),
         del = require('del');
 
     gulp.task('scripts', function () {
@@ -34,6 +35,7 @@
             .pipe(babel({
                 presets: ['es2015']
              }))
+            .pipe(ngAnnotate())
             .pipe(concat('app.js'))
             //.pipe(uglify())
             .pipe(sourcemaps.write(config.scripts.map))

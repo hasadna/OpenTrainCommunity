@@ -126,7 +126,7 @@ function($http, $q, TimeParser) {
         };
     };
 
-    service = {
+    let service = {
         getStops: function() { return stops; },
         getRoutes: function() { return routes; },
         findRoute: findRoute,
