@@ -1,14 +1,15 @@
 import datetime
-
+import json
 import logging
+
 import pytz
-import django.db.utils
 from django.db import transaction
 
 LOGGER = logging.getLogger(__name__)
 ISRAEL_TIMEZONE = pytz.timezone('Asia/Jerusalem')
 
 from . import models
+
 
 @transaction.atomic
 def create_trip(*,
@@ -18,14 +19,14 @@ def create_trip(*,
     assert isinstance(train_num, int) and train_num > 0
     trip = models.Trip.objects.create(train_num=train_num,
                                       date=date)
-    #LOGGER.info("Created trip %s", trip)
+    # LOGGER.info("Created trip %s", trip)
     return trip
 
 
 def assert_valid_dates(exp_arrival, actual_arrival, exp_departure, actual_departure):
     for dt in exp_arrival, actual_arrival, exp_departure, actual_departure:
         assert (dt is None or isinstance(dt, datetime.datetime)
-                and dt.tzinfo and dt.tzinfo.zone == 'Asia/Jerusalem'),'illegal dt = {}'.format(dt)
+                and dt.tzinfo and dt.tzinfo.zone == 'Asia/Jerusalem'), 'illegal dt = {}'.format(dt)
 
 
 @transaction.atomic
@@ -34,6 +35,7 @@ def create_sample(*,
                   is_source,
                   is_dest,
                   gtfs_stop_id,
+                  gtfs_stop_name,
                   exp_arrival,
                   actual_arrival,
                   exp_departure,
@@ -61,7 +63,20 @@ def create_sample(*,
     try:
         stop = models.Stop.objects.get(gtfs_stop_id=gtfs_stop_id)
     except models.Stop.DoesNotExist:
-        raise ValueError("Failed to find stop with gtfs_stop_id = {}".format(gtfs_stop_id))
+        proposal = {
+            "stop_short_name": gtfs_stop_name,
+            "gtfs_stop_id": gtfs_stop_id,
+            "latlon": [
+                0,
+                0
+            ],
+            "bssids": [],
+            "stop_name": "INSERT ENGLISH NAME",
+        }
+        raise ValueError("Failed to find stop with gtfs_stop_id = {}\n{}\n{}".format(
+            gtfs_stop_id,
+            gtfs_stop_name,
+            json.dumps(proposal, indent=4)))
     if not trip.samples.filter(stop_id=stop.id).exists():
         sample = models.Sample.objects.create(trip=trip,
                                               stop=stop,

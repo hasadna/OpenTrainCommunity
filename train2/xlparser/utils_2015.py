@@ -108,6 +108,7 @@ def parse_xl(xlname):
                                             is_source=stop_kind.is_source,
                                             is_dest=stop_kind.is_dest,
                                             gtfs_stop_id=int(d['מספר תחנה']),
+                                            gtfs_stop_name=d['תאור תחנה'],
                                             exp_arrival=d['תאריך וזמן הגעת רכבת לתחנה מתוכנן'] or None,
                                             actual_arrival=d['תאריך וזמן הגעת רכבת לתחנה בפועל'] or None,
                                             exp_departure=d[

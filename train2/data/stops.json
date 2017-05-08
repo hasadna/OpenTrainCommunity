@@ -719,5 +719,55 @@
       34.634078
     ],
     "stop_name": "Ofakim"
+  },
+  {
+    "latlon": [
+        0,
+        0
+    ],
+    "stop_name": "Migdal Haeemek Kfar Baruch",
+    "stop_short_name": "\u05de\u05d2\u05d3\u05dc \u05e2\u05de\u05e7 \u05db.\u05d1\u05e8\u05d5\u05da",
+    "bssids": [],
+    "gtfs_stop_id": 1250
+  },
+  {
+    "stop_name": "Yoknema - Kfar Yehosua",
+    "stop_short_name": "\u05d9\u05e7\u05e0\u05e2\u05dd  \u05db.\u05d9\u05d4\u05d5\u05e9\u05d5\u05e2",
+    "gtfs_stop_id": 1240,
+    "latlon": [
+        0,
+        0
+    ],
+    "bssids": []
+  },
+  {
+    "gtfs_stop_id": 3310,
+    "stop_name": "Netanya Sapir",
+    "bssids": [],
+    "stop_short_name": "\u05e0\u05ea\u05e0\u05d9\u05d4-\u05e1\u05e4\u05d9\u05e8",
+    "latlon": [
+        0,
+        0
+    ]
+  },
+  {
+    "latlon": [
+        0,
+        0
+    ],
+    "stop_name": "Beit Shean",
+    "gtfs_stop_id": 1280,
+    "stop_short_name": "\u05d1\u05d9\u05ea \u05e9\u05d0\u05df",
+    "bssids": []
+  },
+  {
+    "stop_name": "Afula",
+    "stop_short_name": "\u05e2\u05e4\u05d5\u05dc\u05d4",
+    "latlon": [
+        0,
+        0
+    ],
+    "bssids": [],
+    "gtfs_stop_id": 1260
   }
 ]
