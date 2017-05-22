@@ -102,7 +102,7 @@ def parse_xl(xlname):
         except Exception as e:
             raise ValueError("Failed in row {} {}: {}".format(rowx, pprint.pformat(d), e))
 
-        if is_commercial_stop and is_stopped:
+        if is_commercial_stop and is_stopped and int(d['מספר תחנה']) != 1400:
             try:
                 data.importer.create_sample(trip=cur_trip,
                                             is_source=stop_kind.is_source,
