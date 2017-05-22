@@ -5,6 +5,8 @@ from fabric.context_managers import cd, prefix
 from fabric.decorators import task
 from fabric.operations import sudo
 
+import datetime
+
 env.user = "opentrain"
 env.hosts = ["otrain.org"]
 env.key_filename = "/home/eran/.ssh/id_rsa.pub"
@@ -56,4 +58,11 @@ def update_server():
     migrate()
     restart()
 
+
+@task
+def backup_db():
+    ts = datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
+    out= "/home/opentrain/public_html/files/dumps/db_{}.sql.gz".format(ts)
+    sudo("sudo -u postgres pg_dump train2 | gzip > {}".format(out))
+    run("ls -lh {}".format(out))
 
