@@ -722,8 +722,8 @@
   },
   {
     "latlon": [
-        0,
-        0
+      32.647554,
+      35.207967
     ],
     "stop_name": "Migdal Haeemek Kfar Baruch",
     "stop_short_name": "\u05de\u05d2\u05d3\u05dc \u05e2\u05de\u05e7 \u05db.\u05d1\u05e8\u05d5\u05da",
@@ -735,8 +735,8 @@
     "stop_short_name": "\u05d9\u05e7\u05e0\u05e2\u05dd  \u05db.\u05d9\u05d4\u05d5\u05e9\u05d5\u05e2",
     "gtfs_stop_id": 1240,
     "latlon": [
-        0,
-        0
+      32.681069,
+      35.124624
     ],
     "bssids": []
   },
@@ -746,14 +746,14 @@
     "bssids": [],
     "stop_short_name": "\u05e0\u05ea\u05e0\u05d9\u05d4-\u05e1\u05e4\u05d9\u05e8",
     "latlon": [
-        0,
-        0
+        32.278832,
+        34.865175
     ]
   },
   {
     "latlon": [
-        0,
-        0
+      32.514683,
+      35.488106
     ],
     "stop_name": "Beit Shean",
     "gtfs_stop_id": 1280,
@@ -764,8 +764,8 @@
     "stop_name": "Afula",
     "stop_short_name": "\u05e2\u05e4\u05d5\u05dc\u05d4",
     "latlon": [
-        0,
-        0
+      32.6217312,
+      35.2949945
     ],
     "bssids": [],
     "gtfs_stop_id": 1260
