@@ -32,6 +32,12 @@ def build_stops():
         if names != stop.hebrews:
             stop.hebrews = names
             stop.save()
+        lat = sj['latlon'][0]
+        lon = sj['latlon'][1]
+        if stop.lat != lat or stop.lon != lon:
+            stop.lat = lat
+            stop.lon = lon
+            stop.save()
         if created:
             LOGGER.info("Built stop %s", stop)
         else:

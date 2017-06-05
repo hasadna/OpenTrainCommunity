@@ -11,3 +11,4 @@ django-cors-headers==2.0.0
 numpy==1.11.0
 networkx==1.11
 pandas==0.19.1
+geocoder==1.22.6

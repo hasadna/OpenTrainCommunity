@@ -1,8 +1,12 @@
 import datetime
 from django.db import models
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext as _
 import common.fields
 import pytz
+import geocoder
+
+from data.utils import haversine
 
 IST = pytz.timezone("Asia/Jerusalem")
 
@@ -171,6 +175,17 @@ class Stop(models.Model):
     hebrews = common.fields.ArrayField()
     lat = models.FloatField()
     lon = models.FloatField()
+
+    @cached_property
+    def google_latlng(self):
+        name = '{} {}'.format('תחנת רכבת', self.main_name)
+        g = geocoder.google(name)
+        return g.latlng
+
+    def distance_to_google_latlng(self):
+        if self.google_latlng:
+            return haversine(self.latlon, self.google_latlng)
+        return 0.0
 
     @property
     def main_name(self):
