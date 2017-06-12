@@ -769,5 +769,15 @@
     ],
     "bssids": [],
     "gtfs_stop_id": 1260
-  }
+  },
+    {
+    "stop_name": "Achihud",
+    "bssids": [],
+    "stop_short_name": "\u05d0\u05d7\u05d9\u05d4\u05d5\u05d3",
+    "gtfs_stop_id": 1820,
+    "latlon": [
+        32.5442,
+        35.1026
+    ]
+    }
 ]
