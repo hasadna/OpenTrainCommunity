@@ -30,7 +30,7 @@ MONTHLY_SAMPLES = {
 def run():
   check_months()
   # TODO: Enable this once we get daily data for Jan-Mar 2017
-  #check_days()
+  check_days()
   check_valid_percent_per_month()
   check_samples_per_station_per_month()
 

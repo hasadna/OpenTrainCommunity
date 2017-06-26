@@ -44,6 +44,11 @@ def migrate():
         run("python manage.py clear_cache")
 
 @task
+def build_stops():
+    with virtualenv(env.projdir):
+        run("python manage.py build_stops")
+
+@task
 def restart():
     run("kill -HUP $(cat /home/opentrain/train2.pid)")
     sudo("service nginx reload")
@@ -57,6 +62,7 @@ def update_server():
     pip()
     migrate()
     restart()
+
 
 
 @task
