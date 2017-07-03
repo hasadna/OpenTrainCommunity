@@ -6,27 +6,59 @@ from . import models
 # python manage.py check
 
 MAX_MONTH = 3
-MIN_MONTHLY_TRIP_COUNT = 2500
-MAX_MONTHLY_TRIP_COUNT = 3500
+MIN_MONTHLY_TRIP_COUNT = 8000
+MAX_MONTHLY_TRIP_COUNT = 15000
 MIN_DAILY_TRIP_COUNT = 100
-MAX_DAILY_TRIP_COUNT = 300
+MIN_DAILY_TRIP_COUNT_SAT = 20
+MAX_DAILY_TRIP_COUNT = 500
 MIN_MONTHLY_VALID_TRIP_RATIO = 0.97
 MIN = 0
 MAX = 1
+ZERO_STOPS = [
+    'Achihud', ''
+]
+BIG_STOPS = [
+    'Tel Aviv - University',
+    'Tel Aviv Center - Savidor',
+    'Leb Hmifratz',
+    'Tel Aviv HaShalom',
+    'Tel Aviv HaHagana',
+    'Hutsot HaMifrats',
+    'Akko',
+    'Nahariyya',
+    'Haifa Center HaShmona',
+    "Haifa Hof HaKarmel (Razi'el)",
+    'Binyamina',
+    'Haifa Bat Gallim',
+    'Lod',
+    'Herzliyya',
+]
+
+MEDIUM_STOPS = [
+    'Modiin',
+    'Modiin Center',
+    'Kiryat Hayyim',
+    'Atlit',
+]
+
+
 MONTHLY_SAMPLES = {
-    'default': [150, 1000],
-    'Haifa Center HaShmona': [800, 2500],
-    'Haifa Bat Gallim': [800, 2500],
-    "Haifa Hof HaKarmel (Razi'el)": [800, 2500],
-    'Tel Aviv - University': [1200, 6000],
-    'Tel Aviv Center - Savidor': [1200, 6000],
-    'Tel Aviv HaShalom': [1200, 6000],
-    'Tel Aviv HaHagana': [1200, 6000],
-    'Jerusalem Malha': [20, 300],
+    'default': [150, 3000],
+    'Jerusalem Malha': [20, 800],
     'Jerusalem Biblical Zoo': [20, 300],
-    'Lod': [300, 1300],
-    'Dimona': [30, 60]
+    'Dimona': [30, 300]
 }
+
+
+for st in BIG_STOPS:
+    MONTHLY_SAMPLES[st] = [1200, 6000]
+
+for st in MEDIUM_STOPS:
+    MONTHLY_SAMPLES[st] = [800, 2500]
+
+for st in models.Stop.objects.all():
+    if 'tel aviv' in st.english.lower():
+        MONTHLY_SAMPLES[st.english] = [4000, 12000]
 
 
 class Error:
@@ -102,8 +134,12 @@ def check_days():
     date1 = datetime.datetime(2017, 1, 1)
     date2 = datetime.datetime(2017, MAX_MONTH + 1, 1)
     for day in daterange(date1, date2):
+        min_daily_count = MIN_DAILY_TRIP_COUNT
+        if day.weekday() == 5:
+            min_daily_count = MIN_DAILY_TRIP_COUNT_SAT
+
         trip_count = models.Trip.objects.filter(date__gte=day, date__lt=day + datetime.timedelta(days=1)).count()
-        if trip_count < MIN_DAILY_TRIP_COUNT:
+        if trip_count < min_daily_count:
             errors.append(Error(Error.MONTH_DAY_COUNT_TOO_LOW,
                                 "Trip count {} for day {} is lower than minimum {}".format(trip_count, day,
                                                                                            MIN_DAILY_TRIP_COUNT)))
@@ -131,7 +167,7 @@ def check_valid_percent_per_month():
 
 def check_samples_per_station_per_month():
     errors = []
-    stops = list(models.Stop.objects.all())
+    stops = [st for st in models.Stop.objects.all() if st.english not in ZERO_STOPS]
     for month in range(1, MAX_MONTH + 1):
         for stop in stops:
             date1 = datetime.datetime(2017, month, 1)

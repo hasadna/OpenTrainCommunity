@@ -97,6 +97,8 @@ def create_sample(*,
                                               valid=valid,
                                               invalid_reason=invalid_reason
                                               )
+        if sample.stop.gtfs_stop_id == 800:
+            LOGGER.info("CREATED SAMPLE FOR MOTZKIN ID = %d", sample.id)
     else:
         trip.set_invalid("skipped non unique sample")
         return None
