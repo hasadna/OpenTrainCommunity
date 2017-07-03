@@ -91,7 +91,7 @@ def read_sheet(wb, sheet_idx, *, heb_header, base_xlname, global_data):
         except Exception as e:
             raise ValueError("Failed in row {} {}: {}".format(rowx, pprint.pformat(d), e))
 
-        if is_commercial_stop and is_stopped and int(d['מספר תחנה']) != 1400:
+        if is_commercial_stop and is_stopped:
             try:
                 data.importer.create_sample(trip=global_data.cur_trip,
                                             is_source=stop_kind.is_source,
