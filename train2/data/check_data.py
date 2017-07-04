@@ -5,7 +5,7 @@ from . import models
 # Run using:
 # python manage.py check
 
-MAX_MONTH = 3
+MAX_MONTH = 5
 MIN_MONTHLY_TRIP_COUNT = 8000
 MAX_MONTHLY_TRIP_COUNT = 15000
 MIN_DAILY_TRIP_COUNT = 100
