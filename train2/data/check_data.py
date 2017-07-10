@@ -33,6 +33,7 @@ BIG_STOPS = [
     'Haifa Bat Gallim',
     'Lod',
     'Herzliyya',
+    'Motzkin',
 ]
 
 MEDIUM_STOPS = [
