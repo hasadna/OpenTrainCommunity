@@ -44,6 +44,13 @@ def is1(val):
         return False
     return int(val) == 1
 
+def fix_dt(dt):
+    if not dt:
+        return None
+    if dt == "DateTime_Min_Custom":
+        return None
+    return dt
+
 
 def read_sheet(wb, sheet_idx, *, heb_header, base_xlname, global_data):
     LOGGER.info("Starting sheet %d", sheet_idx)
@@ -98,12 +105,12 @@ def read_sheet(wb, sheet_idx, *, heb_header, base_xlname, global_data):
                                             is_dest=stop_kind.is_dest,
                                             gtfs_stop_id=int(d['מספר תחנה']),
                                             gtfs_stop_name=d['תאור תחנה'],
-                                            exp_arrival=d['תאריך וזמן הגעת רכבת לתחנה מתוכנן'] or None,
-                                            actual_arrival=d['תאריך וזמן הגעת רכבת לתחנה בפועל'] or None,
-                                            exp_departure=d[
-                                                              'תאריך וזמן יציאת רכבת מהתחנה מתוכנן'] or None if not stop_kind.is_dest else None,
-                                            actual_departure=d[
-                                                                 'תאריך וזמן יציאת רכבת מהתחנה בפועל'] or None if not stop_kind.is_dest else None,
+                                            exp_arrival=fix_dt(d['תאריך וזמן הגעת רכבת לתחנה מתוכנן']),
+                                            actual_arrival=fix_dt(d['תאריך וזמן הגעת רכבת לתחנה בפועל']),
+                                            exp_departure=fix_dt(d[
+                                                              'תאריך וזמן יציאת רכבת מהתחנה מתוכנן']) if not stop_kind.is_dest else None,
+                                            actual_departure=fix_dt(d[
+                                                                 'תאריך וזמן יציאת רכבת מהתחנה בפועל']) if not stop_kind.is_dest else None,
                                             filename=base_xlname,
                                             line_number=rowx,
                                             sheet_idx=sheet_idx,
