@@ -5,7 +5,8 @@ from . import models
 # Run using:
 # python manage.py check
 
-MAX_MONTH = 5
+MIN_MONTH = 6
+MAX_MONTH = 6
 MIN_MONTHLY_TRIP_COUNT = 8000
 MAX_MONTHLY_TRIP_COUNT = 15000
 MIN_DAILY_TRIP_COUNT = 100
@@ -114,7 +115,8 @@ def run():
 
 def check_months():
     errors = []
-    for month in range(1, MAX_MONTH + 1):
+    for month in range(MIN_MONTH, MAX_MONTH+1):
+        print('Checking month', month)
         date1 = datetime.datetime(2017, month, 1)
         date2 = datetime.datetime(2017, month + 1, 1)
         trip_count = models.Trip.objects.filter(date__gte=date1, date__lt=date2).count()
@@ -131,7 +133,7 @@ def check_months():
 
 def check_days():
     errors = []
-    date1 = datetime.datetime(2017, 1, 1)
+    date1 = datetime.datetime(2017, MIN_MONTH, 1)
     date2 = datetime.datetime(2017, MAX_MONTH + 1, 1)
     for day in daterange(date1, date2):
         min_daily_count = MIN_DAILY_TRIP_COUNT
@@ -157,7 +159,10 @@ def check_valid_percent_per_month():
         date2 = datetime.datetime(2017, month + 1, 1)
         all_trip_count = models.Trip.objects.filter(date__gte=date1, date__lt=date2).count()
         valid_trip_count = models.Trip.objects.filter(date__gte=date1, date__lt=date2, valid=True).count()
-        valid_trip_ratio = valid_trip_count / all_trip_count
+        if all_trip_count:
+            valid_trip_ratio = valid_trip_count / all_trip_count
+        else:
+            valid_trip_ratio = 0
         if valid_trip_ratio < MIN_MONTHLY_VALID_TRIP_RATIO:
             errors.append(Error(Error.VALID_TRIP_RATIO_TOO_LOW,
                                 "Valid trip ratio {} for month {} is lower than minimum {}".format(
