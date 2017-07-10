@@ -173,7 +173,7 @@ def check_valid_percent_per_month():
 def check_samples_per_station_per_month():
     errors = []
     stops = [st for st in models.Stop.objects.all() if st.english not in ZERO_STOPS]
-    for month in range(1, MAX_MONTH + 1):
+    for month in range(MIN_MONTH, MAX_MONTH + 1):
         for stop in stops:
             date1 = datetime.datetime(2017, month, 1)
             date2 = datetime.datetime(2017, month + 1, 1)
