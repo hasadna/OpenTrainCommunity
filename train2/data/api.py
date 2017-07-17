@@ -95,7 +95,6 @@ class RoutesViewSet(ReadOnlyModelViewSet):
         return self.resp_routes(routes)
 
 
-
 class StatViewSet(GenericViewSet):
     def get_queryset(self):
         return None
@@ -132,6 +131,24 @@ class StatViewSet(GenericViewSet):
                                              from_date=from_date,
                                              to_date=to_date)
         return Response(result)
+
+
+class GeneralViewSet(ViewSet):
+    @list_route(url_path='dates-range')
+    def dates_range(self, request, *args, **kwargs):
+        first_trip_date = models.Trip.objects.order_by('date').first()
+        last_trip_date = models.Trip.objects.order_by('date').last()
+        data = {
+            'first_date': {
+                'month': first_trip_date.date.month,
+                'year': first_trip_date.date.year,
+            },
+            'last_date': {
+                'month': last_trip_date.date.month,
+                'year': last_trip_date.date.year,
+            }
+        }
+        return Response(data=data)
 
 
 class RoutesViewSet(ReadOnlyModelViewSet):
@@ -183,6 +200,7 @@ class RouteTripsViewSet(UnderRouteMixin, ReadOnlyModelViewSet):
 
     def get_queryset(self):
         return self.get_route().trips.all()
+
 
 
 class HeatMapViewSet(ViewSet):

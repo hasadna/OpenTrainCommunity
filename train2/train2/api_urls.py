@@ -15,6 +15,8 @@ router.register('heat-map',
                 data.api.HeatMapViewSet,
                 base_name='heat-map')
 
+router.register('general', data.api.GeneralViewSet, base_name='general')
+
 
 # router.register('routes/(?P<route_id>\d+)/services',
 #                 data.api.RouteServicesViewSet,
