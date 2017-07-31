@@ -1,3 +1,5 @@
+import logging
+
 from collections import namedtuple
 from functools import cmp_to_key
 
@@ -5,6 +7,8 @@ import django.db
 
 from . import utils
 from .models import Route, Trip, Sample
+
+logger = logging.getLogger(__name__)
 
 Filters = namedtuple('Filters', ['from_date', 'to_date'])
 
@@ -357,3 +361,6 @@ def _get_stats_table(*, route=None,
         result.append(stat)
     return result
 
+
+def find_real_routes(from_date, to_date):
+    logger.info("from_date = %s to_date = %s", from_date, to_date)
