@@ -11,6 +11,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('--month', type=int)
         parser.add_argument('--year', type=int)
+
     def handle(self, *args, **options):
         activate(settings.LANGUAGE_CODE)
         y = options['year']

@@ -117,6 +117,18 @@ class Route(models.Model):
     def latest_trip(self):
         return self.trips.latest('date')
 
+    def is_superset_of(self, route):
+        if len(self.stop_ids) < len(route.stop_ids):
+            return False
+
+
+
+
+
+
+    def __str__(self):
+        return '{} => {}'.format(self.get_first_stop(), self.get_last_stop())
+
 
 class Sample(models.Model):
     stop = models.ForeignKey('Stop', related_name='samples')

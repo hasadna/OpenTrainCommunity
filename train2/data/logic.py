@@ -364,3 +364,15 @@ def _get_stats_table(*, route=None,
 
 def find_real_routes(from_date, to_date):
     logger.info("from_date = %s to_date = %s", from_date, to_date)
+    trips = Trip.objects.filter(date__gte=from_date, date__lte=to_date)
+    logger.info("# of trips = %d", trips.count())
+    routes = Route.objects.filter(id__in=trips.values_list('route'))
+    logger.info("# of routes = %d", routes.count())
+    edges = {(r.get_first_stop(), r.get_last_stop()) for r in routes}
+    logger.info("# of edges = %s", len(edges))
+    first_stops = {r.get_first_stop() for r in routes}
+    last_stops = {r.get_last_stop() for r in routes}
+    logger.info("# of first_stops = %s", len(first_stops))
+    logger.info("# of last_stops = %s", len(last_stops))
+
+
