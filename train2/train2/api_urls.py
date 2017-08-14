@@ -14,7 +14,9 @@ router.register('routes/(?P<route_id>\d+)/trips',
 router.register('heat-map',
                 data.api.HeatMapViewSet,
                 base_name='heat-map')
-print("=======================================")
+
+router.register('general', data.api.GeneralViewSet, base_name='general')
+
 
 # router.register('routes/(?P<route_id>\d+)/services',
 #                 data.api.RouteServicesViewSet,

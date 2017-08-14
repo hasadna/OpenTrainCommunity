@@ -144,15 +144,22 @@ angular.module('RouteExplorer').controller('GraphsController',
             }
 
             $scope.initData = function () {
-                $scope.buildDates();
+                return $scope.buildDates();
             };
 
             $scope.buildDates = function () {
-                var s = [1, 2015];
-                var e = [5, 2016];
+                return $http.get('/api/v1/general/dates-range').then( (resp) => {
+                    let data = resp.data;
+                    var s = [data.first_date.month, data.first_date.year];
+                    var e = [data.last_date.month, data.last_date.year];
+                    $scope.buildDatesRange(s,e);
+                });
+            };
+            $scope.buildDatesRange = function(s,e) {
                 $scope.startDates = [];
                 $scope.endDates = [];
-                while (s[0] != e[0] || s[1] != e[1]) {
+                while (true) {
+                    let abort = false;
                     $scope.startDates.push({
                         name: monthNames[s[0]] + ' ' + s[1],
                         value: '1-' + s[0] + '-' + s[1],
@@ -162,11 +169,14 @@ angular.module('RouteExplorer').controller('GraphsController',
                         name: monthNames[s[0]] + ' ' + s[1],
                         value: '1-' + ns[0] + '-' + ns[1],
                     });
-                    s[0] = s[0] + 1;
-                    if (s[0] > 12) {
-                        s[0] = 1;
-                        s[1]++;
+                    if ($scope.startDates.length > 100) {
+                        alert("error");
+                        return;
                     }
+                    if (s[0] == e[0] && s[1] == e[1]) {
+                        return;
+                    }
+                    s = [ns[0], ns[1]];
                 }
             };
             $scope.computePerDaySeries = function () {
@@ -256,7 +266,6 @@ angular.module('RouteExplorer').controller('GraphsController',
                 var tooltip = {
                     formatter: function () {
                         var prec = Math.round(this.y * 100) / 100;
-                        console.log(this);
                         return '<span dir="rtl"><b>' + this.x + '</b>' + '<br/>' +
                                 '<span>' + this.point.lineName + '</span><br/>' +
                             '<span>רכבות מאחרות:</span>' + prec + '%' + '<br/>' +
@@ -336,14 +345,14 @@ angular.module('RouteExplorer').controller('GraphsController',
                 return null;
             };
 
-            $scope.initData();
-
-            var params = $location.search();
-            $scope.input.startDate = $scope.findDate($scope.startDates, params.startDate) || $scope.startDates[$scope.startDates.length - 1];
-            $scope.input.endDate = $scope.findDate($scope.endDates, params.endDate) || $scope.endDates[$scope.endDates.length - 1];
-            $scope.input.startStop = Layout.findStop(params.startStop || 400);
-            $scope.input.endStop = Layout.findStop(params.endStop|| 3700)
-            $scope.refresh();
+            $scope.initData().then(() => {
+                let params = $location.search();
+                $scope.input.startDate = $scope.findDate($scope.startDates, params.startDate) || $scope.startDates[$scope.startDates.length - 1];
+                $scope.input.endDate = $scope.findDate($scope.endDates, params.endDate) || $scope.endDates[$scope.endDates.length - 1];
+                $scope.input.startStop = Layout.findStop(params.startStop || 400);
+                $scope.input.endStop = Layout.findStop(params.endStop || 3700)
+                $scope.refresh();
+            });
         });
 
 

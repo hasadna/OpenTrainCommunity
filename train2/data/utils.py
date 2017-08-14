@@ -1,6 +1,7 @@
 import calendar
 import datetime
 import time
+import logging
 
 import re
 
@@ -65,3 +66,5 @@ def haversine(latlon1, latlon2):
     c = 2 * asin(sqrt(a))
     km = 6367 * c
     return km*1000
+
+

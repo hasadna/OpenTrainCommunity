@@ -55,6 +55,17 @@
     "stop_name": "Kiryat Motzkin"
   },
   {
+    "stop_short_name": "\u05de\u05d5\u05e6\u05e7\u05d9\u05df",
+    "gtfs_stop_id": 1400,
+    "latlon": [
+      32.833081,
+      35.069947
+    ],
+    "bssids": [
+    ],
+    "stop_name": "Motzkin"
+  },
+  {
     "stop_short_name": "\u05dc\u05d1 \u05d4\u05de\u05e4\u05e8\u05e5",
     "gtfs_stop_id": 1220,
     "latlon": [
@@ -769,5 +780,15 @@
     ],
     "bssids": [],
     "gtfs_stop_id": 1260
-  }
+  },
+    {
+    "stop_name": "Achihud",
+    "bssids": [],
+    "stop_short_name": "\u05d0\u05d7\u05d9\u05d4\u05d5\u05d3",
+    "gtfs_stop_id": 1820,
+    "latlon": [
+        32.5442,
+        35.1026
+    ]
+    }
 ]

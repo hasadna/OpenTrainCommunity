@@ -42,6 +42,7 @@ def create_sample(*,
                   actual_departure,
                   index,
                   filename,
+                  sheet_idx,
                   line_number,
                   valid,
                   invalid_reason):
@@ -59,7 +60,7 @@ def create_sample(*,
 
     assert isinstance(index, int) and index > 0
     assert isinstance(filename, str)
-    assert isinstance(line_number, int) and line_number > 0
+    assert isinstance(line_number, int) and line_number >= 0
     try:
         stop = models.Stop.objects.get(gtfs_stop_id=gtfs_stop_id)
     except models.Stop.DoesNotExist:
@@ -91,10 +92,13 @@ def create_sample(*,
                                               delay_departure=delay_departure,
                                               index=index,
                                               filename=filename,
+                                              sheet_idx=sheet_idx,
                                               line_number=line_number,
                                               valid=valid,
                                               invalid_reason=invalid_reason
                                               )
+        if sample.stop.gtfs_stop_id == 800:
+            LOGGER.info("CREATED SAMPLE FOR MOTZKIN ID = %d", sample.id)
     else:
         trip.set_invalid("skipped non unique sample")
         return None

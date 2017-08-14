@@ -138,6 +138,7 @@ class Sample(models.Model):
     index = models.IntegerField()
 
     filename = models.CharField(max_length=500)
+    sheet_idx = models.IntegerField(default=0)
     line_number = models.IntegerField()
 
     valid = models.BooleanField(default=True, db_index=True)
@@ -162,7 +163,7 @@ class Sample(models.Model):
         unique_together = (
             ('trip', 'index'),
             ('trip', 'stop'),
-            ('filename', 'line_number')
+            ('filename', 'sheet_idx', 'line_number')
         )
 
     def __str__(self):
