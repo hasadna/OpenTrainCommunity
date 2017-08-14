@@ -20,7 +20,7 @@ import datetime
 
 SERVER_DOMAIN = 'otrain.org'
 LOCAL_DOMAIN = '127.0.0.1:8000'
-DOMAIN = SERVER_DOMAIN
+DOMAIN = LOCAL_DOMAIN
 #http://otrain.org/api/v1/stats/path-info-full/?destination=5200&from_date=1%2F3%2F2016&origin=5000&to_date=1%2F4%2F2016
 API_ALL_ROUTES_URL = 'http://{}/api/v1/routes/all/'.format(DOMAIN)
 API_BASE_URL = 'http://{}/api/v1/stats/route-info-full/'.format(DOMAIN)
@@ -36,8 +36,7 @@ ROUTES = False
 # otherwise iterate over all routes.
 #ROUTES = [672]
 
-TIME_PERIODS = [[2016, [1, 2, 3]],
-                [2015, range(1, 13)]]
+TIME_PERIODS = [[2017, [5, 6, 7, 8, 9, 10, 11, 12]]]
 
 if not os.path.exists('cache'):
   print('Creating cache directory...')

@@ -118,8 +118,8 @@ def get_stats_table():
   return table
 
 stats_table = get_stats_table()
-print stats_table.shape
-print ""
+print(stats_table.shape)
+print("")
 # TODO: Add "sudo pip install XlsxWriter" to installation
 writer = pd.ExcelWriter('output.xlsx', engine='xlsxwriter')
 stats_table.to_excel(writer, sheet_name='Sheet1')
