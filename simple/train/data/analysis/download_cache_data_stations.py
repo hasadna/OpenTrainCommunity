@@ -29,8 +29,7 @@ TIMEZONE_OFFSET = -2*60*60  # NB: this is not perfect due to daylight savings ti
 
 USE_MICROSECONDS = False  # Use the new format d/m/yyyy instead of microseconds
 
-TIME_PERIODS = [[2016, [1, 2, 3]],
-                [2015, range(1, 13)]]
+TIME_PERIODS = [[2017, [5, 6, 7, 8, 9, 10, 11, 12]]]
 
 def get_connected_stop_id_pairs():
   routes = requests.get('http://{}/api/v1/routes/all'.format(DOMAIN)).json()
