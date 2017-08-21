@@ -13,16 +13,16 @@
             </thead>
             <tr ng-repeat="hl in highlights">
                 <td>
-                    {{ hl.month }}/{{ hl.year }}
+                    {{ hl.month | month_name }} {{ hl.year }}
                 </td>
                 <td>
                     {{ hl.num_trips }}
                 </td>
                 <td>
-                    {{ hl.week_day }}
+                    {{ hl.week_day | week_day }}
                 </td>
                 <td>
-                    {{ hl.hours }}
+                    {{ hl.hours | hours }}
                 </td>
                 <td>
                     <a style="color:white" target="_blank" ng-href="{{ hl.url }}">קישור</a>
