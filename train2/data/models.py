@@ -118,13 +118,10 @@ class Route(models.Model):
         return self.trips.latest('date')
 
     def is_superset_of(self, route):
-        if len(self.stop_ids) < len(route.stop_ids):
+        from . import utils
+        if route == self:
             return False
-
-
-
-
-
+        return utils.is_list_in_list(route.stop_ids, self.stop_ids)
 
     def __str__(self):
         return '{} => {}'.format(self.get_first_stop(), self.get_last_stop())

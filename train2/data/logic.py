@@ -4,6 +4,7 @@ from collections import namedtuple
 from functools import cmp_to_key
 
 import django.db
+from django.db.models import Count
 
 from . import utils
 from .models import Route, Trip, Sample
@@ -366,13 +367,21 @@ def find_real_routes(from_date, to_date):
     logger.info("from_date = %s to_date = %s", from_date, to_date)
     trips = Trip.objects.filter(date__gte=from_date, date__lte=to_date)
     logger.info("# of trips = %d", trips.count())
-    routes = Route.objects.filter(id__in=trips.values_list('route'))
-    logger.info("# of routes = %d", routes.count())
-    edges = {(r.get_first_stop(), r.get_last_stop()) for r in routes}
-    logger.info("# of edges = %s", len(edges))
-    first_stops = {r.get_first_stop() for r in routes}
-    last_stops = {r.get_last_stop() for r in routes}
-    logger.info("# of first_stops = %s", len(first_stops))
-    logger.info("# of last_stops = %s", len(last_stops))
+    routes_with_counts = {r['route']: r['c'] for r in trips.values('route').annotate(c=Count('id'))}
+    routes = list(Route.objects.filter(id__in=trips.values_list("route_id")))
+    for r in routes:
+        r.trips_count = routes_with_counts[r.id]
 
+    logger.info("# of routes = %d", len(routes))
+    to_remove = set()
+    for r1 in routes:
+        for r2 in routes:
+            if r1.is_superset_of(r2) and r2 not in to_remove:
+                to_remove.add(r2)
+                r1.trips_count += r2.trips_count
+
+    result = [r for r in routes if r not in to_remove]
+    logger.info("There are %d real routes", len(result))
+    result.sort(key=lambda r: r.trips_count, reverse=True)
+    return result
 

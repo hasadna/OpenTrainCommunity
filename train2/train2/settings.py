@@ -191,5 +191,7 @@ LOGGING = {
 SHELL_PLUS_POST_IMPORTS = (
     ('data.logic'),
     ('imp', 'reload'),
+    ('datetime'),
 )
+
 
