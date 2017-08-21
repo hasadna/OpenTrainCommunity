@@ -120,6 +120,12 @@ def get_stats_table():
 stats_table = get_stats_table()
 print(stats_table.shape)
 print("")
+json_stats_table = stats_table[['route_id', 'year', 'month', 'week_day', 'hours', 'num_trips', 'url', 'mean_arrival_late_pct']]
+
+json_stats_table.to_json('routes_output_format_split.json', orient='split')
+json_stats_table.to_json('routes_output_format_records.json', orient='records')
+json_stats_table.to_json('routes_output_format_values.json', orient='values')
+
 # TODO: Add "sudo pip install XlsxWriter" to installation
 writer = pd.ExcelWriter('output.xlsx', engine='xlsxwriter')
 stats_table.to_excel(writer, sheet_name='Sheet1')
