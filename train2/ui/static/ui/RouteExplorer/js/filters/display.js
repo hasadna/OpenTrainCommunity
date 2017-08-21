@@ -28,7 +28,7 @@ angular.module('RouteExplorer')
             if (hours == 'all') {
                 return 'כל היום'
             }
-            return `${hours[0]} - ${hours[1]}`;
+            return `${hours[1]} - ${hours[0]}`;
         }
     }).filter('month_name', function() {
         let months = [
