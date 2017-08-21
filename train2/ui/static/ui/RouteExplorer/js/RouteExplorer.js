@@ -54,6 +54,13 @@
                     reloadOnSearch: false,
                     resolve: {'Layout': 'Layout'},
                 })
+                .when("/routes", {
+                    pageId: 'routes',
+                    templateUrl: templateUrl('Routes'),
+                    controller: 'RoutesController',
+                    reloadOnSearch: false,
+                    resolve: {'Layout': 'Layout'},
+                })
                 .otherwise({
                     redirectTo: '/'
                 });
