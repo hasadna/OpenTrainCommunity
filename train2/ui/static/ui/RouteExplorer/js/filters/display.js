@@ -6,16 +6,21 @@ let daysTable = {
             4: 'חמישי',
             5: 'שישי',
             6: 'שבת',
-            'all': 'כל הימים'
         };
 
 angular.module('RouteExplorer')
     .filter('week_day1', function () {
         return function (day) {
+            if (day == 'all') {
+                return 'כל הימים';
+            }
             return daysTable[day-1] || `??? ${day}`;
         }
     }).filter('week_day0', function () {
         return function (day) {
+            if (day == 'all') {
+                return 'כל הימים';
+            }
             return daysTable[day] || `??? ${day}`;
         }
     }).filter('hours', function () {
