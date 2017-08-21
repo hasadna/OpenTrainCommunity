@@ -1,3 +1,5 @@
+import json
+
 from django.db.models import Count, Min, Max
 from rest_framework.decorators import list_route
 from rest_framework.generics import get_object_or_404
@@ -231,3 +233,10 @@ class HeatMapViewSet(ViewSet):
 #         return self.get_route().services.all()
 #
 #
+
+class HighlightsViewSet(ViewSet):
+    def list(self, request, *args, **kwargs):
+        with open("../simple/train/data/analysis/routes_output_format_records.json") as fh:
+            return Response(data=json.load(fh))
+
+

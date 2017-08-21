@@ -1,0 +1,33 @@
+<h1 style="padding-top: 50px">Highlights</h1>
+<div class="row" style="padding-right: 30px">
+    <div class="col-xs-12">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>תאריך</th>
+                    <th>מספר נסיעות</th>
+                    <th>יום בשבוע</th>
+                    <th>שעות</th>
+                    <th>קישור</th>
+                </tr>
+            </thead>
+            <tr ng-repeat="hl in highlights">
+                <td>
+                    {{ hl.month }}/{{ hl.year }}
+                </td>
+                <td>
+                    {{ hl.num_trips }}
+                </td>
+                <td>
+                    {{ hl.week_day }}
+                </td>
+                <td>
+                    {{ hl.hours }}
+                </td>
+                <td>
+                    <a style="color:white" target="_blank" ng-href="{{ hl.url }}">קישור</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

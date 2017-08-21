@@ -61,6 +61,13 @@
                     reloadOnSearch: false,
                     resolve: {'Layout': 'Layout'},
                 })
+                .when("/highlights", {
+                    pageId: 'highlights',
+                    templateUrl: templateUrl('Highlights'),
+                    controller: 'HighlightsController',
+                    reloadOnSearch: false,
+                    resolve: {'Layout': 'Layout'},
+                })
                 .otherwise({
                     redirectTo: '/'
                 });
