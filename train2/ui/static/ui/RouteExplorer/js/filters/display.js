@@ -1,6 +1,4 @@
-angular.module('RouteExplorer')
-    .filter('week_day', function () {
-        let daysTable = {
+let daysTable = {
             0: 'ראשון',
             1: 'שני',
             2: 'שלישי',
@@ -10,6 +8,13 @@ angular.module('RouteExplorer')
             6: 'שבת',
             'all': 'כל הימים'
         };
+
+angular.module('RouteExplorer')
+    .filter('week_day1', function () {
+        return function (day) {
+            return daysTable[day-1] || `??? ${day}`;
+        }
+    }).filter('week_day0', function () {
         return function (day) {
             return daysTable[day] || `??? ${day}`;
         }
