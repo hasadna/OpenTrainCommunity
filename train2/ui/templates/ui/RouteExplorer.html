@@ -44,13 +44,32 @@
                     </span>
                 </a>
 
-                <a class="navbar-btn btn" href="http://wiki.hasadna.org.il/wiki/%D7%A8%D7%9B%D7%91%D7%AA_%D7%A4%D7%AA%D7%95%D7%97%D7%94">
+                <a id="wiki" class="navbar-btn btn" href="http://wiki.hasadna.org.il/wiki/%D7%A8%D7%9B%D7%91%D7%AA_%D7%A4%D7%AA%D7%95%D7%97%D7%94">
                     <span class="fa-stack fa-2x">
                         <i class="fa fa-circle fa-stack-2x"></i>
                         <i class="fa fa-wikipedia-w fa-stack-1x"></i>
                     </span>
                 </a>
-
+                <span uib-dropdown class="navbar-btn">
+                    <a class="btn" uib-dropdown-toggle>
+                        <span class="fa-stack fa-2x">
+                            <i class="fa fa-circle fa-stack-2x"></i>
+                            <i class="fa fa-ellipsis-h  fa-stack-1x"></i>
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu" uib-dropdown-menu
+                        aria-labelledby="simple-dropdown">
+                        <li>
+                            <a href="/#highlights">Highlights</a>
+                        </li>
+                        <li>
+                            <a href="/#graphs">גרפים</a>
+                        </li>
+                        <li>
+                            <a href="/#routes">מסלולים (בעבודה)</a>
+                        </li>
+                    </ul>
+                </span>
             </span>
         </nav>
 

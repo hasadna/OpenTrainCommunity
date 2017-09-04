@@ -76,6 +76,13 @@ h2 {
     height: 100%;
     float: left;
 
+    .dropdown-menu {
+      position: absolute;
+      right: -80px;
+      top: 60px;
+      background-color: #D6DEE1;
+    }
+
     .aboutBtn {
       background-color: pink;
       height: 100%;
