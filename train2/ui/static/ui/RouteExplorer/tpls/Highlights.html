@@ -4,11 +4,10 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>תאריך</th>
-                    <th>מספר נסיעות</th>
-                    <th>יום בשבוע</th>
-                    <th>שעות</th>
-                    <th>קישור</th>
+                    <th ng-repeat="f in fields">
+                        {{ f.name }}
+                        <span ng-hide="f.disableSort" ng-click="sortBy(f)" class="sort" ng-class="{'sort-inactive': !f.active}"><i class="fa fa-sort"></i></span>
+                    </th>
                 </tr>
             </thead>
             <tr ng-repeat="hl in highlights">
@@ -23,6 +22,9 @@
                 </td>
                 <td>
                     {{ hl.hours | hours }}
+                </td>
+                <td>
+                    {{ hl.mean_arrival_late_pct * 100.0 | number:2 }}%
                 </td>
                 <td>
                     <a style="color:white" target="_blank" ng-href="{{ hl.url }}">קישור</a>

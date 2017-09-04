@@ -236,7 +236,12 @@ class HeatMapViewSet(ViewSet):
 
 class HighlightsViewSet(ViewSet):
     def list(self, request, *args, **kwargs):
+        data = []
         with open("../simple/train/data/analysis/routes_output_format_records.json") as fh:
-            return Response(data=json.load(fh))
+            for line in fh:
+                data.append(json.loads(line))
+        return Response(data=data)
+
+
 
 

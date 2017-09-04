@@ -25,10 +25,13 @@ angular.module('RouteExplorer')
         }
     }).filter('hours', function () {
         return function(hours) {
+            let fix = h => h >= 24 ? h % 24 : h;
             if (hours == 'all') {
                 return 'כל היום'
             }
-            return `${hours[1]} - ${hours[0]}`;
+            let h1 = fix(hours[1]);
+            let h0 = fix(hours[0]);
+            return `${h1} - ${h0}`;
         }
     }).filter('month_name', function() {
         let months = [
