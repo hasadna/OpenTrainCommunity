@@ -1,6 +1,9 @@
+import os
 import json
 
 from django.db.models import Count, Min, Max
+from django.conf import settings
+from django.templatetags.static import static
 from rest_framework.decorators import list_route
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
@@ -237,10 +240,14 @@ class HeatMapViewSet(ViewSet):
 class HighlightsViewSet(ViewSet):
     def list(self, request, *args, **kwargs):
         data = []
-        with open("../simple/train/data/analysis/routes_output_format_records.json") as fh:
+        path = os.path.join(settings.BASE_DIR, "analysis/static/analysis/routes_output_format_records.json")
+        with open(path) as fh:
             for line in fh:
                 data.append(json.loads(line))
-        return Response(data=data)
+        return Response(data={
+            'highlights': data,
+            'url': static('analysis/routes_output.xlsx')
+        })
 
 
 

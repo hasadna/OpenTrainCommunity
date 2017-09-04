@@ -13,7 +13,8 @@ angular.module('RouteExplorer').controller('HighlightsController',
             'ngInject';
             $scope.init = () => {
                 $http.get("/api/v1/highlights/").then(resp => {
-                    $scope.highlights = resp.data;
+                    $scope.highlights = resp.data.highlights;
+                    $scope.url = resp.data.url;
                     $scope.fields = [
                         {
                             name: 'תאריך',

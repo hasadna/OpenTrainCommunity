@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'ui',
     'info',
     'rest_framework_swagger',
-    'corsheaders'
+    'corsheaders',
+    'analysis',
 ]
 
 MIDDLEWARE_CLASSES = [
