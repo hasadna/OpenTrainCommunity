@@ -14,10 +14,19 @@ You might need to first install the virtualenv package, via:
 sudo pip install virtualenv
 ```
 
+If it's already installed, you might need to update it, via:
+```
+sudo pip install --upgrade virtualenv
+```
+
 Then activate the environment:
 ```
-cd opentrain
-source bin/activate
+source ~/.virtualenvs/opentrain/bin/activate
+```
+
+Then clone the git repository (e.g into ~/devel folder), via:
+```
+git clone https://github.com/hasadna/OpenTrainCommunity.git
 ```
 
 Then install all of the required modules into your virtualenv using `pip`:
