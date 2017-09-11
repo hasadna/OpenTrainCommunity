@@ -1,7 +1,9 @@
+import calendar
 import os
 import json
+import datetime
 
-from django.db.models import Count, Min, Max, datetime
+from django.db.models import Count, Min, Max
 from django.conf import settings
 from django.templatetags.static import static
 from rest_framework.decorators import list_route
@@ -250,13 +252,12 @@ class HighlightsViewSet(ViewSet):
 
 
 class RealRoutesViewSet(ViewSet):
-    def list(self, request, *args, *kwargs):
-        month = int(kwargs['month'])
-        year = int(kwargs['year'])
-        from_date = datetime.date(year,month,1)
-        from_date = datetime.date(y, m, 1),
+    def list(self, request, *args, **kwargs):
+        m = int(kwargs['month'])
+        y = int(kwargs['year'])
+        from_date = datetime.date(y, m ,1)
         wd, num_days = calendar.monthrange(y, m)
-        to_date = datetime.date(y, m, num_days))
+        to_date = datetime.date(y, m, num_days)
         logic.find_real_routes(from_date, to_date)
 
 
