@@ -23,7 +23,10 @@ def main():
     filename = options.file
 
     use_sudo = platform.system().lower() == 'Linux'
-    postgres_cmd = "sudo -u postgres psql"
+    if use_sudo:
+        postgres_cmd = "sudo -u postgres psql"
+    else:
+        postgres_cmd = "psql -U postgres"
     if options.file.endswith(".gz"):
         run_cmd("gunzip --keep {}".format(options.file))
         filename = options.file[:-3]
@@ -31,6 +34,7 @@ def main():
     run_cmd('python manage.py sqlcreate -D --router=default | ' + postgres_cmd)
     run_cmd('{} --set ON_ERROR_STOP=on train2 < {}'.format(postgres_cmd,
                                                            filename))
+    run_cmd('{} < create_guest.sql'.format(postgres_cmd))
     return 0
 
 
