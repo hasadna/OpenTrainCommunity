@@ -94,14 +94,15 @@ def analyse():
     sorted_stations = [(id, "%.2f%%" % ((total/float(num_sub_routes))*100)) for id, total in sorted(
         station_ranking.items(), key=lambda x: x[1], reverse=True)]
 
-    print "Ranking average latency for routes :"
+    print("Ranking average latency for routes :")
     for i, route in enumerate(sorted_routes):
-        print "%s." % (i+1)
-        print route
+        print("%s." % (i+1))
+        print(route)
 
-    print "Stations with most late trains :"
+    print("Stations with most late trains :")
     for i, station in enumerate(sorted_stations):
-        print "%s." % (i+1)
-        print station
+        print("%s." % (i+1))
+        print(station)
 
 analyse()
+

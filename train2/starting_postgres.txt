@@ -1,6 +1,0 @@
-
-# start postgres service
-postgres -D /usr/local/var/postgres/
-
-# link to start postgres tutorial
-http://www.tunnelsup.com/setting-up-postgres-on-mac-osx
