@@ -19,11 +19,13 @@ angular.module('RouteExplorer').controller('TopHighlightsController',
                             'kind': 'late',
                             'title': 'נסיעה באיחור',
                             'items': data.late,
+                            'color': 'danger',
                         },
                         {
                             'kind': 'ontime',
                             'title': 'נסיעה בזמן',
                             'items': data.ontime,
+                            'color': 'success',
                         }
                     ];
                 });

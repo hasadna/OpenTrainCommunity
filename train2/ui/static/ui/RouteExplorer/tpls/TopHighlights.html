@@ -1,7 +1,7 @@
 <h1 style="padding-top: 50px">Top Highlights</h1>
 <div class="row" style="padding-right: 30px" ng-repeat="highlightList in highlightLists">
     <div class="col-xs-12 col-sm-4" ng-repeat="item in highlightList.items">
-        <div class="panel panel-default" style="color: blue">
+        <div class="panel panel-{{highlightList.color}}" style="color: blue">
             <div class="panel-heading">
                 <a ng-href="{{ item.url }}">{{ highlightList.title }}</a>
             </div>
