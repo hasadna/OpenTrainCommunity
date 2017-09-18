@@ -68,6 +68,13 @@
                     reloadOnSearch: false,
                     resolve: {'Layout': 'Layout'},
                 })
+                .when("/top-highlights", {
+                    pageId: 'top_highlights',
+                    templateUrl: templateUrl('TopHighlights'),
+                    controller: 'TopHighlightsController',
+                    reloadOnSearch: false,
+                    resolve: {'Layout': 'Layout'},
+                })
                 .otherwise({
                     redirectTo: '/'
                 });

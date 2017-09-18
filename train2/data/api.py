@@ -240,14 +240,21 @@ class HeatMapViewSet(ViewSet):
 
 class HighlightsViewSet(ViewSet):
     def list(self, request, *args, **kwargs):
-        data = []
         path = os.path.join(settings.BASE_DIR, "analysis/static/analysis/routes_output_format_records.json")
         with open(path) as fh:
-            for line in fh:
-                data.append(json.loads(line))
+            data = [json.loads(line) for line in fh]
         return Response(data={
             'highlights': data,
             'url': static('analysis/routes_output.xlsx')
+        })
+
+    @list_route()
+    def top(self, request, *args, **kwargs):
+        path = os.path.join(settings.BASE_DIR, "analysis/static/analysis/manual_highlights.json")
+        with open(path) as fh:
+            data = json.load(fh)
+        return Response(data={
+            'highlights': data,
         })
 
 
