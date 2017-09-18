@@ -56,8 +56,8 @@
                 })
                 .when("/routes", {
                     pageId: 'routes',
-                    templateUrl: templateUrl('Routes'),
-                    controller: 'RoutesController',
+                    templateUrl: templateUrl('RealRoutes'),
+                    controller: 'RealRoutesController',
                     reloadOnSearch: false,
                     resolve: {'Layout': 'Layout'},
                 })

@@ -258,6 +258,10 @@ class RealRoutesViewSet(ViewSet):
         from_date = datetime.date(y, m ,1)
         wd, num_days = calendar.monthrange(y, m)
         to_date = datetime.date(y, m, num_days)
-        logic.find_real_routes(from_date, to_date)
+        routes = logic.find_real_routes(from_date, to_date)
+        serializer = serializers.RouteSerializer(routes, many=True)
+        return Response(status=200,
+                        data=serializer.data)
+
 
 

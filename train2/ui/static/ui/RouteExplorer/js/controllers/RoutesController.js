@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('RouteExplorer').controller('RoutesController',
+angular.module('RouteExplorer').controller('RealRoutesController',
         function ($scope,
                   $http,
                   $q,
@@ -30,7 +30,7 @@ angular.module('RouteExplorer').controller('RoutesController',
                 $scope.years = $scope.getYears();
             };
             $scope.refresh = () => {
-                console.log("refreshing");
+
             }
             $scope.init();
         });
