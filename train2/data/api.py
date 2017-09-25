@@ -1,5 +1,7 @@
+import calendar
 import os
 import json
+import datetime
 
 from django.db.models import Count, Min, Max
 from django.conf import settings
@@ -208,7 +210,6 @@ class RouteTripsViewSet(UnderRouteMixin, ReadOnlyModelViewSet):
         return self.get_route().trips.all()
 
 
-
 class HeatMapViewSet(ViewSet):
     def list(self, request):
         import data.analysis.heatmap_utils
@@ -240,16 +241,35 @@ class HeatMapViewSet(ViewSet):
 
 class HighlightsViewSet(ViewSet):
     def list(self, request, *args, **kwargs):
-        data = []
         path = os.path.join(settings.BASE_DIR, "analysis/static/analysis/routes_output_format_records.json")
         with open(path) as fh:
-            for line in fh:
-                data.append(json.loads(line))
+            data = [json.loads(line) for line in fh]
         return Response(data={
             'highlights': data,
             'url': static('analysis/routes_output.xlsx')
         })
 
+    @list_route()
+    def top(self, request, *args, **kwargs):
+        path = os.path.join(settings.BASE_DIR, "analysis/static/analysis/manual_highlights.json")
+        with open(path) as fh:
+            data = json.load(fh)
+        return Response(data={
+            'highlights': data,
+        })
+
+
+class RealRoutesViewSet(ViewSet):
+    def list(self, request, *args, **kwargs):
+        m = int(kwargs['month'])
+        y = int(kwargs['year'])
+        from_date = datetime.date(y, m ,1)
+        wd, num_days = calendar.monthrange(y, m)
+        to_date = datetime.date(y, m, num_days)
+        routes = logic.find_real_routes(from_date, to_date)
+        serializer = serializers.RouteSerializer(routes, many=True)
+        return Response(status=200,
+                        data=serializer.data)
 
 
 

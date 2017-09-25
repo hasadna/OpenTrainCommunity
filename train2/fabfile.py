@@ -9,7 +9,7 @@ import datetime
 
 env.user = "opentrain"
 env.hosts = ["otrain.org"]
-env.key_filename = "/home/eran/.ssh/id_rsa.pub"
+#env.key_filename = "/home/eran/.ssh/id_rsa.pub"
 env.projdir = "/home/opentrain/work/OpenTrainCommunity/train2"
 env.venv_dir = '/home/%s/.virtualenvs/train2' % env.user
 env.venv_command = '.  %s/bin/activate' % env.venv_dir
