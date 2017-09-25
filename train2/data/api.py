@@ -157,6 +157,7 @@ class GeneralViewSet(ViewSet):
 
 
 class RoutesViewSet(ReadOnlyModelViewSet):
+    # TODO: This class is redeclared and shadows earlier def. Should one of them be removed ?
     queryset = models.Route.objects.all()
     serializer_class = serializers.RouteSerializer
 
