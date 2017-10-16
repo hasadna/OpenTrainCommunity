@@ -790,5 +790,15 @@
         32.5442,
         35.1026
     ]
-    }
+    },
+  {
+    "latlon": [
+        0,
+        0
+    ],
+    "stop_name": "Carmiel",
+    "bssids": [],
+    "stop_short_name": "\u05db\u05e8\u05de\u05d9\u05d0\u05dc",
+    "gtfs_stop_id": 1840
+  }
 ]
