@@ -1,9 +1,10 @@
 from contextlib import contextmanager
 
+import os
 from fabric.api import run, env
 from fabric.context_managers import cd, prefix
 from fabric.decorators import task
-from fabric.operations import sudo
+from fabric.operations import sudo, local
 
 import datetime
 
@@ -71,4 +72,35 @@ def backup_db():
     out= "/home/opentrain/public_html/files/dumps/db_{}.sql.gz".format(ts)
     sudo("sudo -u postgres pg_dump train2 | gzip > {}".format(out))
     run("ls -lh {}".format(out))
+
+
+def inline_cmd(cmd):
+    lines = [l.strip() for l in cmd.splitlines()]
+    return " ".join(lines)
+
+
+@task
+def create_db():
+    local("python manage.py sqlcreate -D | sudo -u postgres psql")
+    create_guest_cmd = '''
+    DROP USER IF EXISTS guest;
+    CREATE USER guest  WITH ENCRYPTED PASSWORD 'guest';
+    GRANT CONNECT ON DATABASE train2 to guest;
+    \c train2
+    GRANT USAGE ON SCHEMA public to guest;
+    GRANT SELECT ON ALL SEQUENCES IN SCHEMA public TO guest;
+    GRANT SELECT ON ALL TABLES IN SCHEMA public TO guest;
+    '''
+    local('echo "{}" | sudo -u postgres psql'.format(inline_cmd(create_guest_cmd)))
+
+@task
+def restore_db(file):
+    assert os.path.exists(file),"cannot find file {}".format(file)
+    if file.endswith(".gz"):
+        cat_command = "gunzip -c {}".format(file)
+    else:
+        cat_command = "cat {}".format(file)
+    local("{} | python manage.py dbshell".format(cat_command))
+
+
 

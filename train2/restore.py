@@ -16,6 +16,7 @@ def main():
 
     def run_cmd(cmd):
         if not options.dry:
+            print(cmd)
             subprocess.call(cmd, shell=True)
         else:
             print(cmd)
@@ -27,6 +28,7 @@ def main():
         postgres_cmd = "sudo -u postgres psql"
     else:
         postgres_cmd = "psql -U postgres"
+
     if options.file.endswith(".gz"):
         run_cmd("gunzip --keep {}".format(options.file))
         filename = options.file[:-3]
