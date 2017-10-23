@@ -9,8 +9,8 @@ logger = logging.getLogger(__name__)
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
-        parser.add_argument("year", type=int, choices=range(2017, datetime.datetime.now().year + 1), help="year")
         parser.add_argument("month", type=int, choices=range(1,13), help="month")
+        parser.add_argument("year", type=int, choices=range(2017, datetime.datetime.now().year + 1), help="year")
 
     def handle(self, *args, **options):
         logger.info('%d %d',options['month'], options['year'])
