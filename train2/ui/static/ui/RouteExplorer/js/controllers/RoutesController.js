@@ -11,6 +11,8 @@ angular.module('RouteExplorer').controller('RealRoutesController',
                   hoursList,
                   monthNames) {
             'ngInject';
+            $scope.selectedYear = 2017;
+            $scope.selectedMonth = 9;
             $scope.getMonths = () => {
                 return [1,2,3,4,5,6,7,8,9,10,11,12];
             };
@@ -22,7 +24,6 @@ angular.module('RouteExplorer').controller('RealRoutesController',
                     result.push(y);
                     y++;
                 }
-                console.log(result);
                 return result;
             };
             $scope.init = () => {
@@ -30,7 +31,17 @@ angular.module('RouteExplorer').controller('RealRoutesController',
                 $scope.years = $scope.getYears();
             };
             $scope.refresh = () => {
-
+                $scope.realRoutes = null;
+                let y = $scope.selectedYear;
+                let m = $scope.selectedMonth;
+                $http.get(`/api/v1/real-routes/${y}/${m}/`).then(resp => {
+                    $scope.realRoutes = resp.data;
+                    for (let rr of $scope.realRoutes) {
+                        console.log(rr);
+                        rr.firstStop = rr.stops[0];
+                        rr.lastStop = rr.stops[rr.stops.length-1];
+                    }
+                });
             }
             $scope.init();
         });
