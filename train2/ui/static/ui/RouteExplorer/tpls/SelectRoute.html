@@ -34,8 +34,7 @@
                             <span class="stop-list">
                                 <span class="stop"
                                     ng-repeat="stop in route.stops track by $index"
-                                    ng-class="{ 'stop-collapsed': isCollapsed(stop), 'stop-origin': isOrigin(stop), 'stop-destination': isDestination(stop) }"
-                                    uib-tooltip="{{ stopTooltip(stop) }}" >
+                                    ng-class="{ 'stop-origin': isOrigin(stop), 'stop-destination': isDestination(stop) }">
                                     {{ stopText(stop) }}
                                 </span>
                             </span>
