@@ -2,10 +2,13 @@ import calendar
 import os
 import json
 import datetime
+import logging
+import time
 
 from django.db.models import Count, Min, Max
 from django.conf import settings
 from django.templatetags.static import static
+from django.utils import timezone
 from rest_framework.decorators import list_route
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
@@ -15,6 +18,9 @@ from . import models
 from . import serializers
 from . import utils
 from . import logic
+
+
+logger = logging.getLogger(__name__)
 
 
 class UnderRouteMixin(object):
@@ -156,6 +162,22 @@ class GeneralViewSet(ViewSet):
             }
         }
         return Response(data=data)
+
+    @list_route(url_path='sleep')
+    def goto_sleep(self, request, *args, **kwargs):
+        """ for some testings """
+        sleep_id = int(request.GET.get('id'))
+        sleep_time = int(request.GET.get('time'))
+        start_time = timezone.now()
+        logger.info("[%d] Going to sleep %d", sleep_id, sleep_time)
+        time.sleep(sleep_time)
+        logger.info("[%d] After sleep %d", sleep_id, sleep_time)
+        return Response({
+            'sleep_id': sleep_id,
+            'start_time': start_time,
+            'end_time': timezone.now(),
+            'sleep_time': sleep_time
+        })
 
 
 class RoutesViewSet(ReadOnlyModelViewSet):
