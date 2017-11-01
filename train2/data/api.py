@@ -171,10 +171,10 @@ class GeneralViewSet(ViewSet):
         sleep_time = int(request.GET.get('time'))
         start_time = timezone.now()
         logger.info("[%d] Going to sleep %d", sleep_id, sleep_time)
-        # with connection.cursor() as c:
-        #     c.execute("select pg_sleep({})".format(sleep_time))
-        #     print(c.fetchall())
-        time.sleep(sleep_time)
+        with connection.cursor() as c:
+            c.execute("select pg_sleep({})".format(sleep_time))
+            print(c.fetchall())
+
         logger.info("[%d] After sleep %d", sleep_id, sleep_time)
         return Response({
             'sleep_id': sleep_id,
