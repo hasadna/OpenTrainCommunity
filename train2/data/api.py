@@ -165,12 +165,15 @@ class GeneralViewSet(ViewSet):
 
     @list_route(url_path='sleep')
     def goto_sleep(self, request, *args, **kwargs):
+        from django.db import connection
         """ for some testings """
         sleep_id = int(request.GET.get('id'))
         sleep_time = int(request.GET.get('time'))
         start_time = timezone.now()
         logger.info("[%d] Going to sleep %d", sleep_id, sleep_time)
-        time.sleep(sleep_time)
+        with connection.cursor() as c:
+            c.execute("select pg_sleep({})".format(sleep_time))
+            print(c.fetchall())
         logger.info("[%d] After sleep %d", sleep_id, sleep_time)
         return Response({
             'sleep_id': sleep_id,
