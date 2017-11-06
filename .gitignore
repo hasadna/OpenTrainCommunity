@@ -15,3 +15,4 @@ simple/train/perf/cur
 docs/html/
 docs/doctrees/
 db.sqlite3
+.vscode
