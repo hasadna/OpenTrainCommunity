@@ -3,10 +3,8 @@ import datetime
 from . import models
 
 # Run using:
-# python manage.py check
+# python manage.py check_month <month> <year>
 
-MIN_MONTH = 7
-MAX_MONTH = 7
 MIN_MONTHLY_TRIP_COUNT = 8000
 MAX_MONTHLY_TRIP_COUNT = 15000
 MIN_DAILY_TRIP_COUNT = 100
@@ -15,9 +13,12 @@ MAX_DAILY_TRIP_COUNT = 500
 MIN_MONTHLY_VALID_TRIP_RATIO = 0.97
 MIN = 0
 MAX = 1
+
+
 ZERO_STOPS = [
     'Achihud', ''
 ]
+
 BIG_STOPS = [
     'Tel Aviv - University',
     'Tel Aviv Center - Savidor',
@@ -82,13 +83,25 @@ class Error:
                 if k.upper() == k and isinstance(getattr(cls, k), str)]
 
 
-def run():
+class Config:
+    def __init__(self, year, month):
+        self.year = year
+        self.from_month = month
+        self.to_month = month
+
+    @property
+    def month_range(self):
+        return range(self.from_month, self.to_month+1)
+
+
+def run_month(year, month):
+    c = Config(year, month)
     errors = []
-    errors.extend(check_months())
+    errors.extend(check_months(c))
     # TODO: Enable this once we get daily data for Jan-Mar 2017
-    errors.extend(check_days())
-    errors.extend(check_valid_percent_per_month())
-    errors.extend(check_samples_per_station_per_month())
+    errors.extend(check_days(c))
+    errors.extend(check_valid_percent_per_month(c))
+    errors.extend(check_samples_per_station_per_month(c))
 
     errors_by_code = {c: [] for c in Error.error_codes()}
     for error in errors:
@@ -114,12 +127,12 @@ def run():
             print('=' * 80)
 
 
-def check_months():
+def check_months(c):
     errors = []
-    for month in range(MIN_MONTH, MAX_MONTH+1):
+    for month in range(c.from_month, c.to_month+1):
         print('Checking month', month)
-        date1 = datetime.datetime(2017, month, 1)
-        date2 = datetime.datetime(2017, month + 1, 1)
+        date1 = datetime.datetime(c.year, month, 1)
+        date2 = datetime.datetime(c.year, month + 1, 1)
         trip_count = models.Trip.objects.filter(date__gte=date1, date__lt=date2).count()
         if trip_count < MIN_MONTHLY_TRIP_COUNT:
             errors.append(Error(Error.MONTH_TRIP_COUNT_TOO_LOW,
@@ -132,10 +145,10 @@ def check_months():
     return errors
 
 
-def check_days():
+def check_days(c):
     errors = []
-    date1 = datetime.datetime(2017, MIN_MONTH, 1)
-    date2 = datetime.datetime(2017, MAX_MONTH + 1, 1)
+    date1 = datetime.datetime(c.year, c.from_month, 1)
+    date2 = datetime.datetime(c.year, c.to_month+ 1, 1)
     for day in daterange(date1, date2):
         min_daily_count = MIN_DAILY_TRIP_COUNT
         if day.weekday() == 5:
@@ -153,11 +166,11 @@ def check_days():
     return errors
 
 
-def check_valid_percent_per_month():
+def check_valid_percent_per_month(c):
     errors = []
-    for month in range(1, MAX_MONTH + 1):
-        date1 = datetime.datetime(2017, month, 1)
-        date2 = datetime.datetime(2017, month + 1, 1)
+    for month in c.month_range:
+        date1 = datetime.datetime(c.year, month, 1)
+        date2 = datetime.datetime(c.year, month + 1, 1)
         all_trip_count = models.Trip.objects.filter(date__gte=date1, date__lt=date2).count()
         valid_trip_count = models.Trip.objects.filter(date__gte=date1, date__lt=date2, valid=True).count()
         if all_trip_count:
@@ -171,13 +184,13 @@ def check_valid_percent_per_month():
     return errors
 
 
-def check_samples_per_station_per_month():
+def check_samples_per_station_per_month(c):
     errors = []
     stops = [st for st in models.Stop.objects.all() if st.english not in ZERO_STOPS]
-    for month in range(MIN_MONTH, MAX_MONTH + 1):
+    for month in c.month_range:
         for stop in stops:
-            date1 = datetime.datetime(2017, month, 1)
-            date2 = datetime.datetime(2017, month + 1, 1)
+            date1 = datetime.datetime(c.year, month, 1)
+            date2 = datetime.datetime(c.year, month + 1, 1)
             samples_count = models.Sample.objects.filter(trip__date__gte=date1, trip__date__lt=date2,
                                                          stop__gtfs_stop_id=stop.gtfs_stop_id).count()
             min_monthly_samples = MONTHLY_SAMPLES[stop.english][MIN] if stop.english in MONTHLY_SAMPLES else \

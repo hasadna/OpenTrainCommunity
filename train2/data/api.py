@@ -2,10 +2,13 @@ import calendar
 import os
 import json
 import datetime
+import logging
+import time
 
 from django.db.models import Count, Min, Max
 from django.conf import settings
 from django.templatetags.static import static
+from django.utils import timezone
 from rest_framework.decorators import list_route
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
@@ -15,6 +18,9 @@ from . import models
 from . import serializers
 from . import utils
 from . import logic
+
+
+logger = logging.getLogger(__name__)
 
 
 class UnderRouteMixin(object):
@@ -157,8 +163,29 @@ class GeneralViewSet(ViewSet):
         }
         return Response(data=data)
 
+    @list_route(url_path='sleep')
+    def goto_sleep(self, request, *args, **kwargs):
+        from django.db import connection
+        """ for some testings """
+        sleep_id = int(request.GET.get('id'))
+        sleep_time = int(request.GET.get('time'))
+        start_time = timezone.now()
+        logger.info("[%d] Going to sleep %d", sleep_id, sleep_time)
+        with connection.cursor() as c:
+            c.execute("select pg_sleep({})".format(sleep_time))
+            print(c.fetchall())
+
+        logger.info("[%d] After sleep %d", sleep_id, sleep_time)
+        return Response({
+            'sleep_id': sleep_id,
+            'start_time': start_time,
+            'end_time': timezone.now(),
+            'sleep_time': sleep_time
+        })
+
 
 class RoutesViewSet(ReadOnlyModelViewSet):
+    # TODO: This class is redeclared and shadows earlier def. Should one of them be removed ?
     queryset = models.Route.objects.all()
     serializer_class = serializers.RouteSerializer
 
@@ -240,14 +267,21 @@ class HeatMapViewSet(ViewSet):
 
 class HighlightsViewSet(ViewSet):
     def list(self, request, *args, **kwargs):
-        data = []
         path = os.path.join(settings.BASE_DIR, "analysis/static/analysis/routes_output_format_records.json")
         with open(path) as fh:
-            for line in fh:
-                data.append(json.loads(line))
+            data = [json.loads(line) for line in fh]
         return Response(data={
             'highlights': data,
             'url': static('analysis/routes_output.xlsx')
+        })
+
+    @list_route()
+    def top(self, request, *args, **kwargs):
+        path = os.path.join(settings.BASE_DIR, "analysis/static/analysis/manual_highlights.json")
+        with open(path) as fh:
+            data = json.load(fh)
+        return Response(data={
+            'highlights': data,
         })
 
 
@@ -258,6 +292,10 @@ class RealRoutesViewSet(ViewSet):
         from_date = datetime.date(y, m ,1)
         wd, num_days = calendar.monthrange(y, m)
         to_date = datetime.date(y, m, num_days)
-        logic.find_real_routes(from_date, to_date)
+        routes = logic.find_real_routes(from_date, to_date)
+        serializer = serializers.RealRouteSerializer(routes, many=True)
+        return Response(status=200,
+                        data=serializer.data)
+
 
 

@@ -56,6 +56,12 @@ On mac platform you might also have to change l29 in clean_all.py to
 ```
 postgres_cmd = "sudo -u your_macuser psql"
 ```
+Alternativley, you can use fab and run the following commands:
+```
+fab create_db
+fab restore_db:<path-to-sql-gz-file>
+```
+
 Now you can start the server.
 ```
 python manage.py runserver 

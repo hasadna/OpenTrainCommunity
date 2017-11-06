@@ -56,8 +56,8 @@
                 })
                 .when("/routes", {
                     pageId: 'routes',
-                    templateUrl: templateUrl('Routes'),
-                    controller: 'RoutesController',
+                    templateUrl: templateUrl('RealRoutes'),
+                    controller: 'RealRoutesController',
                     reloadOnSearch: false,
                     resolve: {'Layout': 'Layout'},
                 })
@@ -65,6 +65,13 @@
                     pageId: 'highlights',
                     templateUrl: templateUrl('Highlights'),
                     controller: 'HighlightsController',
+                    reloadOnSearch: false,
+                    resolve: {'Layout': 'Layout'},
+                })
+                .when("/top-highlights", {
+                    pageId: 'top_highlights',
+                    templateUrl: templateUrl('TopHighlights'),
+                    controller: 'TopHighlightsController',
                     reloadOnSearch: false,
                     resolve: {'Layout': 'Layout'},
                 })

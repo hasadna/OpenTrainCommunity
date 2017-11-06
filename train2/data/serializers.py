@@ -80,6 +80,20 @@ class RouteSerializer(serializers.ModelSerializer):
         )
 
 
+class RealRouteSerializer(serializers.ModelSerializer):
+    id = fields.IntegerField()
+    stops = StopSerializer(many=True, source='get_stops')
+    trips_count = serializers.IntegerField()
+
+    class Meta:
+        model = models.Route
+        fields = [
+            'id',
+            'stops',
+            'trips_count',
+        ]
+
+
 class SampleSerializer(serializers.ModelSerializer):
     stop = StopSerializer(source='get_stop')
 
