@@ -76,16 +76,15 @@ def get_route_info_full(route_id, from_date, to_date):
     return stats
 
 
-
-
-def get_from_to_info_full(*, origin_id, destination_id, from_date, to_date):
-    routes = get_routes_from_to(origin_id, destination_id)
+def get_from_to_info_full(*, origin_id, destination_id, from_date, to_date, skipped_ids):
+    routes = get_routes_from_to(origin_id, destination_id, skipped_ids)
     filters = Filters(from_date=from_date, to_date=to_date)
     table = _get_stats_table(routes=routes,
                              filters=filters,
                              origin_id=origin_id,
                              destination_id=destination_id,
-                             all_stops=True)
+                             all_stops=True,
+                             skipped_ids=skipped_ids)
     fields = ['week_day_local',
               'hour_local',
               'arrival_late_count',
@@ -116,8 +115,15 @@ def get_path_info_full(origin_id, destination_id, from_date, to_date):
     return stats
 
 
-def get_routes_from_to(origin_id, destination_id):
+def get_routes_from_to(origin_id, destination_id, skipped_ids=None):
+    """
+    :param origin_id: first stop
+    :param destination_id: last stop
+    :param skipped_ids: if given, will return routes that DOES NOT STOP in skipped_ids
+    :return:
+    """
     result = []
+    skipped_ids_set = set(skipped_ids) if skipped_ids else None
     for route in Route.objects.all():
         try:
             idx1 = route.stop_ids.index(origin_id)
@@ -127,7 +133,8 @@ def get_routes_from_to(origin_id, destination_id):
         else:
             if idx1 < idx2:
                 if route.trips.count() > 10:
-                    result.append(route)
+                    if not skipped_ids or not (skipped_ids_set & set(route.stop_ids)):
+                        result.append(route)
     return result
 
 
@@ -327,7 +334,8 @@ def _get_stats_table(*, route=None,
                      origin_id=None,
                      destination_id=None,
                      filters=None,
-                     all_stops=False):
+                     all_stops=False,
+                     skipped_ids=None):
     assert (route is None) ^ (routes is None), 'exactly one of route, routes must be None'
     early_threshold = -120
     late_threshold = 300

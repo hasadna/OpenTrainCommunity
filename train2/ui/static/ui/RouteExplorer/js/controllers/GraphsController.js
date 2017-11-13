@@ -100,12 +100,16 @@ angular.module('RouteExplorer').controller('GraphsController',
                 );
             };
 
+            $scope.actualFromToStops = function() {
+                return $scope.fromToStops.filter(st=>!st.skipOnly);
+            };
+
             $scope.getSkipped = function() {
                 if (!$scope.fromToStops) {
                     return undefined;
                 }
                 return $scope.fromToStops.filter(st=>st.skipOnly).map(st=>st.id).join(",");
-            }
+            };
 
             $scope.refresh = function (config) {
                 config = config || {};
@@ -213,7 +217,7 @@ angular.module('RouteExplorer').controller('GraphsController',
                 });
                 var result = [];
                 daysTable.forEach(function (d) {
-                    var data = $scope.fromToStops.map(function (st) {
+                    var data = $scope.actualFromToStops().map(function (st) {
                         var entry = perDay[st.id + '-' + d.value];
                         var result = {};
                         if (!entry) {
@@ -255,7 +259,7 @@ angular.module('RouteExplorer').controller('GraphsController',
                 });
                 var result = [];
                 hoursList.forEach(function (hl) {
-                    var data = $scope.fromToStops.map(function (st) {
+                    var data = $scope.actualFromToStops().map(function (st) {
                         var entry = perHour[st.id + '-' + hl.name];
                         var result = {};
                         if (!entry) {
@@ -277,7 +281,7 @@ angular.module('RouteExplorer').controller('GraphsController',
                 return result;
             }
             $scope.updateChart = function () {
-                var stopNames = $scope.fromToStops.map(function (st, idx) {
+                var stopNames = $scope.actualFromToStops().map(function (st, idx) {
                     return st.name + ' - ' + (idx + 1);
                 });
                 $scope.perDaySeries = $scope.computePerDaySeries();
