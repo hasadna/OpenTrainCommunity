@@ -94,7 +94,21 @@ angular.module('RouteExplorer').controller('GraphsController',
             $scope.input = {
                 graphKind: 'perDay'
             };
-            $scope.refresh = function () {
+            $scope.updateSkipped = function() {
+                $scope.refresh(
+                    {'skippedCall': true}
+                );
+            };
+
+            $scope.getSkipped = function() {
+                if (!$scope.fromToStops) {
+                    return undefined;
+                }
+                return $scope.fromToStops.filter(st=>st.skipOnly).map(st=>st.id).join(",");
+            }
+
+            $scope.refresh = function (config) {
+                config = config || {};
                 $scope.wip = true;
                 $scope.startStop = $scope.input.startStop;
                 $scope.endStop = $scope.input.endStop;
@@ -118,20 +132,28 @@ angular.module('RouteExplorer').controller('GraphsController',
                             to_date: $scope.endDate,
                             from_stop: $scope.startStop.id,
                             to_stop: $scope.endStop.id,
+                            skipped: config.skippedCall ? $scope.getSkipped() : undefined,
                         }
                     }).then(function (resp) {
                         $scope.stat = resp.data.table;
-                    }),
-                    $http.get('/api/v1/stops/from-to/', {
-                        params: {
-                            from_stop: $scope.startStop.id,
-                            to_stop: $scope.endStop.id,
-                        }
-                    }).then(function (resp) {
-                        $scope.fromToStopsIds = resp.data;
-                        $scope.fromToStops = $scope.fromToStopsIds.map(stopId => $scope.stopsById[stopId])
                     })
-                ];
+                    ];
+                if (!config.skippedCall) {
+                    cbs.push(
+                        $http.get('/api/v1/stops/from-to/', {
+                            params: {
+                                from_stop: $scope.startStop.id,
+                                to_stop: $scope.endStop.id,
+                            }
+                        }).then(function (resp) {
+                            $scope.fromToStopsIds = resp.data;
+                            $scope.fromToStops = $scope.fromToStopsIds.map(stopId => $scope.stopsById[stopId]);
+                            for (let st of $scope.fromToStops) {
+                                st.skipOnly = false;
+                            }
+                        })
+                    );
+                }
                 $q.all(cbs).then(function () {
                     $scope.wip = false;
                     $scope.updateChart();
