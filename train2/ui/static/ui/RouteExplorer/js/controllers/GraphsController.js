@@ -129,9 +129,7 @@ angular.module('RouteExplorer').controller('GraphsController',
                         }
                     }).then(function (resp) {
                         $scope.fromToStopsIds = resp.data;
-                        $scope.fromToStops = $scope.fromToStopsIds.map(function (stop_id) {
-                            return $scope.stopsById[stop_id];
-                        });
+                        $scope.fromToStops = $scope.fromToStopsIds.map(stopId => $scope.stopsById[stopId])
                     })
                 ];
                 $q.all(cbs).then(function () {

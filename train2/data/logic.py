@@ -81,7 +81,11 @@ def get_route_info_full(route_id, from_date, to_date):
 def get_from_to_info_full(*, origin_id, destination_id, from_date, to_date):
     routes = get_routes_from_to(origin_id, destination_id)
     filters = Filters(from_date=from_date, to_date=to_date)
-    table = _get_stats_table(routes=routes, filters=filters,origin_id=origin_id, destination_id=destination_id, all_stops=True)
+    table = _get_stats_table(routes=routes,
+                             filters=filters,
+                             origin_id=origin_id,
+                             destination_id=destination_id,
+                             all_stops=True)
     fields = ['week_day_local',
               'hour_local',
               'arrival_late_count',
