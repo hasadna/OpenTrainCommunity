@@ -29,7 +29,10 @@ TIMEZONE_OFFSET = -2*60*60  # NB: this is not perfect due to daylight savings ti
 
 USE_MICROSECONDS = False  # Use the new format d/m/yyyy instead of microseconds
 
-TIME_PERIODS = [[2017, [5, 6, 7, 8, 9, 10, 11, 12]]]
+START_YEAR = 2017;
+START_MONTH = 5;
+END_YEAR = 2017;
+END_MONTH = 7;
 
 def get_connected_stop_id_pairs():
   routes = requests.get('http://{}/api/v1/routes/all'.format(DOMAIN)).json()
@@ -55,9 +58,9 @@ for origin, destination in stop_id_pairs:
     origin_destination_data = []
     for year, months in TIME_PERIODS:
       for month in months:
-        days = calendar.monthrange(year, month)[1]
-        from_date = "%d/%d/%d" % (1, month, year)
-        to_date = "%d/%d/%d" % (days, month, year)
+        days = calendar.monthrange(END_YEAR, END_MONTH)[1]
+        from_date = "%d/%d/%d" % (1, START_MONTH, START_YEAR)
+        to_date = "%d/%d/%d" % (days, END_MONTH, END_YEAR)
         url = API_BASE_URL + API_PARAMS.format(from_date, to_date, origin, destination)
 
         try:
