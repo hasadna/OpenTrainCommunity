@@ -94,7 +94,25 @@ angular.module('RouteExplorer').controller('GraphsController',
             $scope.input = {
                 graphKind: 'perDay'
             };
-            $scope.refresh = function () {
+            $scope.updateSkipped = function() {
+                $scope.refresh(
+                    {'skippedCall': true}
+                );
+            };
+
+            $scope.actualFromToStops = function() {
+                return $scope.fromToStops.filter(st=>!st.skipOnly);
+            };
+
+            $scope.getSkipped = function() {
+                if (!$scope.fromToStops) {
+                    return undefined;
+                }
+                return $scope.fromToStops.filter(st=>st.skipOnly).map(st=>st.id).join(",");
+            };
+
+            $scope.refresh = function (config) {
+                config = config || {};
                 $scope.wip = true;
                 $scope.startStop = $scope.input.startStop;
                 $scope.endStop = $scope.input.endStop;
@@ -118,22 +136,28 @@ angular.module('RouteExplorer').controller('GraphsController',
                             to_date: $scope.endDate,
                             from_stop: $scope.startStop.id,
                             to_stop: $scope.endStop.id,
+                            skipped: config.skippedCall ? $scope.getSkipped() : undefined,
                         }
                     }).then(function (resp) {
                         $scope.stat = resp.data.table;
-                    }),
-                    $http.get('/api/v1/stops/from-to/', {
-                        params: {
-                            from_stop: $scope.startStop.id,
-                            to_stop: $scope.endStop.id,
-                        }
-                    }).then(function (resp) {
-                        $scope.fromToStopsIds = resp.data;
-                        $scope.fromToStops = $scope.fromToStopsIds.map(function (stop_id) {
-                            return $scope.stopsById[stop_id];
-                        });
                     })
-                ];
+                    ];
+                if (!config.skippedCall) {
+                    cbs.push(
+                        $http.get('/api/v1/stops/from-to/', {
+                            params: {
+                                from_stop: $scope.startStop.id,
+                                to_stop: $scope.endStop.id,
+                            }
+                        }).then(function (resp) {
+                            $scope.fromToStopsIds = resp.data;
+                            $scope.fromToStops = $scope.fromToStopsIds.map(stopId => $scope.stopsById[stopId]);
+                            for (let st of $scope.fromToStops) {
+                                st.skipOnly = false;
+                            }
+                        })
+                    );
+                }
                 $q.all(cbs).then(function () {
                     $scope.wip = false;
                     $scope.updateChart();
@@ -193,7 +217,7 @@ angular.module('RouteExplorer').controller('GraphsController',
                 });
                 var result = [];
                 daysTable.forEach(function (d) {
-                    var data = $scope.fromToStops.map(function (st) {
+                    var data = $scope.actualFromToStops().map(function (st) {
                         var entry = perDay[st.id + '-' + d.value];
                         var result = {};
                         if (!entry) {
@@ -235,7 +259,7 @@ angular.module('RouteExplorer').controller('GraphsController',
                 });
                 var result = [];
                 hoursList.forEach(function (hl) {
-                    var data = $scope.fromToStops.map(function (st) {
+                    var data = $scope.actualFromToStops().map(function (st) {
                         var entry = perHour[st.id + '-' + hl.name];
                         var result = {};
                         if (!entry) {
@@ -257,7 +281,7 @@ angular.module('RouteExplorer').controller('GraphsController',
                 return result;
             }
             $scope.updateChart = function () {
-                var stopNames = $scope.fromToStops.map(function (st, idx) {
+                var stopNames = $scope.actualFromToStops().map(function (st, idx) {
                     return st.name + ' - ' + (idx + 1);
                 });
                 $scope.perDaySeries = $scope.computePerDaySeries();

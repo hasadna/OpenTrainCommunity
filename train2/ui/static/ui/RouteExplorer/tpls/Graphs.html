@@ -48,6 +48,20 @@
             </div>
             <button class="btn btn-success btn-block" type="submit">קדימה</button>
         </form>
+        <br/>
+        <ul class="list-group">
+            <li class="list-group-item" style="color:black">
+                הצג רק רכבות ש
+                <b>
+                    מדלגות
+                </b>
+                על התחנות הבאות
+            </li>
+            <li class="list-group-item" ng-repeat="stop in fromToStops" style="color: black">
+                <input ng-if="$middle" type="checkbox" class="skip-checkbox" ng-model="stop.skipOnly"> {{ stop.name }}
+            </li>
+            <button class="btn btn-success btn-block" type="submit" ng-click="updateSkipped()">קדימה</button>
+        </ul>
     </div>
     <div ng-if="wip" class="col-xs-9">
         <i class="fa fa-spin fa-5x fa-spinner"></i> טוען מידע...
