@@ -100,6 +100,10 @@ angular.module('RouteExplorer').controller('GraphsController',
                 );
             };
 
+            $scope.isMustSkipChecked = function() {
+                return $scope.fromToStops.some(st=>st.mustSkip);
+            }
+
             $scope.actualFromToStops = function() {
                 return $scope.fromToStops.filter(st => this.mustSkipComplementMode || !st.mustSkip);
             };

@@ -65,7 +65,7 @@
                     עוצר בלפחות אחת מהבחירות
                 </span>
                 <br/>
-                <button class="btn btn-success btn-block" type="submit" ng-click="updateSkipped()">עדכן</button>
+                <button ng-disabled="!isMustSkipChecked()" class="btn btn-success btn-block" type="submit" ng-click="updateSkipped()">עדכן</button>
             </li>
             <table class="table">
                 <tr>
