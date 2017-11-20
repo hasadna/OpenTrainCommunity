@@ -58,7 +58,7 @@
                 על התחנות הבאות
             </li>
             <li class="list-group-item" ng-repeat="stop in fromToStops" style="color: black">
-                <input ng-if="$middle" type="checkbox" ng-model="stop.skipOnly"> {{ stop.name }}
+                <input ng-if="$middle" type="checkbox" class="skip-checkbox" ng-model="stop.skipOnly"> {{ stop.name }}
             </li>
             <button class="btn btn-success btn-block" type="submit" ng-click="updateSkipped()">קדימה</button>
         </ul>
