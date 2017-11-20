@@ -101,14 +101,14 @@ angular.module('RouteExplorer').controller('GraphsController',
             };
 
             $scope.actualFromToStops = function() {
-                return $scope.fromToStops.filter(st=>!st.skipOnly);
+                return $scope.fromToStops.filter(st => this.mustSkipComplementMode || !st.mustSkip);
             };
 
             $scope.skippedToggleAll = function() {
-                var hasSelected = $scope.fromToStops.some(st=>st.skipOnly);
+                var hasSelected = $scope.fromToStops.some(st=>st.mustSkip);
                 $scope.fromToStops.forEach((st, idx) => {
                     if (idx > 0 && idx < $scope.fromToStops.length-1) {
-                        st.skipOnly = !hasSelected;
+                        st.mustSkip = !hasSelected;
                     }
                 });
             }
@@ -117,7 +117,7 @@ angular.module('RouteExplorer').controller('GraphsController',
                 if (!$scope.fromToStops) {
                     return undefined;
                 }
-                return $scope.fromToStops.filter(st=>st.skipOnly).map(st=>st.id).join(",");
+                return $scope.fromToStops.filter(st=>st.mustSkip).map(st=>st.id).join(",");
             };
 
             $scope.refresh = function (config) {
@@ -146,7 +146,7 @@ angular.module('RouteExplorer').controller('GraphsController',
                             from_stop: $scope.startStop.id,
                             to_stop: $scope.endStop.id,
                             skipped: config.skippedCall ? $scope.getSkipped() : undefined,
-                            skipped_complement: $scope.skipOnlyComplementMode,
+                            skipped_complement: $scope.mustSkipComplementMode ? '1' : '0',
                         }
                     }).then(function (resp) {
                         $scope.stat = resp.data.table;
@@ -163,7 +163,7 @@ angular.module('RouteExplorer').controller('GraphsController',
                             $scope.fromToStopsIds = resp.data;
                             $scope.fromToStops = $scope.fromToStopsIds.map(stopId => $scope.stopsById[stopId]);
                             for (let st of $scope.fromToStops) {
-                                st.skipOnly = false;
+                                st.mustSkip = false;
                             }
                         })
                     );
@@ -233,7 +233,7 @@ angular.module('RouteExplorer').controller('GraphsController',
                         if (!entry) {
                             result.y = 0;
                             result.numTrips = 0;
-                            console.log('no entry for ' + st.id + ' ' + d.value);
+                            //console.log('no entry for ' + st.id + ' ' + d.value);
                         } else {
                             result.y = entry.arrival_late_count * 100.0 / entry.num_trips;
                             result.numTrips = entry.num_trips;
@@ -273,7 +273,7 @@ angular.module('RouteExplorer').controller('GraphsController',
                         var entry = perHour[st.id + '-' + hl.name];
                         var result = {};
                         if (!entry) {
-                            console.log('no entry for ' + st.id + ' ' + hl.name);
+                            // console.log('no entry for ' + st.id + ' ' + hl.name);
                             result.y = 0;
                             result.numTrips = 0;
                         } else {

@@ -57,8 +57,8 @@
                 <br>
                 <span>
                     מדלג על הבחירה
-                    <span ng-click="skipOnlyComplementMode=!skipOnlyComplementMode">
-                    <i ng-class="{'fa-toggle-on': !skipOnlyComplementMode, 'fa-toggle-off': skipOnlyComplementMode}"
+                    <span ng-click="mustSkipComplementMode=!mustSkipComplementMode">
+                    <i ng-class="{'fa-toggle-on': !mustSkipComplementMode, 'fa-toggle-off': mustSkipComplementMode}"
                        class="fa fa-2x">
                     </i>
                     </span>
@@ -72,10 +72,10 @@
                     <th style="width: 50%">תחנה
                     <span style="cursor: pointer; font-size: 10px" ng-click="skippedToggleAll()">הכל</span>
                     </th>
-                    <th><span ng-hide="skipOnlyComplementMode">
+                    <th><span ng-hide="mustSkipComplementMode">
                         חייב לדלג
                     </span>
-                        <span ng-show="skipOnlyComplementMode">
+                        <span ng-show="mustSkipComplementMode">
                             חייב לעצור באחת מ
                         </span>
                     </th>
@@ -83,7 +83,7 @@
                 <tr ng-repeat="stop in fromToStops" style="color: black">
                        <td>{{ stop.name }}</td>
                         <td>
-                            <input ng-if="$middle" type="checkbox" class="skip-checkbox" ng-model="stop.skipOnly">
+                            <input ng-if="$middle" type="checkbox" class="skip-checkbox" ng-model="stop.mustSkip">
                         </td>
                    </tr>
             </table>
