@@ -104,6 +104,15 @@ angular.module('RouteExplorer').controller('GraphsController',
                 return $scope.fromToStops.filter(st=>!st.skipOnly);
             };
 
+            $scope.skippedToggleAll = function() {
+                var hasSelected = $scope.fromToStops.some(st=>st.skipOnly);
+                $scope.fromToStops.forEach((st, idx) => {
+                    if (idx > 0 && idx < $scope.fromToStops.length-1) {
+                        st.skipOnly = !hasSelected;
+                    }
+                });
+            }
+
             $scope.getSkipped = function() {
                 if (!$scope.fromToStops) {
                     return undefined;
@@ -137,6 +146,7 @@ angular.module('RouteExplorer').controller('GraphsController',
                             from_stop: $scope.startStop.id,
                             to_stop: $scope.endStop.id,
                             skipped: config.skippedCall ? $scope.getSkipped() : undefined,
+                            skipped_complement: $scope.skipOnlyComplementMode,
                         }
                     }).then(function (resp) {
                         $scope.stat = resp.data.table;

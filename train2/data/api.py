@@ -138,13 +138,15 @@ class StatViewSet(GenericViewSet):
         from_id = int(request.GET['from_stop'])
         to_id = int(request.GET['to_stop'])
         skipped_ids = list(map(int, request.GET.get('skipped').split(","))) if request.GET.get('skipped') else None
+        skipped_complement = request.GET.get('skipped_complement', '0') == '1'
         from_date = utils.parse_date(request.GET['from_date'])
         to_date = utils.parse_date(request.GET['to_date'])
         result = logic.get_from_to_info_full(origin_id=from_id,
                                              destination_id=to_id,
                                              from_date=from_date,
                                              to_date=to_date,
-                                             skipped_ids=skipped_ids)
+                                             skipped_ids=skipped_ids,
+                                             skipped_complement=skipped_complement)
         return Response(result)
 
 
