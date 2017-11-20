@@ -39,7 +39,7 @@ ROUTES = False
 START_YEAR = 2017;
 START_MONTH = 5;
 END_YEAR = 2017;
-END_MONTH = 7;
+END_MONTH = 9;
 
 if not os.path.exists('cache'):
   print('Creating cache directory...')
