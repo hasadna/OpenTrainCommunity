@@ -8,7 +8,7 @@ from data.models import Sample
 from data.models import Stop
 from django.db.models import Avg
 
-# Run this file using: python manage.py other_benchmarks
+# Run this file using: python manage.py passenger_based_benchmarks
 
 
 LOGGER = logging.getLogger(__name__)
