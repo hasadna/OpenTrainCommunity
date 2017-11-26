@@ -23,7 +23,7 @@ def main():
 
     filename = options.file
 
-    use_sudo = platform.system().lower() == 'Linux'
+    use_sudo = platform.system().lower() == 'linux'
     if use_sudo:
         postgres_cmd = "sudo -u postgres psql"
     else:
