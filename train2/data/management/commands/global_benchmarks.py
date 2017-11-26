@@ -41,14 +41,14 @@ class Command(BaseCommand):
         print('Trips with some late station for hour = {} % = {}'.format(hour, 100.0*late_qs.count()/ok_qs.count()))
 
     def compute_samples_per_day(self, day):
-        samples_ontime = Sample.objects.filter(delay_arrival__lt=5*60).filter(exp_arrival__week_day=day+1).filter(valid=True,exp_arrival__gte=datetime.date(2017,5,1)).count()
-        samples_delayed = Sample.objects.filter(delay_arrival__gte=5*60).filter(exp_arrival__week_day=day+1).filter(valid=True,exp_arrival__gte=datetime.date(2017,5,1)).count()
+        samples_ontime = Sample.objects.filter(delay_arrival__lt=5*60).filter(exp_arrival__week_day=day).filter(valid=True,exp_arrival__gte=datetime.date(2017,5,1)).count()
+        samples_delayed = Sample.objects.filter(delay_arrival__gte=5*60).filter(exp_arrival__week_day=day).filter(valid=True,exp_arrival__gte=datetime.date(2017,5,1)).count()
         ontime_average = samples_ontime / (samples_ontime + samples_delayed)
         print("Samples for day %d Ontime (less than 5 minutes delay): %.2f " % (day, ontime_average))
 
     def compute_samples_per_hour(self, hour):
-        samples_ontime = Sample.objects.filter(delay_arrival__lt=5*60).filter(exp_arrival__week_day=hour).filter(valid=True,exp_arrival__gte=datetime.date(2017,5,1)).count()
-        samples_delayed = Sample.objects.filter(delay_arrival__gte=5*60).filter(exp_arrival__week_day=hour).filter(valid=True,exp_arrival__gte=datetime.date(2017,5,1)).count()
+        samples_ontime = Sample.objects.filter(delay_arrival__lt=5*60).filter(exp_arrival__hour=hour).filter(valid=True,exp_arrival__gte=datetime.date(2017,5,1)).count()
+        samples_delayed = Sample.objects.filter(delay_arrival__gte=5*60).filter(exp_arrival__hour=hour).filter(valid=True,exp_arrival__gte=datetime.date(2017,5,1)).count()
         ontime_average = samples_ontime / (samples_ontime + samples_delayed)
-        print("Samples for day %d Ontime (less than 5 minutes delay): %.2f " % (day, ontime_average))
+        print("Samples for hour %d Ontime (less than 5 minutes delay): %.2f " % (hour, ontime_average))
 
