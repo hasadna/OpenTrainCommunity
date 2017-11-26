@@ -76,8 +76,13 @@ def get_route_info_full(route_id, from_date, to_date):
     return stats
 
 
-def get_from_to_info_full(*, origin_id, destination_id, from_date, to_date, skipped_ids):
-    routes = get_routes_from_to(origin_id, destination_id, skipped_ids)
+def get_from_to_info_full(*, origin_id,
+                          destination_id,
+                          from_date,
+                          to_date,
+                          skipped_ids,
+                          skipped_complement):
+    routes = get_routes_from_to(origin_id, destination_id, skipped_ids,skipped_complement)
     filters = Filters(from_date=from_date, to_date=to_date)
     table = _get_stats_table(routes=routes,
                              filters=filters,
@@ -115,14 +120,15 @@ def get_path_info_full(origin_id, destination_id, from_date, to_date):
     return stats
 
 
-def get_routes_from_to(origin_id, destination_id, skipped_ids=None):
+def get_routes_from_to(origin_id, destination_id, skipped_ids=None, skipped_complement=False):
     """
     :param origin_id: first stop
     :param destination_id: last stop
     :param skipped_ids: if given, will return routes that DOES NOT STOP in skipped_ids
     :return:
     """
-    result = []
+    result = set()
+    skipped_all = set()
     skipped_ids_set = set(skipped_ids) if skipped_ids else None
     for route in Route.objects.all():
         try:
@@ -133,8 +139,14 @@ def get_routes_from_to(origin_id, destination_id, skipped_ids=None):
         else:
             if idx1 < idx2:
                 if route.trips.count() > 10:
-                    if not skipped_ids or not (skipped_ids_set & set(route.stop_ids)):
-                        result.append(route)
+                    result.add(route)
+                    if skipped_ids and not (skipped_ids_set & set(route.stop_ids)):
+                        skipped_all.add(route)
+    if skipped_all:
+        if skipped_complement:
+            return result - skipped_all
+        else:
+            return skipped_all
     return result
 
 

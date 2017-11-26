@@ -51,16 +51,42 @@
         <br/>
         <ul class="list-group">
             <li class="list-group-item" style="color:black">
-                הצג רק רכבות ש
-                <b>
-                    מדלגות
-                </b>
-                על התחנות הבאות
+                .סנן כאן את הרשימה ע"פ רשימת התחנות שהרכבת עוצרת או מבקרת בהן
+                אפשר לבחור בשני מצבים. המצב הרראשון - בחר רק נסיעות בהן הרכבת מדלגת על כל התחנות, או
+                המצב המשלים: בו הרכבת עוצרת בלפחות תחנה אחת מהרשימה.
+                <br>
+                <span>
+                    מדלג על הבחירה
+                    <span ng-click="mustSkipComplementMode=!mustSkipComplementMode">
+                    <i ng-class="{'fa-toggle-on': !mustSkipComplementMode, 'fa-toggle-off': mustSkipComplementMode}"
+                       class="fa fa-2x">
+                    </i>
+                    </span>
+                    עוצר בלפחות אחת מהבחירות
+                </span>
+                <br/>
+                <button ng-disabled="!isMustSkipChecked()" class="btn btn-success btn-block" type="submit" ng-click="updateSkipped()">עדכן</button>
             </li>
-            <li class="list-group-item" ng-repeat="stop in fromToStops" style="color: black">
-                <input ng-if="$middle" type="checkbox" class="skip-checkbox" ng-model="stop.skipOnly"> {{ stop.name }}
-            </li>
-            <button class="btn btn-success btn-block" type="submit" ng-click="updateSkipped()">קדימה</button>
+            <table class="table">
+                <tr>
+                    <th style="width: 50%">תחנה
+                    <span style="cursor: pointer; font-size: 10px" ng-click="skippedToggleAll()">הכל</span>
+                    </th>
+                    <th><span ng-hide="mustSkipComplementMode">
+                        חייב לדלג
+                    </span>
+                        <span ng-show="mustSkipComplementMode">
+                            חייב לעצור באחת מ
+                        </span>
+                    </th>
+                </tr>
+                <tr ng-repeat="stop in fromToStops" style="color: black">
+                       <td>{{ stop.name }}</td>
+                        <td>
+                            <input ng-if="$middle" type="checkbox" class="skip-checkbox" ng-model="stop.mustSkip">
+                        </td>
+                   </tr>
+            </table>
         </ul>
     </div>
     <div ng-if="wip" class="col-xs-9">
