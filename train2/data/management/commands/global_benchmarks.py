@@ -34,7 +34,7 @@ class Command(BaseCommand):
         samples_ontime = Sample.objects.filter(delay_arrival__lt=5*60).filter(exp_arrival__week_day=day).filter(valid=True,exp_arrival__gte=datetime.date(2017,5,1)).count()
         samples_delayed = Sample.objects.filter(delay_arrival__gte=5*60).filter(exp_arrival__week_day=day).filter(valid=True,exp_arrival__gte=datetime.date(2017,5,1)).count()
         ontime_average = samples_ontime / (samples_ontime + samples_delayed)
-        print("\t".join([day, ontime_average, samples_ontime + samples_delayed]))
+        print('{}\t{}\t{}'.format(day, ontime_average, samples_ontime + samples_delayed))
         #print("Samples for day %d Ontime (less than 5 minutes delay): %.2f" % (day, ontime_average), (samples_ontime + samples_delayed))
 
 
@@ -43,7 +43,7 @@ class Command(BaseCommand):
         samples_delayed = Sample.objects.filter(delay_arrival__gte=5*60).filter(exp_arrival__hour=hour).filter(valid=True,exp_arrival__gte=datetime.date(2017,5,1)).count()
         ontime_average = samples_ontime / (samples_ontime + samples_delayed)
         #print("Samples for hour %d Ontime (less than 5 minutes delay): %.2f " % (hour, ontime_average), (samples_ontime + samples_delayed))
-        print("\t".join([hour, ontime_average, samples_ontime + samples_delayed]))
+        print('{}\t{}\t{}'.format(hour, ontime_average, samples_ontime + samples_delayed))
 
     def compute_trips_per_day(self, day):
         ok_qs = Trip.objects.filter(valid=True,date__gte=datetime.date(2017,5,1), date__week_day=day).annotate(c=Max('samples__delay_arrival'))
