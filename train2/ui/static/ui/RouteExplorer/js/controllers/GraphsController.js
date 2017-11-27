@@ -101,6 +101,9 @@ angular.module('RouteExplorer').controller('GraphsController',
             };
 
             $scope.isMustSkipChecked = function() {
+                if (!$scope.fromToStops) {
+                    return false;
+                }
                 return $scope.fromToStops.some(st=>st.mustSkip);
             }
 
@@ -247,7 +250,12 @@ angular.module('RouteExplorer').controller('GraphsController',
                     });
                     result.push({
                         name: d.name,
-                        data: data
+                        data: data,
+                        states: {
+                            hover: {
+                                lineWidth: 10,
+                            }
+                        }
                     })
                 });
                 return result;
@@ -289,7 +297,12 @@ angular.module('RouteExplorer').controller('GraphsController',
                     });
                     result.push({
                         name: hl.name,
-                        data: data
+                        data: data,
+                        states: {
+                            hover: {
+                                lineWidth: 10,
+                            }
+                        }
                     })
                 });
                 return result;
@@ -312,17 +325,19 @@ angular.module('RouteExplorer').controller('GraphsController',
                     },
                     useHTML: true,
                 };
-                var series = [
-                    {
-                        name: '123',
-                        data: [10, 20, 5, 5, 5, 10, 20, 30, 15, 15, 15]
-                    },
-                    {
-                        name: '456',
-                        data: [8, 8, 8, 12, 7, 20]
-                    },
-                ];
+                window.scope = $scope;
                 $scope.chartPerDay = {
+                    plotOptions: {
+                        series: {
+                            line: {
+                                states: {
+                                    hover: {
+                                        lineWidth: 20,
+                                    }
+                                }
+                            }
+                        }
+                    },
                     options: {
                         chart: {
                             type: 'line'
