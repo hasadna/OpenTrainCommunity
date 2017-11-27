@@ -9,7 +9,7 @@ import data.models
 
 class DataParsingTests(TestCase):
 
-    def setUp(self):
+    def setUpClass(cls):
         activate(settings.LANGUAGE_CODE)
         data.stop_utils.build_stops()
 
