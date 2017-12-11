@@ -19,5 +19,5 @@ def by_hour(hours):
     qs_s_late = qs_s.filter(delay_departure__gte=300)
     print('hours = %s' % (hours))
     print('non source = %d / %d => %.2f' % (qs_ns_late.count(), qs_ns.count(), 100 * qs_ns_late.count() / qs_ns.count()))
-    print('source = %d / %d => %.2f' % (qs_s_late.count(), qs_s_late.count(), 100 * qs_s_late.count() / qs_s.count()))
+    print('source = %d / %d => %.2f' % (qs_s_late.count(), qs_s.count(), 100 * qs_s_late.count() / qs_s.count()))
 
