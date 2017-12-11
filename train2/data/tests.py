@@ -1,6 +1,9 @@
+import random
 from enum import Enum
 
-from django.test import TestCase
+from hypothesis import given
+from hypothesis.extra.django import TestCase
+import hypothesis.strategies as st
 from django.urls import reverse
 
 import data.stop_utils
@@ -32,15 +35,23 @@ class DataIntegrityTests(TestCase):
         activate(settings.LANGUAGE_CODE)
         data.stop_utils.build_stops()
 
-    def test_trip_in_correct_time_and_day_slot(self):
-
+    @given(st.dates(min_value=datetime.date(2015, 1, 1), max_value=datetime.date(2050, 1, 1)),
+           st.integers(min_value=0, max_value=23),
+           st.integers(min_value=0, max_value=59))
+    def test_trip_in_correct_time_and_day_slot(self, trip_start_date, hour, minute):
+        """
+            Builds a trip with a constant number of ontime samples (stops), then queries django to verify
+            the json response of the stats-route-info-full contains a single trip in the expected four slots.
+        """
         tz = pytz.timezone(zone='Asia/Jerusalem')
-        today = datetime.date.today()
-        trip = data.importer.create_trip(train_num=1, date=today)
         stops = [Stops.TA_HAGANA, Stops.TA_HASHALOM, Stops.TA_MERKAZ, Stops.TA_UNIV, Stops.BINYAMINA, Stops.ATLIT,
                  Stops.HAIFA_HOF_CARMEL]
-        trip_start_time = tz.localize(datetime.datetime(year=today.year, month=today.month, day=today.day,
-                                                        hour=9, minute=40))
+        train_number = 1
+
+        trip_weekday = self.get_israeli_weekday(trip_start_date)
+        trip = data.importer.create_trip(train_num=train_number, date=trip_start_date)
+        trip_start_time = tz.localize(datetime.datetime(year=trip_start_date.year, month=trip_start_date.month,
+                                                        day=trip_start_date.day, hour=hour, minute=minute))
 
         for idx, stop_enum in enumerate(stops, start=1):
             stop = stop_enum.value
@@ -65,13 +76,13 @@ class DataIntegrityTests(TestCase):
         resp = self.client.get(reverse('stats-route-info-full'), {'route_id': trip.route_id})
         json = resp.json()
 
-        day_hour =  self.get_elements_matching(json, week_day=2, hour=9)
-        day_hour_all = self.get_elements_matching(json, week_day=2, hour='all')
+        day_hour =  self.get_elements_matching(json, week_day=trip_weekday, hour=hour)
+        day_hour_all = self.get_elements_matching(json, week_day=trip_weekday, hour='all')
 
-        day_all_hour =  self.get_elements_matching(json, week_day='all', hour=9)
+        day_all_hour =  self.get_elements_matching(json, week_day='all', hour=hour)
         day_all_hour_all =  self.get_elements_matching(json, week_day='all', hour='all')
         for slot in (day_hour, day_hour_all, day_all_hour, day_all_hour_all):
-            self.assertEqual(len(slot), 1, msg="One trip expected in the slot!")
+            self.assertEqual(len(slot), 1, msg=f"One trip expected in the slot! Actual json: {slot}")
 
     def get_elements_matching(self, json, week_day, hour):
         list_of_elements = []
@@ -89,12 +100,23 @@ class DataIntegrityTests(TestCase):
                 return True
         else:
             start = hours_list[0] % 24
-            end = hours_list[1] % 24
+            end = hours_list[1] % 24 if hours_list[1] != 24 else hours_list[1]
             if start <= hour < end:
                 return True
 
         return False
 
+    @staticmethod
+    def get_israeli_weekday(date):
+        """
+        :param date: A datetime.date object
+        :return: int representing the range 1 (Sun) to 7 (Sat)
+        """
+        if date.isoweekday() == 7:
+            # rotate Sunday to 1
+            return 1
+        else:
+            return date.isoweekday() + 1
 
     def test_trip_has_correct_late_arrival_pct(self):
         pass
