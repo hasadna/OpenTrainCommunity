@@ -1,4 +1,6 @@
 import datetime
+
+import tabulate
 from django.db import models
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext as _
@@ -88,6 +90,30 @@ class Trip(models.Model):
         if not samples[-1].is_dest:
             self.set_invalid('last stop is not is_dest')
 
+    def print_table(self):
+        headers = ['index',
+                  'name',
+                  'gtfs_stop_id',
+                  'exp_arrival',
+                  'exp_departure',
+                  'actual_arrival',
+                  'actual_departure']
+
+        def to_table_row(s):
+            result = []
+            for header in headers:
+                if header == "name":
+                    v = s.stop.english
+                else:
+                    v = getattr(s,header)
+                result.append(v)
+            return result
+
+        t = tabulate.tabulate(
+                          [to_table_row(s) for s in self.samples.all().order_by("index")],
+                          headers=headers
+                          )
+        print(t)
     def __str__(self):
         return '{} #{} {}'.format(_('trip'),
                                   self.train_num,
@@ -153,6 +179,8 @@ class Sample(models.Model):
     valid = models.BooleanField(default=True, db_index=True)
     invalid_reason = models.TextField(blank=True, null=True)
 
+    actual_departure_fixed = models.BooleanField(default=False)
+
     def check_sample(self):
         if self.is_source:
             required_fields = ['actual_departure','exp_departure']
@@ -163,9 +191,14 @@ class Sample(models.Model):
         for f in required_fields:
             v = getattr(self, f)
             if v is None or not isinstance(v, datetime.datetime):
-                self.valid = False
-                self.invalid_reason = 'missing {}'.format(f)
-                self.save()
+                if v is None and f == 'actual_departure':
+                    self.actual_departure = self.exp_departure
+                    self.actual_departure_fixed = True
+                    self.save()
+                else:
+                    self.valid = False
+                    self.invalid_reason = 'missing {}'.format(f)
+                    self.save()
                 return
 
     class Meta:
