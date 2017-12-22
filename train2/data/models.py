@@ -7,6 +7,7 @@ from django.utils.translation import ugettext as _
 import common.fields
 import pytz
 import geocoder
+import numpy
 
 from data.utils import haversine
 
@@ -22,6 +23,16 @@ class Trip(models.Model):
 
     x_week_day_local = models.IntegerField(blank=True, null=True) # sunday 0 to saturday 6
     x_hour_local = models.IntegerField(blank=True, null=True)
+
+    x_cache_version = models.IntegerField(default=0)
+    x_max_delay_arrival = models.FloatField(null=True, blank=True)
+    x_max2_delay_arrival = models.FloatField(null=True, blank=True)
+    x_avg_delay_arrival = models.FloatField(null=True, blank=True)
+
+    def compute_cache_1(self):
+        arrival_delays = [s.arrival_delay for s in self.samples if s.arrival_delay is not None]
+        if arrival_delays:
+            self.x_max_delay = max(arrival_delays)
 
     def complete_trip(self):
         try:
