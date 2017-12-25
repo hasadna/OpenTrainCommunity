@@ -28,11 +28,8 @@ class Trip(models.Model):
     x_max_delay_arrival = models.FloatField(null=True, blank=True)
     x_max2_delay_arrival = models.FloatField(null=True, blank=True)
     x_avg_delay_arrival = models.FloatField(null=True, blank=True)
-
-    def compute_cache_1(self):
-        arrival_delays = [s.arrival_delay for s in self.samples if s.arrival_delay is not None]
-        if arrival_delays:
-            self.x_max_delay = max(arrival_delays)
+    x_last_delay_arrival = models.FloatField(null=True, blank=True)
+    x_before_last_delay_arrival = models.FloatField(null=True, blank=True)
 
     def complete_trip(self):
         try:

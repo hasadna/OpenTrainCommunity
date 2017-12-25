@@ -240,6 +240,13 @@ class RouteTripsViewSet(UnderRouteMixin, ReadOnlyModelViewSet):
         return self.get_route().trips.all()
 
 
+class TripViewSet(ReadOnlyModelViewSet):
+    queryset = models.Trip.objects.all()
+    serializer_class = serializers.TripSerializer
+
+
+
+
 class HeatMapViewSet(ViewSet):
     def list(self, request):
         import data.analysis.heatmap_utils

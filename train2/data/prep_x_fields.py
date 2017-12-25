@@ -12,7 +12,9 @@ update data_trip as dt
 set x_max2_delay_arrival = sq.m2,
   x_max_delay_arrival = sq.m1,
   x_avg_delay_arrival = sq.a,
-  x_cache_version = 1
+  x_before_last_delay_arrival = sq.bl,
+  x_last_delay_arrival = sq.l,
+  x_cache_version = 2
 from
 (
   SELECT
@@ -20,13 +22,17 @@ from
     avg(s.delay_arrival) as a,
     max(s.delay_arrival) as m1,
     (array_agg(s.delay_arrival
-    ORDER BY s.delay_arrival DESC)) [2] AS m2
+    ORDER BY s.delay_arrival DESC)) [2] AS m2,
+     (array_agg(s.delay_arrival
+    ORDER BY s.index DESC)) [1] AS l,
+     (array_agg(s.delay_arrival
+    ORDER BY s.index DESC)) [2] AS bl
   FROM
     data_sample AS s
   where s.valid = True and s.delay_arrival is not null
   group by s.trip_id
 ) as sq
-where dt.id = sq.tid and dt.date >= %s and dt.date < %s and dt.valid = True and dt.x_cache_version < 1;
+where dt.id = sq.tid and dt.date >= %s and dt.date < %s and dt.valid = True and dt.x_cache_version < 2;
 '''
 
 
@@ -41,7 +47,7 @@ def update_all():
     # we just run in batches of 30 days
     today = timezone.now().date()
     try:
-        date1 = Trip.objects.filter(valid=True, x_cache_version__lt=1).earliest('date').date - datetime.timedelta(days=3)
+        date1 = Trip.objects.filter(valid=True, x_cache_version__lt=2).earliest('date').date - datetime.timedelta(days=3)
     except Trip.DoesNotExist:
         logger.info("All updated!!!")
         return

@@ -75,6 +75,13 @@
                     reloadOnSearch: false,
                     resolve: {'Layout': 'Layout'},
                 })
+                .when("/trip-details", {
+                    pageId: 'trip_details',
+                    templateUrl: templateUrl('TripDetails'),
+                    controller: 'TripDetailsController',
+                    reloadOnSearch: false,
+                    resolve: {'Layout': 'Layout'},
+                })
                 .otherwise({
                     redirectTo: '/'
                 });
