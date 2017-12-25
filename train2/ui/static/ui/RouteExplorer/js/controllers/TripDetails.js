@@ -10,6 +10,7 @@ angular.module('RouteExplorer').controller('TripDetailsController',
             'ngInject';
             $scope.isLegalTripId = () => {
                 let n = $scope.tripId;
+                return true;
                 return !isNaN(parseInt(n)) && !isNaN(n - 0)
             };
             $scope.x_fields =[
@@ -37,8 +38,10 @@ angular.module('RouteExplorer').controller('TripDetailsController',
                     $scope.getError = true;
                 })
             }
-            $scope.tripId = 343440;
-            $scope.refreshTrip();
+            $scope.tripId = parseInt($location.search().trip_id) || null;
+            if ($scope.tripId) {
+                $scope.refreshTrip();
+            }
         });
 
 
