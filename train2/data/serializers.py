@@ -31,7 +31,8 @@ class RouteUrlAndIdField(serializers.ReadOnlyField):
     def to_representation(self, value):
         return {
             'id': value.id,
-            'url': urllib.parse.urljoin(settings.BASE_URL, reverse('route-detail', kwargs={'pk':value.id},request=None))
+            'url': urllib.parse.urljoin(settings.BASE_URL,
+                                        reverse('route-detail', kwargs={'pk': value.id}, request=None))
         }
 
 
@@ -61,8 +62,8 @@ class StopSerializer(serializers.ModelSerializer):
 class RouteSerializer(serializers.ModelSerializer):
     id = fields.IntegerField()
     stops = StopSerializer(many=True, source='get_stops')
-    #services = RelationUrlField(name='route-services-list', mapping={'route_id': 'id'})
-    trips = RelationUrlField(name='route-trips-list', mapping={'route_id':'id'})
+    # services = RelationUrlField(name='route-services-list', mapping={'route_id': 'id'})
+    trips = RelationUrlField(name='route-trips-list', mapping={'route_id': 'id'})
     trips_count = serializers.SerializerMethodField()
 
     def get_trips_count(self, obj):
@@ -73,7 +74,7 @@ class RouteSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'stops',
-           # 'services',
+            # 'services',
             'trips',
             'trips_count',
             'stops',
@@ -95,7 +96,7 @@ class RealRouteSerializer(serializers.ModelSerializer):
 
 
 class SampleSerializer(serializers.ModelSerializer):
-    stop = StopSerializer(source='get_stop')
+    stop = StopSerializer()
 
     class Meta:
         model = models.Sample
@@ -114,9 +115,9 @@ class SampleSerializer(serializers.ModelSerializer):
 
 class TripSerializer(serializers.ModelSerializer):
     id = fields.CharField()
-    service = RelationUrlField(name='route-services-detail', no_source=True,mapping={
+    service = RelationUrlField(name='route-services-detail', no_source=True, mapping={
         'route_id': 'route_id',
-        'pk':'pk'
+        'pk': 'pk'
     })
     route = RouteUrlAndIdField()
     samples = SampleSerializer(many=True, read_only=True)
@@ -131,7 +132,15 @@ class TripSerializer(serializers.ModelSerializer):
             'service',
             'route',
             'samples',
+            'x_week_day_local',  # sunday 0 to saturday 6
+            'x_hour_local',
+            'x_max_delay_arrival',
+            'x_max2_delay_arrival',
+            'x_avg_delay_arrival',
+            'x_last_delay_arrival',
+            'x_before_last_delay_arrival',
         )
+
 
 #
 # class ServiceSerializer(serializers.ModelSerializer):
@@ -159,7 +168,7 @@ def json_trips_line_by_line(trips, ofile):
             json.dump(TripSerializer(t).data, fh)
             fh.write('\n')
             if (idx + 1) % 500 == 0:
-                print('{} completed'.format(1+idx))
+                print('{} completed'.format(1 + idx))
             count += 1
         print('{0} trips were written into {1}'.format(count, ofile))
 
@@ -168,5 +177,4 @@ def all_routes_trips_line_by_line(routes, base_dir):
     for idx, r in enumerate(routes):
         trips = r.trips.all()
         print('{}: Starting route {} with {} trips'.format(idx, r.id, trips.count()))
-        json_trips_line_by_line(trips,os.path.join(base_dir, 'route_{0}.json'.format(r.id)))
-
+        json_trips_line_by_line(trips, os.path.join(base_dir, 'route_{0}.json'.format(r.id)))

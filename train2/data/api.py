@@ -13,7 +13,7 @@ from rest_framework.decorators import list_route
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet, GenericViewSet, ViewSet
-from rest_framework import exceptions
+from rest_framework import exceptions, mixins
 from . import models
 from . import serializers
 from . import utils
@@ -240,10 +240,10 @@ class RouteTripsViewSet(UnderRouteMixin, ReadOnlyModelViewSet):
         return self.get_route().trips.all()
 
 
-class TripViewSet(ReadOnlyModelViewSet):
+class TripViewSet(mixins.RetrieveModelMixin,
+                  GenericViewSet):
     queryset = models.Trip.objects.all()
     serializer_class = serializers.TripSerializer
-
 
 
 

@@ -7,6 +7,7 @@ router = routers.SimpleRouter()
 router.register('stops', data.api.StopViewSet)
 router.register('stats', data.api.StatViewSet, base_name="stats")
 router.register('routes', data.api.RoutesViewSet)
+router.register('trips', data.api.TripViewSet)
 router.register('routes/(?P<route_id>\d+)/trips',
                 data.api.RouteTripsViewSet,
                 base_name='route-trips')

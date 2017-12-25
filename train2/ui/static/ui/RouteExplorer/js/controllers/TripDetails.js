@@ -12,15 +12,33 @@ angular.module('RouteExplorer').controller('TripDetailsController',
                 let n = $scope.tripId;
                 return !isNaN(parseInt(n)) && !isNaN(n - 0)
             };
+            $scope.x_fields =[
+                "x_week_day_local",
+                "x_hour_local",
+                "x_max_delay_arrival",
+                "x_max2_delay_arrival",
+                "x_avg_delay_arrival",
+                "x_last_delay_arrival",
+                "x_before_last_delay_arrival"
+            ]
+
             $scope.refreshTrip = () => {
                 $location.search({
                     'trip_id': $scope.tripId
                 })
                 $scope.wip = true;
-                $http.get(`/api/1/data/trips/${tripId}/`).then(resp=> {
+                $scope.getError = false;
+                $scope.trip = null;
+                $http.get(`/api/v1/trips/${$scope.tripId}/`).then(resp=> {
                     $scope.trip = resp.data;
+                    $scope.wip = false;
+                }, resp => {
+                    $scope.wip = false;
+                    $scope.getError = true;
                 })
             }
+            $scope.tripId = 343440;
+            $scope.refreshTrip();
         });
 
 
