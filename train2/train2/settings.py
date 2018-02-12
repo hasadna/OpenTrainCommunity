@@ -45,9 +45,8 @@ INSTALLED_APPS = [
     'ui',
     'info',
     'rest_framework_swagger',
-    'corsheaders',
     'analysis',
-    'coresheaders',
+    'corsheaders',
 ]
 
 
@@ -197,5 +196,9 @@ SHELL_PLUS_POST_IMPORTS = (
     ('imp', 'reload'),
     ('datetime'),
 )
+
+CORS_ORIGIN_ALLOW_ALL=True
+
+
 
 
