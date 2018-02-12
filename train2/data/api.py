@@ -5,6 +5,7 @@ import datetime
 import logging
 import time
 
+from django.core.cache import cache
 from django.db.models import Count, Min, Max
 from django.conf import settings
 from django.templatetags.static import static
@@ -251,10 +252,16 @@ class TripViewSet(mixins.RetrieveModelMixin,
     def list_compact(self, request):
         start_date = utils.parse_date(request.GET['start_date'], reverse=True)
         end_date = utils.parse_date(request.GET['end_date'], reverse=True)
-        queryset = models.Trip.objects.filter(valid=True).filter(date__gte=start_date, date__lte=end_date)
-        queryset = queryset.annotate(samples_count=Count('samples'))
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+        key = 'trips:compact:{}:{}'.format(start_date, end_date)
+        data = cache.get(key)
+        if not data:
+            logger.info(">>> for %s => %s from cache", start_date, end_date)
+            queryset = models.Trip.objects.filter(valid=True).filter(date__gte=start_date, date__lte=end_date)
+            queryset = queryset.annotate(samples_count=Count('samples'))
+            serializer = self.get_serializer(queryset, many=True)
+            data = serializer.data
+            cache.set(key, data)
+        return Response(data)
 
 
 class HeatMapViewSet(ViewSet):
