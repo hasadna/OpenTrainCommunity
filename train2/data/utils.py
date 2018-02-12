@@ -21,7 +21,7 @@ def date_to_millis_since_epoch(date):
     return millis
 
 
-def parse_date(dt_str):
+def parse_date(dt_str, reverse=False):
     if dt_str is None:
         return None
 
@@ -32,7 +32,10 @@ def parse_date(dt_str):
         return datetime.datetime.fromtimestamp(timestamp)
 
     try:
-        d, m, y = [int(x) for x in re.split("[-/]",dt_str)]
+        if reverse:
+            y, m, d = [int(x) for x in re.split("[-/]",dt_str)]
+        else:
+            d, m, y = [int(x) for x in re.split("[-/]",dt_str)]
         if y < 2013:
             raise ValueError('Wrong year %s for param %s' % (y, dt_str))
         return datetime.datetime(year=y, month=m, day=d)
