@@ -245,6 +245,16 @@ class TripViewSet(mixins.RetrieveModelMixin,
     queryset = models.Trip.objects.all()
     serializer_class = serializers.TripSerializer
 
+    @list_route(methods=['GET'],
+                url_path='compact',
+                serializer_class=serializers.TripCompactSerializer)
+    def list_compact(self, request):
+        start_date = utils.parse_date(request.GET['start_date'])
+        end_date = utils.parse_date(request.GET['end_date'])
+        queryset = models.Trip.objects.filter(valid=True).filter(date__gte=start_date, date__lte=end_date)
+        queryset = queryset.annotate(samples_count=Count('samples'))
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class HeatMapViewSet(ViewSet):

@@ -142,6 +142,28 @@ class TripSerializer(serializers.ModelSerializer):
         )
 
 
+class TripCompactSerializer(serializers.ModelSerializer):
+    id = fields.CharField()
+    samples_count = serializers.ReadOnlyField()
+
+    class Meta:
+        model = models.Trip
+        fields = (
+            'id',
+            'train_num',
+            'date',
+            'x_week_day_local',  # sunday 0 to saturday 6
+            'x_hour_local',
+            'x_max_delay_arrival',
+            'x_max2_delay_arrival',
+            'x_avg_delay_arrival',
+            'x_last_delay_arrival',
+            'x_before_last_delay_arrival',
+            'samples_count'
+        )
+
+
+
 #
 # class ServiceSerializer(serializers.ModelSerializer):
 #     id = fields.CharField()
