@@ -14,6 +14,7 @@ from django.db.models import Count
 
 import data.importer
 import data.models
+from data.prep_x_fields import update_all
 
 LOGGER = logging.getLogger(__name__)
 
@@ -165,6 +166,9 @@ def parse_xl(xlname):
         if (idx + 1) % 100 == 0:
             LOGGER.info("checked %s / %s trips", idx + 1, len(created_trips))
 
+
+    LOGGER.info("updating x_fields")
+    update_all()
     created_trips = data.models.Trip.objects.filter(id__in=created_ids)
 
     LOGGER.info("Creating routes")
