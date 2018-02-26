@@ -9,7 +9,7 @@ MIN_MONTHLY_TRIP_COUNT = 8000
 MAX_MONTHLY_TRIP_COUNT = 15000
 MIN_DAILY_TRIP_COUNT = 100
 MIN_DAILY_TRIP_COUNT_SAT = 20
-MAX_DAILY_TRIP_COUNT = 500
+MAX_DAILY_TRIP_COUNT = 550
 MIN_MONTHLY_VALID_TRIP_RATIO = 0.97
 MIN = 0
 MAX = 1
@@ -35,12 +35,12 @@ BIG_STOPS = [
     'Lod',
     'Herzliyya',
     'Motzkin',
+    'Kiryat Hayyim',
 ]
 
 MEDIUM_STOPS = [
     'Modiin',
     'Modiin Center',
-    'Kiryat Hayyim',
     'Atlit',
 ]
 
@@ -48,7 +48,7 @@ MEDIUM_STOPS = [
 MONTHLY_SAMPLES = {
     'default': [150, 3000],
     'Jerusalem Malha': [20, 800],
-    'Jerusalem Biblical Zoo': [20, 300],
+    'Jerusalem Biblical Zoo': [20, 400],
     'Dimona': [30, 300]
 }
 
