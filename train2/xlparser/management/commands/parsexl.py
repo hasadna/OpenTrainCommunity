@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 import xlparser.utils_2015
-
 import logging
+
 
 LOGGER = logging.getLogger(__name__)
 
@@ -23,9 +23,10 @@ class Command(BaseCommand):
                 LOGGER.exception(e)
                 bad.append((f,e))
             LOGGER.info('end parse %s',f)
+
         if bad:
             for f,e in bad:
                 LOGGER.error("failed in %s with %s", f,e)
         else:
             LOGGER.info("ALL %s files were parsed ok", len(ok))
-
+        LOGGER.info("REMEBER TO RUN python manage.py prep_x_fields")
