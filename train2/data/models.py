@@ -80,6 +80,9 @@ class Trip(models.Model):
             return self.set_invalid('no samples')
         for sample in samples:
             sample.check_sample()
+        fixed = [s for s in samples if s.actual_arrival_fixed and s.actual_departure_fixed]
+        if len(fixed) >= 2:
+            return self.set_invalid("more than 1 fix")
         invalid = [s for s in samples if not s.valid]
         if invalid:
             return self.set_invalid(invalid[0].invalid_reason)
@@ -188,6 +191,7 @@ class Sample(models.Model):
     invalid_reason = models.TextField(blank=True, null=True)
 
     actual_departure_fixed = models.BooleanField(default=False)
+    actual_arrival_fixed = models.BooleanField(default=False)
 
     def check_sample(self):
         if self.is_source:
@@ -199,9 +203,13 @@ class Sample(models.Model):
         for f in required_fields:
             v = getattr(self, f)
             if v is None or not isinstance(v, datetime.datetime):
-                if v is None and f == 'actual_departure':
-                    self.actual_departure = self.exp_departure
-                    self.actual_departure_fixed = True
+                if v is None and f in ['actual_departure','actual_arrival']:
+                    if f == 'actual_departure':
+                        self.actual_departure = self.exp_departure
+                        self.actual_departure_fixed = True
+                    else:
+                        self.actual_arrival = self.exp_arrival
+                        self.actual_arrival_fixed = True
                     self.save()
                 else:
                     self.valid = False
