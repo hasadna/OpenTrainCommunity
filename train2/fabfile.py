@@ -65,7 +65,6 @@ def update_server():
     restart()
 
 
-
 @task
 def backup_db():
     ts = datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
@@ -102,5 +101,18 @@ def restore_db(file):
         cat_command = "cat {}".format(file)
     local("{} | python manage.py dbshell".format(cat_command))
 
-
+@task
+def create_csv():
+    with virtualenv(env.projdir):
+        commands = [
+        """COPY data_stop TO '/home/opentrain/public_html/files/dumps-csv/stops.csv' DELIMITER ',' CSV HEADER;""",
+        """COPY data_route TO '/home/opentrain/public_html/files/dumps-csv/routes.csv' DELIMITER ',' CSV HEADER;""",
+        """COPY data_trip TO '/home/opentrain/public_html/files/dumps-csv/trips.csv' DELIMITER ',' CSV HEADER;""",
+        """COPY data_sample TO '/home/opentrain/public_html/files/dumps-csv/samples.csv' DELIMITER ',' CSV HEADER;"""
+        ]
+        for command in commands:
+            pass
+            #run("""echo "{}" | sudo -u postgres psql train2""".format(command))
+        with cd("/home/opentrain/public_html/files/dumps-csv/"):
+            run("for f in *.csv ; do gzip -f $f; done")
 

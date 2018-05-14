@@ -29,4 +29,4 @@ class Command(BaseCommand):
                 LOGGER.error("failed in %s with %s", f,e)
         else:
             LOGGER.info("ALL %s files were parsed ok", len(ok))
-        LOGGER.info("REMEBER TO RUN python manage.py prep_x_fields")
+        LOGGER.info("REMEMBER TO RUN python manage.py prep_x_fields")
