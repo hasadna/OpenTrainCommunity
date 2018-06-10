@@ -57,7 +57,7 @@ class Trip(models.Model):
     def attach_to_route(self, save=True):
         stop_ids = list(self.samples.order_by('index').values_list('stop__gtfs_stop_id',flat=True))
         if stop_ids:
-            self.route, _ = Route.objects.get_or_create(stop_ids=stop_ids)
+            self.route, __ = Route.objects.get_or_create(stop_ids=stop_ids)
             if save:
                 self.save()
         else:
