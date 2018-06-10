@@ -26,6 +26,8 @@ cd OpenTrainCommunity/train2
 pip install -r requirements.txt
 ```
 
+Note: Installation of numpy via pip might require fulfilling certain [prerequisites](http://scipy.github.io/devdocs/building/linux.html).
+
 ```
 sudo apt-get install postgresql libpq-dev
 ```
@@ -67,3 +69,12 @@ Now you can start the server.
 python manage.py runserver 
 ```
 
+
+# Troubleshooting
+* If you receive the error `fatal error: xlocale.h: No such file or directory`, it is likely due to a glibc [header name change](https://sourceware.org/git/?p=glibc.git;a=commit;h=f0be25b6336db7492e47d2e8e72eb8af53b5506d). One [suggested solution](https://github.com/docker-library/python/issues/112#issuecomment-260723908) is to manually create a symlink to the new name:
+
+  ```
+  ln -s /usr/include/locale.h /usr/include/xlocale.h
+  ```
+
+ * If you receive the error `symbol __res_maybe_init version GLIBC_PRIVATE not defined in libc.so.6 with link time reference`, it is likely due to a [psycopg bug](https://github.com/psycopg/psycopg2-wheels/issues/2) and can likely be solved by upgrading psycopg2 to a later version like 2.7.3.1.
