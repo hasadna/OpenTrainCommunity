@@ -15,11 +15,9 @@ def main():
     options = parser.parse_args()
 
     def run_cmd(cmd):
+        print(cmd)
         if not options.dry:
-            print(cmd)
             subprocess.call(cmd, shell=True)
-        else:
-            print(cmd)
 
     filename = options.file
 
