@@ -50,7 +50,7 @@ def parse_xl(xlname):
     """
     :param xlname: xl file name
     :return: None
-    creates xl file name and outputs two files, one is csv which we import,
+    receives xl file name and outputs two files, one is csv which we import,
     and the other one is txt file which is text representation of the excel file
     used for the source ref in the browse app
     """
