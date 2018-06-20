@@ -9,7 +9,7 @@ LOCAL_DOMAIN = '127.0.0.1:8000'
 DOMAIN = SERVER_DOMAIN
 
 def get_stops():
-      """Return a list stops from the website API"""
+  """Return a list stops from the website API"""
   all_stops = json.loads(requests.get('http://otrain.org/api/v1/stops').text)
   result = {}
   for stop_info in all_stops:
