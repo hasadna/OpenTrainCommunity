@@ -186,7 +186,6 @@ highlights_table = save_highlights_html(stats_table)
 print(highlights_table.shape)
 print("")
 highlights_table.to_csv('output_stations.csv', sep='\t')
-# TODO: Add "sudo pip install XlsxWriter", "pip install xlsxwriter" to installation
 writer = pd.ExcelWriter('static/analysis/stations_output.xlsx', engine='xlsxwriter')
 highlights_table.to_excel(writer, sheet_name='Sheet1')
 writer.save()
