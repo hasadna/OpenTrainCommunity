@@ -17,3 +17,4 @@ tabulate==0.8.1
 django-cors-headers==2.0.0
 sphinx_rtd_theme==0.4.0
 XlsxWriter==1.0.5
+matplotlib=2.2.2
