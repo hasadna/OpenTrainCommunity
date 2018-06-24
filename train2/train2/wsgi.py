@@ -10,7 +10,7 @@ https://docs.djangoproject.com/en/1.9/howto/deployment/wsgi/
 import os
 
 from django.core.wsgi import get_wsgi_application
-
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "train2.settings")
+env_or_default_settings = os.getenv('DJANGO_SETTINGS_MODULE', 'train2.settings.dev_settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', env_or_default_settings)
 
 application = get_wsgi_application()

@@ -1,7 +1,7 @@
 import os
 import sys
 sys.path.append('../')
-os.environ['DJANGO_SETTINGS_MODULE'] = "train2.settings"
+os.environ['DJANGO_SETTINGS_MODULE'] = os.getenv('DJANGO_SETTINGS_MODULE', 'train2.settings.dev_settings')
 import datetime
 import django
 django.setup()
