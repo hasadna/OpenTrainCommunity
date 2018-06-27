@@ -34,7 +34,7 @@ def get_old_routes():
     assert len(all_routes) == size
     result = [{
                   'id': route['id'],
-                  'stop_ids': [s['gtfs_stop_id'] for s in route['stops']]
+                  'stop_ids': [s['stop_id'] for s in route['stops']]
               } for route in all_routes]
     assert len(result) == size
     return result
