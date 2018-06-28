@@ -68,13 +68,13 @@
                     reloadOnSearch: false,
                     resolve: {'Layout': 'Layout'},
                 })
-                .when("/top-highlights", {
-                    pageId: 'top_highlights',
-                    templateUrl: templateUrl('TopHighlights'),
-                    controller: 'TopHighlightsController',
-                    reloadOnSearch: false,
-                    resolve: {'Layout': 'Layout'},
-                })
+                // .when("/top-highlights", {
+                //     pageId: 'top_highlights',
+                //     templateUrl: templateUrl('TopHighlights'),
+                //     controller: 'TopHighlightsController',
+                //     reloadOnSearch: false,
+                //     resolve: {'Layout': 'Layout'},
+                // })
                 .when("/trip-details", {
                     pageId: 'trip_details',
                     templateUrl: templateUrl('TripDetails'),
