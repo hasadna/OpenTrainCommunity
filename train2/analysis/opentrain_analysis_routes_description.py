@@ -3,6 +3,7 @@ import collections
 import json
 import os
 import requests
+import analysis_utils
 
 SERVER_DOMAIN = 'otrain.org'
 LOCAL_DOMAIN = '127.0.0.1:8000'
@@ -49,6 +50,7 @@ def get_stops_ids_to_heb_name(all_stops):
   return result
 
 def save_highlights_html(data, stop_id_to_name, filepath):
+  """Generate HTML file with descending list of most delayed routes"""
   count = 1
   with open(filepath, 'w') as html_file:  
     html_file.write('<!DOCTYPE html><html><body dir="rtl">')
@@ -78,7 +80,10 @@ def save_highlights_html(data, stop_id_to_name, filepath):
 
 all_stops = json.loads(requests.get('http://{}/api/v1/stops'.format(DOMAIN)).text)
 stop_id_to_name = get_stops_ids_to_heb_name(all_stops)
-path = "static/analysis/routes_output_format_records.json"
-with open(path) as fh:
+
+
+full_route_json_path = os.path.join(analysis_utils.STATIC_ANALYSIS_DIR, 'routes_output_format_records.json')
+full_route_html_path= os.path.join(analysis_utils.STATIC_ANALYSIS_DIR, 'highlights.html')
+with open(full_route_json_path) as fh:
   data = [json.loads(line) for line in fh]
-save_highlights_html(data, stop_id_to_name, 'highlights.html')
+save_highlights_html(data, stop_id_to_name, full_route_html_path)
