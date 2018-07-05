@@ -36,9 +36,33 @@
                         <td>תאריך</td>
                         <td>{{ trip.date }}</td>
                     </tr>
-                    <tr ng-repeat="field in x_fields">
-                        <td>{{ field }}</td>
-                        <td>{{ trip[field] }}</td>
+		    <tr>
+                        <td>יום בשבוע</td>
+                        <td>{{ trip.x_week_day_local }}</td>
+                    </tr>
+		    <tr>
+                        <td>שעה</td>
+                        <td>{{ trip.x_hour_local }}</td>
+                    </tr>
+		    <tr>
+                        <td>איחור מרבי</td>
+                        <td>{{ trip.x_max_delay_arrival }}</td>
+                    </tr>
+		    <tr>
+                        <td>איחור שני בגודלו</td>
+                        <td>{{ trip.x_max2_delay_arrival }}</td>
+                    </tr>
+		    <tr>
+                        <td>איחור ממוצע</td>
+                        <td>{{ trip.x_avg_delay_arrival }}</td>
+                    </tr>
+		    <tr>
+                        <td>איחור אחרון</td>
+                        <td>{{ trip.x_last_delay_arrival }}</td>
+                    </tr>
+		    <tr>
+                        <td>איחור לפני אחרון</td>
+                        <td>{{ trip.x_before_last_delay_arrival }}</td>
                     </tr>
                 </table>
             </div>
