@@ -17,6 +17,7 @@ from django.conf.urls import url, include
 from django.contrib import admin
 
 import ui.views
+import ui2.views
 from . import api_urls
 from rest_framework_swagger.views import get_swagger_view
 
@@ -25,8 +26,9 @@ schema_view = get_swagger_view(title='Pastebin API')
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', ui.views.RouteExplorer.as_view()),
+    url(r'^ui2/$', ui2.views.RouteExplorer.as_view()),
     url(r'api/v1/', include(api_urls.router.urls)),
     url(r'^info/',include('info.urls',namespace="info")),
-    url(r'^api/docs/', schema_view)
+    url(r'^api/docs/', schema_view),
 ]
 

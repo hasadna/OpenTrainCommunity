@@ -1,0 +1,40 @@
+<h1 style="padding-top: 50px">Highlights
+<span class="pull-left">
+    <a style="color:white" ng-href="{{ url }}"><i class="fa fa-download"></i></a>
+    &nbsp;&nbsp;
+</span>
+</h1>
+<div class="row" style="padding-right: 30px">
+    <div class="col-xs-12">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th ng-repeat="f in fields">
+                        {{ f.name }}
+                        <span ng-hide="f.disableSort" ng-click="sortBy(f)" class="sort" ng-class="{'sort-inactive': !f.active}"><i class="fa fa-sort"></i></span>
+                    </th>
+                </tr>
+            </thead>
+            <tr ng-repeat="hl in highlights">
+                <td>
+                    {{ hl.month | month_name }} {{ hl.year }}
+                </td>
+                <td>
+                    {{ hl.num_trips }}
+                </td>
+                <td>
+                    {{ hl.week_day | week_day1 }}
+                </td>
+                <td>
+                    {{ hl.hours | hours }}
+                </td>
+                <td>
+                    {{ hl.mean_arrival_late_pct * 100.0 | number:2 }}%
+                </td>
+                <td>
+                    <a style="color:white" target="_blank" ng-href="{{ hl.url }}">קישור</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

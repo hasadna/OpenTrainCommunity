@@ -1,0 +1,127 @@
+<h1 style="padding-top: 50px">מחקר איחורים</h1>
+<div class="row">
+    <div class="col-xs-3" style="padding-right: 30px">
+        <ul class="list-group" style="color: blue">
+            <li class="list-group-item">
+            <b>תאריך התחלה</b>: {{ startDate }}
+                </li>
+            <li class="list-group-item">
+                <b>תאריך סיום</b>: {{  endDate }}
+            </li>
+            <!--
+            <li class="list-group-item">
+                <b>מספר נסיעות</b>: {{ trips_count }}
+            </li>
+            -->
+        </ul>
+        <form class="form" id="explore-form" ng-submit="refresh()">
+            <div class="form-group">
+                <label>
+                    מסלול
+                </label>
+                <select class="form-control"
+                    ng-options="stop.name for stop in stops | orderBy:'name'"
+                    ng-model="input.startStop"
+                ></select>
+                <select class="form-control"
+                    ng-options="stop.name for stop in stops | orderBy:'name'"
+                    ng-model="input.endStop"
+                ></select>
+            </div>
+            <div class="form-group">
+                <label>
+                    מחודש
+                </label>
+                <select class="form-control"
+                        ng-options="date.name for date in startDates"
+                        ng-model="input.startDate">
+                </select>
+            </div>
+            <div class="form-group">
+                <label>
+                    עד חודש
+                </label>
+                <select class="form-control"
+                        ng-options="date.name for date in endDates"
+                        ng-model="input.endDate">
+                </select>
+            </div>
+            <button class="btn btn-success btn-block" type="submit">קדימה</button>
+        </form>
+        <br/>
+        <ul class="list-group">
+            <li class="list-group-item" style="color:black">
+                .סנן כאן את הרשימה ע"פ רשימת התחנות שהרכבת עוצרת או מבקרת בהן
+                אפשר לבחור בשני מצבים. המצב הרראשון - בחר רק נסיעות בהן הרכבת מדלגת על כל התחנות, או
+                המצב המשלים: בו הרכבת עוצרת בלפחות תחנה אחת מהרשימה.
+                <br>
+                <span>
+                    מדלג על הבחירה
+                    <span ng-click="mustSkipComplementMode=!mustSkipComplementMode">
+                    <i ng-class="{'fa-toggle-on': !mustSkipComplementMode, 'fa-toggle-off': mustSkipComplementMode}"
+                       class="fa fa-2x">
+                    </i>
+                    </span>
+                    עוצר בלפחות אחת מהבחירות
+                </span>
+                <br/>
+                <button ng-disabled="!isMustSkipChecked()" class="btn btn-success btn-block" type="submit" ng-click="updateSkipped()">עדכן</button>
+            </li>
+            <table class="table">
+                <tr>
+                    <th style="width: 50%">תחנה
+                    <span style="cursor: pointer; font-size: 10px" ng-click="skippedToggleAll()">הכל</span>
+                    </th>
+                    <th><span ng-hide="mustSkipComplementMode">
+                        חייב לדלג
+                    </span>
+                        <span ng-show="mustSkipComplementMode">
+                            חייב לעצור באחת מ
+                        </span>
+                    </th>
+                </tr>
+                <tr ng-repeat="stop in fromToStops" style="color: black">
+                       <td>{{ stop.name }}</td>
+                        <td>
+                            <input ng-if="$middle" type="checkbox" class="skip-checkbox" ng-model="stop.mustSkip">
+                        </td>
+                   </tr>
+            </table>
+        </ul>
+    </div>
+    <div ng-if="wip" class="col-xs-9">
+        <i class="fa fa-spin fa-5x fa-spinner"></i> טוען מידע...
+    </div>
+    <div ng-if="!wip" class="col-xs-9" id="main-div">
+        <div class="row">
+            <div class="col-xs-11">
+                <div ng-if="chartPerDay && input.graphKind == 'perDay'" dir="ltr">
+                    <highchart id="chart-per-day" config="chartPerDay"></highchart>
+                </div>
+                <div ng-if="chartPerHour && input.graphKind == 'perHour'" dir="ltr">
+                    <highchart id="chart-per-hour" config="chartPerHour"></highchart>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-11">
+                <label>
+                    תצוגה בחתך יומי
+                </label>
+                <input type="radio" value="perDay" ng-model="input.graphKind">
+                <label>
+                    תצוגה בחתך שעתי
+                </label>
+                <input type="radio" value="perHour" ng-model="input.graphKind">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-11">
+                <h2>הסבר</h2>
+                <p>ציר ה X מייצג את התחנות לאורך המסלול</p>
+                <p>ציר ה Y מייצג את אחוז הרכבות שמאחרות ביותר מ 5 דקות</p>
+                <p>באפשרותכם לבחור בטופס מסלול אחר או תקופה אחרת</p>
+            </div>
+        </div>
+    </div>
+</div>

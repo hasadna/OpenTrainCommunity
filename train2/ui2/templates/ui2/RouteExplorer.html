@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html ng-app="RouteExplorer" ng-controller="AppController" ng-strict-di>
+    <head>
+        <title>רכבת פתוחה</title>
+        <meta property="og:title" content="רכבת פתוחה" />
+        <meta property="og:type" content="website" />
+        <meta property="og:description" content="מידע נגיש על ביצועי רכבת ישראל" />
+        <meta property="og:image" content="http://otrain.org/static/ui/RouteExplorer/img/route-details-sample.png" />
+        <meta property="og:image:type" content="image/png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+
+        <link rel="stylesheet" href="/static/ui/RouteExplorer/dist/css/app.css">
+        <link rel="stylesheet" href="/static/ui/RouteExplorer/bower_components/bootstrap-rtl/dist/css/bootstrap-rtl.min.css">
+        <link rel="icon" type="image/png" href="/static/ui/RouteExplorer/img/opentrain-favicon.png">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="/static/ui/RouteExplorer/bower_components/leaflet/dist/leaflet.css">
+    </head>
+    <body ng-class="bodyClass">
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <a class="navbarRight" href="#/">
+                <img class="logo" src="/static/ui/RouteExplorer/img/logo_3.png" alt="רכבת פתוחה"/>
+            </a>
+
+            <span class="navbarCenter">
+                <img class="logo" src="/static/ui/RouteExplorer/img/hasadna.png" alt="רכבת פתוחה"/>
+            </span>
+
+            <span class="navbarLeft">
+
+                <a class="aboutBtn" href="#/about"><span>אודות</span></a>
+
+                <a class="navbar-btn btn" href ng-click="share('http://www.facebook.com/sharer.php?u=')">
+                    <span class="fa-stack fa-2x">
+                        <i class="fa fa-circle fa-stack-2x"></i>
+                        <i class="fa fa-facebook fa-stack-1x"></i>
+                    </span>
+                </a>
+
+                <a class="navbar-btn btn" href="https://github.com/hasadna/OpenTrainCommunity">
+                    <span class="fa-stack fa-2x">
+                        <i class="fa fa-circle fa-stack-2x"></i>
+                        <i class="fa fa-github fa-stack-1x"></i>
+                    </span>
+                </a>
+
+                <a id="wiki" class="navbar-btn btn" href="http://wiki.hasadna.org.il/wiki/%D7%A8%D7%9B%D7%91%D7%AA_%D7%A4%D7%AA%D7%95%D7%97%D7%94">
+                    <span class="fa-stack fa-2x">
+                        <i class="fa fa-circle fa-stack-2x"></i>
+                        <i class="fa fa-wikipedia-w fa-stack-1x"></i>
+                    </span>
+                </a>
+                <span uib-dropdown class="navbar-btn">
+                    <a class="btn" uib-dropdown-toggle>
+                        <span class="fa-stack fa-2x">
+                            <i class="fa fa-circle fa-stack-2x"></i>
+                            <i class="fa fa-ellipsis-h  fa-stack-1x"></i>
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu" uib-dropdown-menu
+                        aria-labelledby="simple-dropdown">
+                        <li>
+                            <a href="/#highlights">Highlights</a>
+                        </li>
+                        <li>
+                            <a href="/#top-highlights">Top Highlights</a>
+                        </li>
+                        <li>
+                            <a href="/#graphs">גרפים</a>
+                        </li>
+                        <li>
+                            <a href="/#trip-details"> פרטי נסיעה</a>
+                        </li>
+                        <li>
+                            <a href="/research/">מחקר מסלולים</a>
+                        </li>
+                    </ul>
+                </span>
+            </span>
+        </nav>
+
+        <div class="view" ng-view>
+        </div>
+
+        <script src="/static/ui/RouteExplorer/bower_components/angular/angular.js"></script>
+        <script src="/static/ui/RouteExplorer/bower_components/angular-route/angular-route.min.js"></script>
+        <script src="/static/ui/RouteExplorer/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+
+        <!-- for maps -->
+        <script src="/static/ui/RouteExplorer/bower_components/leaflet/dist/leaflet.js"></script>
+        <script src="/static/ui/RouteExplorer/bower_components/angular-leaflet-directive/dist/angular-leaflet-directive.js">
+        </script>
+
+        <script src="/static/ui/RouteExplorer/bower_components/highcharts/highcharts.js"></script>
+        <script src="/static/ui/RouteExplorer/bower_components/highcharts-ng/dist/highcharts-ng.js"></script>
+        <script src="/static/ui/RouteExplorer/dist/js/app.js"></script>
+    </body>
+</html>

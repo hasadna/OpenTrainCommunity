@@ -1,0 +1,64 @@
+<h1 style="padding-top: 50px">מסלולים אמיתיים</h1>
+<div class="row" style="padding-right: 30px">
+    <div class="col-xs-3">
+        <form class="form" ng-submit="refresh()">
+            <div class="form-group">
+                <label>
+                    חודש
+                </label>
+                     <select class="form-control"
+                        ng-options="month for month in months"
+                        ng-model="selectedMonth"
+                    ></select>
+            </div>
+            <div class="form-group">
+                <label>
+                    שנה
+                </label>
+                    <select class="form-control"
+                            ng-model="selectedYear"
+                            ng-options="year for year in years"></select>
+            </div>
+            <div class="form-group">
+                <button ng-disabled="!selectedYear || !selectedMonth"
+                        type="submit" class="btn btn-default btn-block">
+                    הצג
+                </button>
+            </div>
+        </form>
+    </div>
+    <div class="col-xs-8">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>מוצא</th>
+                    <th>יעד</th>
+                    <th>מספר תחנות</th>
+                    <th>מספר נסיעות</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="realRoute in realRoutes">
+                    <td class="col-xs-1">{{ $index + 1 }}</td>
+                    <td class="col-xs-1">{{ realRoute.firstStop.heb_stop_names[0] }}</td>
+                    <td class="col-xs-1">{{ realRoute.lastStop.heb_stop_names[0] }}</td>
+                    <td class="col-xs-3">{{ realRoute.stops.length }}
+                        <span ng-click="realRoute.stopsOpen = !realRoute.stopsOpen">
+                        <i class="fa"
+                           ng-class="{'fa-plus-circle': !realRoute.stopsOpen,'fa-minus-circle': realRoute.stopsOpen}">
+                        </i>
+                            <ul ng-show="realRoute.stopsOpen">
+                                <li ng-repeat="stop in realRoute.stops">
+                                    {{ stop.heb_stop_names[0] }}
+                                </li>
+                            </ul>
+                        </span>
+                    </td>
+                    <td class="col-xs-2">{{realRoute.trips_count}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

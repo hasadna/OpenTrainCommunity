@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'data',
     'xlparser',
     'ui',
+    'ui2',
     'info',
     'rest_framework_swagger',
     'analysis',

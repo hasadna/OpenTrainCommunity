@@ -1,0 +1,69 @@
+<div style="margin-left: 50px; margin-right: 50px">
+    <h1 style="padding-top: 50px">פרטי נסיעה</h1>
+    <div class="row" style="padding-bottom: 5px">
+        <div class="col-xs-12">
+            <form class="form-inline" ng-submit="refreshTrip()">
+                <div class="form-group">
+                    <label for="trip_id">מזהה הנסיעה</label>
+                    <input type="number" ng-model="tripId" class="form-control" id="trip_id">
+                </div>
+                <button type="submit" class="btn btn-default">הצג נתונים</button>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <p class=text-center ng-if="wip">
+                <i class="fa fa-spin fa-spinner fa-5x"></i>
+            </p>
+        </div>
+        <div ng-if="getError" class="alert alert-danger" style="margin-left: 50px ; margin-right: 50px">
+            לא הצלחנו להביא את הנסיעה מהשרת, או שמהזהה לא חוקי או שמשהו לא טוב קרה. סליחה!
+        </div>
+        <div ng-if="!wip && trip">
+            <div class="col-sm-3 col-xs-12">
+                <h3>פרטים כללים</h3>
+                <table class="table">
+                    <tr>
+                        <td>מזהה</td>
+                        <td>{{ trip.id }}</td>
+                    </tr>
+                    <tr>
+                        <td> מזהה מסלול</td>
+                        <td>{{ trip.route.id }}</td>
+                    </tr>
+                    <tr>
+                        <td>תאריך</td>
+                        <td>{{ trip.date }}</td>
+                    </tr>
+                    <tr ng-repeat="field in x_fields">
+                        <td>{{ field }}</td>
+                        <td>{{ trip[field] }}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-sm-9 col-xs-12">
+                <h3>מסלול</h3>
+                <table class="table">
+                    <tr>
+                        <th>אינדקס</th>
+                        <th>תחנה</th>
+                        <th>הגעה מתוכננת</th>
+                        <th>הגעה בפועל</th>
+                        <th>איחור בהגעה</th>
+                        <th>יציאה מתוכננת</th>
+
+                    </tr>
+                    <tr ng-repeat="sample in trip.samples">
+                        <td>{{ sample.index }}</td>
+                        <td title="{{ sample.stop.stop_id }}">{{ sample.stop.stop_short_name }}</td>
+                        <td>{{ sample.exp_arrival }}</td>
+                        <td>{{ sample.actual_arrival }}</td>
+                        <td>{{ sample.delay_arrival }}</td>
+                        <td>{{ sample.exp_departure }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,15 @@
+{
+  "name": "css-flip-loader",
+  "version": "1.0.0",
+  "description": "css flip loader webpack",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "webpack",
+    "css-flip"
+  ],
+  "author": "ekeydar@gmail.com",
+  "license": "ISC"
+}
