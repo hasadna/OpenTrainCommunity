@@ -5,25 +5,21 @@
         <meta property="og:title" content="רכבת פתוחה" />
         <meta property="og:type" content="website" />
         <meta property="og:description" content="מידע נגיש על ביצועי רכבת ישראל" />
-        <meta property="og:image" content="http://otrain.org/static/ui/RouteExplorer/img/route-details-sample.png" />
+        <meta property="og:image" content="http://otrain.org/static/ui2/img/route-details-sample.png" />
         <meta property="og:image:type" content="image/png" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
-
-        <link rel="stylesheet" href="/static/ui/RouteExplorer/dist/css/app.css">
-        <link rel="stylesheet" href="/static/ui/RouteExplorer/bower_components/bootstrap-rtl/dist/css/bootstrap-rtl.min.css">
-        <link rel="icon" type="image/png" href="/static/ui/RouteExplorer/img/opentrain-favicon.png">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-        <link rel="stylesheet" href="/static/ui/RouteExplorer/bower_components/leaflet/dist/leaflet.css">
+        <link href="/static/ui2/fa/webfonts/fontawesome-all.css" rel="stylesheet">
+        <script src="/static/ui2/build/all.js"></script>
     </head>
     <body ng-class="bodyClass">
         <nav class="navbar navbar-default navbar-fixed-top">
             <a class="navbarRight" href="#/">
-                <img class="logo" src="/static/ui/RouteExplorer/img/logo_3.png" alt="רכבת פתוחה"/>
+                <img class="logo" src="/static/ui2/img/logo_3.png" alt="רכבת פתוחה"/>
             </a>
 
             <span class="navbarCenter">
-                <img class="logo" src="/static/ui/RouteExplorer/img/hasadna.png" alt="רכבת פתוחה"/>
+                <img class="logo" src="/static/ui2/img/hasadna.png" alt="רכבת פתוחה"/>
             </span>
 
             <span class="navbarLeft">
@@ -81,18 +77,5 @@
 
         <div class="view" ng-view>
         </div>
-
-        <script src="/static/ui/RouteExplorer/bower_components/angular/angular.js"></script>
-        <script src="/static/ui/RouteExplorer/bower_components/angular-route/angular-route.min.js"></script>
-        <script src="/static/ui/RouteExplorer/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
-
-        <!-- for maps -->
-        <script src="/static/ui/RouteExplorer/bower_components/leaflet/dist/leaflet.js"></script>
-        <script src="/static/ui/RouteExplorer/bower_components/angular-leaflet-directive/dist/angular-leaflet-directive.js">
-        </script>
-
-        <script src="/static/ui/RouteExplorer/bower_components/highcharts/highcharts.js"></script>
-        <script src="/static/ui/RouteExplorer/bower_components/highcharts-ng/dist/highcharts-ng.js"></script>
-        <script src="/static/ui/RouteExplorer/dist/js/app.js"></script>
     </body>
 </html>

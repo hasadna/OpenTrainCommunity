@@ -2,7 +2,7 @@
 from django.views.generic import TemplateView
 
 
-class RouteExplorer(TemplateView):
-    template_name = 'ui/RouteExplorer.html'
+class AppView(TemplateView):
+    template_name = 'ui2/app.html'
 
 

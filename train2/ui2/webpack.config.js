@@ -7,7 +7,7 @@ module.exports = {
     watch: true,
     output: {
         filename: 'all.js',
-        path: path.resolve('./dist')
+        path: path.resolve('./static/build')
     },
     module: {
         rules: [
