@@ -1,4 +1,9 @@
 """Functions to help in analysis of website data using ipython notebook"""
+"""
+Running the script saves JSON, XLS files with various stats
+on a per-route basis. Depends on pre-cached route data sitting in a
+cache directory (supplied by the download_cache_data_routes_timespan script)
+"""
 import collections
 import json
 import os

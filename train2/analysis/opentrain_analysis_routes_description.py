@@ -1,4 +1,9 @@
 """Functions to help in analysis of website data using ipython notebook"""
+"""
+Running the script generates an HTML file ('highlights') with various stats
+on a per-route basis, ordered by most delayed routes first.
+Depends on data previously processed with opentrain_analysis_routes script
+"""
 import collections
 import json
 import os
