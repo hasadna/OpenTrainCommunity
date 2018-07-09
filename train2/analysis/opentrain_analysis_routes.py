@@ -93,7 +93,6 @@ excel_stats_table = stats_table[['year', 'month', 'week_day', 'hours', 'num_trip
     'max_arrival_late_pct']]
 percent_columns = ['last_stop_arrival_late_pct', 'mean_arrival_late_pct', 'max_arrival_late_pct']
 excel_stats_table.loc[:, percent_columns] *= 100
-# TODO: Add "sudo pip install XlsxWriter" to installation
 writer = pd.ExcelWriter('static/analysis/routes_output.xlsx', engine='xlsxwriter')
 excel_stats_table.to_excel(writer, sheet_name='Sheet1')
 writer.save()
