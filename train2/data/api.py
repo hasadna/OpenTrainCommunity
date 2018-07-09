@@ -303,7 +303,7 @@ class HighlightsViewSet(ViewSet):
             'url': static('analysis/routes_output.xlsx')
         })
 
-    @list_route()
+    # @list_route()
     def top(self, request, *args, **kwargs):
         path = os.path.join(settings.BASE_DIR, "analysis/static/analysis/manual_highlights.json")
         with open(path) as fh:
