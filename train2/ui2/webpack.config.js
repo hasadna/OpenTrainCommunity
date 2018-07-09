@@ -7,7 +7,7 @@ module.exports = {
     watch: true,
     output: {
         filename: 'all.js',
-        path: path.resolve('./static/build')
+        path: path.resolve('./static/ui2/build')
     },
     module: {
         rules: [
