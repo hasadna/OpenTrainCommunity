@@ -4,9 +4,8 @@ function TimesDetailsController($scope, $route, Locale, LocationBinder, Layout) 
         $scope.layout = Layout;
     });
     $scope.layout = null;
-
-    var statsMap = {};
-    var routeParams = $route.current.params;
+    let statsMap = {};
+    let routeParams = $route.current.params;
     $scope.stopIds = [parseInt(routeParams.origin), parseInt(routeParams.destination)];
     LocationBinder.bind($scope, 'selectedDay', 'day', function(val) { return val ? Number(val) : null; });
     LocationBinder.bind($scope, 'selectedTime', 'time');

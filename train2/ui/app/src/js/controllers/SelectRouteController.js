@@ -1,5 +1,7 @@
+import {TimeParser} from "../lib/dt_lib";
+
 export default class SelectRouteController {
-    constructor($scope, $http, $location, $route, Layout, TimeParser) {
+    constructor($scope, $http, $location, $route, Layout) {
         'ngInject';
         $scope.stops = Layout.getStops();
         var period = TimeParser.parsePeriod($route.current.params.period);

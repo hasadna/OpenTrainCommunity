@@ -20,7 +20,6 @@ import TimesDetails from "./directives/TimesDetails";
 import Layout from "./services/Layout";
 import Locale from "./services/Locale";
 import LocationBinder from "./services/LocationBinder";
-import TimeParser from "./services/TimeParser";
 
 let app = angular.module('RouteExplorer', ['ngRoute',
     'ui.bootstrap',
@@ -49,7 +48,6 @@ app.constant('env', {
 });
 
 app.factory('Layout', Layout)
-    .factory('TimeParser', TimeParser)
     .factory('LocationBinder', LocationBinder)
     .constant('Locale', Locale);
 

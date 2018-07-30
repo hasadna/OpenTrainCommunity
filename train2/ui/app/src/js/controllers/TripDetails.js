@@ -5,7 +5,7 @@ export default class TripDetailsController {
                 $timeout,
                 $location,
                 Layout,
-    ) {
+    ) {``
         'ngInject';
         $scope.isLegalTripId = () => {
             let n = $scope.tripId;

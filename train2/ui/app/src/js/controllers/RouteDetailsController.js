@@ -1,5 +1,7 @@
+import {TimeParser} from "../lib/dt_lib";
+
 export default class RouteDetailsController {
-    constructor($scope, $route, $http, $location, LocationBinder, Layout, Locale, TimeParser) {
+    constructor($scope, $route, $http, $location, LocationBinder, Layout, Locale) {
         "ngInject";
         var routeParams = $route.current.params;
 

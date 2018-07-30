@@ -73,5 +73,43 @@ export let hoursList = [
     }
 ];
 
+export class TimeParser {
+    static createRequestString(date, sep) {
+        sep = sep || '/';
+        let dd = date.getDate().toString();
+        let mm = (date.getMonth()+1).toString();
+        let yyyy = date.getFullYear().toString();
+        return dd + sep + mm + sep + yyyy;
+    }
+
+    static parseMonth(monthString) {
+        let year = Number(monthString.substr(0, 4));
+        let month = Number(monthString.substr(4, 2));
+        return new Date(year, month - 1, 1);
+    }
+
+    static parsePeriod(periodString) {
+        let parts = periodString.split('-', 2);
+        let from = TimeParser.parseMonth(parts[0]);
+        let to = parts.length > 1 ? this.parseMonth(parts[1]) : from;
+        let end = new Date(to.getFullYear(), to.getMonth() + 1, 1);
+        return { from: from, to: to, end: end };
+    }
+
+    static formatMonth(date) {
+        return date.getFullYear() + ('0' + (date.getMonth() + 1)).slice(-2);
+    }
+
+    static formatPeriod(period) {
+        let f = TimeParser.formatMonth(period.from);
+        if (period.from < period.to)
+            f += '-' + TimeParser.formatMonth(period.to);
+
+        return f;
+    }
+};
+
+
+
 
 

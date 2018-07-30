@@ -1,11 +1,13 @@
-export default function Layout($http, $q, TimeParser) {
-    'ngInject';
-    var stops = [];
-    var stopsMap = {};
-    var routes = [];
-    var routesMap = {};
+import {TimeParser} from "../lib/dt_lib";
 
-    var loadedPromise = $q.all([
+export default function Layout($http, $q) {
+    'ngInject';
+    let stops = [];
+    let stopsMap = {};
+    let routes = [];
+    let routesMap = {};
+
+    let loadedPromise = $q.all([
         $http.get('/api/v1/stops/')
             .then(function(response) {
                 stops = response.data.map(function(s) { return {
@@ -31,20 +33,20 @@ export default function Layout($http, $q, TimeParser) {
             })
     ]);
 
-    var findStop = function(stopId) {
+    let findStop = function(stopId) {
         return stopsMap[stopId] || null;
     };
 
-    var findStopName = function(stopId) {
+    let findStopName = function(stopId) {
         return findStop(stopId).name;
     };
 
-    var findRoutes = function(routes, originId, destinationId) {
-        var matchingRoutes = {};
+    let findRoutes = function(routes, originId, destinationId) {
+        let matchingRoutes = {};
 
         routes.forEach(function(r) {
-            var originIndex = r.stops.indexOf(originId);
-            var destinationIndex = r.stops.indexOf(destinationId);
+            let originIndex = r.stops.indexOf(originId);
+            let destinationIndex = r.stops.indexOf(destinationId);
 
             if (originIndex < 0 || destinationIndex < 0)
                 return;
@@ -52,8 +54,8 @@ export default function Layout($http, $q, TimeParser) {
             if (originIndex > destinationIndex)
                 return;
 
-            var routeStops = r.stops;
-            var routeId = r.id;
+            let routeStops = r.stops;
+            let routeId = r.id;
 
             if (routeId in matchingRoutes)
                 matchingRoutes[routeId].count += r.count;
@@ -71,16 +73,16 @@ export default function Layout($http, $q, TimeParser) {
         return matchingRoutes;
     };
 
-    var findRoutesByPeriod = function(origin, destination, from, to) {
+    let findRoutesByPeriod = function(origin, destination, from, to) {
         // TODO use minDate and maxDate from our cached routes to avoid the http request
 
-        var d = $q.defer();
-        var matchingRoutes = findRoutes(routes, origin, destination);
+        let d = $q.defer();
+        let matchingRoutes = findRoutes(routes, origin, destination);
         if (matchingRoutes.length === 0) {
             d.resolve([]);
         } else {
-            var fromDate = from;
-            var toDate = to;
+            let fromDate = from;
+            let toDate = to;
 
             $http.get('/api/v1/routes/all-by-date/', {
                 params: {
@@ -88,7 +90,7 @@ export default function Layout($http, $q, TimeParser) {
                     to_date: TimeParser.createRequestString(toDate)
                 }
             }).then(function(response) {
-                var routesInDate = response.data.map(function(r) {
+                let routesInDate = response.data.map(function(r) {
                     return {
                         id: r.id,
                         stops: r.stop_ids,
@@ -102,16 +104,16 @@ export default function Layout($http, $q, TimeParser) {
         return d.promise;
     };
 
-    var findRoute = function(routeId) {
+    let findRoute = function(routeId) {
         return routesMap[routeId] || null;
     };
 
-    var getRoutesDateRange = function() {
-        var max = new Date(1900, 0, 1);
-        var min = new Date(2100, 0, 1);
+    let getRoutesDateRange = function() {
+        let max = new Date(1900, 0, 1);
+        let min = new Date(2100, 0, 1);
 
-        for (var i in routes) {
-            var route = routes[i];
+        for (let i in routes) {
+            let route = routes[i];
             if (route.count === 0)
               continue;
 
@@ -134,6 +136,8 @@ export default function Layout($http, $q, TimeParser) {
         findRoutesByPeriod: findRoutesByPeriod,
         getRoutesDateRange: getRoutesDateRange
     };
-
-    return loadedPromise.then(function() { return service; });
+    return loadedPromise.then(() => {
+        // console.log("promise resolved...");
+        return service;
+    });
 };

@@ -1,4 +1,6 @@
-export default function SelectStopsController($scope, $rootScope, $location, Layout, Locale, TimeParser) {
+import {TimeParser} from '../lib/dt_lib';
+
+export default function SelectStopsController($scope, $rootScope, $location, Layout, Locale) {
     'ngInject';
     $scope.stops = Layout.getStops();
     $scope.origin = null;
