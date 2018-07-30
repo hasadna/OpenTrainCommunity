@@ -29,14 +29,14 @@ export default class RouteDetailsController {
         $scope.selectedTime = null;
         $scope.times = [];
 
-        $scope.selectRouteUrl = '#/' + routeParams.period + '/select-route/' + $scope.origin + '/' + $scope.destination;
+        $scope.selectRouteUrl = '#!/' + routeParams.period + '/select-route/' + $scope.origin + '/' + $scope.destination;
 
         var previousPeriod = offsetPeriod(period, -1);
         var nextPeriod = offsetPeriod(period, +1);
         var bounds = Layout.getRoutesDateRange();
         var day = 10 * 24 * 60 * 60 * 1000;
-        $scope.previousPeriodUrl = bounds.min.getTime() - day < previousPeriod.from.getTime() ? '#/' + TimeParser.formatPeriod(previousPeriod) + '/routes/' + routeId : null;
-        $scope.nextPeriodUrl = bounds.max > nextPeriod.to ? '#/' + TimeParser.formatPeriod(nextPeriod) + '/routes/' + routeId : null;
+        $scope.previousPeriodUrl = bounds.min.getTime() - day < previousPeriod.from.getTime() ? '#!/' + TimeParser.formatPeriod(previousPeriod) + '/routes/' + routeId : null;
+        $scope.nextPeriodUrl = bounds.max > nextPeriod.to ? '#!/' + TimeParser.formatPeriod(nextPeriod) + '/routes/' + routeId : null;
 
         $http.get('/api/v1/stats/route-info-full', {
             params: {
