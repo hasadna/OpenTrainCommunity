@@ -9,7 +9,7 @@ function TimesDetailsController($scope, $route, Locale, LocationBinder, Layout) 
     let statsMap = {};
     let routeParams = $route.current.params;
     $scope.stopIds = [parseInt(routeParams.origin), parseInt(routeParams.destination)];
-    console.log("In TimesDetailsController()");
+    //console.log("In TimesDetailsController()");
     LocationBinder.bind($scope, 'selectedDay', 'day', function(val) { return val ? Number(val) : null; });
     LocationBinder.bind($scope, 'selectedTime', 'time');
     function formatHour(hour) {
