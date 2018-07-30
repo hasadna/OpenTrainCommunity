@@ -1,6 +1,8 @@
 function TimesDetailsController($scope, $route, Locale, LocationBinder, Layout) {
     'ngInject';
     $scope.layout = null;
+    $scope.selectedDay = null;
+    $scope.selectedTime = null;
     Layout.then(function(Layout) {
         $scope.layout = Layout;
     });
@@ -38,10 +40,8 @@ function TimesDetailsController($scope, $route, Locale, LocationBinder, Layout) 
         }
     };
 
-    $scope.selectedDay = null;
     $scope.days = Locale.days;
 
-    $scope.selectedTime = null;
     $scope.times = [];
 
     $scope.loadStats = function() {
