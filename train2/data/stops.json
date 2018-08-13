@@ -79,6 +79,16 @@
     "stop_name": "Leb Hmifratz"
   },
   {
+    "stop_short_name": "\u05de\u05e8\u05db\u05d6\u05d9\u05ea \u05de\u05e4\u05e8\u05e5-\u05e2\u05de\u05e7",
+    "gtfs_stop_id": 1230,
+    "latlon": [
+        0,
+        0
+    ],
+    "bssids": [],
+    "stop_name": "Merkazit Hmifratz - Emek"
+  },
+  {
     "stop_short_name": "\u05d7\u05d5\u05e6\u05d5\u05ea \u05d4\u05de\u05e4\u05e8\u05e5",
     "gtfs_stop_id": 1300,
     "latlon": [
@@ -193,6 +203,26 @@
       "b4c799a3e170"
     ],
     "stop_name": "Kesariyya - Pardes Hanna"
+  },
+  {
+    "stop_short_name": "\u05e8\u05e2\u05e0\u05e0\u05d4 \u05de\u05e2\u05e8\u05d1",
+    "gtfs_stop_id": 2940,
+    "latlon": [
+        0,
+        0
+    ],
+    "bssids": [],
+    "stop_name": "Ra'anana West"
+  },
+  {
+    "stop_short_name": "\u05e8\u05e2\u05e0\u05e0\u05d4 \u05d3\u05e8\u05d5\u05dd",
+    "gtfs_stop_id": 2960,
+    "latlon": [
+        0,
+        0
+    ],
+    "bssids": [],
+    "stop_name": "Ra'anana South"
   },
   {
     "stop_short_name": "\u05d7\u05d3\u05e8\u05d4 \u05de\u05e2\u05e8\u05d1",

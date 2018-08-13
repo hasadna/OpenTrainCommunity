@@ -4,6 +4,7 @@ HEB_NAMES = {
     700: [u'קריית חיים', u'חיפה קריית חיים'], #  Kiryat Hayyim
     800: [u'קריית מוצקין', u'מוצקין'], #  Kiryat Motzkin
     1220: [u'לב המפרץ', u'חיפה לב המפרץ'], #  Leb Hmifratz
+    1230: [u'מרכזית מפרץ-עמק'], #  Merkazit Hmifratz - Emek (Lev Hmifratz)
     1300: [u'חוצות המפרץ', u'חיפה חוצות המפרץ'], #  Hutsot HaMifrats
     1500: [u'עכו'], #  Akko
     1600: [u'נהריה'], #  Nahariyya
@@ -12,6 +13,8 @@ HEB_NAMES = {
     2300: [u'חיפה חוף הכרמל רזיאל', u'חיפה חוף הכרמל', u'חוף הכרמל', u'רזיאל'], #  Haifa Hof HaKarmel (Razi'el)
     2500: [u'עתלית'], #  Atlit
     2800: [u'בנימינה'], #  Binyamina
+    2940: [u'רעננה מערב'], #  Ra'anana West
+    2960: [u'רעננה דרום'], #  Ra'anana South
     2820: [u'קיסריה - פרדס חנה', u'קיסריה', u'פרדס חנה', u'קיסריה פרדס חנה'], #  Kesariyya - Pardes Hanna
     3100: [u'חדרה מערב'], #  Hadera West
     3300: [u'נתניה'], #  Natanya
