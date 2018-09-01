@@ -10,13 +10,17 @@
     "babel-loader": "^7.1.5",
     "babel-preset-env": "^1.7.0",
     "babel-preset-es2015": "^6.24.1",
+    "bootstrap": "^3.3.6",
     "bower": "^1.6.5",
+    "file-loader": "^2.0.0",
+    "font-awesome": "^4.7.0",
+    "fontawesome": "^4.7.0",
     "ng-annotate-loader": "^0.6.1",
     "webpack": "^4.16.1",
     "webpack-cli": "^3.0.8"
   },
   "scripts": {
-    "compile": "webpack --config webpack.config.js"
+    "build": "webpack"
   },
   "dependencies": {
     "highcharts": "^6.1.1",
