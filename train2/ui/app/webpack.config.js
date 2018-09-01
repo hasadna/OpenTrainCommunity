@@ -24,7 +24,27 @@ module.exports = {
                     }
                     ]
             },
-
+            {
+                test: /\.scss$/,
+                use: [{
+                    loader: "style-loader"
+                }, {
+                    loader: "css-loader"
+                }, {
+                    loader: "sass-loader",
+                    options: {
+                        includePaths: [
+                            path.resolve(__dirname, "./src/scss")
+                        ]
+                    }
+                }]
+            },
+            {
+                test: /\.(woff|woff2|eot|ttf|otf|png|svg|jpg|gif)$/,
+                use: [{
+                    loader: "file-loader"
+                }]
+            }
         ]
     }
 
