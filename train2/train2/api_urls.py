@@ -23,6 +23,8 @@ router.register('highlights', data.api.HighlightsViewSet, base_name='highlights'
 router.register('real-routes/(?P<year>\d{4})/(?P<month>\d{1,2})',
                 data.api.RealRoutesViewSet, base_name='real-routes')
 
+router.register('monthly', data.api.MonthlyViewSet, base_name='monthly')
+
 # router.register('routes/(?P<route_id>\d+)/services',
 #                 data.api.RouteServicesViewSet,
 #                 base_name='route-services')

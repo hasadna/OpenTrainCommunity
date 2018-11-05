@@ -5,9 +5,12 @@ import datetime
 import logging
 import time
 
+
 from django.core.cache import cache
-from django.db.models import Count, Min, Max
+from django.db.models import Count, Min, Max, IntegerField, Value, Case, When, \
+    Sum
 from django.conf import settings
+from django.db.models.functions import ExtractYear, ExtractMonth
 from django.templatetags.static import static
 from django.utils import timezone
 from rest_framework.decorators import list_route
@@ -285,4 +288,27 @@ class RealRoutesViewSet(ViewSet):
                         data=serializer.data)
 
 
+class MonthlyViewSet(GenericViewSet):
 
+    def list(self, request):
+        start_month = int(request.query_params['start_month'])
+        start_year = int(request.query_params['start_year'])
+        end_month = int(request.query_params['end_month'])
+        end_year = int(request.query_params['end_year'])
+
+        start_date = datetime.date(start_year, start_month, 1)
+        _, num_days = calendar.monthrange(end_year, end_month)
+        end_date = datetime.date(end_year,end_month, num_days)
+
+        trips_qs = models.Trip.objects.filter(
+            date__gte=start_date,
+            date__lte=end_date,
+            valid=True)
+        delays_by_month = list(
+            trips_qs.annotate(y=ExtractYear('date'), m=ExtractMonth('date'))
+                .values('y', 'm')
+                .annotate(count=Count('id'))
+                .annotate(is_late=Sum(Case(When(x_max_delay_arrival__gte=300, then=Value(1)),
+                 default=Value(0), output_field=IntegerField()))))
+        delays_by_month.sort(key=lambda x: (x['y'], x['m']))
+        return Response(data=delays_by_month)
