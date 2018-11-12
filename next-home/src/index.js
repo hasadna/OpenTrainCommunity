@@ -19,7 +19,7 @@ async function buildChart() {
 }
 
 async function getData() {
-    let resp = await axios.get('https://otrain.org/api/v1/monthly/', {
+    let resp = await axios.get('http://localhost:8000/api/v1/monthly/', {
         params: {
             start_year: 2018,
             start_month: 1,
@@ -29,16 +29,21 @@ async function getData() {
     });
     let months = resp.data;
     let labels = months.map(m=>`${m.m}/${m.y}`);
-    let data = months.map(m=>Math.floor(100*m.is_late/m.count));
+    let dataMax = months.map(m=>Math.floor(100*m.count_late_max/m.count));
+    let dataLast = months.map(m=>Math.floor(100*m.count_late_last/m.count));
     console.log(labels.length);
-    console.log(data.length);
     return {
         labels: labels,
         datasets: [{
-            label: '% of late trips',
-            data: data,
+            label: '% of late trips (max)',
+            data: dataMax,
             borderWidth: 1,
             backgroundColor: 'red'
+        }, {
+            label: '% of late trips (last)',
+            data: dataLast,
+            borderWidth: 1,
+            backgroundColor: 'orange'
         }]
     }
 }

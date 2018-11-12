@@ -305,10 +305,19 @@ class MonthlyViewSet(GenericViewSet):
             date__lte=end_date,
             valid=True)
         delays_by_month = list(
-            trips_qs.annotate(y=ExtractYear('date'), m=ExtractMonth('date'))
-                .values('y', 'm')
-                .annotate(count=Count('id'))
-                .annotate(is_late=Sum(Case(When(x_max_delay_arrival__gte=300, then=Value(1)),
-                 default=Value(0), output_field=IntegerField()))))
+            trips_qs.annotate(
+                y=ExtractYear('date'), m=ExtractMonth('date')
+            ).values(
+                'y', 'm'
+            ).annotate(
+                count=Count('id')
+            ).annotate(
+                count_late_max=Sum(Case(When(x_max_delay_arrival__gte=300, then=Value(1)),
+                    default=Value(0), output_field=IntegerField()))
+            ).annotate(
+                count_late_last=Sum(Case(When(x_last_delay_arrival__gte=300, then=Value(1)),
+                    default=Value(0), output_field=IntegerField()))
+            )
+        )
         delays_by_month.sort(key=lambda x: (x['y'], x['m']))
         return Response(data=delays_by_month)
