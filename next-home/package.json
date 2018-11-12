@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "serve": "lite-server",
-    "build": "webpack"
+    "build": "webpack",
+    "rtl": "rtlcss node_modules/bootstrap/dist/css/bootstrap.css src/style/bootstrap.rtl.css"
   },
   "author": "",
   "license": "ISC",
@@ -20,7 +21,12 @@
   "devDependencies": {
     "chart.js": "^2.7.3",
     "css-loader": "^1.0.1",
+    "lodash": "^4.17.11",
+    "rtlcss": "^2.4.0",
     "style-loader": "^0.23.1",
+    "vue": "^2.5.17",
+    "vue-loader": "^15.4.2",
+    "vue-template-compiler": "^2.5.17",
     "webpack": "^4.25.1",
     "webpack-cli": "^3.1.2"
   }
