@@ -12,7 +12,7 @@
         <p class="text-center" v-if="loading">
             <i class="fa fa-spin fa-spinner fa-5x"></i>
         </p>
-        <canvas id="main-chart" height="400"></canvas>
+        <canvas id="main-chart"></canvas>
     </div>
 </div>
 </template>
@@ -84,7 +84,8 @@
             },
             getOptions() {
                 return {
-                    maintainAspectRatio: false,
+                    responsive: true,
+                    maintainAspectRatio: true,
                     scales: {
                         xAxes: [{
                             ticks: {

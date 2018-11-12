@@ -1,6 +1,6 @@
 <template lang="html">
     <div class="row">
-        <div class="col-6" :class="{'offset-3': configs.length == 1 }"
+        <div class="col-sm-6 col-12" :class="{'offset-sm-3': configs.length == 1 }"
              v-for="config in configs">
             <trips-chart :config="config"/>
         </div>
