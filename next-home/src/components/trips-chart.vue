@@ -9,6 +9,9 @@
         <month-year :month="config.endMonth" :year="config.endYear"/>
     </div>
     <div class="card-body">
+        <p class="text-center" v-if="loading">
+            <i class="fa fa-spin fa-spinner fa-5x"></i>
+        </p>
         <canvas id="main-chart" height="400"></canvas>
     </div>
 </div>
@@ -21,6 +24,7 @@
             return {
                 tripData: null,
                 monthsData: null,
+                loading: true,
             }
         },
         mounted() {
@@ -42,6 +46,7 @@
                 let ctx = document.getElementById('main-chart');
                 this.tripData = await this.getData();
                 let options = this.getOptions();
+                this.loading = false;
                 let chart = new Chart(ctx, {
                     type: 'horizontalBar',
                     data: this.tripData,

@@ -8,9 +8,16 @@ import Vue from 'vue';
 import TripsCharts from './components/trips-charts.vue';
 import MonthYear from './components/month_year.vue';
 
+function sleep(ms) {
+    return new Promise((resolve, reject) => {
+        window.setTimeout(() => resolve(true), ms);
+    });
+}
+
 $(function() {
     Vue.prototype.$axios = axios;
     Vue.prototype._ = _;
+    Vue.prototype.$sleep = sleep;
 
     Vue.filter('digits2', d => d < 10 ? '0' + d : '' + d);
 
