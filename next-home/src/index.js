@@ -15,7 +15,11 @@ function sleep(ms) {
 }
 
 $(function() {
-    Vue.prototype.$axios = axios;
+    const axiosInstance = axios.create({
+      baseURL: 'http://otrain.org',
+    });
+
+    Vue.prototype.$axios = axiosInstance;
     Vue.prototype._ = _;
     Vue.prototype.$sleep = sleep;
 

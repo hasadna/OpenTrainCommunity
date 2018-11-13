@@ -54,7 +54,7 @@
                 });
             },
             async getData() {
-                let resp = await this.$axios.get('http://otrain.org/api/v1/monthly/', {
+                let resp = await this.$axios.get('/api/v1/monthly/', {
                     params: {
                         start_year: this.config.startYear,
                         start_month: this.config.startMonth,
