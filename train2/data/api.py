@@ -289,7 +289,6 @@ class RealRoutesViewSet(ViewSet):
 
 
 class MonthlyViewSet(GenericViewSet):
-
     def list(self, request):
         start_month = int(request.query_params['start_month'])
         start_year = int(request.query_params['start_year'])
@@ -321,3 +320,16 @@ class MonthlyViewSet(GenericViewSet):
         )
         delays_by_month.sort(key=lambda x: (x['y'], x['m']))
         return Response(data=delays_by_month)
+
+    @list_route(url_path='last-year-month')
+    def get_last_year_month(self, request):
+        last_trip = models.Trip.objects.order_by('-date').first()
+        last_month = last_trip.date.month
+        last_year = last_trip.date.year
+        return Response(data={
+            last_month: last_month,
+            last_year: last_year
+        })
+
+
+
