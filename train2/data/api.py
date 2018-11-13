@@ -327,8 +327,8 @@ class MonthlyViewSet(GenericViewSet):
         last_month = last_trip.date.month
         last_year = last_trip.date.year
         return Response(data={
-            last_month: last_month,
-            last_year: last_year
+            'last_month': last_month,
+            'last_year': last_year
         })
 
 
