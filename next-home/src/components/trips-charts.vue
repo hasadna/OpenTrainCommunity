@@ -41,23 +41,15 @@
         },
         methods: {
             async buildInitialConfig() {
-                let resp = await this.$axios.get("/api/v1/monthly/last-year-month");
-                let data = resp.data;
-                let [sy, sm] = this.computeStart(data.last_year, data.last_month, 5);
+                let resp = await this.$axios.get("/api/v1/monthly/year-months/");
+                let [ly, lm] = resp.data.last;
                 this.configs.push({
-                    endMonth: data.last_month,
-                    endYear: data.last_year,
-                    startMonth: sm,
-                    startYear: sy,
+                    end: [ly, lm],
+                    months: 5,
+                    globalBegin: resp.data.first,
+                    globalEnd: resp.data.last
                 })
             },
-            computeStart(sy, sm, months) {
-                let m1 = sy * 12 + sm - 1;
-                let m2 = m1 - (months-1);
-                let lm = 1 + m2 % 12;
-                let ly = (m2 - m2 % 12)/ 12;
-                return [ly, lm]
-            }
         }
     }
 </script>

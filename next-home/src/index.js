@@ -7,6 +7,7 @@ import _ from 'lodash';
 import Vue from 'vue';
 import TripsCharts from './components/trips-charts.vue';
 import MonthYear from './components/month_year.vue';
+import dtUtils from './lib/dt_utils';
 
 function sleep(ms) {
     return new Promise((resolve, reject) => {
@@ -16,15 +17,16 @@ function sleep(ms) {
 
 $(function() {
     const axiosInstance = axios.create({
-      baseURL: 'http://otrain.org',
+        baseURL: 'http://otrain.org',
     });
 
     Vue.prototype.$axios = axiosInstance;
     Vue.prototype._ = _;
     Vue.prototype.$sleep = sleep;
+    Vue.prototype.$dtUtils = dtUtils;
 
     Vue.filter('digits2', d => d < 10 ? '0' + d : '' + d);
-
+    Vue.filter('monthName', i => dtUtils.monthNames[i] || '???');
     Vue.component('month-year', MonthYear);
 
     let app = new Vue({

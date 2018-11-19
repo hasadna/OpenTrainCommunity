@@ -321,14 +321,14 @@ class MonthlyViewSet(GenericViewSet):
         delays_by_month.sort(key=lambda x: (x['y'], x['m']))
         return Response(data=delays_by_month)
 
-    @list_route(url_path='last-year-month')
+    @list_route(url_path='year-months')
     def get_last_year_month(self, request):
         last_trip = models.Trip.objects.order_by('-date').first()
         last_month = last_trip.date.month
         last_year = last_trip.date.year
         return Response(data={
-            'last_month': last_month,
-            'last_year': last_year
+            'last': [last_year, last_month],
+            'first': [2017, 1]
         })
 
 

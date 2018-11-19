@@ -2,5 +2,10 @@ body {
     padding-top: 50px;
 }
 
+.main-chart {
+    min-height: 400px;
+}
+
+
 
 
