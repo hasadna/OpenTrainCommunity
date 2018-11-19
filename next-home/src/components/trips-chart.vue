@@ -7,9 +7,14 @@
             <month-year :month="begin[1]" :year="begin[0]"/>
             עד
             <month-year :month="config.end[1]" :year="config.end[0]"/>
-            <button v-show="!loading" class="btn btn-outline-primary float-right" @click="editMode = !editMode">
-                <i class="fa fa-pencil"></i>
-            </button>
+            <div class="float-right">
+                <button v-show="!loading" class="btn btn-outline-primary" @click="editMode = !editMode">
+                    <i class="fa fa-pencil"></i>
+                </button>
+                <button v-show="!loading" class="btn btn-outline-danger" @click="$emit('remove', config)">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </div>
         </div>
         <div class="card-body">
             <div v-show="loading">
@@ -94,7 +99,6 @@
             },
             async buildChart() {
                 let ctx = this.$el.querySelector('.main-chart');
-                console.log(ctx);
                 if (this.chart) {
                     this.chart.destroy();
                 }
