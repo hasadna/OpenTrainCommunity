@@ -9,7 +9,8 @@
             <month-year :month="config.end[1]" :year="config.end[0]"/>
             <div class="float-right">
                 <button v-show="!loading" class="btn btn-outline-primary" @click="editMode = !editMode">
-                    <i class="fa fa-pencil"></i>
+                    <i :class="{'fal fa-pencil': !editMode, 'fal fa-chart-bar': editMode}">
+                    </i>
                 </button>
                 <button v-show="!loading" class="btn btn-outline-danger" @click="$emit('remove', config)">
                     <i class="fa fa-trash"></i>
@@ -143,7 +144,7 @@
             getOptions() {
                 return {
                     responsive: true,
-                    maintainAspectRatio: true,
+                    maintainAspectRatio: false,
                     scales: {
                         xAxes: [{
                             ticks: {
