@@ -78,6 +78,7 @@
                 return null;
             },
             begin() {
+                console.log(this.config.end);
                 return this.$dtUtils.computeStart(this.config.end, this.config.months);
             }
         },
@@ -95,6 +96,7 @@
                 this.config.end = [...this.newSearch.ym];
                 this.config.months = this.newSearch.months;
                 this.editMode = false;
+                this.$emit("editDone");
                 this.refresh();
                 e.preventDefault();
             },

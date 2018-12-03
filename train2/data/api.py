@@ -284,8 +284,9 @@ class RealRoutesViewSet(ViewSet):
         to_date = datetime.date(y, m, num_days)
         routes = logic.find_real_routes(from_date, to_date)
         serializer = serializers.RealRouteSerializer(routes, many=True)
-        return Response(status=200,
-                        data=serializer.data)
+        return Response(
+            status=200,
+            data=serializer.data)
 
 
 class MonthlyViewSet(GenericViewSet):
@@ -295,6 +296,13 @@ class MonthlyViewSet(GenericViewSet):
         end_month = int(request.query_params['end_month'])
         end_year = int(request.query_params['end_year'])
 
+        week_days_str = request.query_params.get('week_days')
+        if week_days_str:
+            week_days = [int(d) for d in week_days_str.split(",")]
+            assert 0 <= min(week_days) <= max(week_days) <= 6
+        else:
+            week_days = None
+
         start_date = datetime.date(start_year, start_month, 1)
         _, num_days = calendar.monthrange(end_year, end_month)
         end_date = datetime.date(end_year,end_month, num_days)
@@ -303,6 +311,9 @@ class MonthlyViewSet(GenericViewSet):
             date__gte=start_date,
             date__lte=end_date,
             valid=True)
+        if week_days:
+            trips_qs = trips_qs.filter(x_week_day_local__in=week_days)
+
         delays_by_month = list(
             trips_qs.annotate(
                 y=ExtractYear('date'), m=ExtractMonth('date')

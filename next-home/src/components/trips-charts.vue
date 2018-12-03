@@ -20,7 +20,7 @@
         <div class="row">
             <div class="col-sm-6 col-12" :class="{'offset-sm-3': configs.length == 1 }"
                  v-for="config in configs">
-                <trips-chart :config="config" @remove="remove(config)"/>
+                <trips-chart :config="config" @remove="remove(config)" @editDone="refreshUrl()"/>
             </div>
         </div>
         <div class="row mt-5">
@@ -47,23 +47,44 @@
                 globalEnd: null,
             }
         },
-        created() {
-            this.buildInitialConfig();
+        async created() {
+            await this.getGlobalData();
+            let configs = this.getConfigsFromUrl();
+            if (!configs) {
+                configs = [{
+                        e: [...this.globalEnd],
+                        m: 5,
+                    }]
+            }
+            this.configs = configs.map(c=>this.fromDump(c));
+            this.refreshUrl();
         },
         methods: {
-            remove(config) {
-                this.configs = this.configs.filter(c=>c!=config);
-            },
-            async buildInitialConfig() {
+            async getGlobalData() {
                 let resp = await this.$axios.get("/api/v1/monthly/year-months/");
                 this.globalBegin = resp.data.first;
                 this.globalEnd = resp.data.last;
-                this.configs.push({
-                    end: [...this.globalEnd],
-                    months: 5,
-                    globalBegin: this.globalBegin,
-                    globalEnd: this.globalEnd,
-                })
+            },
+            getConfigsFromUrl() {
+                let search = window.location.search;
+                if (!search) {
+                    return null;
+                }
+                let pat = /^[\?]?charts=(.*)$/;
+                let result = search.match(pat);
+                if (!result) {
+                    return null;
+                }
+                try {
+                    return JSON.parse(decodeURIComponent(result[1]));
+                } catch (err) {
+                    console.error(err);
+                    return null;
+                }
+            },
+            remove(config) {
+                this.configs = this.configs.filter(c=>c!=config);
+                this.refreshUrl();
             },
             addNew() {
                 this.configs.push({
@@ -71,7 +92,27 @@
                     globalEnd: this.globalEnd,
                     end: [...this.globalEnd],
                     months: 5,
-                })
+                });
+                this.refreshUrl();
+            },
+            refreshUrl() {
+                let dumps = this.configs.map(c=>this.dumpConfig(c));
+                let params = JSON.stringify(dumps);
+                window.history.pushState(null, null, `?charts=${params}`);
+            },
+            dumpConfig(config) {
+                return {
+                    e: config.end,
+                    m: config.months,
+                }
+            },
+            fromDump(c) {
+                return {
+                    end: c.e,
+                    months: c.m,
+                    globalEnd: this.globalEnd,
+                    globalBegin: this.globalBegin
+                }
             }
         }
     }

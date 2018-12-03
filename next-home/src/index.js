@@ -27,6 +27,9 @@ $(function() {
 
     Vue.filter('digits2', d => d < 10 ? '0' + d : '' + d);
     Vue.filter('monthName', i => dtUtils.monthNames[i] || '???');
+    Vue.config.errorHandler = function(err, vm, info) {
+        console.error(err);
+    }
     Vue.component('month-year', MonthYear);
 
     let app = new Vue({
