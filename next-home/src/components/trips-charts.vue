@@ -50,6 +50,7 @@
             }
         },
         async created() {
+            window.tc = this;
             await this.getGlobalData();
             let configs = this.getConfigsFromUrl();
             if (!configs) {
@@ -63,9 +64,23 @@
         },
         methods: {
             async getGlobalData() {
-                let resp = await this.$axios.get("/api/v1/monthly/year-months/");
-                this.global.begin = resp.data.first;
-                this.global.end = resp.data.last;
+                let buildDates = async () => {
+                    let resp = await this.$axios.get("/api/v1/monthly/year-months/");
+                    this.global.begin = resp.data.first;
+                    this.global.end = resp.data.last;
+                };
+                let buildStops = async () => {
+                    let resp = await this.$axios.get("/api/v1/stops/");
+                    this.global.stops = this._.sortBy(resp.data, s=>s.name);
+                };
+                await buildDates();
+                await buildStops();
+            },
+            stopFromId(stopId) {
+                if (!stopId) {
+                    return null;
+                }
+                return this.global.stops.find(s=>s.id==stopId);
             },
             getConfigsFromUrl() {
                 let search = window.location.search;
@@ -92,6 +107,8 @@
                 this.configs.push({
                     end: [...this.global.end],
                     months: 5,
+                    stop1: null,
+                    stop2: null,
                 });
                 this.refreshUrl();
             },
@@ -101,15 +118,24 @@
                 window.history.pushState(null, null, `?charts=${params}`);
             },
             dumpConfig(config) {
-                return {
+                let result = {
                     e: config.end,
                     m: config.months,
                 }
+                if (config.stop1) {
+                    result.s1 = config.stop1.id;
+                }
+                if (config.stop2) {
+                    result.s2 = config.stop2.id;
+                }
+                return result;
             },
             fromDump(c) {
                 return {
                     end: c.e,
                     months: c.m,
+                    stop1: this.stopFromId(c.s1),
+                    stop2: this.stopFromId(c.s2),
                 }
             }
         }

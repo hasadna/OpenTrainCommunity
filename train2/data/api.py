@@ -295,8 +295,16 @@ class MonthlyViewSet(GenericViewSet):
         start_year = int(request.query_params['start_year'])
         end_month = int(request.query_params['end_month'])
         end_year = int(request.query_params['end_year'])
-
+        stop1_id = int(request.query_params.get('stop1', 0))
+        stop2_id = int(request.query_params.get('stop2', 0))
         week_days_str = request.query_params.get('week_days')
+        stop1 = None
+        stop2 = None
+        if stop1_id:
+            stop1 = models.Stop.objects.get(pk=stop1_id)
+        if stop2_id:
+            stop2 = models.Stop.objects.get(pk=stop2_id)
+
         if week_days_str:
             week_days = [int(d) for d in week_days_str.split(",")]
             assert 0 <= min(week_days) <= max(week_days) <= 6
@@ -313,6 +321,15 @@ class MonthlyViewSet(GenericViewSet):
             valid=True)
         if week_days:
             trips_qs = trips_qs.filter(x_week_day_local__in=week_days)
+
+        if stop1 or stop2:
+            if stop1 and stop2:
+                stops = [stop1, stop2]
+            else:
+                stops = [stop1]
+                assert not stop2
+            routes = logic.get_routes_with_stops(stops)
+            trips_qs = trips_qs.filter(route__in=routes)
 
         delays_by_month = list(
             trips_qs.annotate(

@@ -160,6 +160,10 @@ class Route(models.Model):
             return False
         return utils.is_list_in_list(route.stop_ids, self.stop_ids)
 
+    def contains_stops(self, gtfs_stop_ids):
+        from . import utils
+        return utils.is_list_in_list(gtfs_stop_ids, self.stop_ids)
+
     def __str__(self):
         return '{} => {}'.format(self.get_first_stop(), self.get_last_stop())
 

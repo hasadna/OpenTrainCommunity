@@ -7,6 +7,18 @@
             <month-year :month="begin[1]" :year="begin[0]"/>
             עד
             <month-year :month="config.end[1]" :year="config.end[0]"/>
+            <span v-if="config.stop1 && config.stop2">
+                &bull;
+                דרך
+                {{ config.stop1.name }}
+                ו
+                {{ config.stop2.name }}
+            </span>
+            <span v-else-if="config.stop1">
+                &bull;
+                דרך
+                {{ config.stop1.name }}
+            </span>
             <div class="float-right">
                 <button v-show="!loading" class="btn btn-outline-primary" @click="editMode = !editMode">
                     <i :class="{'fal fa-pencil': !editMode, 'fal fa-chart-bar': editMode}">
@@ -40,6 +52,20 @@
                         <label>מספר חודשים</label>
                         <input class="form-control" type="number" min="1" max="36" v-model="newSearch.months">
                     </div>
+                    <div class="form-group">
+                        <label>עובר דרך תחנה</label>
+                        <select class="form-control" v-model="newSearch.stop1" >
+                            <option value="">------------</option>
+                            <option v-for="stop in global.stops" :value="stop" >{{ stop.name }}</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>ואז דרך תחנה</label>
+                        <select class="form-control" v-model="newSearch.stop2" >
+                            <option value="">------------</option>
+                            <option v-for="stop in global.stops" :value="stop" >{{ stop.name }}</option>
+                        </select>
+                    </div>
                      <button type="submit" class="btn btn-primary">
                          חשב מחדש
                      </button>
@@ -59,8 +85,10 @@
                 loading: false,
                 editMode: false,
                 newSearch: {
-                    ym: null,
+                    end: null,
                     months: 0,
+                    stop1: null,
+                    stop2: null,
                 },
                 chart: null,
                 yms:[]
@@ -88,13 +116,23 @@
         methods: {
             refresh() {
                 this.buildChart();
-                this.newSearch.ym = this.yms.find(ym => ym[0] == this.config.end[0] && ym[1] == this.config.end[1]);
+                this.newSearch.end = this.yms.find(ym => ym[0] == this.config.end[0] && ym[1] == this.config.end[1]);
                this.newSearch.months = this.config.months;
+               this.newSearch.stop1 = this.config.stop1;
+               this.newSearch.stop2 = this.config.stop2;
             },
             async startNewSearch(e) {
                 this.loading = true;
-                this.config.end = [...this.newSearch.ym];
+                this.config.end = [...this.newSearch.end];
                 this.config.months = this.newSearch.months;
+                this.config.stop1 = this.newSearch.stop1;
+                this.config.stop2 = this.newSearch.stop2;
+                // make sure that if there is only 1 it
+                // will be stop1
+                if (this.config.stop2 && !this.config.stop1) {
+                    this.config.stop1 = this.config.stop2;
+                    this.config.stop2 = null;
+                }
                 this.editMode = false;
                 this.$emit("editDone");
                 this.refresh();
@@ -115,13 +153,20 @@
                 this.loading = false;
             },
             async getData() {
+                let params = {
+                    start_year: this.begin[0],
+                    start_month: this.begin[1],
+                    end_year: this.config.end[0],
+                    end_month: this.config.end[1],
+                }
+                if (this.config.stop1) {
+                    params.stop1 = this.config.stop1.id;
+                }
+                if (this.config.stop2) {
+                    params.stop2 = this.config.stop2.id;
+                }
                 let resp = await this.$axios.get('/api/v1/monthly/', {
-                    params: {
-                        start_year: this.begin[0],
-                        start_month: this.begin[1],
-                        end_year: this.config.end[0],
-                        end_month: this.config.end[1]
-                    }
+                    params: params
                 });
                 this.monthsData = resp.data;
                 let months = resp.data;

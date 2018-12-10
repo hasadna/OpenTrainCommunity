@@ -41,6 +41,10 @@ class StopSerializer(serializers.ModelSerializer):
     heb_stop_names = serializers.ReadOnlyField(source='hebrews')
     latlon = serializers.ReadOnlyField()
     google_url = serializers.SerializerMethodField()
+    name = serializers.SerializerMethodField()
+
+    def get_name(self, obj):
+        return obj.stop_short_name
 
     def get_google_url(self, obj):
         return 'https://www.google.co.il/maps/@{lat},{lon},17z?hl=iw'.format(lat=obj.lat,
@@ -55,6 +59,7 @@ class StopSerializer(serializers.ModelSerializer):
             'latlon',
             'stop_name',
             'stop_short_name',
+            'name',
             'google_url',
         )
 

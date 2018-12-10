@@ -49,7 +49,7 @@ const dtUtils = {
     monthNames,
     getRange,
     computeStart
-}
+};
 
 export default dtUtils;
 

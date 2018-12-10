@@ -76,6 +76,11 @@ def get_route_info_full(route_id, from_date, to_date):
     return stats
 
 
+def get_routes_with_stops(stops):
+    gtfs_stop_ids = [s.gtfs_stop_id for s in stops]
+    return [r for r in Route.objects.all() if r.contains_stops(gtfs_stop_ids)]
+
+
 def get_from_to_info_full(*, origin_id,
                           destination_id,
                           from_date,

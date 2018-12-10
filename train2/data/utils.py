@@ -80,10 +80,10 @@ def is_list_in_list(lst1, lst2):
     index2 = 0
     while True:
         if lst1[index1] == lst2[index2]:
-            index1+=1
-            index2+=1
+            index1 += 1
+            index2 += 1
         else:
-            index2+=1
+            index2 += 1
         if index1 == len(lst1):
             return True
         if index2 == len(lst2):
