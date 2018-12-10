@@ -38,7 +38,7 @@
                     </div>
                     <div class="form-group">
                         <label>מספר חודשים</label>
-                        <input class="form-control" type="number" min="1" max="12" v-model="newSearch.months">
+                        <input class="form-control" type="number" min="1" max="36" v-model="newSearch.months">
                     </div>
                      <button type="submit" class="btn btn-primary">
                          חשב מחדש
@@ -67,7 +67,7 @@
             }
         },
         mounted() {
-            this.yms = this.$dtUtils.getRange(this.config.globalBegin, this.config.globalEnd);
+            this.yms = this.$dtUtils.getRange(this.global.begin, this.global.end);
             this.refresh();
         },
         computed: {
@@ -78,12 +78,12 @@
                 return null;
             },
             begin() {
-                console.log(this.config.end);
                 return this.$dtUtils.computeStart(this.config.end, this.config.months);
             }
         },
         props: {
-            config: Object
+            config: Object,
+            global: Object,
         },
         methods: {
             refresh() {

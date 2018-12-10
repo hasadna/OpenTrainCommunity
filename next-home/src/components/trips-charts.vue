@@ -20,7 +20,7 @@
         <div class="row">
             <div class="col-sm-6 col-12" :class="{'offset-sm-3': configs.length == 1 }"
                  v-for="config in configs">
-                <trips-chart :config="config" @remove="remove(config)" @editDone="refreshUrl()"/>
+                <trips-chart :global="global" :config="config" @remove="remove(config)" @editDone="refreshUrl()"/>
             </div>
         </div>
         <div class="row mt-5">
@@ -43,8 +43,10 @@
         data() {
             return {
                 configs: [],
-                globalBegin: null,
-                globalEnd: null,
+                global: {
+                    begin: null,
+                    end: null
+                }
             }
         },
         async created() {
@@ -52,7 +54,7 @@
             let configs = this.getConfigsFromUrl();
             if (!configs) {
                 configs = [{
-                        e: [...this.globalEnd],
+                        e: [...this.global.end],
                         m: 5,
                     }]
             }
@@ -62,8 +64,8 @@
         methods: {
             async getGlobalData() {
                 let resp = await this.$axios.get("/api/v1/monthly/year-months/");
-                this.globalBegin = resp.data.first;
-                this.globalEnd = resp.data.last;
+                this.global.begin = resp.data.first;
+                this.global.end = resp.data.last;
             },
             getConfigsFromUrl() {
                 let search = window.location.search;
@@ -88,9 +90,7 @@
             },
             addNew() {
                 this.configs.push({
-                    globalBegin: this.globalBegin,
-                    globalEnd: this.globalEnd,
-                    end: [...this.globalEnd],
+                    end: [...this.global.end],
                     months: 5,
                 });
                 this.refreshUrl();
@@ -110,8 +110,6 @@
                 return {
                     end: c.e,
                     months: c.m,
-                    globalEnd: this.globalEnd,
-                    globalBegin: this.globalBegin
                 }
             }
         }
