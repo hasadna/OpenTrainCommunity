@@ -6,6 +6,6 @@ You can share the results with others.
 
 Pretty cool tool! Check it out:
 
-http://hasadna.redashapp.com
+https://app.redash.io/hasadna/
 
 Note that it requires signing in so it can save your queries and for the sharing features.
