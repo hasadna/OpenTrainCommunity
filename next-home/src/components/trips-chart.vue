@@ -204,9 +204,22 @@
                         xAxes: [{
                             ticks: {
                                 beginAtZero: true,
+                                callback: function(value, index, values) {
+                                        return value + '%';
+                                },
+                            },
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'אחוז רכבות מאחרות'
+                            }
+                        }],
+                        yAxes: [{
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'חודש',
                             }
                         }]
-                    }
+                    },
                 }
             }
 
