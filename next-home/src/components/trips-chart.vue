@@ -40,31 +40,39 @@
             </div>
             <div v-show="editMode && !loading">
                 <form @submit="startNewSearch">
-                    <div class="form-group">
-                        <label>עד לחודש</label>
-                        <select v-model="newSearch.ym" class="form-control">
-                            <option v-for="ym in yms" :value="ym">
-                                {{ ym[1] | monthName }} {{ ym[0] }}
-                            </option>
-                        </select>
+                    <div class="form-group row">
+                        <label class="col-2">עד לחודש</label>
+                        <div class="col-10">
+                            <select v-model="newSearch.ym" class="form-control">
+                                <option v-for="ym in yms" :value="ym">
+                                    {{ ym[1] | monthName }} {{ ym[0] }}
+                                </option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>מספר חודשים</label>
-                        <input class="form-control" type="number" min="1" max="36" v-model="newSearch.months">
+                    <div class="form-group row">
+                        <label class="col-2">מספר חודשים</label>
+                        <div class="col-10">
+                            <input class="form-control" type="number" min="1" max="36" v-model="newSearch.months">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>עובר דרך תחנה</label>
-                        <select class="form-control" v-model="newSearch.stop1" >
-                            <option value="">------------</option>
-                            <option v-for="stop in global.stops" :value="stop" >{{ stop.name }}</option>
-                        </select>
+                    <div class="form-group row">
+                        <label class="col-2">עובר דרך תחנה</label>
+                        <div class="col-10">
+                            <select class="form-control" v-model="newSearch.stop1" >
+                                <option value="">------------</option>
+                                <option v-for="stop in global.stops" :value="stop" >{{ stop.name }}</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>ואז דרך תחנה</label>
-                        <select class="form-control" v-model="newSearch.stop2" >
-                            <option value="">------------</option>
-                            <option v-for="stop in global.stops" :value="stop" >{{ stop.name }}</option>
-                        </select>
+                    <div class="form-group row">
+                        <label class="col-2">ואז דרך תחנה</label>
+                        <div class="col-10">
+                            <select class="form-control" v-model="newSearch.stop2" >
+                                <option value="">------------</option>
+                                <option v-for="stop in global.stops" :value="stop" >{{ stop.name }}</option>
+                            </select>
+                        </div>
                     </div>
                      <button type="submit" class="btn btn-primary">
                          חשב מחדש
