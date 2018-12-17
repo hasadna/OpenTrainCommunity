@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "serve": "lite-server",
-    "build": "webpack",
+    "build": "webpack --watch",
+    "prod": "webpack --mode production",
     "rtl": "rtlcss node_modules/bootstrap/dist/css/bootstrap.css src/style/bootstrap.rtl.css"
   },
   "author": "",
