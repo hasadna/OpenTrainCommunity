@@ -43,7 +43,7 @@
                     <div class="form-group row">
                         <label class="col-2">עד לחודש</label>
                         <div class="col-10">
-                            <select v-model="newSearch.ym" class="form-control">
+                            <select v-model="newSearch.end" class="form-control">
                                 <option v-for="ym in yms" :value="ym">
                                     {{ ym[1] | monthName }} {{ ym[0] }}
                                 </option>
@@ -85,6 +85,7 @@
 
 <script>
     import Chart from 'chart.js';
+    import dtUtils from '../lib/dt_utils';
     export default {
         data() {
             return {
@@ -151,22 +152,23 @@
                 if (this.chart) {
                     this.chart.destroy();
                 }
-                this.tripData = await this.getData();
-                let options = this.getOptions();
+                let respData = await this.getRespDataFromServer();
+                let data = this.getData(respData);
+                let options = this.getOptions(respData);
                 this.chart = new Chart(ctx, {
                     type: 'horizontalBar',
-                    data: this.tripData,
+                    data: data,
                     options: options,
                 });
                 this.loading = false;
             },
-            async getData() {
+            async getRespDataFromServer() {
                 let params = {
                     start_year: this.begin[0],
                     start_month: this.begin[1],
                     end_year: this.config.end[0],
                     end_month: this.config.end[1],
-                }
+                };
                 if (this.config.stop1) {
                     params.stop1 = this.config.stop1.id;
                 }
@@ -176,8 +178,11 @@
                 let resp = await this.$axios.get('/api/v1/monthly/', {
                     params: params
                 });
-                this.monthsData = resp.data;
-                let months = resp.data;
+                return resp.data;
+            },
+            getData(respData) {
+                this.monthsData = respData;
+                let months = this.monthsData;
                 let labels = months.map(m => `${m.m}/${m.y}`);
                 let dataMax = months.map(m => Math.floor(100 * m.count_late_max / m.count));
                 let dataLast = months.map(m => Math.floor(100 * m.count_late_last / m.count));
@@ -196,10 +201,28 @@
                     }]
                 }
             },
-            getOptions() {
+            getOptions(respData) {
+                let months = respData;
+                let fullLabels = months.map(m => `${dtUtils.monthNames[m.m]} ${m.y}`);
                 return {
                     responsive: true,
                     maintainAspectRatio: false,
+                    tooltips: {
+                        callbacks: {
+                            title: function(item, data) {
+                                // Pick first xLabel for now
+                                let title = fullLabels[item[0].index];
+                                let count = months[item[0].index].count;
+                                let t = 'נסיעות';
+                                return `${title} - ${count} ${t}`;
+                            },
+
+                            label: function(item, data) {
+                                let datasetLabel = data.datasets[item.datasetIndex].label || '';
+                                return datasetLabel + ': ' + item.xLabel + '%';
+                            }
+                        }
+                    },
                     scales: {
                         xAxes: [{
                             ticks: {
