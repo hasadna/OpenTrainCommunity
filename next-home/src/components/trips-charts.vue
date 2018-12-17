@@ -1,3 +1,4 @@
+<script src="../colors.js"></script>
 <template lang="html">
     <div>
         <div class="row">
@@ -6,14 +7,32 @@
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <p>
-                        התרשימים מציגים את אחוז הרכבות המאחרות בחתך של חודשים. רכבת נחשבת מאחרת אם היא איחרה ב 5 דקות או
-                        יותר.
-                    </p>
-                    <p>
-                        ישנם שני מדדים לאיחור - הראשון הוא לפי האיחור המקסימלי לאורך המסלול, והשני הוא לפי האיחור בתחנה
-                        האחרונה (תחנת היעד)
-                    </p>
+                    <div>
+                        <h2 style="display: inline-block">
+                        <span style="color: orange">
+                            <i class="fas fa-rectangle-wide"></i>
+                        </span>
+                            מדד איחור רכבת ישראל
+                        </h2>
+                        מתייחס לרכבת כמאחרת אם היא איחרה
+                        <b>
+                        לתחנת היעד שלה
+                        </b>
+                        ב 5 דקות או יותר
+                    </div>
+                    <div>
+                        <h2 style="display: inline-block">
+                        <span style="color: red">
+                            <i class="fas fa-rectangle-wide"></i>
+                        </span>
+                            מדד איחור אלטרנטיבי</h2>
+                        מתייחס לרכבת כמאחרת אם היא איחרה
+                        <b>
+                        לתחנה כלשהי
+                            </b>
+                        לאורך המסלול ב 5 דקות או יותר
+
+                    </div>
                 </div>
             </div>
         </div>
@@ -55,11 +74,11 @@
             let configs = this.getConfigsFromUrl();
             if (!configs) {
                 configs = [{
-                        e: [...this.global.end],
-                        m: 5,
-                    }]
+                    e: [...this.global.end],
+                    m: 5,
+                }]
             }
-            this.configs = configs.map(c=>this.fromDump(c));
+            this.configs = configs.map(c => this.fromDump(c));
             this.refreshUrl();
         },
         methods: {
@@ -71,7 +90,7 @@
                 };
                 let buildStops = async () => {
                     let resp = await this.$axios.get("/api/v1/stops/");
-                    this.global.stops = this._.sortBy(resp.data, s=>s.name);
+                    this.global.stops = this._.sortBy(resp.data, s => s.name);
                 };
                 await buildDates();
                 await buildStops();
@@ -80,7 +99,7 @@
                 if (!stopId) {
                     return null;
                 }
-                return this.global.stops.find(s=>s.id==stopId);
+                return this.global.stops.find(s => s.id == stopId);
             },
             getConfigsFromUrl() {
                 let search = window.location.search;
@@ -100,7 +119,7 @@
                 }
             },
             remove(config) {
-                this.configs = this.configs.filter(c=>c!=config);
+                this.configs = this.configs.filter(c => c != config);
                 this.refreshUrl();
             },
             addNew() {
@@ -113,7 +132,7 @@
                 this.refreshUrl();
             },
             refreshUrl() {
-                let dumps = this.configs.map(c=>this.dumpConfig(c));
+                let dumps = this.configs.map(c => this.dumpConfig(c));
                 let params = JSON.stringify(dumps);
                 window.history.pushState(null, null, `?charts=${params}`);
             },

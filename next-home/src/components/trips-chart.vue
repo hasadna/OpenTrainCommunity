@@ -176,12 +176,12 @@
                 return {
                     labels: labels,
                     datasets: [{
-                        label: 'אחוז נסיעות מאחרות לפי איחור מקסימלי',
+                        label: 'מדד איחור אלטרנטיבי',
                         data: dataMax,
                         borderWidth: 1,
                         backgroundColor: 'red'
                     }, {
-                        label: 'אחוז נסיעות מאחרות לפי איחור ביעד',
+                        label: 'מדד איחור רכבת ישראל',
                         data: dataLast,
                         borderWidth: 1,
                         backgroundColor: 'orange'
