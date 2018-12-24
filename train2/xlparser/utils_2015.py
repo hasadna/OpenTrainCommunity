@@ -36,6 +36,7 @@ STOP_KIND = {
 STOP_IS_COMMERCIAL = {
     'מסחרית': True,
     'לא מסחרית': False,
+    '': False,  # default
 }
 
 
@@ -81,7 +82,7 @@ def read_sheet(wb, sheet_idx, *, heb_header, base_xlname, global_data):
         try:
             if d['אופי התחנה']:  # might be empty string
                 stop_kind = STOP_KIND[d['אופי התחנה']]
-                is_commercial_stop = STOP_IS_COMMERCIAL[d['האם תחנה מסחרית']] and stop_kind.is_commercial
+                is_commercial_stop = STOP_IS_COMMERCIAL[d.get('האם תחנה מסחרית', '')] and stop_kind.is_commercial
                 is_stopped = is1(d['האם תחנת עצירה בפועל'])
 
                 is_planned_stop = is1(d['האם תחנת עצירה מתוכננת'])
@@ -100,23 +101,22 @@ def read_sheet(wb, sheet_idx, *, heb_header, base_xlname, global_data):
 
         if is_commercial_stop and is_stopped:
             try:
-                data.importer.create_sample(trip=global_data.cur_trip,
-                                            is_source=stop_kind.is_source,
-                                            is_dest=stop_kind.is_dest,
-                                            gtfs_stop_id=int(d['מספר תחנה']),
-                                            gtfs_stop_name=d['תאור תחנה'],
-                                            exp_arrival=fix_dt(d['תאריך וזמן הגעת רכבת לתחנה מתוכנן']),
-                                            actual_arrival=fix_dt(d['תאריך וזמן הגעת רכבת לתחנה בפועל']),
-                                            exp_departure=fix_dt(d[
-                                                              'תאריך וזמן יציאת רכבת מהתחנה מתוכנן']) if not stop_kind.is_dest else None,
-                                            actual_departure=fix_dt(d[
-                                                                 'תאריך וזמן יציאת רכבת מהתחנה בפועל']) if not stop_kind.is_dest else None,
-                                            filename=base_xlname,
-                                            line_number=rowx,
-                                            sheet_idx=sheet_idx,
-                                            valid=valid,
-                                            invalid_reason=invalid_reason,
-                                            index=int(d['מספר סידורי של התחנה']))
+                data.importer.create_sample(
+                    trip=global_data.cur_trip,
+                    is_source=stop_kind.is_source,
+                    is_dest=stop_kind.is_dest,
+                    gtfs_stop_id=int(d['מספר תחנה']),
+                    gtfs_stop_name=d['תאור תחנה'],
+                    exp_arrival=fix_dt(d['תאריך וזמן הגעת רכבת לתחנה מתוכנן']),
+                    actual_arrival=fix_dt(d['תאריך וזמן הגעת רכבת לתחנה בפועל']),
+                    exp_departure=fix_dt(d['תאריך וזמן יציאת רכבת מהתחנה מתוכנן']) if not stop_kind.is_dest else None,
+                    actual_departure=fix_dt(d['תאריך וזמן יציאת רכבת מהתחנה בפועל']) if not stop_kind.is_dest else None,
+                    filename=base_xlname,
+                    line_number=rowx,
+                    sheet_idx=sheet_idx,
+                    valid=valid,
+                    invalid_reason=invalid_reason,
+                    index=int(d['מספר סידורי של התחנה']))
             except Exception as e:
                 raise ValueError("Failed in row {} {}: {}".format(rowx, pprint.pformat(d), e))
                 # else:
@@ -164,7 +164,6 @@ def parse_xl(xlname):
         trip.check_trip()
         if (idx + 1) % 100 == 0:
             LOGGER.info("checked %s / %s trips", idx + 1, len(created_trips))
-
 
     created_trips = data.models.Trip.objects.filter(id__in=created_ids)
 
