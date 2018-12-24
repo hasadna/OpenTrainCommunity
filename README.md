@@ -78,3 +78,10 @@ python manage.py runserver
   ```
 
  * If you receive the error `symbol __res_maybe_init version GLIBC_PRIVATE not defined in libc.so.6 with link time reference`, it is likely due to a [psycopg bug](https://github.com/psycopg/psycopg2-wheels/issues/2) and can likely be solved by upgrading psycopg2 to a later version like 2.7.3.1.
+ 
+ 
+ # Files
+ 
+ * Excel files from Israeli railway: http://otrain.org/files/2017/, http://otrain.org/files/2018/
+ * Database dump: http://otrain.org/files/dumps/ (look for latest timestamp)
+ 
