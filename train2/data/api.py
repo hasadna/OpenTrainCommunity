@@ -297,7 +297,7 @@ class MonthlyViewSet(GenericViewSet):
         end_year = int(request.query_params['end_year'])
         stop1_id = int(request.query_params.get('stop1', 0))
         stop2_id = int(request.query_params.get('stop2', 0))
-        week_days_str = request.query_params.get('week_days')
+        week_days_str = request.query_params.get('days')
         stop1 = None
         stop2 = None
         if stop1_id:
