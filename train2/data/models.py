@@ -197,6 +197,8 @@ class Sample(models.Model):
     actual_departure_fixed = models.BooleanField(default=False)
     actual_arrival_fixed = models.BooleanField(default=False)
 
+    ignored_error = models.TextField(blank=True, null=True)
+
     def check_sample(self):
         if self.is_source:
             required_fields = ['actual_departure','exp_departure']

@@ -45,7 +45,8 @@ def create_sample(*,
                   sheet_idx,
                   line_number,
                   valid,
-                  invalid_reason):
+                  invalid_reason,
+                  ignored_error):
     assert_valid_dates(exp_arrival, actual_arrival, exp_departure, actual_departure)
 
     if exp_arrival and actual_arrival:
@@ -95,7 +96,8 @@ def create_sample(*,
                                               sheet_idx=sheet_idx,
                                               line_number=line_number,
                                               valid=valid,
-                                              invalid_reason=invalid_reason
+                                              invalid_reason=invalid_reason,
+                                              ignored_error=ignored_error
                                               )
         if sample.stop.gtfs_stop_id == 800:
             LOGGER.info("CREATED SAMPLE FOR MOTZKIN ID = %d", sample.id)
