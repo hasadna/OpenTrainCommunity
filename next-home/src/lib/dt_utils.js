@@ -1,3 +1,13 @@
+const daysNames = [
+    'ראשון',
+    'שני',
+    'שלישי',
+    'רביעי',
+    'חמישי',
+    'שישי',
+    'שבת',
+];
+
 const monthNames = [
     '',
     'ינואר',
@@ -13,6 +23,18 @@ const monthNames = [
     'נובמבר',
     'דצמבר',
 ];
+
+function isFullWeek(days) {
+    if (days && days.length >= 7) {
+        for (let i = 0; i <= 6; i++) {
+            if (!days.includes(i)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    return false;
+}
 
 function computeStart(l, months) {
     let [ly, lm] = l;
@@ -47,8 +69,10 @@ function getRange(s, e) {
 
 const dtUtils = {
     monthNames,
+    daysNames,
     getRange,
-    computeStart
+    computeStart,
+    isFullWeek,
 };
 
 export default dtUtils;

@@ -1,4 +1,3 @@
-<script src="../colors.js"></script>
 <template lang="html">
     <div>
         <div class="row">
@@ -130,6 +129,7 @@
                     months: 5,
                     stop1: null,
                     stop2: null,
+                    days: null,
                 });
                 this.refreshUrl();
             },
@@ -142,13 +142,16 @@
                 let result = {
                     e: config.end,
                     m: config.months,
-                }
+                };
                 if (config.stop1) {
                     result.s1 = config.stop1.id;
-                }
+                };
                 if (config.stop2) {
                     result.s2 = config.stop2.id;
-                }
+                };
+                if (config.days && config.days.length) {
+                    result.d = config.days;
+                };
                 return result;
             },
             fromDump(c) {
@@ -157,6 +160,7 @@
                     months: c.m,
                     stop1: this.stopFromId(c.s1),
                     stop2: this.stopFromId(c.s2),
+                    days: c.d || []
                 }
             }
         }

@@ -19,6 +19,18 @@
                 דרך
                 {{ config.stop1.name }}
             </span>
+            <span v-if="config.days && config.days.length">
+                &bull;
+                <span v-if="config.days.length > 1">
+                בימים
+                </span>
+                <span v-else>
+                    ביום
+                </span>
+                <span v-for="day in _.sortBy(config.days)">
+                    {{ day | dayName }}
+                </span>
+            </span>
             <div class="float-right">
                 <button v-show="!loading" class="btn btn-outline-primary" @click="editMode = !editMode">
                     <i :class="{'fal fa-pencil': !editMode, 'fal fa-chart-bar': editMode}">
@@ -74,6 +86,16 @@
                             </select>
                         </div>
                     </div>
+
+                    <div class="form-group row">
+                        <label class="col-2">ימים בשבוע</label>
+                        <div class="col-10">
+                            <div class="form-check form-check-inline" v-for="day in [0,1,2,3,4,5,6]">
+                              <input class="form-check-input" type="checkbox" :value=day v-model="newSearch.days">
+                              <label class="form-check-label">{{ day | dayName }}</label>
+                            </div>
+                        </div>
+                    </div>
                      <button type="submit" class="btn btn-primary">
                          חשב מחדש
                      </button>
@@ -98,6 +120,7 @@
                     months: 0,
                     stop1: null,
                     stop2: null,
+                    days: [],
                 },
                 chart: null,
                 yms:[]
@@ -129,6 +152,7 @@
                this.newSearch.months = this.config.months;
                this.newSearch.stop1 = this.config.stop1;
                this.newSearch.stop2 = this.config.stop2;
+               this.newSearch.days = this.config.days;
             },
             async startNewSearch(e) {
                 this.loading = true;
@@ -136,6 +160,7 @@
                 this.config.months = this.newSearch.months;
                 this.config.stop1 = this.newSearch.stop1;
                 this.config.stop2 = this.newSearch.stop2;
+                this.config.days = this.newSearch.days;
                 // make sure that if there is only 1 it
                 // will be stop1
                 if (this.config.stop2 && !this.config.stop1) {
@@ -174,6 +199,9 @@
                 }
                 if (this.config.stop2) {
                     params.stop2 = this.config.stop2.id;
+                }
+                if (this.config.days && this.config.days.length > 0 && !dtUtils.isFullWeek(this.config.days)) {
+                    params.days = this.config.days.join(",")
                 }
                 let resp = await this.$axios.get('/api/v1/monthly/', {
                     params: params
