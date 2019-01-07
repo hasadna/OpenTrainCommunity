@@ -91,13 +91,11 @@ def read_sheet(wb, sheet_idx, *, heb_header, base_xlname, global_data):
 
             valid = True
             invalid_reason = None
+            ignored_error = None
 
-            # Ignoring check for unplanned / skipped stops
-
-            # if is_commercial_stop:
-            #     if is_planned_stop != is_stopped:
-            #         valid = False
-            #         invalid_reason = 'sample has different planned and stopped'
+            if is_commercial_stop:
+                if is_planned_stop != is_stopped:
+                    ignored_error = 'sample has different planned and stopped'
         except Exception as e:
             raise ValueError("Failed in row {} {}: {}".format(rowx, pprint.pformat(d), e))
 
@@ -118,6 +116,7 @@ def read_sheet(wb, sheet_idx, *, heb_header, base_xlname, global_data):
                     sheet_idx=sheet_idx,
                     valid=valid,
                     invalid_reason=invalid_reason,
+                    ignored_error=ignored_error,
                     index=int(d['מספר סידורי של התחנה']))
             except Exception as e:
                 raise ValueError("Failed in row {} {}: {}".format(rowx, pprint.pformat(d), e))
