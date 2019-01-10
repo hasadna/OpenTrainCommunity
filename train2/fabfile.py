@@ -10,7 +10,7 @@ import datetime
 
 env.user = "opentrain"
 env.hosts = ["otrain.org"]
-#env.key_filename = "/home/eran/.ssh/id_rsa.pub"
+env.hosts = ["142.93.168.206"]
 env.projdir = "/home/opentrain/work/OpenTrainCommunity/train2"
 env.venv_dir = '/home/%s/.virtualenvs/train2' % env.user
 env.venv_command = '.  %s/bin/activate' % env.venv_dir
@@ -21,9 +21,32 @@ def virtualenv(path):
         with prefix(env.venv_command):
             yield
 
+
+@task
+def install_apt():
+    packages = [
+        'git',
+        'postgresql',
+        'nginx',
+        'uwsgi',
+        'uwsgi-plugin-python3',
+    ]
+
+    pkgs = " ".join(packages)
+    sudo("DEBIAN_FRONTEND=noninteractive apt install -y -q {}".format(pkgs),
+         pty=False)
+
+
+@task
+def update_server():
+    sudo("apt update")
+    sudo("apt --yes upgrade")
+
+
 @task
 def hostname():
     run('hostname')
+
 
 @task
 def pull():
@@ -56,9 +79,8 @@ def restart():
     sudo("service nginx restart")
 
 
-
 @task
-def update_server():
+def deploy():
     pull()
     pip()
     migrate()
@@ -68,7 +90,7 @@ def update_server():
 @task
 def backup_db():
     ts = datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
-    out= "/home/opentrain/public_html/files/dumps/db_{}.sql.gz".format(ts)
+    out = "/home/opentrain/public_html/files/dumps/db_{}.sql.gz".format(ts)
     sudo("sudo -u postgres pg_dump train2 | gzip > {}".format(out))
     run("ls -lh {}".format(out))
 
@@ -101,18 +123,17 @@ def restore_db(file):
         cat_command = "cat {}".format(file)
     local("{} | python manage.py dbshell".format(cat_command))
 
+
 @task
 def create_csv():
     with virtualenv(env.projdir):
         commands = [
-        """COPY data_stop TO '/home/opentrain/public_html/files/dumps-csv/stops.csv' DELIMITER ',' CSV HEADER;""",
-        """COPY data_route TO '/home/opentrain/public_html/files/dumps-csv/routes.csv' DELIMITER ',' CSV HEADER;""",
-        """COPY data_trip TO '/home/opentrain/public_html/files/dumps-csv/trips.csv' DELIMITER ',' CSV HEADER;""",
-        """COPY data_sample TO '/home/opentrain/public_html/files/dumps-csv/samples.csv' DELIMITER ',' CSV HEADER;"""
+            """COPY data_stop TO '/home/opentrain/public_html/files/dumps-csv/stops.csv' DELIMITER ',' CSV HEADER;""",
+            """COPY data_route TO '/home/opentrain/public_html/files/dumps-csv/routes.csv' DELIMITER ',' CSV HEADER;""",
+            """COPY data_trip TO '/home/opentrain/public_html/files/dumps-csv/trips.csv' DELIMITER ',' CSV HEADER;""",
+            """COPY data_sample TO '/home/opentrain/public_html/files/dumps-csv/samples.csv' DELIMITER ',' CSV HEADER;"""
         ]
         for command in commands:
-            pass
-            #run("""echo "{}" | sudo -u postgres psql train2""".format(command))
+            run("""echo "{}" | sudo -u postgres psql train2""".format(command))
         with cd("/home/opentrain/public_html/files/dumps-csv/"):
             run("for f in *.csv ; do gzip -f $f; done")
-
