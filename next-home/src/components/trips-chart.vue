@@ -31,6 +31,10 @@
                     {{ day | dayName }}
                 </span>
             </span>
+            <span v-if="config.hours && config.hours.length">
+                <span>בשעות</span>
+                {{ config.hours | formatHours }}
+            </span>
             <div class="float-right">
                 <button v-show="!loading" class="btn btn-outline-primary" @click="editMode = !editMode">
                     <i :class="{'fal fa-pencil': !editMode, 'fal fa-chart-bar': editMode}">
@@ -96,7 +100,16 @@
                             </div>
                         </div>
                     </div>
-                     <button type="submit" class="btn btn-primary">
+                    <div class="form-group row">
+                        <label class="col-2">שעת יציאה</label>
+                        <div class="col-10">
+                            <div class="form-check form-check-inline" v-for="hour in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]">
+                              <input class="form-check-input" type="checkbox" :value=hour v-model="newSearch.hours">
+                              <label class="form-check-label">{{ hour }}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
                          חשב מחדש
                      </button>
                 </form>
@@ -121,6 +134,7 @@
                     stop1: null,
                     stop2: null,
                     days: [],
+                    hours: [],
                 },
                 chart: null,
                 yms:[]
@@ -153,6 +167,7 @@
                this.newSearch.stop1 = this.config.stop1;
                this.newSearch.stop2 = this.config.stop2;
                this.newSearch.days = this.config.days;
+               this.newSearch.hours = this.config.hours;
             },
             async startNewSearch(e) {
                 this.loading = true;
@@ -161,6 +176,7 @@
                 this.config.stop1 = this.newSearch.stop1;
                 this.config.stop2 = this.newSearch.stop2;
                 this.config.days = this.newSearch.days;
+                this.config.hours = this.newSearch.hours;
                 // make sure that if there is only 1 it
                 // will be stop1
                 if (this.config.stop2 && !this.config.stop1) {
@@ -202,6 +218,9 @@
                 }
                 if (this.config.days && this.config.days.length > 0 && !dtUtils.isFullWeek(this.config.days)) {
                     params.days = this.config.days.join(",")
+                }
+                if (this.config.hours && this.config.hours.length > 0) {
+                    params.hours = this.config.hours.join(",")
                 }
                 let resp = await this.$axios.get('/api/v1/monthly/', {
                     params: params

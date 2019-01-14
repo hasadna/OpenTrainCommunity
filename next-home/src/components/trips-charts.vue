@@ -152,6 +152,9 @@
                 if (config.days && config.days.length) {
                     result.d = config.days;
                 };
+                if (config.hours && config.hours.length) {
+                    result.h = config.hours;
+                }
                 return result;
             },
             fromDump(c) {
@@ -160,7 +163,8 @@
                     months: c.m,
                     stop1: this.stopFromId(c.s1),
                     stop2: this.stopFromId(c.s2),
-                    days: c.d || []
+                    days: c.d || [],
+                    hours: c.h || [],
                 }
             }
         }

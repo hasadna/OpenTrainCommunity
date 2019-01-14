@@ -29,6 +29,7 @@ $(function() {
     Vue.filter('digits2', d => d < 10 ? '0' + d : '' + d);
     Vue.filter('monthName', i => dtUtils.monthNames[i] || '???');
     Vue.filter('dayName', i => dtUtils.daysNames[i] || '???');
+    Vue.filter('formatHours', hs => dtUtils.formatHours(hs));
     Vue.config.errorHandler = function(err, vm, info) {
         console.error(err);
     }

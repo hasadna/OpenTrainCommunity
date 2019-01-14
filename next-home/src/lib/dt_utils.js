@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 const daysNames = [
     'ראשון',
     'שני',
@@ -67,12 +69,34 @@ function getRange(s, e) {
     return result;
 }
 
+function formatHours(hours) {
+    hours = _.sortBy(hours);
+    let pairs = [];
+    let curStart = null;
+    let curEnd = null;
+    for (let h of hours) {
+        if (curEnd !== null && h == curEnd+1) {
+            curEnd = h;
+        } else {
+            if (curStart !== null) {
+                pairs.push([curStart, curEnd]);
+            }
+            curStart = h;
+            curEnd = h;
+        }
+    }
+    pairs.push([curStart, curEnd]);
+    let pairsStrs = pairs.map(p => p[0] === p[1] ? p[0] : `${p[0]}-${p[1]}`);
+    return pairsStrs.join(",");
+}
+
 const dtUtils = {
     monthNames,
     daysNames,
     getRange,
     computeStart,
     isFullWeek,
+    formatHours,
 };
 
 export default dtUtils;
