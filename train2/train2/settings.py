@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'info',
     'rest_framework_swagger',
     'analysis',
+    'stories',
     'corsheaders',
 ]
 

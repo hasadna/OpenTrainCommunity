@@ -32,15 +32,34 @@
                         לתחנה כלשהי
                             </b>
                         לאורך המסלול ב 5 דקות או יותר
-
                     </div>
                 </div>
             </div>
         </div>
         <div class="row">
+            <div class="col-12">
+                <h1 class="text-center">{{ title }}
+                    <div class="float-left">
+                        <button class="btn btn-outline-primary" title="קישור לשיתוף" @click="share" :disabled="sharedDisabled">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                        <div class="alert alert-danger d-inline-block" style="font-size: 16px" v-if="shareError">
+                            <small>
+                            השמירה נכשלה
+                                </small>
+                        </div>
+                        <div class="alert alert-success d-inline-block" style="font-size: 16px" v-if="shareUrl">
+                            קישור
+                            <code>{{shareUrl}}</code>
+                        </div>
+                    </div>
+                </h1>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-sm-6 col-12" :class="{'offset-sm-3': configs.length == 1 }"
                  v-for="config in configs">
-                <trips-chart :global="global" :config="config" @remove="remove(config)" @editDone="refreshUrl()"/>
+                <trips-chart :global="global" :config="config" @remove="remove(config)"/>
             </div>
         </div>
         <div class="row mt-5">
@@ -63,26 +82,86 @@
         data() {
             return {
                 configs: [],
+                shareError: null,
+                sharedDisabled: false,
+                shareUrl: null,
+                id: null,
                 global: {
                     begin: null,
                     end: null
-                }
+                },
+                title: 'תרשים חדש',
             }
         },
-        async created() {
-            window.tc = this;
+        async mounted() {
+            window.ts = this;
             await this.getGlobalData();
-            let configs = this.getConfigsFromUrl();
-            if (!configs) {
-                configs = [{
-                    e: [...this.global.end],
-                    m: 5,
-                }]
+            let isRestored = false;
+            try {
+                isRestored = await this.restoreSharedData();
+            } catch(err) {
+                console.error(err);
+                this.id = null;
+                this.refreshUrl();
             }
-            this.configs = configs.map(c => this.fromDump(c));
-            this.refreshUrl();
+            if (!isRestored) {
+                this.configs = [{
+                    end: [...this.global.end],
+                    months: 5,
+                }];
+            }
         },
         methods: {
+            async restoreSharedData() {
+                let id = this.getIdFromUrl();
+                if (!id) {
+                    return false;
+                }
+                let resp = await this.$axios.get(`/api/v1/stories/${id}`);
+                let dump = resp.data.dump;
+                this.title = dump.title || this.title;
+                this.configs = dump.configs;
+                return true;
+            },
+            getIdFromUrl() {
+                let s = window.location.search;
+                if (!s) {
+                    return null;;
+                }
+                if (!s.startsWith('?id=')) {
+                    return null;
+                }
+                let id = s.substr(4);
+                return id;
+            },
+            async reset() {
+                this.id = null;
+                this.configs = [];
+                this.refreshUrl();
+            },
+            async share() {
+                try {
+                    this.shareError = false;
+                    this.sharedDisabled = true;
+                    this.shareUrl = null;
+                    window.setTimeout(() => {
+                        this.sharedDisabled = false;
+                    }, 500);
+                    let url = "/api/v1/stories/share/";
+                    let resp = await this.$axios.post(url, {
+                        dump: {
+                            configs: this.configs,
+                            title: this.title,
+                        }
+                    });
+                    this.id = resp.data.id;
+                    this.refreshUrl();
+                    this.shareUrl = window.location.href;
+                } catch (err) {
+                    console.error(err);
+                    this.shareError = err;
+                }
+            },
             async getGlobalData() {
                 let buildDates = async () => {
                     let resp = await this.$axios.get("/api/v1/monthly/year-months/");
@@ -102,26 +181,25 @@
                 }
                 return this.global.stops.find(s => s.id == stopId);
             },
-            getConfigsFromUrl() {
-                let search = window.location.search;
-                if (!search) {
-                    return null;
-                }
-                let pat = /^[\?]?charts=(.*)$/;
-                let result = search.match(pat);
-                if (!result) {
-                    return null;
-                }
-                try {
-                    return JSON.parse(decodeURIComponent(result[1]));
-                } catch (err) {
-                    console.error(err);
-                    return null;
-                }
-            },
+            // getConfigsFromUrl() {
+            //     let search = window.location.search;
+            //     if (!search) {
+            //         return null;
+            //     }
+            //     let pat = /^[\?]?charts=(.*)$/;
+            //     let result = search.match(pat);
+            //     if (!result) {
+            //         return null;
+            //     }
+            //     try {
+            //         return JSON.parse(decodeURIComponent(result[1]));
+            //     } catch (err) {
+            //         console.error(err);
+            //         return null;
+            //     }
+            // },
             remove(config) {
                 this.configs = this.configs.filter(c => c != config);
-                this.refreshUrl();
             },
             addNew() {
                 this.configs.push({
@@ -131,42 +209,10 @@
                     stop2: null,
                     days: null,
                 });
-                this.refreshUrl();
             },
             refreshUrl() {
-                let dumps = this.configs.map(c => this.dumpConfig(c));
-                let params = JSON.stringify(dumps);
-                window.history.pushState(null, null, `?charts=${params}`);
+                window.history.pushState(null, null, this.id ? `?id=${this.id}` : '/');
             },
-            dumpConfig(config) {
-                let result = {
-                    e: config.end,
-                    m: config.months,
-                };
-                if (config.stop1) {
-                    result.s1 = config.stop1.id;
-                };
-                if (config.stop2) {
-                    result.s2 = config.stop2.id;
-                };
-                if (config.days && config.days.length) {
-                    result.d = config.days;
-                };
-                if (config.hours && config.hours.length) {
-                    result.h = config.hours;
-                }
-                return result;
-            },
-            fromDump(c) {
-                return {
-                    end: c.e,
-                    months: c.m,
-                    stop1: this.stopFromId(c.s1),
-                    stop2: this.stopFromId(c.s2),
-                    days: c.d || [],
-                    hours: c.h || [],
-                }
-            }
         }
     }
 </script>

@@ -116,6 +116,13 @@
                 </form>
             </div>
         </div>
+        <div class="card-footer" v-if="config.text && !editMode">
+            {{ config.text }}
+        </div>
+        <div class="card-footer" v-if="editMode">
+            <label>ערוך תיאור</label>
+            <textarea class="form-control"  v-model="config.text"></textarea>
+        </div>
     </div>
 </template>
 
@@ -167,8 +174,8 @@
                this.newSearch.months = this.config.months;
                this.newSearch.stop1 = this.config.stop1;
                this.newSearch.stop2 = this.config.stop2;
-               this.newSearch.days = this.config.days;
-               this.newSearch.hours = this.config.hours;
+               this.newSearch.days = this.config.days || [];
+               this.newSearch.hours = this.config.hours || [];
             },
             async startNewSearch(e) {
                 this.loading = true;
