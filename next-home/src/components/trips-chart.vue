@@ -33,7 +33,7 @@
             </span>
             <span v-if="config.hours && config.hours.length">
                 &bull;
-                <span>בשעות</span>
+                <span>שעת יציאה</span>
                 {{ config.hours | formatHours }}
             </span>
             <div class="float-right">
