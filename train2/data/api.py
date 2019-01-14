@@ -298,6 +298,7 @@ class MonthlyViewSet(GenericViewSet):
         stop1_id = int(request.query_params.get('stop1', 0))
         stop2_id = int(request.query_params.get('stop2', 0))
         week_days_str = request.query_params.get('days')
+        hours_str = request.query_params.get('hours')
         stop1 = None
         stop2 = None
         if stop1_id:
@@ -307,9 +308,17 @@ class MonthlyViewSet(GenericViewSet):
 
         if week_days_str:
             week_days = [int(d) for d in week_days_str.split(",")]
-            assert 0 <= min(week_days) <= max(week_days) <= 6
+            if min(week_days) < 0 or max(week_days) > 6:
+                raise exceptions.ValidationError("Days expected to be in the range [0-6]")
         else:
             week_days = None
+
+        if hours_str:
+            hours = [int(hour) for hour in hours_str.split(',')]
+            if min(hours) < 0 or max(hours) > 23:
+                raise exceptions.ValidationError("Hours expected to be in the range [0-23]")
+        else:
+            hours = None
 
         start_date = datetime.date(start_year, start_month, 1)
         _, num_days = calendar.monthrange(end_year, end_month)
@@ -321,6 +330,8 @@ class MonthlyViewSet(GenericViewSet):
             valid=True)
         if week_days:
             trips_qs = trips_qs.filter(x_week_day_local__in=week_days)
+        if hours:
+            trips_qs = trips_qs.filter(x_hour_local__in=hours)
 
         if stop1 or stop2:
             if stop1 and stop2:
