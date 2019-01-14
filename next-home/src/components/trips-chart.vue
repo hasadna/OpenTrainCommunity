@@ -32,6 +32,7 @@
                 </span>
             </span>
             <span v-if="config.hours && config.hours.length">
+                &bull;
                 <span>בשעות</span>
                 {{ config.hours | formatHours }}
             </span>

@@ -71,6 +71,7 @@ class StopViewSet(ReadOnlyModelViewSet):
 
         return Response(data=logic.get_stops_from_to(from_id, to_id))
 
+
 class StatViewSet(GenericViewSet):
     def get_queryset(self):
         return None
