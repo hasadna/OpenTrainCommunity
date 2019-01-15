@@ -1,19 +1,24 @@
+from io import StringIO
 from contextlib import contextmanager
 
 import os
 from fabric.api import run, env
 from fabric.context_managers import cd, prefix
 from fabric.decorators import task
-from fabric.operations import sudo, local
+from fabric.operations import sudo, local, put
 
 import datetime
 
 env.user = "opentrain"
-env.hosts = ["otrain.org"]
-#env.hosts = ["142.93.168.206"]
-env.projdir = "/home/opentrain/work/OpenTrainCommunity/train2"
+#env.hosts = ["otrain.org"]
+env.hosts = ["142.93.168.206"]
+env.projdir = "/home/opentrain/OpenTrainCommunity/train2"
 env.venv_dir = '/home/%s/.virtualenvs/train2' % env.user
 env.venv_command = '.  %s/bin/activate' % env.venv_dir
+env.wsgi_file = "opentrain/wsgi.py"
+env.stats_port = "9000"  # for wsgi
+env.app_name = "train2"
+
 
 @contextmanager
 def virtualenv(path):
@@ -137,3 +142,27 @@ def create_csv():
             run("""echo "{}" | sudo -u postgres psql train2""".format(command))
         with cd("/home/opentrain/public_html/files/dumps-csv/"):
             run("for f in *.csv ; do gzip -f $f; done")
+
+
+
+UWSGI_CONF = """
+[uwsgi]
+plugin = python3
+virtualenv = {env.venv_dir}
+chdir = {env.projdir}
+wsgi-file = {env.wsgi_file}
+processes = 4
+threads = 1
+stats = 127.0.0.1:{env.stats_port}
+"""
+
+@task
+def create_uwsgi_conf():
+    conf = UWSGI_CONF.format(env=env)
+    filename = "/etc/uwsgi/apps-available/{app_name}.ini".format(app_name=env.app_name)
+    enabled = "/etc/uwsgi/apps-enabled/{app_name}.ini".format(app_name=env.app_name)
+    put(StringIO(conf), filename, use_sudo=True)
+    sudo("ln -sf {filename} {enabled}".format(filename=filename, enabled=enabled))
+    sudo("service uwsgi stop")
+    sudo("service uwsgi start")
+
