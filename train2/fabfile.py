@@ -15,7 +15,7 @@ env.hosts = ["142.93.168.206"]
 env.projdir = "/home/opentrain/OpenTrainCommunity/train2"
 env.venv_dir = '/home/%s/.virtualenvs/train2' % env.user
 env.venv_command = '.  %s/bin/activate' % env.venv_dir
-env.wsgi_file = "opentrain/wsgi.py"
+env.wsgi_file = "train2/wsgi.py"
 env.stats_port = "9000"  # for wsgi
 env.app_name = "train2"
 
@@ -79,9 +79,7 @@ def build_stops():
 
 @task
 def restart():
-    run("kill -HUP $(cat /home/opentrain/train2.pid)")
-    sudo("service nginx reload")
-    sudo("service nginx restart")
+    sudo("service uwsgi reload")
 
 
 @task
