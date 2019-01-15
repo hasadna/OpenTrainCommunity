@@ -116,7 +116,7 @@ def create_db():
 
 @task
 def restore_db(file):
-    assert os.path.exists(file),"cannot find file {}".format(file)
+    assert os.path.exists(file), "cannot find file {}".format(file)
     if file.endswith(".gz"):
         cat_command = "gunzip -c {}".format(file)
     else:
