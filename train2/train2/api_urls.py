@@ -1,7 +1,7 @@
 from django.conf.urls import url, include
 from rest_framework import routers
 import data.api
-#import stories.api
+import stories.api
 
 router = routers.SimpleRouter()
 
@@ -26,7 +26,7 @@ router.register('real-routes/(?P<year>\d{4})/(?P<month>\d{1,2})',
 
 router.register('monthly', data.api.MonthlyViewSet, base_name='monthly')
 
-#router.register('stories', stories.api.StoriesViewSet, base_name='stories')
+router.register('stories', stories.api.StoriesViewSet, base_name='stories')
 
 
 # router.register('routes/(?P<route_id>\d+)/services',

@@ -6,6 +6,9 @@ body {
     min-height: 400px;
 }
 
+.with-pointer {
+    cursor: pointer;
+}
 
 
 

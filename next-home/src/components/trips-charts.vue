@@ -38,7 +38,9 @@
         </div>
         <div class="row">
             <div class="col-12">
-                <h1 class="text-center">{{ title }}
+                <h1 class="text-center">
+                    <span v-if="!editMode">{{ title }}</span>
+                    <span v-if="editMode"><input type="text" v-model="title"></span>
                     <div class="float-left">
                         <button class="btn btn-outline-primary" title="קישור לשיתוף" @click="share" :disabled="sharedDisabled">
                             <i class="fas fa-share-alt"></i>
@@ -51,9 +53,22 @@
                         <div class="alert alert-success d-inline-block" style="font-size: 16px" v-if="shareUrl">
                             קישור
                             <code>{{shareUrl}}</code>
+                            <span class="with-pointer" @click="copyUrl()">
+                                <i class="fa fa-copy"></i>
+                            </span>
                         </div>
                     </div>
+                    <div class="float-right">
+                        <button class="btn btn-outline-primary" title="עריכה" @click="editMode=!editMode">
+                            <i v-if="!editMode" class="fas fa-pencil"></i>
+                            <i v-if="editMode" class="fas fa-check"></i>
+                        </button>
+                    </div>
                 </h1>
+            </div>
+            <div class="col-sm-6 col-12 offset-sm-3">
+                <p v-if="!editMode">{{ description }}</p>
+                <textarea v-if="editMode" rows="4" class="form-control" v-model="description" placeholder="עריכת תיאור"></textarea>
             </div>
         </div>
         <div class="row">
@@ -74,7 +89,7 @@
 
 <script>
     import TripsChart from './trips-chart.vue';
-
+    import copyTextToClipboard from "../lib/copy";
     export default {
         components: {
             'trips-chart': TripsChart
@@ -86,11 +101,13 @@
                 sharedDisabled: false,
                 shareUrl: null,
                 id: null,
+                editMode: false,
                 global: {
                     begin: null,
                     end: null
                 },
                 title: 'תרשים חדש',
+                description: '',
             }
         },
         async mounted() {
@@ -112,6 +129,10 @@
             }
         },
         methods: {
+            copyUrl: function() {
+                copyTextToClipboard(this.shareUrl);
+                console.log('copied');
+            },
             async restoreSharedData() {
                 let id = this.getIdFromUrl();
                 if (!id) {
@@ -120,7 +141,9 @@
                 let resp = await this.$axios.get(`/api/v1/stories/${id}`);
                 let dump = resp.data.dump;
                 this.title = dump.title || this.title;
+                this.description = dump.description || null;
                 this.configs = dump.configs;
+
                 return true;
             },
             getIdFromUrl() {
@@ -152,6 +175,7 @@
                         dump: {
                             configs: this.configs,
                             title: this.title,
+                            description: this.description,
                         }
                     });
                     this.id = resp.data.id;
