@@ -2,6 +2,13 @@
 
 Interactive documentation is available at http://opentraincommunity.readthedocs.org/en/latest/
 
+# Requirements
+* Python 3.6
+* Postgres (dumps postgres 10)
+
+Our server (otrain.org) runs with ubuntu 18.04, postgres 10 and python 3.6.7
+
+
 # Developer Environment Setup
 
 The project runs on Python 3 with POSTGRES, and we recommend using a virtual environment for development. You can use the following command to setup a virtualenv called `opentrain`:
