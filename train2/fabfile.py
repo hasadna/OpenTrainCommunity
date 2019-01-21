@@ -94,7 +94,7 @@ def deploy():
 def backup_db():
     ts = datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
     out = "/home/opentrain/public_html/files/dumps/db_{}.sql.gz".format(ts)
-    sudo("sudo -u postgres pg_dump train2 | gzip > {}".format(out))
+    sudo("sudo -u postgres pg_dump train2 --no-owner --no-acl| gzip > {}".format(out))
     run("ls -lh {}".format(out))
 
 
@@ -106,20 +106,21 @@ def inline_cmd(cmd):
 @task
 def create_db():
     local("python manage.py sqlcreate -D | sudo -u postgres psql")
-    create_guest_cmd = '''
-    DROP USER IF EXISTS guest;
-    CREATE USER guest  WITH ENCRYPTED PASSWORD 'guest';
-    GRANT CONNECT ON DATABASE train2 to guest;
-    \c train2
-    GRANT USAGE ON SCHEMA public to guest;
-    GRANT SELECT ON ALL SEQUENCES IN SCHEMA public TO guest;
-    GRANT SELECT ON ALL TABLES IN SCHEMA public TO guest;
-    '''
-    local('echo "{}" | sudo -u postgres psql'.format(inline_cmd(create_guest_cmd)))
+    # create_guest_cmd = '''
+    # DROP USER IF EXISTS guest;
+    # CREATE USER guest  WITH ENCRYPTED PASSWORD 'guest';
+    # GRANT CONNECT ON DATABASE train2 to guest;
+    # \c train2
+    # GRANT USAGE ON SCHEMA public to guest;
+    # GRANT SELECT ON ALL SEQUENCES IN SCHEMA public TO guest;
+    # GRANT SELECT ON ALL TABLES IN SCHEMA public TO guest;
+    # '''
+    # local('echo "{}" | sudo -u postgres psql'.format(inline_cmd(create_guest_cmd)))
+
 
 @task
-def restore_db(file):
-    assert os.path.exists(file), "cannot find file {}".format(file)
+def recreate_db(file):
+    local("python manage.py sqlcreate -D | sudo -u postgres psql")
     if file.endswith(".gz"):
         cat_command = "gunzip -c {}".format(file)
     else:
