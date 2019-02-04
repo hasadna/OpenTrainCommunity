@@ -1,6 +1,9 @@
 <template>
     <div class="card">
         <div class="card-header">
+            <h4 v-if="config.title">
+                {{config.title}}
+            </h4>
             {{ tripsCount }}
             נסיעות
             &bull;
@@ -120,8 +123,14 @@
             {{ config.text }}
         </div>
         <div class="card-footer" v-if="editMode">
-            <label>ערוך תיאור</label>
-            <textarea class="form-control"  v-model="config.text"></textarea>
+            <div class="form-group">
+                <label>ערוך כותרת</label>
+                <input type="text" class="form-control" v-model="config.title">
+            </div>
+            <div class="form-group">
+                <label>ערוך תיאור</label>
+                <textarea class="form-control" v-model="config.text"></textarea>
+            </div>
         </div>
     </div>
 </template>

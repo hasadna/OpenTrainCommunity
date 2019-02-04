@@ -205,23 +205,6 @@
                 }
                 return this.global.stops.find(s => s.id == stopId);
             },
-            // getConfigsFromUrl() {
-            //     let search = window.location.search;
-            //     if (!search) {
-            //         return null;
-            //     }
-            //     let pat = /^[\?]?charts=(.*)$/;
-            //     let result = search.match(pat);
-            //     if (!result) {
-            //         return null;
-            //     }
-            //     try {
-            //         return JSON.parse(decodeURIComponent(result[1]));
-            //     } catch (err) {
-            //         console.error(err);
-            //         return null;
-            //     }
-            // },
             remove(config) {
                 this.configs = this.configs.filter(c => c != config);
             },
@@ -232,6 +215,8 @@
                     stop1: null,
                     stop2: null,
                     days: null,
+                    text: null,
+                    title: null,
                 });
             },
             refreshUrl() {
