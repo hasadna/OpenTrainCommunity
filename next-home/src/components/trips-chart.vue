@@ -1,8 +1,9 @@
 <template>
-    <div class="card">
+    <div class="card" style="margin-bottom: 10px">
         <div class="card-header">
-            <h4 v-if="config.title">
-                {{config.title}}
+            <h4>
+                <span v-if="config.title">{{config.title}}</span>
+                <span v-else>&nbsp;</span>
             </h4>
             {{ tripsCount }}
             נסיעות
