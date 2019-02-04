@@ -27,6 +27,7 @@ urlpatterns = [
     url(r'^$', ui.views.RouteExplorer.as_view()),
     url(r'api/v1/', include(api_urls.router.urls)),
     url(r'^info/',include('info.urls',namespace="info")),
-    url(r'^api/docs/', schema_view)
+    url(r'^api/docs/', schema_view),
+    url(r'^chatbot/', include('chatbot.urls', namespace='chatbot'))
 ]
 
