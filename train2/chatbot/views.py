@@ -18,7 +18,6 @@ class HookView(View):
         challenge = request.GET.get('hub.challenge','??')
         return HttpResponse(challenge, status=200)
 
-    @method_decorator(csrf_exempt)
     def post(self, request, *args, **kwargs):
         # endpoint for processing incoming messaging events
         body_unicode = request.body.decode('utf-8')
