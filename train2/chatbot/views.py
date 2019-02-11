@@ -11,3 +11,7 @@ class HookView(View):
         challenge = request.GET.get('hub.challenge','??')
         return HttpResponse(challenge, status=200)
 
+    def post(self, request, *args, **kwargs):
+        logger.info("body = %s", request.body)
+        return HttpResponse("תודה רבה", status=200)
+
