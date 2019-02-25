@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'info',
     'rest_framework_swagger',
     'analysis',
-    'stories',
+    'stories.apps.StoriesConfig',
     'chatbot',
     'corsheaders',
 ]
@@ -120,7 +120,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
 
-LANGUAGE_CODE = 'he'
+LANGUAGE_CODE = 'en'
 
 TIME_ZONE = 'Asia/Jerusalem'
 

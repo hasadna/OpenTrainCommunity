@@ -1,5 +1,7 @@
 from django.apps import AppConfig
 
 
-class NextConfig(AppConfig):
-    name = 'next'
+class StoriesConfig(AppConfig):
+    name = 'stories'
+
+

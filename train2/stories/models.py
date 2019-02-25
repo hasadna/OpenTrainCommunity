@@ -9,5 +9,11 @@ class Story(models.Model):
     checksum = models.CharField(max_length=100, db_index=True)
 
     def __str__(self):
-        return 'Story #{}'.format(self.pk)
+        return f'Story #{self.pk}'
+
+    class Meta:
+        verbose_name_plural = 'Stories'
+        verbose_name = 'Story'
+        ordering = ('-created_at', )
+
 
