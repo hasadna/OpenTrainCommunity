@@ -11,6 +11,10 @@ class Story(models.Model):
     def __str__(self):
         return f'Story #{self.pk}'
 
+    @property
+    def next_url(self):
+        return f'https://next.otrain.org/?id={self.pk}'
+
     class Meta:
         verbose_name_plural = 'Stories'
         verbose_name = 'Story'
