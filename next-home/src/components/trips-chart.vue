@@ -2,7 +2,8 @@
     <div class="card" style="margin-bottom: 10px">
         <div class="card-header">
             <h4>
-                <span class="float-right badge badge-pill badge-danger">{{delta}}%</span>
+                <span title="מדד אלטרנטיבי" class="float-right badge badge-pill badge-danger">{{ lateMaxTotal }}%</span>
+                <span title="מדד רכבת ישראל" class="float-right badge badge-pill badge-danger" style="background: orange">{{ lateLastTotal }}%</span>
                 <span v-if="config.title">{{config.title}}</span>
                 <span v-else>&nbsp;</span>
             </h4>
@@ -147,7 +148,8 @@
                 monthsData: null,
                 loading: false,
                 editMode: false,
-                delta: 0,
+                lateMaxTotal: 0,
+                lateLastTotal: 0,
                 newSearch: {
                     end: null,
                     months: 0,
@@ -216,7 +218,9 @@
                 let respData = await this.getRespDataFromServer();
                 let sumLateMax = this._.sumBy(respData, r => r.count_late_max);
                 let sumLateLast = this._.sumBy(respData, r => r.count_late_last);
-                this.delta = Math.round(100 * (sumLateMax - sumLateLast) / sumLateLast);
+                let total = this._.sumBy(respData, r => r.count);
+                this.lateMaxTotal = Math.round(100 * sumLateMax / total);
+                this.lateLastTotal = Math.round(100 * sumLateLast / total);
                 let data = this.getData(respData);
                 let options = this.getOptions(respData);
                 this.chart = new Chart(ctx, {
