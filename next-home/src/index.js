@@ -17,7 +17,7 @@ function sleep(ms) {
 
 $(function() {
     const axiosInstance = axios.create({
-        baseURL: '//otrain.org',
+        baseURL: 'https://otrain.org',
         //baseURL: 'http://localhost:8000',
     });
 

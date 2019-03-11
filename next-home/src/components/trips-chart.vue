@@ -2,6 +2,7 @@
     <div class="card" style="margin-bottom: 10px">
         <div class="card-header">
             <h4>
+                <span class="float-right badge badge-pill badge-danger">{{delta}}%</span>
                 <span v-if="config.title">{{config.title}}</span>
                 <span v-else>&nbsp;</span>
             </h4>
@@ -146,6 +147,7 @@
                 monthsData: null,
                 loading: false,
                 editMode: false,
+                delta: 0,
                 newSearch: {
                     end: null,
                     months: 0,
@@ -212,6 +214,9 @@
                     this.chart.destroy();
                 }
                 let respData = await this.getRespDataFromServer();
+                let sumLateMax = this._.sumBy(respData, r => r.count_late_max);
+                let sumLateLast = this._.sumBy(respData, r => r.count_late_last);
+                this.delta = Math.round(100 * (sumLateMax - sumLateLast) / sumLateLast);
                 let data = this.getData(respData);
                 let options = this.getOptions(respData);
                 this.chart = new Chart(ctx, {
