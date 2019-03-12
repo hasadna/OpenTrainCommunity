@@ -66,19 +66,19 @@
                     </div>
                 </h1>
             </div>
-            <div class="col-sm-6 col-12 offset-sm-3">
+            <div class="col-md-6 col-12 offset-md-3">
                 <p v-if="!editMode">{{ description }}</p>
                 <textarea v-if="editMode" rows="4" class="form-control" v-model="description" placeholder="עריכת תיאור"></textarea>
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-6 col-12" :class="{'offset-sm-3': configs.length == 1 }"
+            <div class="col-md-6 col-12" :class="{'offset-md-3': configs.length == 1 }"
                  v-for="config in configs">
                 <trips-chart :global="global" :config="config" @remove="remove(config)"/>
             </div>
         </div>
         <div class="row mt-5">
-            <div class="col-sm-6 col-12 offset-sm-3">
+            <div class="col-md-6 col-12 offset-md-3">
                 <button class="btn btn-outline-primary btn-block" @click="addNew">
                     הוסף תרשים חדש
                 </button>
