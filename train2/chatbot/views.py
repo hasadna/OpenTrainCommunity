@@ -40,9 +40,9 @@ def handle_messaging_event(messaging_event):
     if 'message' in messaging_event:
         sender_id = messaging_event['sender']['id']
         session = get_session(sender_id)
-        session.payloads.append(messaging_event)
+        session.payloads.append(json.dumps(messaging_event))
         session.save()
-        globals()[f'handle_step_{session.step}'](session)
+        globals()[f'handle_step_{session.current_step}'](session)
 
 
 def get_session(sender_id):
