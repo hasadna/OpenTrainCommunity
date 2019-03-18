@@ -48,7 +48,7 @@ def handle_messaging_event(messaging_event):
 def get_session(sender_id):
     return models.ChatSession.objects.get_or_create(
         user_id=sender_id
-    )
+    )[0]
 
 
 def handle_step_welcome(session):
