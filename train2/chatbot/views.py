@@ -7,6 +7,8 @@ from django.http import HttpResponse
 from django.views import View
 import logging
 
+from . import models
+
 
 logger = logging.getLogger(__name__)
 
@@ -29,25 +31,32 @@ class HookView(View):
         if data["object"] == "page":
             for entry in data["entry"]:
                 for messaging_event in entry["messaging"]:
+                    handle_messaging_event(messaging_event)
 
-                    if messaging_event.get("message"):  # someone sent us a message
-                        # the facebook ID of the person sending you the message
-                        sender_id = messaging_event["sender"]["id"]
-                        # the recipient's ID, which should be your page's facebook ID
-                        recipient_id = messaging_event["recipient"]["id"]
-                        # the message's text
-                        message_text = messaging_event["message"]["text"]
-                        send_message(sender_id, "roger that!")
-                    # delivery confirmation
-                    if messaging_event.get("delivery"):
-                        pass
-                    # optin confirmation
-                    if messaging_event.get("optin"):
-                        pass
-                    # user clicked/tapped "postback" button in earlier message
-                    if messaging_event.get("postback"):
-                        pass
         return HttpResponse("ok", status=200)
+
+
+def handle_messaging_event(messaging_event):
+    if 'message' in messaging_event:
+        sender_id = messaging_event['sender']['id']
+        session = get_session(sender_id)
+        session.payloads.append(messaging_event)
+        session.save()
+        globals()[f'handle_step_{session.step}'](session)
+
+
+def get_session(sender_id):
+    return models.ChatSession.get_or_create(
+        user_id=sender_id
+    )
+
+
+def handle_step_welcome(session):
+    welcome_msg = '''
+    שלום רב, אני בוט שמאפשר לדווח על ביטול רכבות
+    האם מדובר על רכבת סביב שעה מעכשיו?
+    '''
+    send_message(session.user_id, welcome_msg)
 
 
 def send_message(recipient_id, message_text):
