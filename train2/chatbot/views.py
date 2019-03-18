@@ -2,12 +2,11 @@ import json
 
 import requests
 from django.conf import settings
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
-from django.utils.decorators import method_decorator
 from django.views import View
 import logging
 
-from django.views.decorators.csrf import csrf_exempt
 
 logger = logging.getLogger(__name__)
 
@@ -15,6 +14,10 @@ logger = logging.getLogger(__name__)
 class HookView(View):
     def get(self, request, *args, **kwargs):
         logger.info("GET=%s", request.GET)
+        mode = request.GET.get('hub.mode')
+        if mode == "subscribe" and request.GET.get("hub.challenge"):
+            if not request.GET.get("hub.verify_token") == settings.FB_VERIFY_TOKEN:
+                raise PermissionDenied("Verification token mismatch")
         challenge = request.GET.get('hub.challenge', '??')
         return HttpResponse(challenge, status=200)
 
