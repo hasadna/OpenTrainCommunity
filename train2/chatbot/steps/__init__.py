@@ -3,6 +3,7 @@ import json
 import logging
 import requests
 
+from . import initial_step
 from . import welcome_step
 from . import train_date_and_time_step
 from . import source_station_step
@@ -13,6 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 STEPS = {
+    'initial': initial_step.InitialStep,
     'welcome': welcome_step.WelcomeStep,
     'train_date_and_time': train_date_and_time_step.TrainDateAndTimeStep,
     'source_station': source_station_step.SourceStationStep,

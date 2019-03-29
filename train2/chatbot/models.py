@@ -2,16 +2,13 @@ from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 
 
-class STEPS:
-    WELCOME = 'welcome'
-    IS_TRAIN_AROUND_NOW = 'is_train_around_now'
-    USER_LOCATION = 'user_location'
+INITIAL_STEP = 'initial'
 
 
 class ChatSession(models.Model):
     user_id = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
-    current_step = models.CharField(max_length=50, default=STEPS.WELCOME)
+    current_step = models.CharField(max_length=50, default=INITIAL_STEP)
     payloads = ArrayField(models.TextField(null=True), default=list)
     last_save_at = models.DateTimeField(auto_now=True)
 

@@ -9,7 +9,7 @@ class WelcomeStep(chat_step.ChatStep):
         return 'welcome'
 
     def send_message(self):
-        message = 'הי! אני בוט שמאפשר לדווח על ביטול רכבות\n' \
+        message = 'הי! אני בוט שמאפשר לדווח על ביטול רכבות.\n' \
                   'האם מדובר על רכבת סביב שעה מעכשיו?'
         self._send_message(message)
 

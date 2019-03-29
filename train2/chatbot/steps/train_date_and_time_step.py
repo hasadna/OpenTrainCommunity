@@ -23,4 +23,4 @@ class TrainDateAndTimeStep(chat_step.ChatStep):
         # self.session.approx_train_time = datetime.combine(datetime.date.today(), time_of_day)
         # self.session.save()
 
-        return 'user_location'
+        return 'source_station'
