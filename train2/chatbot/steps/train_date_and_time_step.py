@@ -9,7 +9,7 @@ class TrainDateAndTimeStep(chat_step.ChatStep):
         return 'train_date_and_time'
 
     def send_message(self):
-        message = 'מתי היתה הרכבת שבוטלה?'
+        message = 'מתי הרכבת היתה אמורה לצאת?'
         self._send_message(message)
 
     def handle_user_response(self, messaging_event):
@@ -20,8 +20,5 @@ class TrainDateAndTimeStep(chat_step.ChatStep):
         except ValueError:
             self._send_message('לא הצלחתי להבין את התשובה :( נסו לכתוב שעה כמו: 16:42')
             return self.get_name()
-
-        # self.session.approx_train_time = datetime.combine(datetime.date.today(), time_of_day)
-        # self.session.save()
 
         return 'source_station'

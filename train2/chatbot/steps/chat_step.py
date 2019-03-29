@@ -1,7 +1,5 @@
 import abc
-import json
 import logging
-import requests
 from django.conf import settings
 
 from pymessenger.bot import Bot
@@ -49,22 +47,3 @@ class ChatStep(abc.ABC):
         logger.info("Sending buttons message to %s: %s", recipient_id, message)
 
         self.bot.send_button_message(recipient_id, message, buttons)
-
-        # params = {
-        #     "access_token": settings.FB_PAGE_ACCESS_TOKEN
-        # }
-        # headers = {
-        #     "Content-Type": "application/json"
-        # }
-        # data = json.dumps({
-        #     "recipient": {
-        #         "id": recipient_id
-        #     },
-        #     "message": {
-        #         "text": message
-        #     }
-        # })
-        # r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
-        # if r.status_code != 200:
-        #     logger.info(r.status_code)
-        #     logger.info(r.text)
