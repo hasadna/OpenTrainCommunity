@@ -30,7 +30,8 @@ def build_pickle(date: datetime.date, pickle_file: str) -> str:
     daily_gtfs = download_daily_gtfs(date)
     feed = obus_gtfs_utils.get_partridge_feed_by_date(daily_gtfs, date)
     trips_and_routes = feed.trips.merge(feed.routes, on="route_id")
-    train_trips_and_routes = trips_and_routes[trips_and_routes['agency_id']=='2']
+    #train_trips_and_routes = trips_and_routes[trips_and_routes['agency_id']=='2']
+    train_trips_and_routes = trips_and_routes.query('agency_id=="2"')
     train_stops_trip_routes = feed.stop_times.merge(train_trips_and_routes, on="trip_id")
     latest_train_data = train_stops_trip_routes.merge(feed.calendar, on="service_id")
     stop_ids = latest_train_data['stop_id'].unique()
