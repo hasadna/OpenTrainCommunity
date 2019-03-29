@@ -48,7 +48,7 @@ def get_or_create_daily_trips(date: datetime.date = None, force:bool = False) ->
     return pd.read_pickle(pickle_file)
 
 
-def get_trips_from_to(from_code: str, to_code: str, when: datetime.date = None):
+def get_trips_from_to(from_code: str, to_code: str, when: datetime.datetime = None):
     """
     :param when:
     :param from_code:
@@ -68,3 +68,17 @@ def get_trips_from_to(from_code: str, to_code: str, when: datetime.date = None):
     delta_stops_from_to = daily_stops_from_to[
         (daily_stops_from_to.arrival_time_x > start_seconds) &
         (daily_stops_from_to.arrival_time_x < end_seconds)]
+
+
+def get_stops():
+    df = get_or_create_daily_trips()
+    df_stops = df[['stop_code', 'stop_name']].drop_duplicates().sort_values('stop_name')
+    return [{
+        'stop_code': row.stop_code,
+        'stop_name': row.stop_name
+    } for idx, row in df_stops.iterrows()]
+
+
+
+
+
