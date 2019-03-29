@@ -3,6 +3,7 @@ import urllib.request
 import tempfile
 import os
 import pandas as pd
+from . import obus_gtfs_utils
 
 
 def get_workdir(date):
@@ -18,7 +19,7 @@ def download_daily_gtfs(date: datetime.date = None, force: bool = False) -> str:
         url = f'https://s3-eu-west-1.amazonaws.com/s3.obus.hasadna.org.il/{date.isoformat()}.zip'
         tmpfile = os.path.join(get_workdir(date), f'{date.isoformat()}.zip')
         urllib.request.urlretrieve(url, tmpfile)
-        print(f"Donwloaded to {tmpfile}")
+        print(f"Downloaded to {tmpfile}")
     else:
         print(f"Already downloaded f{tmpfile}")
     return tmpfile
@@ -26,7 +27,7 @@ def download_daily_gtfs(date: datetime.date = None, force: bool = False) -> str:
 
 def build_pickle(date: datetime.date, pickle_file: str) -> str:
     daily_gtfs = download_daily_gtfs(date)
-    feed = gtfs_utils.get_partridge_feed_by_date(daily_gtfs, date)
+    feed = obus_gtfs_utils.get_partridge_feed_by_date(daily_gtfs, date)
     trips_and_routes = feed.trips.merge(feed.routes, on="route_id")
     train_trips_and_routes = trips_and_routes[trips_and_routes['agency_id']=='2']
     train_stops_trip_routes = feed.stop_times.merge(train_trips_and_routes, on="trip_id")
