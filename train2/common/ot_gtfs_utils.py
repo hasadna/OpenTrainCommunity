@@ -26,6 +26,7 @@ def download_daily_gtfs(date: datetime.date = None, force: bool = False) -> str:
 
 
 def build_pickle(date: datetime.date, pickle_file: str) -> str:
+    json_file = pickle_file.replace(".pickle", ".json")
     daily_gtfs = download_daily_gtfs(date)
     feed = obus_gtfs_utils.get_partridge_feed_by_date(daily_gtfs, date)
     trips_and_routes = feed.trips.merge(feed.routes, on="route_id")
@@ -36,6 +37,7 @@ def build_pickle(date: datetime.date, pickle_file: str) -> str:
     train_stops = feed.stops[feed.stops.stop_id.isin(stop_ids)]
     latest_train_data_with_stops = latest_train_data.merge(train_stops, on="stop_id")
     latest_train_data_with_stops.to_pickle(pickle_file)
+    latest_train_data_with_stops.to_json(json_file)
     return pickle_file
 
 
