@@ -40,7 +40,7 @@ def handle_messaging_event(messaging_event):
     if 'message' not in messaging_event:
         return
 
-    message = messaging_event['message'].strip()
+    message = messaging_event['message']['text'].strip()
     sender_id = messaging_event['sender']['id']
 
     session = get_session(sender_id)
