@@ -11,7 +11,7 @@ import datetime
 
 env.user = "opentrain"
 #env.hosts = ["otrain.org"]
-env.hosts = ["142.93.168.206"]
+env.hosts = ["otrain.org"]
 env.projdir = "/home/opentrain/OpenTrainCommunity/train2"
 env.venv_dir = '/home/%s/.virtualenvs/train2' % env.user
 env.venv_command = '.  %s/bin/activate' % env.venv_dir
