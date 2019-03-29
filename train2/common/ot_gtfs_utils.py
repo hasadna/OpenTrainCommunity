@@ -66,9 +66,27 @@ def get_trips_from_to(from_code: str, to_code: str, when: datetime.datetime = No
     time_since_midnight = 3600 * when.hour + 60 * when.minute + when.second
     start_seconds = time_since_midnight - 3600
     end_seconds = time_since_midnight + 3600
-    delta_stops_from_to = daily_stops_from_to[
-        (daily_stops_from_to.arrival_time_x > start_seconds) &
-        (daily_stops_from_to.arrival_time_x < end_seconds)]
+    delta_stops_from_to = daily_stops_from_to[(daily_stops_from_to.departure_time_x > start_seconds) & (daily_stops_from_to.departure_time_x < end_seconds)]
+    delta_stops_from_to_sorted = delta_stops_from_to.sort_values('departure_time_x')
+
+    return [{
+        'from':
+            {
+                'stop_code': row.stop_code_x,
+                'stop_name': row.stop_name_x,
+                'departure_time' : midnight_sec_to_time(row.departure_time_x)
+            },
+        'to':
+            {
+                'stop_code': row.stop_code_y,
+                'stop_name': row.stop_name_y,
+                'departure_time': midnight_sec_to_time(row.departure_time_y)
+            },
+        'route':
+            {
+                'description': row.route_long_name_x
+            }
+    } for idx, row in delta_stops_from_to_sorted.iterrows()]
 
 
 def get_stops():
@@ -80,6 +98,9 @@ def get_stops():
     } for idx, row in df_stops.iterrows()]
 
 
+def midnight_sec_to_time(seconds):
+    datetime_since_midnight = datetime.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) + datetime.timedelta(seconds=seconds)
+    return datetime_since_midnight.time().isoformat()
 
 
 
