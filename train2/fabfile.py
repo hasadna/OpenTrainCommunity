@@ -91,6 +91,12 @@ def deploy():
 
 
 @task
+def deploy_quick():
+    pull()
+    restart()
+
+
+@task
 def backup_db():
     ts = datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
     out = "/home/opentrain/public_html/files/dumps/db_{}.sql.gz".format(ts)
