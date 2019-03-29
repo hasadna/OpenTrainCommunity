@@ -4,6 +4,8 @@ from django.db import models
 
 class STEPS:
     WELCOME = 'welcome'
+    IS_TRAIN_AROUND_NOW = 'is_train_around_now'
+    USER_LOCATION = 'user_location'
 
 
 class ChatSession(models.Model):
@@ -15,5 +17,3 @@ class ChatSession(models.Model):
 
     def __str__(self):
         return f'{self.user_id} started at @{self.created_at.replace(microsecond=0)}'
-
-

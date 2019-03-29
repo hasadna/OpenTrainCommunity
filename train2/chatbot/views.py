@@ -1,6 +1,5 @@
 import json
 
-import requests
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
@@ -38,12 +37,24 @@ class HookView(View):
 
 
 def handle_messaging_event(messaging_event):
-    if 'message' in messaging_event:
-        sender_id = messaging_event['sender']['id']
-        session = get_session(sender_id)
-        session.payloads.append(json.dumps(messaging_event))
-        session.save()
-        getattr(steps, f'step_{session.current_step}')(session)
+    if 'message' not in messaging_event:
+        return
+
+    message = messaging_event['message'].strip()
+    sender_id = messaging_event['sender']['id']
+
+    session = get_session(sender_id)
+    session.payloads.append(json.dumps(messaging_event))
+    session.save()
+
+    current_step_name = session.current_step
+    step = steps.get_step(current_step_name)(session)
+
+    next_step_name = step.handle_user_response(message)
+    session.update(current_step=next_step_name)
+    next_step = steps.get_step(next_step_name)(session)
+
+    next_step.send_message()
 
 
 def get_session(sender_id):
