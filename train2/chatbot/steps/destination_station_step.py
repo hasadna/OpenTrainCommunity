@@ -13,8 +13,8 @@ class DestinationStationStep(chat_step.ChatStep):
 
     def handle_user_response(self, user_response):
         # TODO: Parse station and use a station_id
-        self.session.destination_train_station = user_response
-        self.session.save()
+        # self.session.destination_train_station = user_response
+        # self.session.save()
 
         # return 'select_train_line'
         return 'goodbye'

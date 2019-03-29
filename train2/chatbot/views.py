@@ -44,8 +44,11 @@ def handle_messaging_event(messaging_event):
     sender_id = messaging_event['sender']['id']
 
     session = get_session(sender_id)
-    session.payloads.append(json.dumps(messaging_event))
-    session.save()
+    payload = json.dumps({
+        'messaging_event': messaging_event,
+        'chat_step': session.current_step
+    })
+    session.payloads.append(payload)
 
     current_step_name = session.current_step
     step = steps.get_step(current_step_name)(session)
