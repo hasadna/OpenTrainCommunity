@@ -13,4 +13,4 @@ db*.sql.gz
 /static
 /run_train2.sh
 /dumps/
-
+*.pickle
