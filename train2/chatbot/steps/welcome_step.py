@@ -15,8 +15,8 @@ class WelcomeStep(chat_step.ChatStep):
 
     def handle_user_response(self, user_response):
         if user_response == 'כן':
-            train_time = datetime.datetime.now()
-            self.session.update(train_time=train_time)
+            self.session.approx_train_time = datetime.datetime.now()
+            self.session.save()
             return 'source_station'
 
         return 'train_date_and_time'

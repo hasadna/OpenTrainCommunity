@@ -20,7 +20,7 @@ class TrainDateAndTimeStep(chat_step.ChatStep):
             self._send_message('לא הצלחתי להבין את התשובה :( נסו לכתוב שעה כמו: 16:42')
             return self.get_name()
 
-        train_time = datetime.combine(datetime.date.today(), time_of_day)
-        self.session.update(train_time=train_time)
+        self.session.approx_train_time = datetime.combine(datetime.date.today(), time_of_day)
+        self.session.save()
 
         return 'user_location'

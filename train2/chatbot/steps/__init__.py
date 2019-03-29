@@ -25,30 +25,6 @@ def get_step(step_name):
     return STEPS[step_name]
 
 
-# def step_is_train_around_now(session, message):
-#     if message == 'כן':
-#         session.update(current_step=models.STEPS.USER_LOCATION)
-#         return step_user_location(session, message)
-#
-#     response = '''
-#     מתי היתה הרכבת שבוטלה?
-#     '''
-#     session.update(current_step=models.STEPS.USER_LOCATION)
-#     send_message(session.user_id, response)
-#
-#
-# def step_user_location(session, message):
-#     if message == 'כן':
-#         session.update(current_step=models.STEPS.USER_LOCATION)
-#         step_user_location(session, message)
-#
-#     response = '''
-#     הי! אני בוט שמאפשר לדווח על ביטול רכבות
-#     האם מדובר על רכבת סביב שעה מעכשיו?
-#     '''
-#     send_message(session.user_id, response)
-
-
 def send_message(recipient_id, message_text):
         logger.info("sending message to %s: %s", recipient_id, message_text)
         params = {

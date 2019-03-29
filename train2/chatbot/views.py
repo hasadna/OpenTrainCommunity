@@ -51,7 +51,8 @@ def handle_messaging_event(messaging_event):
     step = steps.get_step(current_step_name)(session)
 
     next_step_name = step.handle_user_response(message)
-    session.update(current_step=next_step_name)
+    session.current_step = next_step_name
+    session.save()
     next_step = steps.get_step(next_step_name)(session)
 
     next_step.send_message()

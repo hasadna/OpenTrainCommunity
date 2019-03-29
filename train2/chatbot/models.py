@@ -13,6 +13,9 @@ class ChatSession(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     current_step = models.CharField(max_length=50, default=STEPS.WELCOME)
     payloads = ArrayField(models.TextField(null=True), default=list)
+    approx_train_time = models.DateTimeField(null=True)
+    source_train_station = models.CharField(max_length=200, null=True)
+    destination_train_station = models.CharField(max_length=200, null=True)
     last_save_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
