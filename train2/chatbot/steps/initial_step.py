@@ -9,5 +9,5 @@ class InitialStep(chat_step.ChatStep):
     def send_message(self):
         pass
 
-    def handle_user_response(self, user_response):
+    def handle_user_response(self, messaging_event):
         return 'welcome'

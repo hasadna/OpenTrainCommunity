@@ -10,6 +10,6 @@ class GoodbyeStep(chat_step.ChatStep):
         message = 'תודה רבה על הדיווח ובהצלחה בהגעה ליעד... :)'
         self._send_message(message)
 
-    def handle_user_response(self, user_response):
+    def handle_user_response(self, messaging_event):
         # TODO: Allow to report a new train
         return self.get_name()

@@ -37,10 +37,9 @@ class HookView(View):
 
 
 def handle_messaging_event(messaging_event):
-    if 'message' not in messaging_event:
+    if 'message' not in messaging_event and 'postback' not in messaging_event:
         return
 
-    message = messaging_event['message']['text'].strip()
     sender_id = messaging_event['sender']['id']
 
     session = get_session(sender_id)
@@ -53,7 +52,7 @@ def handle_messaging_event(messaging_event):
     current_step_name = session.current_step
     step = steps.get_step(current_step_name)(session)
 
-    next_step_name = step.handle_user_response(message)
+    next_step_name = step.handle_user_response(messaging_event)
     session.current_step = next_step_name
     session.save()
     next_step = steps.get_step(next_step_name)(session)

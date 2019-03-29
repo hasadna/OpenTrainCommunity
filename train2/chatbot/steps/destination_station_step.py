@@ -11,9 +11,10 @@ class DestinationStationStep(chat_step.ChatStep):
         # TODO: Send possible stations
         self._send_message(message)
 
-    def handle_user_response(self, user_response):
+    def handle_user_response(self, messaging_event):
         # TODO: Parse station and use a station_id
-        # self.session.destination_train_station = user_response
+        # text = self._extract_text(messaging_event)
+        # self.session.destination_train_station = text
         # self.session.save()
 
         # return 'select_train_line'
