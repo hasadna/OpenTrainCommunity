@@ -33,8 +33,9 @@ class WelcomeStep(chat_step.ChatStep):
         self._send_buttons(message, buttons)
 
     def handle_user_response(self, messaging_event):
+        text = self._extract_text(messaging_event)
         button_payload = self._extract_selected_button(messaging_event)
-        if button_payload == self.BUTTON_CANCEL:
+        if button_payload != self.BUTTON_REPORT_CANCELED_TRAIN and text != 'כן':
             self._send_message('אוקי, אני אחכה פה עד שתתבטל רכבת...')
             return 'restart'
 

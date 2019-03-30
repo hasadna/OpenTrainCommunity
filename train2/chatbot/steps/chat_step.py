@@ -8,6 +8,10 @@ logger = logging.getLogger(__name__)
 
 
 class ChatStep(abc.ABC):
+    MAX_ITEMS_FOR_SUGGESTIONS = 6
+    MAX_ITEMS_FOR_BUTTONS = 4
+    STORAGE_DATETIME_FORMAT = '%Y%m%d_%H%M'
+
     def __init__(self, session):
         self.session = session
         self.bot = Bot(settings.FB_PAGE_ACCESS_TOKEN)
@@ -35,6 +39,12 @@ class ChatStep(abc.ABC):
     @staticmethod
     def _extract_selected_button(messaging_event):
         return messaging_event.get('postback', {}).get('payload', None)
+
+    def _set_step_data(self, data, key=None):
+        if key is None:
+            key = self.get_name()
+        self.session.steps_data[key] = data
+        self.session.save()
 
     def _send_message(self, message):
         recipient_id = self.session.user_id

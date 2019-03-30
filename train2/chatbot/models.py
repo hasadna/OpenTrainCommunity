@@ -10,6 +10,7 @@ class ChatSession(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     current_step = models.CharField(max_length=50, default=INITIAL_STEP)
     payloads = ArrayField(models.TextField(null=True), default=list)
+    steps_data = JSONField(models.TextField(null=True), default=dict)
     last_save_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
