@@ -19,9 +19,10 @@ class DestinationStationStep(chat_step.ChatStep):
                 message = 'איזו מאלה?'
                 suggestions = []
                 for station in matching_stations:
+                    station_name = station.main_name
                     suggestions.append({
-                        'text': station.hebrew_names[0],
-                        'payload': station.hebrew_names[0],
+                        'text': station_name,
+                        'payload': station_name,
                     })
                 self._send_suggestions(message, suggestions)
                 return
@@ -39,15 +40,15 @@ class DestinationStationStep(chat_step.ChatStep):
             self._send_message('האמת שאני לא מכיר תחנה כזאת...')
             return self.get_name()
 
-        if len(matching_stations) == 1:
-            station = matching_stations[0]
-            station_name = station.hebrew_names[0]
-            self._send_message(station_name + ' 👍')
-            # return 'select_train_line'
-            return 'goodbye'
-
-        if len(matching_stations) <= self.MAX_STATIONS_FOR_SUGGESTIONS:
+        if 2 <= len(matching_stations) <= self.MAX_STATIONS_FOR_SUGGESTIONS:
             return self.get_name()
 
-        self._send_message('אני לא כל כך בטוח איזו תחנה זו, אולי ננסה משהו יותר ספציפי?')
-        return self.get_name()
+        if len(matching_stations) > self.MAX_STATIONS_FOR_SUGGESTIONS:
+            self._send_message('אני לא כל כך בטוח איזו תחנה זו, אולי ננסה משהו יותר ספציפי?')
+            return self.get_name()
+
+        station = matching_stations[0]
+        station_name = station.main_name
+        self._send_message(station_name + ' 👍')
+        # return 'select_train_line'
+        return 'goodbye'
