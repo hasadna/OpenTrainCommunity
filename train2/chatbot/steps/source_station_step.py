@@ -4,8 +4,6 @@ from chatbot.chat_utils import ChatUtils
 
 
 class SourceStationStep(chat_step.ChatStep):
-    MAX_STATIONS_FOR_SUGGESTIONS = 6
-
     @staticmethod
     def get_name():
         return 'source_station'
@@ -15,7 +13,7 @@ class SourceStationStep(chat_step.ChatStep):
         if previous_response:
             text = self._extract_text(previous_response)
             matching_stations = StationUtils.find_matching_stations(text)
-            if 2 <= len(matching_stations) <= self.MAX_STATIONS_FOR_SUGGESTIONS:
+            if 2 <= len(matching_stations) <= self.MAX_ITEMS_FOR_SUGGESTIONS:
                 message = 'איזו מאלה?'
                 suggestions = []
                 for station in matching_stations:
@@ -40,14 +38,15 @@ class SourceStationStep(chat_step.ChatStep):
             self._send_message('האמת שאני לא מכיר תחנה כזאת...')
             return self.get_name()
 
-        if 2 <= len(matching_stations) <= self.MAX_STATIONS_FOR_SUGGESTIONS:
+        if 2 <= len(matching_stations) <= self.MAX_ITEMS_FOR_SUGGESTIONS:
             return self.get_name()
 
-        if len(matching_stations) > self.MAX_STATIONS_FOR_SUGGESTIONS:
+        if len(matching_stations) > self.MAX_ITEMS_FOR_SUGGESTIONS:
             self._send_message('אני לא כל כך בטוח איזו תחנה זו, אולי ננסה משהו יותר ספציפי?')
             return self.get_name()
 
         station = matching_stations[0]
         station_name = station.main_name
+        self._set_step_data(station.gtfs_code)
         self._send_message(station_name + ' 👍')
         return 'destination_station'

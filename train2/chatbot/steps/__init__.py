@@ -6,6 +6,7 @@ from . import train_time_approx_now_step
 from . import train_date_and_time_step
 from . import source_station_step
 from . import destination_station_step
+from . import select_train_line_step
 from . import goodbye_step
 from . import restart_step
 
@@ -19,6 +20,7 @@ STEPS = {
     'train_date_and_time': train_date_and_time_step.TrainDateAndTimeStep,
     'source_station': source_station_step.SourceStationStep,
     'destination_station': destination_station_step.DestinationStationStep,
+    'select_train_line': select_train_line_step.SelectTrainLineStep,
     'goodbye': goodbye_step.GoodbyeStep,
     'restart': restart_step.RestartStep,
 }

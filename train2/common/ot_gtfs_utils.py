@@ -117,7 +117,7 @@ def get_trips_from_to(from_code: str, to_code: str, when: datetime.datetime = No
             {
                 'stop_code': row.stop_code_x,
                 'stop_name': row.stop_name_x,
-                'departure_time' : midnight_sec_to_time(row.departure_time_x)
+                'departure_time': midnight_sec_to_time(row.departure_time_x)
             },
         'to':
             {
@@ -144,7 +144,4 @@ def get_stops(date=None):
 
 def midnight_sec_to_time(seconds):
     datetime_since_midnight = datetime.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) + datetime.timedelta(seconds=seconds)
-    return datetime_since_midnight.time().isoformat()
-
-
-
+    return datetime_since_midnight.time()

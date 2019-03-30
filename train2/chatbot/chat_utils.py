@@ -11,3 +11,7 @@ class ChatUtils:
             return payload['messaging_event']
 
         return None
+
+    @staticmethod
+    def get_step_data(session, key):
+        return session.steps_data.get(key)

@@ -12,6 +12,9 @@ class StationUtils:
 
         for stop in all_stops:
             for name in stop.hebrew_list:
+                if cls._is_exact_match(text, name):
+                    return [stop]
+
                 if cls._is_text_matches_station(text, name):
                     matching_stations.append(stop)
                     # We break from the inner loop so that if we get a match
@@ -19,6 +22,13 @@ class StationUtils:
                     break
 
         return matching_stations
+
+    @classmethod
+    def _is_exact_match(cls, text, station_name):
+        normalized_text = cls._normalize(text)
+        normalized_station_name = cls._normalize(station_name)
+
+        return normalized_text == normalized_station_name
 
     @classmethod
     def _is_text_matches_station(cls, text, station_name):
