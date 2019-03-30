@@ -47,3 +47,23 @@ class ChatStep(abc.ABC):
         logger.info("Sending buttons message to %s: %s", recipient_id, message)
 
         self.bot.send_button_message(recipient_id, message, buttons)
+
+    def _send_suggestions(self, message, suggestions):
+        recipient_id = self.session.user_id
+        logger.info("Sending suggestions message to %s: %s", recipient_id, message)
+
+        suggestions_payload = []
+        for suggestion in suggestions:
+            suggestions_payload.append({
+                'content_type': 'text',
+                'title': suggestion['text'],
+                'payload': suggestion['payload'],
+            })
+
+        message_payload = {
+            'text': message,
+            'quick_replies': suggestions_payload
+        }
+
+        print(message_payload)
+        self.bot.send_message(recipient_id, message_payload)

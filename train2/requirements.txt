@@ -17,3 +17,4 @@ django-cors-headers==2.0.0
 sphinx_rtd_theme==0.4.0
 pymessenger==0.0.7.0
 partridge==1.0.0
+python-Levenshtein==0.12.0
