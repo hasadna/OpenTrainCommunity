@@ -1,13 +1,13 @@
 import datetime
 
 import tabulate
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext as _
 import common.fields
 import pytz
 import geocoder
-import numpy
 
 from data.utils import haversine
 
@@ -237,7 +237,7 @@ class Sample(models.Model):
 class Stop(models.Model):
     gtfs_stop_id = models.IntegerField(db_index=True, unique=True)
     english = models.CharField(max_length=50)
-    hebrews = common.fields.ArrayField()
+    hebrew_list = ArrayField(models.CharField(max_length=100), default=[])
     lat = models.FloatField()
     lon = models.FloatField()
     gtfs_code = models.CharField(max_length=30, null=True)
@@ -255,8 +255,8 @@ class Stop(models.Model):
 
     @property
     def main_name(self):
-        if self.hebrews:
-            return self.hebrews[0]
+        if self.hebrew_list:
+            return self.hebrew_list[0]
         return self.english
 
     @property
@@ -269,10 +269,8 @@ class Stop(models.Model):
 
     @property
     def stop_short_name(self):
-        return self.hebrews[0]
+        return self.hebrew_list[0]
 
     def __str__(self):
-        return '{} {} {}'.format(_('stop'),
-                                 self.main_name,
-                                 self.gtfs_stop_id
-                                 )
+        return self.main_name
+
