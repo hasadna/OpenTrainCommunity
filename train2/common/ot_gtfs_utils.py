@@ -57,11 +57,12 @@ def create_train_gtfs(gtfs_file, train_gtfs_file):
     return train_gtfs_file
 
 
-def download_daily_gtfs(date: datetime.date = None, force: bool = False) -> str:
+def get_train_gtfs(date: datetime.date = None, force: bool = False) -> str:
     date = date or datetime.date.today()
     gtfs_file = os.path.join(get_workdir(date), f'{date.isoformat()}.zip')
     if force or not os.path.exists(gtfs_file):
         url = f'https://s3-eu-west-1.amazonaws.com/s3.obus.hasadna.org.il/{date.isoformat()}.zip'
+        logger.info('Downloading %s', url)
         urllib.request.urlretrieve(url, gtfs_file)
         logger.info(f"Downloaded to %s", gtfs_file)
     else:
@@ -74,7 +75,7 @@ def download_daily_gtfs(date: datetime.date = None, force: bool = False) -> str:
 
 def build_pickle_old(date: datetime.date, pickle_file: str) -> str:
     json_file = pickle_file.replace(".pickle", ".json")
-    daily_gtfs = download_daily_gtfs(date)
+    daily_gtfs = get_train_gtfs(date)
     feed = obus_gtfs_utils.get_partridge_feed_by_date(daily_gtfs, date)
     trips_and_routes = feed.trips.merge(feed.routes, on="route_id")
     #train_trips_and_routes = trips_and_routes[trips_and_routes['agency_id']=='2']
@@ -96,7 +97,7 @@ def get_train_trip_ids(feed):
 
 
 def get_feed(date):
-    daily_gtfs = download_daily_gtfs(date)
+    daily_gtfs = get_train_gtfs(date)
     logger.info("getting partidige feed")
     feed = obus_gtfs_utils.get_partridge_feed_by_date(daily_gtfs, date)
     logger.info("feed is built")
