@@ -29,7 +29,7 @@ def download_daily_gtfs(date: datetime.date = None, force: bool = False) -> str:
     return tmpfile
 
 
-def build_pickle(date: datetime.date, pickle_file: str) -> str:
+def build_pickle_old(date: datetime.date, pickle_file: str) -> str:
     json_file = pickle_file.replace(".pickle", ".json")
     daily_gtfs = download_daily_gtfs(date)
     feed = obus_gtfs_utils.get_partridge_feed_by_date(daily_gtfs, date)
@@ -37,6 +37,41 @@ def build_pickle(date: datetime.date, pickle_file: str) -> str:
     #train_trips_and_routes = trips_and_routes[trips_and_routes['agency_id']=='2']
     train_trips_and_routes = trips_and_routes.query('agency_id=="2"')
     train_stops_trip_routes = feed.stop_times.merge(train_trips_and_routes, on="trip_id")
+    latest_train_data = train_stops_trip_routes.merge(feed.calendar, on="service_id")
+    stop_ids = latest_train_data['stop_id'].unique()
+    train_stops = feed.stops[feed.stops.stop_id.isin(stop_ids)]
+    latest_train_data_with_stops = latest_train_data.merge(train_stops, on="stop_id")
+    latest_train_data_with_stops.to_pickle(pickle_file)
+    latest_train_data_with_stops.to_json(json_file)
+    return pickle_file
+
+
+def get_train_trip_ids(feed):
+    trips_compact = feed.trips[['trip_id', 'route_id']]
+    train_trips_and_routes_compact = trips_compact.merge(feed.routes, on='route_id').query('agency_id=="2"')
+    return train_trips_and_routes_compact.trip_id
+
+
+def get_feed(date):
+    daily_gtfs = download_daily_gtfs(date)
+    logger.info("getting partidige feed")
+    feed = obus_gtfs_utils.get_partridge_feed_by_date(daily_gtfs, date)
+    logger.info("feed is built")
+    return feed
+
+
+def build_pickle(date: datetime.date, pickle_file: str) -> str:
+    json_file = pickle_file.replace(".pickle", ".json")
+    # extract train trip ids
+    feed = get_feed(date)
+    trip_ids = get_train_trip_ids(feed)
+    train_trips = feed.trips[feed.trips.trip_id.isin(trip_ids)]
+    train_trips_routes = train_trips.merge(feed.routes, on='route_id')
+    # this is the most expensive call
+    # since we need to read all the stop times
+    train_stop_times = feed.stop_times[feed.stop_times.trip_id.isin(trip_ids)]
+
+    train_stops_trip_routes = train_stop_times.merge(train_trips_routes, on="trip_id")
     latest_train_data = train_stops_trip_routes.merge(feed.calendar, on="service_id")
     stop_ids = latest_train_data['stop_id'].unique()
     train_stops = feed.stops[feed.stops.stop_id.isin(stop_ids)]
