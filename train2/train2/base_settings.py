@@ -206,5 +206,7 @@ FB_VERIFY_TOKEN = None
 
 FB_PAGE_ACCESS_TOKEN = None
 
+SLACK_URL = None
+
 
 
