@@ -72,10 +72,6 @@ def migrate():
         run("python manage.py createcachetable")
         run("python manage.py clear_cache")
 
-@task
-def build_stops():
-    with virtualenv(env.projdir):
-        run("python manage.py build_stops")
 
 @task
 def restart():

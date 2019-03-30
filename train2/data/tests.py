@@ -33,7 +33,6 @@ class DataIntegrityTests(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         activate(settings.LANGUAGE_CODE)
-        data.stop_utils.build_stops()
 
     @given(st.dates(min_value=datetime.date(2015, 1, 1), max_value=datetime.date(2050, 1, 1)),
            st.integers(min_value=0, max_value=23),
