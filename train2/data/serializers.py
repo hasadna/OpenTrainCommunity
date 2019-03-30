@@ -38,7 +38,7 @@ class RouteUrlAndIdField(serializers.ReadOnlyField):
 
 class StopSerializer(serializers.ModelSerializer):
     stop_id = serializers.IntegerField(source='gtfs_stop_id')
-    heb_stop_names = serializers.ReadOnlyField(source='hebrews')
+    heb_stop_names = serializers.ReadOnlyField(source='hebrew_list')
     latlon = serializers.ReadOnlyField()
     google_url = serializers.SerializerMethodField()
     name = serializers.SerializerMethodField()
