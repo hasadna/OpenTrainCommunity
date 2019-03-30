@@ -55,9 +55,8 @@ def get_train_trip_ids(feed):
 
 def get_feed(date):
     daily_gtfs = download_daily_gtfs(date)
-    subprocess.check_call(["unzip", daily_gtfs], cwd=get_workdir(date))
     logger.info("getting partidige feed")
-    feed = obus_gtfs_utils.get_partridge_feed_by_date(os.path.dirname(daily_gtfs), date)
+    feed = obus_gtfs_utils.get_partridge_feed_by_date(daily_gtfs, date)
     logger.info("feed is built")
     return feed
 
