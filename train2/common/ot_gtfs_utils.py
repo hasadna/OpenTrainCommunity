@@ -1,13 +1,17 @@
+import logging
 import datetime
 import urllib.request
-import tempfile
 import os
 import pandas as pd
 from . import obus_gtfs_utils
 
 
+logger = logging.getLogger(__name__)
+
+
 def get_workdir(date):
-    path = os.path.join(tempfile.gettempdir(), date.isoformat())
+    base_dir = os.path.join(os.path.dirname(__file__), 'gtfs_workdir')
+    path = os.path.join(base_dir, date.isoformat())
     os.makedirs(path, exist_ok=True)
     return path
 
@@ -19,9 +23,9 @@ def download_daily_gtfs(date: datetime.date = None, force: bool = False) -> str:
         url = f'https://s3-eu-west-1.amazonaws.com/s3.obus.hasadna.org.il/{date.isoformat()}.zip'
         tmpfile = os.path.join(get_workdir(date), f'{date.isoformat()}.zip')
         urllib.request.urlretrieve(url, tmpfile)
-        print(f"Downloaded to {tmpfile}")
+        logger.info(f"Downloaded to {tmpfile}")
     else:
-        print(f"Already downloaded f{tmpfile}")
+        logger.info(f"Already downloaded {tmpfile}")
     return tmpfile
 
 
@@ -46,9 +50,9 @@ def get_or_create_daily_trips(date: datetime.date = None, force:bool = False) ->
     date = date or datetime.date.today()
     pickle_file = os.path.join(get_workdir(date),f"{date.isoformat()}.pickle")
     if not os.path.exists(pickle_file) or force:
-        print(f"Building pickle {pickle_file}")
+        logger.info(f"No pickle {pickle_file}, will download and build")
         build_pickle(date, pickle_file)
-    print(f"Return from pickle {pickle_file}")
+    logger.info(f"Return from pickle {pickle_file}")
     return pd.read_pickle(pickle_file)
 
 

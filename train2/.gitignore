@@ -14,3 +14,5 @@ db*.sql.gz
 /run_train2.sh
 /dumps/
 *.pickle
+gtfs_workdir
+
