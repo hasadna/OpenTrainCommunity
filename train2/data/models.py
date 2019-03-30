@@ -240,6 +240,7 @@ class Stop(models.Model):
     hebrews = common.fields.ArrayField()
     lat = models.FloatField()
     lon = models.FloatField()
+    gtfs_code = models.CharField(max_length=30, null=True)
 
     @cached_property
     def google_latlng(self):
