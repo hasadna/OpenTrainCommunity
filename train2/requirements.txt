@@ -16,3 +16,4 @@ tabulate==0.8.1
 django-cors-headers==2.0.0
 sphinx_rtd_theme==0.4.0
 pymessenger==0.0.7.0
+partridge==1.0.0
