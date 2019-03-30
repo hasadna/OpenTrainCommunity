@@ -95,9 +95,9 @@ def deploy_quick():
 @task
 def backup_db():
     ts = datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
-    out = "/home/opentrain/public_html/files/dumps/db_{}.sql.gz".format(ts)
-    sudo("sudo -u postgres pg_dump train2 --no-owner --no-acl --exclude-table auth_user | gzip > {}".format(out))
-    run("ls -lh {}".format(out))
+    out = f"/home/opentrain/public_html/files/dumps/db_{ts}.sql.gz"
+    sudo(f"sudo -u postgres pg_dump train2 --no-owner --no-acl --exclude-table-data auth* --exclude-table-data django_session | gzip > {out}")
+    run(f"ls -lh {out}")
 
 
 def inline_cmd(cmd):
