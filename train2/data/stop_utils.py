@@ -32,6 +32,9 @@ def build_stops():
         if names != stop.hebrews:
             stop.hebrews = names
             stop.save()
+        if stop.gtfs_code != sj['stop_code']:
+            stop.gtfs_code = sj['stop_code']
+            stop.save()
         lat = sj['latlon'][0]
         lon = sj['latlon'][1]
         if stop.lat != lat or stop.lon != lon:

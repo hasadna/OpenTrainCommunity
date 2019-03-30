@@ -132,8 +132,9 @@ def get_trips_from_to(from_code: str, to_code: str, when: datetime.datetime = No
     } for idx, row in delta_stops_from_to_sorted.iterrows()]
 
 
-def get_stops():
-    df = get_or_create_daily_trips()
+def get_stops(date=None):
+    date = date or datetime.date.today()
+    df = get_or_create_daily_trips(date)
     df_stops = df[['stop_code', 'stop_name']].drop_duplicates().sort_values('stop_name')
     return [{
         'stop_code': row.stop_code,
