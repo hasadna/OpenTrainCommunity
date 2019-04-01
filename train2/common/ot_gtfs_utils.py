@@ -1,8 +1,9 @@
 import logging
 import datetime
-import subprocess
+import shutil
 import urllib.request
 import os
+import subprocess
 import pandas as pd
 from . import obus_gtfs_utils
 
@@ -17,22 +18,64 @@ def get_workdir(date):
     return path
 
 
-def download_daily_gtfs(date: datetime.date = None, force: bool = False) -> str:
+def create_train_gtfs(gtfs_file, train_gtfs_file):
+    workdir = os.path.dirname(gtfs_file)
+    unzip_dir = os.path.join(workdir, 'unzip-folder')
+
+    def p(f):
+        return os.path.join(unzip_dir, f)
+
+    if os.path.exists(unzip_dir):
+        shutil.rmtree(unzip_dir)
+    os.makedirs(unzip_dir, exist_ok=False)
+    subprocess.check_call(['unzip', gtfs_file, '-d', unzip_dir])
+    os.rename(p('stop_times.txt'), p('stop_times_old.txt'))
+
+    logger.info("unzip dir = %s", unzip_dir)
+    trips = pd.read_csv(p('trips.txt'))
+    routes = pd.read_csv(p('routes.txt'))
+    trip_with_routes = trips.merge(routes, on='route_id').query('agency_id=="2"')
+    trip_ids = frozenset(trip_with_routes.trip_id)
+    with open(p('stop_times.txt'), 'w') as fw:
+        with open(p('stop_times_old.txt')) as fr:
+            header = True
+            for line in fr:
+                if header:
+                    fw.write(line + '\n')
+                    header = False
+                trip_id = line.partition(",")[0]
+                if trip_id in trip_ids:
+                    fw.write(line + '\n')
+    logger.info('Wrote new %s', p('stop_times.txt'))
+    os.unlink(p('stop_times_old.txt'))
+    os.unlink(p('shapes.txt'))
+    os.unlink(p('fare_rules.txt'))
+    if os.path.exists(train_gtfs_file):
+        os.unlink(train_gtfs_file)
+    subprocess.check_call(f'zip {train_gtfs_file} *.txt', cwd=unzip_dir, shell=True)
+    logger.info('Wrote %s', train_gtfs_file)
+    return train_gtfs_file
+
+
+def get_train_gtfs(date: datetime.date = None, force: bool = False) -> str:
     date = date or datetime.date.today()
-    tmpfile = os.path.join(get_workdir(date), f'{date.isoformat()}.zip')
-    if force or not os.path.exists(tmpfile):
+    gtfs_file = os.path.join(get_workdir(date), f'{date.isoformat()}.zip')
+    if force or not os.path.exists(gtfs_file):
         url = f'https://s3-eu-west-1.amazonaws.com/s3.obus.hasadna.org.il/{date.isoformat()}.zip'
-        tmpfile = os.path.join(get_workdir(date), f'{date.isoformat()}.zip')
-        urllib.request.urlretrieve(url, tmpfile)
-        logger.info(f"Downloaded to {tmpfile}")
+        logger.info('Downloading %s', url)
+        urllib.request.urlretrieve(url, gtfs_file)
+        logger.info(f"Downloaded to %s", gtfs_file)
     else:
-        logger.info(f"Already downloaded {tmpfile}")
-    return tmpfile
+        logger.info(f"Already downloaded %s", gtfs_file)
+    train_gtfs_file = os.path.join(get_workdir(date), f'{date.isoformat()}_train.zip')
+    if not os.path.exists(train_gtfs_file):
+        create_train_gtfs(gtfs_file, train_gtfs_file)
+    return train_gtfs_file
 
 
 def build_pickle_old(date: datetime.date, pickle_file: str) -> str:
     json_file = pickle_file.replace(".pickle", ".json")
-    daily_gtfs = download_daily_gtfs(date)
+    daily_gtfs = get_train_gtfs(date)
     feed = obus_gtfs_utils.get_partridge_feed_by_date(daily_gtfs, date)
     trips_and_routes = feed.trips.merge(feed.routes, on="route_id")
     #train_trips_and_routes = trips_and_routes[trips_and_routes['agency_id']=='2']
@@ -54,7 +97,7 @@ def get_train_trip_ids(feed):
 
 
 def get_feed(date):
-    daily_gtfs = download_daily_gtfs(date)
+    daily_gtfs = get_train_gtfs(date)
     logger.info("getting partidige feed")
     feed = obus_gtfs_utils.get_partridge_feed_by_date(daily_gtfs, date)
     logger.info("feed is built")
