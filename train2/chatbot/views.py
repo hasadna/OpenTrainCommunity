@@ -65,12 +65,12 @@ def handle_messaging_event(messaging_event):
 def get_session(sender_id):
     two_hours_ago = timezone.now() - datetime.timedelta(hours=2)
     try:
-        return models.ChatSession.objects.get(
+        return models.ChatSession.objects.filter(
             user_id=sender_id,
             last_save_at__gte=two_hours_ago
         ).exclude(
             current_step__in=['terminate']
-        )
+        ).get()
     except models.ChatSession.DoesNotExist:
         return models.ChatSession.objects.create(
             user_id=sender_id
