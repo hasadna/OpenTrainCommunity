@@ -9,6 +9,7 @@ from . import destination_station_step
 from . import select_train_line_step
 from . import goodbye_step
 from . import restart_step
+from . import terminate_step
 
 logger = logging.getLogger(__name__)
 
@@ -23,6 +24,7 @@ STEPS = {
     'select_train_line': select_train_line_step.SelectTrainLineStep,
     'goodbye': goodbye_step.GoodbyeStep,
     'restart': restart_step.RestartStep,
+    'terminate': terminate_step.TerminateStep,
 }
 
 
