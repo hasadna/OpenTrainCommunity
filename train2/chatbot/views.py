@@ -1,8 +1,10 @@
+import datetime
 import json
 
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
+from django.utils import timezone
 from django.views import View
 import logging
 
@@ -61,6 +63,17 @@ def handle_messaging_event(messaging_event):
 
 
 def get_session(sender_id):
-    return models.ChatSession.objects.get_or_create(
-        user_id=sender_id
-    )[0]
+    two_hours_ago = timezone.now() - datetime.timedelta(hours=2)
+    try:
+        return models.ChatSession.objects.get(
+            user_id=sender_id,
+            last_save_at__gte=two_hours_ago
+        ).exclude(
+            current_step__in=['terminate']
+        )
+    except models.ChatSession.DoesNotExist:
+        return models.ChatSession.objects.create(
+            user_id=sender_id
+        )
+
+
