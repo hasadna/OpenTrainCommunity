@@ -81,5 +81,5 @@ class ChatStep(abc.ABC):
     def call_handle_user_response(self, messaging_event):
         text = self._extract_text(messaging_event)
         if text and "ביי" in text:
-            return "goodbye"
+            return "terminate"
         return self.handle_user_response(messaging_event)
