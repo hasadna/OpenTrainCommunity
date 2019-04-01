@@ -52,7 +52,7 @@ def handle_messaging_event(messaging_event):
     current_step_name = session.current_step
     step = steps.get_step(current_step_name)(session)
 
-    next_step_name = step.handle_user_response(messaging_event)
+    next_step_name = step.call_handle_user_response(messaging_event)
     session.current_step = next_step_name
     session.save()
     next_step = steps.get_step(next_step_name)(session)

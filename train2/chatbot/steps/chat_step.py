@@ -77,3 +77,9 @@ class ChatStep(abc.ABC):
 
         print(message_payload)
         self.bot.send_message(recipient_id, message_payload)
+
+    def call_handle_user_response(self, messaging_event):
+        text = self._extract_text(messaging_event)
+        if text and "ביי" in text:
+            return "goodbye"
+        return self.handle_user_response(messaging_event)
