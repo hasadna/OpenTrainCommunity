@@ -136,11 +136,10 @@ def get_or_create_daily_trips(date: datetime.date = None, force:bool = False) ->
 
 
 def get_trips_from_to(from_code: str, to_code: str, when: datetime.datetime = None):
-    """
-    :param when:
-    :param from_code:
-    :param to_code:
-    :return:
+    """ Searches daily GTFS data (Pandas DataFrame) for trips
+    :param when: Timestamp around which to search +- 1 hour
+    :param from_code, to_code: Station code from GTFS data (different from GTFS id stored in db)
+    :return: array of results
     """
     when = when or datetime.datetime.now()
     date = when.date()
@@ -155,7 +154,7 @@ def get_trips_from_to(from_code: str, to_code: str, when: datetime.datetime = No
     delta_stops_from_to = daily_stops_from_to[(daily_stops_from_to.departure_time_x > start_seconds) & (daily_stops_from_to.departure_time_x < end_seconds)]
     delta_stops_from_to_sorted = delta_stops_from_to.sort_values('departure_time_x')
 
-    return [{
+    results = [{
         'from':
             {
                 'stop_code': row.stop_code_x,
@@ -173,6 +172,9 @@ def get_trips_from_to(from_code: str, to_code: str, when: datetime.datetime = No
                 'description': row.route_long_name_x
             }
     } for idx, row in delta_stops_from_to_sorted.iterrows()]
+
+    logger.info('gtfs: get_trips_from_to: {}'.format(results))
+    return results
 
 
 def get_stops(date=None):
