@@ -72,8 +72,9 @@ class DestinationStationStep(chat_step.ChatStep):
             self._send_message('לא מצאתי רכבת מתאימה :( ננסה שוב')
             return 'train_date_and_time'
 
-        if 2 <= len(trips) <= self.MAX_ITEMS_FOR_BUTTONS:
-            serialized_trips = [self._serialize_trip(trip) for trip in trips]
+        if 2 <= len(trips):
+            nearest_trips = self.get_nearest_trips_by_departure_time(trips, number_of_trips=self.MAX_ITEMS_FOR_BUTTONS)
+            serialized_trips = [self._serialize_trip(trip) for trip in nearest_trips]
             self._set_step_data(serialized_trips, key='potential_train_trips')
             return 'select_train_line'
 
@@ -82,6 +83,17 @@ class DestinationStationStep(chat_step.ChatStep):
         description = self._get_trip_description(trip)
         self._send_message(description + ' 👍')
         return 'goodbye'
+
+    def get_nearest_trips_by_departure_time(self, trips, number_of_trips=3):
+        return self.sort_by_departure_time(trips)[:number_of_trips]
+
+    def sort_by_departure_time(self, trips):
+        now = datetime.datetime.now()
+        trips.sort(key=lambda x: self._get_timedelta(now, x))
+
+    @staticmethod
+    def _get_timedelta(now, trip_time):
+        return now - datetime.datetime.combine(date=datetime.datetime.now().date(), time=trip_time)
 
     @staticmethod
     def _get_trip_description(trip):
