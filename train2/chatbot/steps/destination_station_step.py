@@ -89,7 +89,7 @@ class DestinationStationStep(chat_step.ChatStep):
 
     def sort_by_departure_time(self, trips):
         now = datetime.datetime.now()
-        trips.sort(key=lambda x: self._get_timedelta(now, x))
+        trips.sort(key=lambda x: self._get_timedelta(now, x['from']['departure_time']))
 
     @staticmethod
     def _get_timedelta(now, trip_time):
