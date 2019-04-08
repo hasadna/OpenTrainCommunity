@@ -85,11 +85,9 @@ class DestinationStationStep(chat_step.ChatStep):
         return 'goodbye'
 
     def get_nearest_trips_by_departure_time(self, trips, number_of_trips=3):
-        return self.sort_by_departure_time(trips)[:number_of_trips]
-
-    def sort_by_departure_time(self, trips):
         now = datetime.datetime.now()
-        return trips.sort(key=lambda x: self._get_timedelta(now, x['from']['departure_time']))
+        trips.sort(key=lambda x: self._get_timedelta(now, x['from']['departure_time']))
+        return trips[:number_of_trips]
 
     @staticmethod
     def _get_timedelta(now, trip_time):
