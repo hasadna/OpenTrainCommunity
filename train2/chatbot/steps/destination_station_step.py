@@ -91,7 +91,10 @@ class DestinationStationStep(chat_step.ChatStep):
 
     @staticmethod
     def _get_timedelta(now, trip_time):
-        return now - datetime.datetime.combine(date=datetime.datetime.now().date(), time=trip_time)
+        if now.time() > trip_time:
+            return now - datetime.datetime.combine(date=now.date(), time=trip_time)
+        else:
+            return datetime.datetime.combine(date=now.date(), time=trip_time) - now
 
     @staticmethod
     def _get_trip_description(trip):
