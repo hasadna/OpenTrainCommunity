@@ -40,6 +40,10 @@ class ChatStep(abc.ABC):
     def _extract_selected_button(messaging_event):
         return messaging_event.get('postback', {}).get('payload', None)
 
+    @staticmethod
+    def _extract_selected_quick_reply(messaging_event):
+        return messaging_event.get('message', {}).get('quick_reply', {}).get('payload', None)
+
     def _set_step_data(self, data, key=None):
         if key is None:
             key = self.get_name()

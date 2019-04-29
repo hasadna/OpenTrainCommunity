@@ -35,7 +35,7 @@ class SelectTrainLineStep(chat_step.ChatStep):
         print('***')
         print(potential_trips)
 
-        selected_trip_index = self._extract_selected_button(messaging_event)
+        selected_trip_index = self._extract_selected_quick_reply(messaging_event)
 
         if selected_trip_index is None:
             return self.get_name()
