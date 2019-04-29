@@ -57,7 +57,7 @@ class ChatStep(abc.ABC):
         logger.info("Sending buttons message to %s: %s", recipient_id, message)
 
         resp = self.bot.send_button_message(recipient_id, message, buttons)
-        logger.info("Got %s", resp.status)
+        logger.info("Got %s", resp)
 
     def _send_suggestions(self, message, suggestions):
         recipient_id = self.session.user_id
