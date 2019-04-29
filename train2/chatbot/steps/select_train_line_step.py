@@ -16,18 +16,18 @@ class SelectTrainLineStep(chat_step.ChatStep):
         potential_trips = [self._deserialize_trip(trip) for trip in potential_trips]
 
         message = 'איזו מאלה?'
-        buttons = []
+        suggestions = []
         for index, trip in enumerate(potential_trips):
             print('###')
             print(index)
             trip_description = self._get_trip_description(trip)
-            buttons.append({
+            suggestions.append({
                 "type": "postback",
-                "title": trip_description,
+                "text": trip_description,
                 "payload": index,
             })
 
-        self._send_buttons(message, buttons)
+        self._send_suggestions(message, suggestions)
 
     def handle_user_response(self, messaging_event):
         potential_trips = ChatUtils.get_step_data(self.session, 'potential_train_trips')
