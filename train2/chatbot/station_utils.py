@@ -24,6 +24,13 @@ class StationUtils:
         return matching_stations
 
     @classmethod
+    def get_station_by_id(cls, station_id):
+        try:
+            return Stop.objects.get(id=station_id)
+        except Stop.DoesNotExist:
+            return None
+
+    @classmethod
     def _is_exact_match(cls, text, station_name):
         normalized_text = cls._normalize(text)
         normalized_station_name = cls._normalize(station_name)

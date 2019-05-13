@@ -41,6 +41,11 @@ class ChatStep(abc.ABC):
         return messaging_event.get('postback', {}).get('payload', None)
 
     @staticmethod
+    def _is_quick_reply(messaging_event):
+        payload = messaging_event.get('message', {}).get('quick_reply', {}).get('payload', None)
+        return payload is not None
+
+    @staticmethod
     def _extract_selected_quick_reply(messaging_event):
         return messaging_event.get('message', {}).get('quick_reply', {}).get('payload', None)
 

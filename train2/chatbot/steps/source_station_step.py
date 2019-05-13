@@ -17,10 +17,9 @@ class SourceStationStep(chat_step.ChatStep):
                 message = 'איזו מאלה?'
                 suggestions = []
                 for station in matching_stations:
-                    station_name = station.main_name
                     suggestions.append({
-                        'text': station_name,
-                        'payload': station_name,
+                        'text': station.main_name,
+                        'payload': station.id,
                     })
                 self._send_suggestions(message, suggestions)
                 return
@@ -31,8 +30,13 @@ class SourceStationStep(chat_step.ChatStep):
         self._send_message('מאיזו תחנה?')
 
     def handle_user_response(self, messaging_event):
-        text = self._extract_text(messaging_event)
-        matching_stations = StationUtils.find_matching_stations(text)
+        if self._is_quick_reply(messaging_event):
+            station_id = self._extract_selected_quick_reply(messaging_event)
+            matching_station = StationUtils.get_station_by_id(station_id=station_id)
+            matching_stations = [matching_station] if matching_station else []
+        else:
+            text = self._extract_text(messaging_event)
+            matching_stations = StationUtils.find_matching_stations(text)
 
         if len(matching_stations) == 0:
             self._send_message('האמת שאני לא מכיר תחנה כזאת...')
