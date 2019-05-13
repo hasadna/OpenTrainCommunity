@@ -3,6 +3,7 @@ import datetime
 
 from . import chat_step
 from chatbot.chat_utils import ChatUtils
+from chatbot.station_utils import StationUtils
 
 
 class SelectTrainLineStep(chat_step.ChatStep):
