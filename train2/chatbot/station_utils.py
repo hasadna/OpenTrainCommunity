@@ -31,6 +31,13 @@ class StationUtils:
             return None
 
     @classmethod
+    def get_station_by_code(cls, gtfs_code):
+        try:
+            return Stop.objects.get(gtfs_code=gtfs_code)
+        except Stop.DoesNotExist:
+            return None
+
+    @classmethod
     def _is_exact_match(cls, text, station_name):
         normalized_text = cls._normalize(text)
         normalized_station_name = cls._normalize(station_name)

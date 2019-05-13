@@ -98,8 +98,12 @@ class DestinationStationStep(chat_step.ChatStep):
 
     @staticmethod
     def _get_trip_description(trip):
-        # description = trip['route']['description']
-        source_station = trip['from']['stop_name']
+        station_code = trip['from']['stop_code']
+        station = StationUtils.get_station_by_code(station_code)
+        if station is None:
+            source_station = trip['from']['stop_name']
+        else:
+            source_station = station.main_name
         departure_time = trip['from']['departure_time'].strftime('%H:%M')
         return f"{departure_time} מ{source_station}"
 
