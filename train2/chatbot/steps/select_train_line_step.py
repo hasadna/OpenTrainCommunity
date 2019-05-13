@@ -54,7 +54,7 @@ class SelectTrainLineStep(chat_step.ChatStep):
         # description = trip['route']['description']
         source_station = trip['from']['stop_name']
         departure_time = trip['from']['departure_time'].strftime('%H:%M')
-        return f"{departure_time} מ{source_station}"
+        return f"{departure_time}\n מ{source_station}"
 
     @staticmethod
     def _serialize_trip(trip):
