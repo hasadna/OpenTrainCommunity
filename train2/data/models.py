@@ -237,6 +237,7 @@ class Sample(models.Model):
 class Stop(models.Model):
     gtfs_stop_id = models.IntegerField(db_index=True, unique=True)
     english = models.CharField(max_length=50)
+    heb_short_name = models.CharField(max_length=50, blank=True, null=True)
     hebrew_list = ArrayField(models.CharField(max_length=100), default=[])
     lat = models.FloatField()
     lon = models.FloatField()
@@ -255,6 +256,8 @@ class Stop(models.Model):
 
     @property
     def main_name(self):
+        if self.heb_short_name:
+            return self.heb_short_name
         if self.hebrew_list:
             return self.hebrew_list[0]
         return self.english
@@ -269,8 +272,13 @@ class Stop(models.Model):
 
     @property
     def stop_short_name(self):
-        return self.hebrew_list[0]
+        return self.main_name
 
     def __str__(self):
         return self.main_name
+
+    def save(self, *args, **kwargs):
+        if self.heb_short_name and self.heb_short_name not in self.hebrew_list:
+            self.hebrew_list.insert(0, self.heb_short_name)
+        super().save(*args, **kwargs)
 
