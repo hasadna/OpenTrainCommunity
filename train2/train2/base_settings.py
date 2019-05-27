@@ -52,7 +52,6 @@ INSTALLED_APPS = [
     'corsheaders',
 ]
 
-
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -64,7 +63,6 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
 
 CORS_ORIGIN_ALLOW_ALL = True
 
@@ -200,13 +198,10 @@ SHELL_PLUS_POST_IMPORTS = (
     ('datetime'),
 )
 
-CORS_ORIGIN_ALLOW_ALL=True
+CORS_ORIGIN_ALLOW_ALL = True
 
 FB_VERIFY_TOKEN = None
 
 FB_PAGE_ACCESS_TOKEN = None
 
 SLACK_URL = None
-
-
-

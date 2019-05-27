@@ -167,10 +167,12 @@ def get_trips_from_to(from_code: str, to_code: str, when: datetime.datetime = No
                 'stop_name': row.stop_name_y,
                 'departure_time': midnight_sec_to_time(row.departure_time_y)
             },
-        'route':
+        'trip':
             {
-                'description': row.route_long_name_x
-            }
+                'description': row.route_long_name_x,
+                'route_id': row.route_id_x,
+                'trip_id': row.trip_id,
+            },
     } for idx, row in delta_stops_from_to_sorted.iterrows()]
 
     logger.info('gtfs: get_trips_from_to: {}'.format(results))
