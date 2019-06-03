@@ -125,15 +125,17 @@ def build_pickle(date: datetime.date, pickle_file: str) -> str:
     return pickle_file
 
 
-def get_or_create_daily_trips(date: datetime.date = None, force:bool = False) -> pd.DataFrame:
+def get_or_create_daily_trips(date: datetime.date = None, force: bool = False, add_pickle_path: bool = False) -> pd.DataFrame:
     date = date or datetime.date.today()
-    pickle_file = os.path.join(get_workdir(date),f"{date.isoformat()}.pickle")
+    pickle_file = os.path.join(get_workdir(date), f"{date.isoformat()}.pickle")
     if not os.path.exists(pickle_file) or force:
         logger.info(f"No pickle {pickle_file}, will download and build")
         build_pickle(date, pickle_file)
     logger.info(f"Return from pickle {pickle_file}")
-    return pd.read_pickle(pickle_file)
-
+    df = pd.read_pickle(pickle_file)
+    if not add_pickle_path:
+        return df
+    return df, pickle_file
 
 def get_trips_from_to(from_code: str, to_code: str, when: datetime.datetime = None):
     """ Searches daily GTFS data (Pandas DataFrame) for trips
@@ -143,7 +145,7 @@ def get_trips_from_to(from_code: str, to_code: str, when: datetime.datetime = No
     """
     when = when or datetime.datetime.now()
     date = when.date()
-    df = get_or_create_daily_trips(date)
+    df, pickle_path = get_or_create_daily_trips(date, add_pickle_path=True)
     stops_departure = df[df.stop_code == from_code]
     stops_arrival = df[df.stop_code == to_code]
     merge_stops = stops_departure.merge(stops_arrival, on="trip_id")
@@ -172,6 +174,7 @@ def get_trips_from_to(from_code: str, to_code: str, when: datetime.datetime = No
                 'description': row.route_long_name_x,
                 'route_id': row.route_id_x,
                 'trip_id': row.trip_id,
+                'pickle_path': pickle_path
             },
     } for idx, row in delta_stops_from_to_sorted.iterrows()]
 
