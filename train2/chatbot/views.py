@@ -8,6 +8,7 @@ from django.utils import timezone
 from django.views import View
 import logging
 
+from common import slack_utils
 from . import models
 from . import steps
 
@@ -33,8 +34,10 @@ class HookView(View):
         if data["object"] == "page":
             for entry in data["entry"]:
                 for messaging_event in entry["messaging"]:
-                    handle_messaging_event(messaging_event)
-
+                    try:
+                        handle_messaging_event(messaging_event)
+                    except Exception as ex:
+                        slack_utils.send_error(f'error in call: {ex}')
         return HttpResponse("ok", status=200)
 
 
