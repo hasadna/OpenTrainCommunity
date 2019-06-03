@@ -10,5 +10,7 @@ class ChatSessionAdmin(admin.ModelAdmin):
 @admin.register(models.ChatReport)
 class ChatReportAdmin(admin.ModelAdmin):
     list_display = ['__str__', 'created_at', 'report_type']
-
+    readonly_fields = [
+        'session'
+    ]
 

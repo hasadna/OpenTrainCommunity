@@ -27,13 +27,13 @@ class ChatReport(models.Model):
             (CANCEL, CANCEL)
         ]
     report_type = models.CharField(max_length=20, choices=ReportType.choices)
-    session = models.OneToOneField(ChatSession, related_name="report", on_delete=models.PROTECT, editable=False)
-    full_trip = JSONField(editable=False)
-    user_data = JSONField(editable=False)
-    created_at = models.DateTimeField(auto_now_add=True, editable=False)
+    session = models.OneToOneField(ChatSession, related_name="report", on_delete=models.PROTECT)
+    full_trip = JSONField()
+    user_data = JSONField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.get_report_type_display()} report #{self.id}'
+        return f'{self.get_report_type_display()} report #{self.pk}'
 
     class Meta:
         ordering = ('-created_at', '-id')
