@@ -16,6 +16,9 @@ class ChatSession(models.Model):
     def __str__(self):
         return f'{self.user_id} started at @{self.created_at.replace(microsecond=0)}'
 
+    class Meta:
+        ordering = ('-created_at', '-id')
+
 
 class ChatReport(models.Model):
     class ReportType:
@@ -28,4 +31,7 @@ class ChatReport(models.Model):
     full_trip = JSONField()
     user_data = JSONField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ('-created_at', '-id')
 
