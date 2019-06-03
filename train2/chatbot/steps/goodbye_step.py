@@ -1,4 +1,5 @@
 import logging
+
 from chatbot import models
 from chatbot.chat_utils import ChatUtils
 from . import chat_step
@@ -20,7 +21,7 @@ class GoodbyeStep(chat_step.ChatStep):
         return 'restart'
 
     def save_chat_report(self):
-        reported_trip = ChatUtils.get_step_data('train_trip', self.session)
+        reported_trip = ChatUtils.get_step_data(self.session, 'train_trip')
         chat_report = models.ChatReport.objects.create(
             report_type=models.ChatReport.ReportType.CANCEL,
             session=self.session,
