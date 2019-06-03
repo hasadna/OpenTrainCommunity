@@ -1,12 +1,14 @@
-import logging
 import datetime
-import shutil
-import urllib.request
+import logging
 import os
+import shutil
 import subprocess
-import pandas as pd
-from . import obus_gtfs_utils
+import urllib.request
+from typing import Union, Tuple
 
+import pandas as pd
+
+from . import obus_gtfs_utils
 
 logger = logging.getLogger(__name__)
 
@@ -125,17 +127,18 @@ def build_pickle(date: datetime.date, pickle_file: str) -> str:
     return pickle_file
 
 
-def get_or_create_daily_trips(date: datetime.date = None, force: bool = False, add_pickle_path: bool = False) -> pd.DataFrame:
+def get_or_create_daily_trips(date: datetime.date = None, force: bool = False, add_pickle_path: bool = False) -> Union[pd.DataFrame, Tuple[pd.DataFrame, str]]:
     date = date or datetime.date.today()
     pickle_file = os.path.join(get_workdir(date), f"{date.isoformat()}.pickle")
     if not os.path.exists(pickle_file) or force:
         logger.info(f"No pickle {pickle_file}, will download and build")
         build_pickle(date, pickle_file)
-    logger.info(f"Return from pickle {pickle_file}")
+    logger.info(f"Retuning pickle {pickle_file}")
     df = pd.read_pickle(pickle_file)
     if not add_pickle_path:
         return df
     return df, pickle_file
+
 
 def get_trips_from_to(from_code: str, to_code: str, when: datetime.datetime = None):
     """ Searches daily GTFS data (Pandas DataFrame) for trips
@@ -195,3 +198,21 @@ def get_stops(date=None):
 def midnight_sec_to_time(seconds):
     datetime_since_midnight = datetime.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) + datetime.timedelta(seconds=seconds)
     return datetime_since_midnight.time()
+
+
+def get_full_trip(pickle_path: str, route_id: str, trip_id: str):
+    df = pd.read_pickle(pickle_path)
+    trip_df = df[(df['trip_id'] == trip_id) & (df['route_id'] == route_id)]
+    results = {
+        'trip_id': trip_id,
+        'route_id': route_id,
+        'route_long_name': trip_df.route_long_name.unique()[0],
+        'start_date': trip_df.start_date.unique()[0].isoformat(),
+        'stops': [{
+            'stop_sequence': stop.stop_sequence,
+            'stop_name': stop.stop_name,
+            'stop_code': stop.stop_code,
+            'departure_time': midnight_sec_to_time(stop.departure_time)
+        } for idx, stop in trip_df.iterrows()]
+    }
+    return results
