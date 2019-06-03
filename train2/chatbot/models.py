@@ -27,4 +27,5 @@ class ChatReport(models.Model):
     session = models.OneToOneField(ChatSession, related_name="report", on_delete=models.PROTECT)
     full_trip = JSONField()
     user_data = JSONField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
