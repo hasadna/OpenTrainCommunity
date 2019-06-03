@@ -60,17 +60,3 @@ class SelectTrainLineStep(chat_step.ChatStep):
             source_station = station.main_name
         departure_time = trip['from']['departure_time'].strftime('%H:%M')
         return f"{departure_time} מ{source_station}"
-
-    @staticmethod
-    def _serialize_trip(trip):
-        serialized_trip = copy.deepcopy(trip)
-        serialized_trip['from']['departure_time'] = serialized_trip['from']['departure_time'].strftime('%H%M')
-        serialized_trip['to']['departure_time'] = serialized_trip['to']['departure_time'].strftime('%H%M')
-        return serialized_trip
-
-    @staticmethod
-    def _deserialize_trip(trip):
-        deserialized_trip = copy.deepcopy(trip)
-        deserialized_trip['from']['departure_time'] = datetime.datetime.strptime(deserialized_trip['from']['departure_time'], '%H%M').time()
-        deserialized_trip['to']['departure_time'] = datetime.datetime.strptime(deserialized_trip['to']['departure_time'], '%H%M').time()
-        return deserialized_trip
