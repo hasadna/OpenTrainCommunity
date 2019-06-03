@@ -7,7 +7,7 @@ from . import models
 
 
 def nice_json(d):
-    return mark_safe('<pre>{}</pre>'.format(json.dumps(d, indent=4, ensure_ascii=False)))
+    return mark_safe('<pre>{}</pre>'.format(json.dumps(d, indent=4, ensure_ascii=False).strip()))
 
 
 @admin.register(models.ChatSession)
