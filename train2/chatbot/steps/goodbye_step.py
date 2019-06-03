@@ -1,5 +1,8 @@
 import logging
 
+import requests
+from django.conf import settings
+
 from chatbot import models
 from chatbot.chat_utils import ChatUtils
 from common.ot_gtfs_utils import get_full_trip
@@ -28,10 +31,28 @@ class GoodbyeStep(chat_step.ChatStep):
         pickle_path = reported_trip['trip']['pickle_path']
         full_reported_trip = get_full_trip(pickle_path=pickle_path, route_id=route_id, trip_id=trip_id)
 
+        full_user_data = self.get_full_user_data()
+
         chat_report = models.ChatReport.objects.create(
             report_type=models.ChatReport.ReportType.CANCEL,
             session=self.session,
             full_trip=full_reported_trip,
-            user_data=self.session.user_id)
+            user_data=full_user_data)
         logger.info("Created chat report %d", chat_report.id)
 
+    def get_full_user_data(self):
+        url = f"https://graph.facebook.com/{self.session.user_id}"
+        params = {
+            'fields': 'first_name,last_name,profile_pic',
+            'access_token': settings.FB_PAGE_ACCESS_TOKEN
+        }
+        try:
+            r = requests.get(url, params=params, timeout=5)
+            r.raise_for_status()
+            return r.json()
+        except Exception as ex:
+            logger.error('failed to get user data: %s', ex)
+            return {
+                'user_id': self.session.user_id,
+                'error': str(ex)
+            }
