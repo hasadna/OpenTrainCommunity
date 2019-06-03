@@ -15,7 +15,6 @@ class GoodbyeStep(chat_step.ChatStep):
     def send_message(self):
         self.save_chat_report()
 
-
         message = 'קיבלתי 👍 תודה רבה על הדיווח, אני מקווה שתצליחו להגיע ליעד בקרוב... :)'
         self._send_message(message)
 

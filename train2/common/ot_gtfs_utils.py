@@ -212,7 +212,7 @@ def get_full_trip(pickle_path: str, route_id: str, trip_id: str):
             'stop_sequence': stop.stop_sequence,
             'stop_name': stop.stop_name,
             'stop_code': stop.stop_code,
-            'departure_time': midnight_sec_to_time(stop.departure_time)
+            'departure_time': midnight_sec_to_time(stop.departure_time).isoformat()
         } for idx, stop in trip_df.iterrows()]
     }
     return results
