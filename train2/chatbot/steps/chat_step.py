@@ -39,6 +39,10 @@ class ChatStep(abc.ABC):
         return text
 
     @staticmethod
+    def _extract_attachments(messaging_event):
+        return messaging_event.get('message', {}).get('attachments', None)
+
+    @staticmethod
     def _extract_selected_button(messaging_event):
         return messaging_event.get('postback', {}).get('payload', None)
 

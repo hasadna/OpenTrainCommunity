@@ -12,6 +12,7 @@ class ChatSession(models.Model):
     payloads = ArrayField(models.TextField(null=True), default=list)
     steps_data = JSONField(default=dict)
     last_save_at = models.DateTimeField(auto_now=True)
+    attachments = JSONField(default=list)
 
     def __str__(self):
         return f'{self.user_id} started at @{self.created_at.replace(microsecond=0)}'
