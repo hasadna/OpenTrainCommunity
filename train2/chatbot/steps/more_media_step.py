@@ -10,7 +10,7 @@ class MoreMediaStep(chat_step.ChatStep):
         return 'more_media'
 
     def send_message(self):
-        self._send_message('תודה. באפשרותך לשלוח תמונה או סרטון נוסף. ניתן לסיים ע"י שליחת הודעה כל טקסט')
+        self._send_message('תודה. באפשרותך לשלוח תמונה או סרטון נוסף. ניתן לסיים ע"י שליחת הודעת טקסט כלשהי')
 
     def handle_user_response(self, messaging_event):
         atts = self._extract_attachments(messaging_event)
