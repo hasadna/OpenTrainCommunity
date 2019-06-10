@@ -1,11 +1,4 @@
 import logging
-
-import requests
-from django.conf import settings
-
-from chatbot import models
-from chatbot.chat_utils import ChatUtils
-from common.ot_gtfs_utils import get_full_trip
 from . import chat_step
 
 logger = logging.getLogger(__name__)

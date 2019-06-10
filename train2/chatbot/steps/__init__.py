@@ -10,7 +10,7 @@ from . import select_train_line_step
 from . import accepted_step
 from . import restart_step
 from . import terminate_step
-
+from . import more_media_step
 logger = logging.getLogger(__name__)
 
 
@@ -26,6 +26,7 @@ STEPS = {
     'accepted': accepted_step.AcceptedStep,
     'restart': restart_step.RestartStep,
     'terminate': terminate_step.TerminateStep,
+    'more_media': more_media
 }
 
 
