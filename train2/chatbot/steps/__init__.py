@@ -26,7 +26,7 @@ STEPS = {
     'accepted': accepted_step.AcceptedStep,
     'restart': restart_step.RestartStep,
     'terminate': terminate_step.TerminateStep,
-    'more_media': more_media
+    'more_media': more_media_step.MoreMediaStep,
 }
 
 
