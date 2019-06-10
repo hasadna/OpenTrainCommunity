@@ -96,7 +96,7 @@ def deploy_quick():
 def backup_db():
     ts = datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
     out = f"/home/opentrain/public_html/files/dumps/db_{ts}.sql.gz"
-    sudo(f"sudo -u postgres pg_dump train2 --no-owner --no-acl --exclude-table-data auth* --exclude-table-data django_session --exclude-table-data chat* | gzip > {out}")
+    sudo(f"sudo -u postgres pg_dump train2 --no-owner --no-acl --exclude-table-data auth* --exclude-table-data django_session --exclude-table-data chat* --exclude-table-data django_admin_log | gzip > {out}")
     run(f"ls -lh {out}")
 
 
@@ -122,7 +122,7 @@ def create_db():
 
 @task
 def recreate_db(file):
-    local("python manage.py sqlcreate -D | sudo -u postgres psql")
+    local("echo 'drop schema public cascade; create schema public' | python manage.py dbshell")
     if file.endswith(".gz"):
         cat_command = "gunzip -c {}".format(file)
     else:
