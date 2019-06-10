@@ -7,7 +7,10 @@ class TerminateStep(chat_step.ChatStep):
         return 'terminate'
 
     def send_message(self):
-        message = ':('
+        if getattr(self.session, 'report', None):
+            message = ':)'
+        else:
+            message = ':('
         self._send_message(message)
 
     def handle_user_response(self, messaging_event):

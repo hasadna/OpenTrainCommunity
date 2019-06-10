@@ -72,7 +72,7 @@ def get_session(sender_id):
             user_id=sender_id,
             last_save_at__gte=two_hours_ago
         ).exclude(
-            current_step__in=['terminate']
+            current_step__in=['terminate', 'goodbye']
         ).get()
     except models.ChatSession.DoesNotExist:
         return models.ChatSession.objects.create(

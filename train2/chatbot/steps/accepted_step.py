@@ -23,7 +23,7 @@ class AcceptedStep(chat_step.ChatStep):
         self._send_message(message)
 
     def handle_user_response(self, messaging_event):
-        return 'restart'
+        return 'terminate'
 
     def save_chat_report(self):
         reported_trip = ChatUtils.get_step_data(self.session, 'train_trip')
