@@ -52,7 +52,7 @@ class ChatReportAdmin(admin.ModelAdmin):
             url = att['payload']['url']
             att_type = att['type']
             if att_type == 'image':
-                result.append(f'''<img width="400" src="{url}"><br/>''')
+                result.append(f'''<img style="margin: 5px" width="400" src="{url}"><br/>''')
             else:
                 result.append(f'<p><a href={url}>{att_type}</a></p>')
         return mark_safe(" ".join(result))
