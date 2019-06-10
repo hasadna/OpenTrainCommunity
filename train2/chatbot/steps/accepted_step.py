@@ -21,7 +21,7 @@ class AcceptedStep(chat_step.ChatStep):
 
         message = 'קיבלתי 👍 תודה רבה על הדיווח, אני מקווה שתצליחו להגיע ליעד בקרוב... :)'
         self._send_message(message)
-        self._send_message('נשמח אם תוכל לשלוח לנו תמונה או וידאו שיעזרו לנו, למשל צילום של הלוח הדיגיטלי או של המצב בתחנה')
+        self._send_message('נשמח אם תוכלו לשלוח לנו תמונה או וידאו שיעזרו לנו, למשל צילום של הלוח הדיגיטלי או של המצב בתחנה')
 
     def handle_user_response(self, messaging_event):
         atts = self._extract_attachments(messaging_event)
