@@ -27,7 +27,7 @@ class ChatSessionAdmin(admin.ModelAdmin):
 class ChatReportAdmin(admin.ModelAdmin):
     list_display = ['__str__', 'created_at', 'report_type']
     readonly_fields = [
-        'session_nice', 'full_trip_nice', 'user_data_nice'
+        'session_nice', 'full_trip_nice', 'user_data_nice', 'att_list'
     ]
     exclude = ['session', 'full_trip', 'user_data']
 
@@ -42,4 +42,15 @@ class ChatReportAdmin(admin.ModelAdmin):
 
     def user_data_nice(self, obj):
         return nice_json(obj.user_data)
+
+    def att_list(self, obj):
+        result = []
+        for att in obj.attachments:
+            url = att['payload']['url']
+            att_type = att['type']
+            if att_type == 'image':
+                result.append(f'''<img width="400">{url}</img><br/>''')
+            else:
+                result.append(f'<p><a href={url}>{att_type}</a></p>')
+        return mark_safe(" ".join(result))
 
