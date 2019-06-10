@@ -10,10 +10,11 @@ from . import chat_step
 
 logger = logging.getLogger(__name__)
 
-class GoodbyeStep(chat_step.ChatStep):
+
+class AcceptedStep(chat_step.ChatStep):
     @staticmethod
     def get_name():
-        return 'goodbye'
+        return 'accepted'
 
     def send_message(self):
         self.save_chat_report()

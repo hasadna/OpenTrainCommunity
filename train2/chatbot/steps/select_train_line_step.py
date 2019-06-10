@@ -48,7 +48,7 @@ class SelectTrainLineStep(chat_step.ChatStep):
         description = self._get_trip_description(trip)
         self._send_message(description + ' 👍')
 
-        return 'goodbye'
+        return 'accepted'
 
     @staticmethod
     def _get_trip_description(trip):

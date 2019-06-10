@@ -1,4 +1,3 @@
-import copy
 import datetime
 
 from . import chat_step
@@ -82,7 +81,7 @@ class DestinationStationStep(chat_step.ChatStep):
         self._set_step_data(self._serialize_trip(trip), key='train_trip')
         description = self._get_trip_description(trip)
         self._send_message(description + ' 👍')
-        return 'goodbye'
+        return 'accepted'
 
     def get_nearest_trips_by_departure_time(self, trips, number_of_trips=3):
         now = datetime.datetime.now()
