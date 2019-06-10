@@ -25,11 +25,14 @@ class ChatSessionAdmin(admin.ModelAdmin):
 
 @admin.register(models.ChatReport)
 class ChatReportAdmin(admin.ModelAdmin):
-    list_display = ['__str__', 'created_at', 'report_type']
+    list_display = ['__str__', 'created_at', 'report_type', 'attachments_count']
     readonly_fields = [
         'session_nice', 'full_trip_nice', 'user_data_nice', 'att_list'
     ]
-    exclude = ['session', 'full_trip', 'user_data']
+    exclude = ['session', 'full_trip', 'user_data', 'attachments']
+
+    def attachments_count(self, obj):
+        return len(obj.attachments)
 
     def session_nice(self, obj):
         return mark_safe('<a href=/admin/chatbot/chatsession/{}/change/>{}</a>'.format(
@@ -49,7 +52,7 @@ class ChatReportAdmin(admin.ModelAdmin):
             url = att['payload']['url']
             att_type = att['type']
             if att_type == 'image':
-                result.append(f'''<img width="400">{url}</img><br/>''')
+                result.append(f'''<img width="400" src="{url}"><br/>''')
             else:
                 result.append(f'<p><a href={url}>{att_type}</a></p>')
         return mark_safe(" ".join(result))
