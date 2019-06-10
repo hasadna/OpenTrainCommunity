@@ -20,7 +20,7 @@ class MoreMediaStep(chat_step.ChatStep):
         self._send_message('תודה. באפשרותך לשלוח תמונה או סרטון נוסף. ניתן לסיים ע"י שליחת הודעה כל טקסט')
 
     def handle_user_response(self, messaging_event):
-        atts = self.extract_attachments(messaging_event)
+        atts = self._extract_attachments(messaging_event)
         if atts:
             self.session.report.attachments.extend(atts)
             self.session.report.save()

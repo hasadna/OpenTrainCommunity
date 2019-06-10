@@ -24,7 +24,7 @@ class AcceptedStep(chat_step.ChatStep):
         self._send_message('נשמח אם תוכל לשלוח לנו תמונה או וידאו שיעזרו לנו, למשל צילום של הלוח הדיגיטלי או של המצב בתחנה')
 
     def handle_user_response(self, messaging_event):
-        atts = self.extract_attachments(messaging_event)
+        atts = self._extract_attachments(messaging_event)
         if atts:
             self.session.report.attachments.extend(atts)
             self.session.report.save()
