@@ -12,7 +12,6 @@ class ChatSession(models.Model):
     payloads = ArrayField(models.TextField(null=True), default=list)
     steps_data = JSONField(default=dict)
     last_save_at = models.DateTimeField(auto_now=True)
-    attachments = JSONField(default=list)
 
     def __str__(self):
         return f'{self.user_id} started at @{self.created_at.replace(microsecond=0)}'
@@ -31,6 +30,7 @@ class ChatReport(models.Model):
     session = models.OneToOneField(ChatSession, related_name="report", on_delete=models.PROTECT)
     full_trip = JSONField()
     user_data = JSONField()
+    attachments = JSONField(default=list)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
