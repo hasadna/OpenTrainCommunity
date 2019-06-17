@@ -55,7 +55,6 @@ class ChatReportAdmin(admin.ModelAdmin):
                 result.append(f'''<img style="margin: 5px" width="400" src="{url}"><br/>''')
             if att_type == 'video':
                 result.append(f'<video src="{url}" controls><a target="_blank" href={url}>link to {att_type}</a></video>')
-            else:
-                result.append(f'<p><a target="_blank" href={url}>link to {att_type}</a></p>')
+            result.append(f'<p><a target="_blank" href={url}>link to {att_type}</a></p>')
         return mark_safe(" ".join(result))
 
