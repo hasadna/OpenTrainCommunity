@@ -1,17 +1,16 @@
 import datetime
 import json
+import logging
 
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.utils import timezone
 from django.views import View
-import logging
 
 from common import slack_utils
 from . import models
 from . import steps
-
 
 logger = logging.getLogger(__name__)
 
@@ -42,6 +41,10 @@ class HookView(View):
 
 
 def handle_messaging_event(messaging_event):
+    if "policy-enforcement" in messaging_event:
+        handle_policy_enforcement(messaging_event)
+        return
+
     if 'message' not in messaging_event and 'postback' not in messaging_event:
         return
 
@@ -80,3 +83,6 @@ def get_session(sender_id):
         )
 
 
+def handle_policy_enforcement(messaging_event):
+    pretty_event = json.dumps(messaging_event, indent=4)
+    slack_utils.send_error(f'Received a facebook policy enforcement event: {pretty_event}')
