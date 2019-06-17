@@ -1,6 +1,6 @@
 // Fonts
-@import url(http://fonts.googleapis.com/earlyaccess/alefhebrew.css);
-@import url(http://fonts.googleapis.com/earlyaccess/opensanshebrew.css);
+@import url(https://fonts.googleapis.com/earlyaccess/alefhebrew.css);
+@import url(https://fonts.googleapis.com/earlyaccess/opensanshebrew.css);
 
 $font-family-sans-serif: "Open Sans Hebrew", "Helvetica Neue", Helvetica, Arial, sans-serif;
 $font-family-serif: "Alef Hebrew", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -47,7 +47,7 @@ $table-bg-hover: #fff;
 }
 
 // Progress bars
-.progress.progress-inline, {
+.progress.progress-inline {
     display: inline-block;
     margin-bottom: 0;
     height: 15px;
