@@ -4,7 +4,7 @@ django-extensions==1.7.5
 djangorestframework==3.5.3
 pytz==2018.9
 xlrd==1.0.0
-psycopg2-binary==2.7.6.1
+psycopg2-binary==2.8.3
 requests==2.12.5
 django-rest-swagger==2.1.1
 django-cors-headers==2.0.0
