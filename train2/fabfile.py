@@ -76,6 +76,7 @@ def migrate():
 @task
 def restart():
     sudo("service uwsgi reload")
+    sudo("supervisorctl restart all")
 
 
 @task
@@ -166,4 +167,29 @@ def create_uwsgi_conf():
     sudo("ln -sf {filename} {enabled}".format(filename=filename, enabled=enabled))
     sudo("service uwsgi stop")
     sudo("service uwsgi start")
+
+
+SUPERVISOR_CONF = """
+[program:train2_telegram]
+directory = /home/opentrain/OpenTrainCommunity/train2
+user = opentrain
+command = ./run_telegram_bot.sh
+stdout_logfile = /home/opentrain/OpenTrainCommunity/train2/logs/telegram.log
+stderr_logfile = /home/opentrain/OpenTrainCommunity/train2/logs/telegram.log
+stopasgroup=true
+"""
+
+
+@task
+def setup_supervisor():
+    put(
+        StringIO(SUPERVISOR_CONF),
+        '/etc/supervisor/conf.d/train2.conf',
+        use_sudo=True)
+    with cd(env.projdir):
+        run("mkdir -p logs")
+    sudo("supervisorctl reread")
+    sudo("supervisorctl reload")
+    sudo("supervisorctl restart all")
+    sudo("supervisorctl status")
 

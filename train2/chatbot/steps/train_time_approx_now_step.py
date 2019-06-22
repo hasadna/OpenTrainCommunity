@@ -1,5 +1,6 @@
 import datetime
 
+from chatbot.bot_wrapper import BotButton
 from . import chat_step
 
 
@@ -14,22 +15,14 @@ class TrainTimeApproxNowStep(chat_step.ChatStep):
     def send_message(self):
         message = 'רכבת שהיתה אמורה לצאת בערך עכשיו?'
         buttons = [
-            {
-                "type": "postback",
-                "title": "כן",
-                "payload": self.BUTTON_TRAIN_APPROX_NOW
-            },
-            {
-                "type": "postback",
-                "title": "לא",
-                "payload": self.BUTTON_TRAIN_NOT_APPROX_NOW
-            },
+            BotButton(title='כן', payload=self.BUTTON_TRAIN_APPROX_NOW),
+            BotButton(title='לא', payload=self.BUTTON_TRAIN_NOT_APPROX_NOW)
         ]
         self._send_buttons(message, buttons)
 
-    def handle_user_response(self, messaging_event):
-        text = self._extract_text(messaging_event)
-        button_payload = self._extract_selected_button(messaging_event)
+    def handle_user_response(self, chat_data_wrapper):
+        text = chat_data_wrapper.extract_text()
+        button_payload = chat_data_wrapper.extract_selected_button()
         if button_payload == self.BUTTON_TRAIN_APPROX_NOW or text == 'כן':
             approx_train_time = datetime.datetime.now()
             self._set_step_data(approx_train_time.strftime(self.STORAGE_DATETIME_FORMAT), key='approx_train_time')

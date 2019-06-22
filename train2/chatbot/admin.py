@@ -32,7 +32,7 @@ class ChatReportAdmin(admin.ModelAdmin):
     exclude = ['session', 'full_trip', 'user_data', 'attachments']
 
     def attachments_count(self, obj):
-        return len(obj.attachments)
+        return len(obj.generated_attachments)
 
     def session_nice(self, obj):
         return mark_safe('<a href=/admin/chatbot/chatsession/{}/change/>{}</a>'.format(
@@ -48,9 +48,9 @@ class ChatReportAdmin(admin.ModelAdmin):
 
     def att_list(self, obj):
         result = []
-        for att in obj.attachments:
-            url = att['payload']['url']
-            att_type = att['type']
+        for att in obj.generated_attachments:
+            url = att.url
+            att_type = att.type
             if att_type == 'image':
                 result.append(f'''<img style="margin: 5px" width="400" src="{url}"><br/>''')
             if att_type == 'video':

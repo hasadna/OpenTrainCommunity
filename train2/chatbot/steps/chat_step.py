@@ -3,8 +3,8 @@ import copy
 import datetime
 import logging
 
-from django.conf import settings
-from pymessenger.bot import Bot
+from chatbot.bot_wrapper import BotQuickReply
+from chatbot.consts import ChatPlatform
 
 logger = logging.getLogger(__name__)
 
@@ -14,9 +14,17 @@ class ChatStep(abc.ABC):
     MAX_ITEMS_FOR_BUTTONS = 4
     STORAGE_DATETIME_FORMAT = '%Y%m%d_%H%M'
 
-    def __init__(self, session):
+    def __init__(self, *, session, bot_wrapper):
+        self.bot_wrapper = bot_wrapper
         self.session = session
-        self.bot = Bot(settings.FB_PAGE_ACCESS_TOKEN)
+
+    @property
+    def is_fb(self):
+        return self.session.platform == ChatPlatform.FACEBOOK
+
+    @property
+    def is_tg(self):
+        return self.session.platform == ChatPlatform.TELEGRAM
 
     @staticmethod
     @abc.abstractmethod
@@ -31,31 +39,10 @@ class ChatStep(abc.ABC):
     def handle_user_response(self, handle_user_response):
         raise NotImplementedError()
 
-    @staticmethod
-    def _extract_text(messaging_event):
-        text = messaging_event.get('message', {}).get('text', None)
-        if text:
-            text = text.strip()
-        return text
+    def get_prev_result_key(self):
+        return '{}:prev-result'.format(self.get_name())
 
-    @staticmethod
-    def _extract_attachments(messaging_event):
-        return messaging_event.get('message', {}).get('attachments', None)
-
-    @staticmethod
-    def _extract_selected_button(messaging_event):
-        return messaging_event.get('postback', {}).get('payload', None)
-
-    @staticmethod
-    def _is_quick_reply(messaging_event):
-        payload = messaging_event.get('message', {}).get('quick_reply', {}).get('payload', None)
-        return payload is not None
-
-    @staticmethod
-    def _extract_selected_quick_reply(messaging_event):
-        return messaging_event.get('message', {}).get('quick_reply', {}).get('payload', None)
-
-    def _set_step_data(self, data, key=None):
+    def _set_step_data(self, data, *, key=None):
         if key is None:
             key = self.get_name()
         self.session.steps_data[key] = data
@@ -65,41 +52,32 @@ class ChatStep(abc.ABC):
         recipient_id = self.session.user_id
         logger.info("Sending message to %s: %s", recipient_id, message)
 
-        self.bot.send_text_message(recipient_id, message)
+        self.bot_wrapper.send_text_message(recipient_id, message)
 
     def _send_buttons(self, message, buttons):
         recipient_id = self.session.user_id
         logger.info("Sending buttons message to %s: %s", recipient_id, message)
 
-        resp = self.bot.send_button_message(recipient_id, message, buttons)
+        resp = self.bot_wrapper.send_button_message(recipient_id, message, buttons)
         logger.info("Got %s", resp)
 
     def _send_suggestions(self, message, suggestions):
         recipient_id = self.session.user_id
         logger.info("Sending suggestions message to %s: %s", recipient_id, message)
 
-        suggestions_payload = []
-        for suggestion in suggestions:
-            suggestions_payload.append({
-                'content_type': 'text',
-                'title': suggestion['text'],
-                'payload': suggestion['payload'],
-            })
+        replies = [
+            BotQuickReply(
+                title=suggestion['text'],
+                payload=suggestion['payload'],
+            ) for suggestion in suggestions
+        ]
+        self.bot_wrapper.send_quick_replies(recipient_id, message, replies)
 
-        message_payload = {
-            'text': message,
-            'quick_replies': suggestions_payload
-        }
-
-        print(message_payload)
-        resp = self.bot.send_message(recipient_id, message_payload)
-        logger.info("Got %s", resp)
-
-    def call_handle_user_response(self, messaging_event):
-        text = self._extract_text(messaging_event)
+    def call_handle_user_response(self, data_wrapper):
+        text = data_wrapper.extract_text()
         if text and "ביי" in text:
             return "terminate"
-        return self.handle_user_response(messaging_event)
+        return self.handle_user_response(data_wrapper)
 
     @staticmethod
     def _serialize_trip(trip):

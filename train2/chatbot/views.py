@@ -1,16 +1,17 @@
-import datetime
 import json
 import logging
+from pymessenger.bot import Bot
 
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
-from django.utils import timezone
 from django.views import View
 
 from common import slack_utils
-from . import models
-from . import steps
+from . import models, steps
+from .chat_data_wrapper import ChatDataWrapper
+from .bot_wrapper import BotWrapper
+from  .consts import ChatPlatform
 
 logger = logging.getLogger(__name__)
 
@@ -34,13 +35,13 @@ class HookView(View):
             for entry in data["entry"]:
                 for messaging_event in entry["messaging"]:
                     try:
-                        handle_messaging_event(messaging_event)
+                        handle_fb_messaging_event(messaging_event)
                     except Exception as ex:
                         slack_utils.send_error(f'error in call: {ex}')
         return HttpResponse("ok", status=200)
 
 
-def handle_messaging_event(messaging_event):
+def handle_fb_messaging_event(messaging_event):
     if "policy-enforcement" in messaging_event:
         handle_policy_enforcement(messaging_event)
         return
@@ -48,39 +49,35 @@ def handle_messaging_event(messaging_event):
     if 'message' not in messaging_event and 'postback' not in messaging_event:
         return
 
-    sender_id = messaging_event['sender']['id']
+    handle_chat(
+        ChatPlatform.FACEBOOK,
+        messaging_event,
+        bot=Bot(settings.FB_PAGE_ACCESS_TOKEN))
 
-    session = get_session(sender_id)
-    payload = json.dumps({
-        'messaging_event': messaging_event,
+
+def handle_chat(platform, data, bot):
+    data_wrapper = ChatDataWrapper.for_platform(platform, data)
+    sender_id = data_wrapper.get_sender_id()
+    bot_wrapper = BotWrapper.for_platform(platform, bot)
+    session = models.ChatSession.objects.get_session(platform, sender_id)
+
+    payload = {
+        'payload': data_wrapper.to_json(),
         'chat_step': session.current_step
-    })
+    }
     session.payloads.append(payload)
 
     current_step_name = session.current_step
-    step = steps.get_step(current_step_name)(session)
+    step = steps.get_step(current_step_name)(session=session, bot_wrapper=bot_wrapper)
 
-    next_step_name = step.call_handle_user_response(messaging_event)
+    next_step_name = step.call_handle_user_response(
+        data_wrapper
+    )
     session.current_step = next_step_name
     session.save()
-    next_step = steps.get_step(next_step_name)(session)
+    next_step = steps.get_step(next_step_name)(session=session, bot_wrapper=bot_wrapper)
 
     next_step.send_message()
-
-
-def get_session(sender_id):
-    two_hours_ago = timezone.now() - datetime.timedelta(hours=2)
-    try:
-        return models.ChatSession.objects.filter(
-            user_id=sender_id,
-            last_save_at__gte=two_hours_ago
-        ).exclude(
-            current_step__in=['terminate', 'goodbye']
-        ).get()
-    except models.ChatSession.DoesNotExist:
-        return models.ChatSession.objects.create(
-            user_id=sender_id
-        )
 
 
 def handle_policy_enforcement(messaging_event):

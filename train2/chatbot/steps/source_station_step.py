@@ -1,6 +1,6 @@
 from . import chat_step
-from chatbot.station_utils import StationUtils
-from chatbot.chat_utils import ChatUtils
+from ..station_utils import StationUtils
+from ..chat_utils import ChatUtils
 
 
 class SourceStationStep(chat_step.ChatStep):
@@ -9,9 +9,8 @@ class SourceStationStep(chat_step.ChatStep):
         return 'source_station'
 
     def send_message(self):
-        previous_response = ChatUtils.get_response_to_step(self.session, self.get_name())
-        if previous_response:
-            text = self._extract_text(previous_response)
+        text = ChatUtils.get_step_data(self.session, self.get_prev_result_key())
+        if text:
             matching_stations = StationUtils.find_matching_stations(text)
             if 2 <= len(matching_stations) <= self.MAX_ITEMS_FOR_SUGGESTIONS:
                 message = 'איזו מאלה?'
@@ -29,13 +28,14 @@ class SourceStationStep(chat_step.ChatStep):
 
         self._send_message('מאיזו תחנה?')
 
-    def handle_user_response(self, messaging_event):
-        if self._is_quick_reply(messaging_event):
-            station_id = self._extract_selected_quick_reply(messaging_event)
+    def handle_user_response(self, chat_data_wrapper):
+        if chat_data_wrapper.is_quick_reply():
+            station_id = chat_data_wrapper.extract_selected_quick_reply()
             matching_station = StationUtils.get_station_by_id(station_id=station_id)
             matching_stations = [matching_station] if matching_station else []
         else:
-            text = self._extract_text(messaging_event)
+            text = chat_data_wrapper.extract_text()
+            self._set_step_data(text, key=self.get_prev_result_key())
             matching_stations = StationUtils.find_matching_stations(text)
 
         if len(matching_stations) == 0:

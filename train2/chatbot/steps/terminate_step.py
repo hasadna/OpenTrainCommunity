@@ -13,5 +13,5 @@ class TerminateStep(chat_step.ChatStep):
             message = ':('
         self._send_message(message)
 
-    def handle_user_response(self, messaging_event):
+    def handle_user_response(self, chat_data_wrapper):
         pass

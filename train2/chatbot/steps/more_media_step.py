@@ -10,13 +10,8 @@ class MoreMediaStep(chat_step.ChatStep):
         return 'more_media'
 
     def send_message(self):
-        self._send_message('תודה. ניתן לשלוח תמונה או סרטון נוסף. ניתן לסיים ע"י שליחת הודעת טקסט כלשהי')
+        self._send_message('תודה. ניתן לשלוח עוד תמונות וסרטונים, או לסיים ע"י הודעת ביי')
 
-    def handle_user_response(self, messaging_event):
-        atts = self._extract_attachments(messaging_event)
-        if atts:
-            self.session.report.attachments.extend(atts)
-            self.session.report.save()
-            return 'more_media'
-        return 'terminate'
+    def handle_user_response(self, chat_data_wrapper):
+        return 'more_media'
 

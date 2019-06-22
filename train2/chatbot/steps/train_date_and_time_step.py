@@ -12,8 +12,8 @@ class TrainDateAndTimeStep(chat_step.ChatStep):
         message = 'מתי הרכבת היתה אמורה לצאת?'
         self._send_message(message)
 
-    def handle_user_response(self, messaging_event):
-        text = self._extract_text(messaging_event)
+    def handle_user_response(self, chat_data_wrapper):
+        text = chat_data_wrapper.extract_text()
         # TODO: Accept several date formats, parse user's response or use a datepicker
         try:
             input_time = datetime.datetime.strptime(text, '%H:%M').time()

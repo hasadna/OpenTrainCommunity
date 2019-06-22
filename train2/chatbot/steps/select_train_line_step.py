@@ -1,6 +1,3 @@
-import copy
-import datetime
-
 from . import chat_step
 from chatbot.chat_utils import ChatUtils
 from chatbot.station_utils import StationUtils
@@ -30,13 +27,13 @@ class SelectTrainLineStep(chat_step.ChatStep):
 
         self._send_suggestions(message, suggestions)
 
-    def handle_user_response(self, messaging_event):
+    def handle_user_response(self, chat_data_wrapper):
         potential_trips = ChatUtils.get_step_data(self.session, 'potential_train_trips')
         potential_trips = [self._deserialize_trip(trip) for trip in potential_trips]
         print('***')
         print(potential_trips)
 
-        selected_trip_index = self._extract_selected_quick_reply(messaging_event)
+        selected_trip_index = chat_data_wrapper.extract_selected_quick_reply()
 
         if selected_trip_index is None:
             return self.get_name()

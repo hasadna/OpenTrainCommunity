@@ -21,15 +21,10 @@ class AcceptedStep(chat_step.ChatStep):
 
         message = 'קיבלתי 👍 תודה רבה על הדיווח, אני מקווה שתצליחו להגיע ליעד בקרוב... :)'
         self._send_message(message)
-        self._send_message('נשמח אם תוכלו לשלוח לנו תמונה או וידאו שיעזרו לנו, למשל צילום של הלוח הדיגיטלי או של המצב בתחנה')
+        self._send_message('נשמח אם תוכלו לשלוח תמונות סרטונים או הערות נוספות שיכולו לעזור לנו')
 
-    def handle_user_response(self, messaging_event):
-        atts = self._extract_attachments(messaging_event)
-        if atts:
-            self.session.report.attachments.extend(atts)
-            self.session.report.save()
-            return 'more_media'
-        return 'terminate'
+    def handle_user_response(self, chat_data_wrapper):
+        return 'more_media'
 
     def save_chat_report(self):
         reported_trip = ChatUtils.get_step_data(self.session, 'train_trip')
@@ -37,17 +32,20 @@ class AcceptedStep(chat_step.ChatStep):
         route_id = reported_trip['trip']['route_id']
         pickle_path = reported_trip['trip']['pickle_path']
         full_reported_trip = get_full_trip(pickle_path=pickle_path, route_id=route_id, trip_id=trip_id)
-
-        full_user_data = self.get_full_user_data()
+        if self.is_fb:
+            full_user_data = self.get_fb_full_user_data()
+        else:
+            full_user_data = dict()
 
         chat_report = models.ChatReport.objects.create(
             report_type=models.ChatReport.ReportType.CANCEL,
             session=self.session,
             full_trip=full_reported_trip,
-            user_data=full_user_data)
+            user_data=full_user_data,
+        )
         logger.info("Created chat report %d", chat_report.id)
 
-    def get_full_user_data(self):
+    def get_fb_full_user_data(self):
         url = f"https://graph.facebook.com/{self.session.user_id}"
         params = {
             'fields': 'first_name,last_name,profile_pic',
