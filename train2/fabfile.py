@@ -173,7 +173,7 @@ SUPERVISOR_CONF = """
 [program:train2_telegram]
 directory = /home/opentrain/OpenTrainCommunity/train2
 user = opentrain
-command = ./run_telegram_bot.sh
+command = /home/opentrain/OpenTrainCommunity/train2/run_telegram_bot.sh
 stdout_logfile = /home/opentrain/OpenTrainCommunity/train2/logs/telegram.log
 stderr_logfile = /home/opentrain/OpenTrainCommunity/train2/logs/telegram.log
 stopasgroup=true
