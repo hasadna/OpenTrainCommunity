@@ -15,8 +15,7 @@ def collect_attachments_from_payload(session, payload):
 
 
 def _collect_attachments_from_payload_fb(payload):
-    ev = payload.get('messaging_event', {})
-    m = ev.get('message', {})
+    m = payload.get('message', {})
     atts = m.get('attachments', [])
     return [
         Attachment(url=att['payload']['url'], type=att['type'])
