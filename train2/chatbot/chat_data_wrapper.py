@@ -28,6 +28,9 @@ class FbChatDataWrapper(ChatDataWrapper):
     def messaging_event(self):
         return self.data
 
+    def to_json(self):
+        return self.data
+
     def get_sender_id(self):
         return self.messaging_event['sender']['id']
 

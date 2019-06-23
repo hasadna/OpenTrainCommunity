@@ -37,7 +37,8 @@ class HookView(View):
                     try:
                         handle_fb_messaging_event(messaging_event)
                     except Exception as ex:
-                        slack_utils.send_error(f'error in call: {ex}')
+                        logger.exception("error in facebook handling")
+                        slack_utils.send_error(f'error in call to FB: {ex}')
         return HttpResponse("ok", status=200)
 
 
