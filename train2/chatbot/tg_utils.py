@@ -1,11 +1,13 @@
 import functools
+import logging
 
 import telegram
-import logging
 from django.conf import settings
-from telegram.ext import Updater, Dispatcher, CommandHandler, MessageHandler, Filters, CallbackQueryHandler
+from telegram.ext import Updater, Dispatcher, CommandHandler, MessageHandler, \
+    Filters, CallbackQueryHandler
 
 from chatbot.consts import ChatPlatform
+from chatbot.steps import constants
 from common import slack_utils
 
 logger = logging.getLogger(__name__)
@@ -68,3 +70,19 @@ def setup_telegram_bot():
     dispatcher.add_handler(CallbackQueryHandler(handle_reply))
     return updater
 
+
+def anonymize(json_payload):
+    """
+    Removes First and last name from json payload
+    :param json_payload:
+    """
+    if isinstance(json_payload, list):
+        for item in json_payload:
+            anonymize(item)
+    elif isinstance(json_payload, dict):
+        for key in json_payload.keys():
+            if key in ["first_name", "last_name"]:
+                json_payload[key] = constants.ANONYMOUS
+            else:
+                v = json_payload[key]
+                anonymize(v)
