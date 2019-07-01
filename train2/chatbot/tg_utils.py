@@ -6,8 +6,8 @@ from django.conf import settings
 from telegram.ext import Updater, Dispatcher, CommandHandler, MessageHandler, \
     Filters, CallbackQueryHandler
 
+from chatbot import constants
 from chatbot.consts import ChatPlatform
-from chatbot.steps import constants
 from common import slack_utils
 
 logger = logging.getLogger(__name__)
