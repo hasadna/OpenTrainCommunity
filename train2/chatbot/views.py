@@ -1,17 +1,18 @@
 import json
 import logging
-from pymessenger.bot import Bot
 
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.views import View
+from pymessenger.bot import Bot
 
+from chatbot import chat_utils
 from common import slack_utils
 from . import models, steps
-from .chat_data_wrapper import ChatDataWrapper
 from .bot_wrapper import BotWrapper
-from  .consts import ChatPlatform
+from .chat_data_wrapper import ChatDataWrapper
+from .consts import ChatPlatform
 
 logger = logging.getLogger(__name__)
 
@@ -63,7 +64,7 @@ def handle_chat(platform, data, bot):
     session = models.ChatSession.objects.get_session(platform, sender_id)
 
     payload = {
-        'payload': data_wrapper.to_json(),
+        'payload': chat_utils.ChatUtils.anonymize(data_wrapper.to_json()),
         'chat_step': session.current_step
     }
     session.payloads.append(payload)

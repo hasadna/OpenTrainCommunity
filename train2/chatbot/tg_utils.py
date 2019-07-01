@@ -6,7 +6,7 @@ from django.conf import settings
 from telegram.ext import Updater, Dispatcher, CommandHandler, MessageHandler, \
     Filters, CallbackQueryHandler
 
-from chatbot import constants
+from chatbot.chat_utils import ChatUtils
 from chatbot.consts import ChatPlatform
 from common import slack_utils
 
@@ -20,7 +20,7 @@ def handle_error(f):
             return f(*args, **kwargs)
         except Exception as ex:
             slack_utils.send_error(f'Failed in telegram: {ex}')
-            logger.error("Error in telegram: %s", ex)
+            logger.exception("Error in telegram: %s", ex)
     return wrapper
 
 
@@ -46,7 +46,7 @@ def cmd_catch_all(bot, update):
 @handle_error
 def handle_reply(bot, update):
     from . import views
-    logger.info("In handle_reply update = %s", update.to_json())
+    logger.info("In handle_reply update = %s", ChatUtils.anonymize(update.to_json()))
     # note, we send here the full update object, not only the message
     # since for callback we need other members
     views.handle_chat(ChatPlatform.TELEGRAM, update, bot=bot)
@@ -69,20 +69,3 @@ def setup_telegram_bot():
     # handle buttons replies
     dispatcher.add_handler(CallbackQueryHandler(handle_reply))
     return updater
-
-
-def anonymize(json_payload):
-    """
-    Removes First and last name from json payload
-    :param json_payload:
-    """
-    if isinstance(json_payload, list):
-        for item in json_payload:
-            anonymize(item)
-    elif isinstance(json_payload, dict):
-        for key in json_payload.keys():
-            if key in ["first_name", "last_name"]:
-                json_payload[key] = constants.ANONYMOUS
-            else:
-                v = json_payload[key]
-                anonymize(v)
