@@ -65,7 +65,7 @@ class ChatReport(models.Model):
     report_type = models.CharField(max_length=20, choices=ReportType.choices)
     session = models.OneToOneField(ChatSession, related_name="report", on_delete=models.PROTECT)
     full_trip = JSONField()
-    user_data = JSONField()
+    user_data = JSONField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

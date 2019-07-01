@@ -4,6 +4,7 @@ import requests
 from django.conf import settings
 
 from chatbot import models, constants
+from chatbot.bot_wrapper import BotButton
 from chatbot.chat_utils import ChatUtils
 from common.ot_gtfs_utils import get_full_trip
 from . import chat_step
@@ -23,14 +24,12 @@ class AcceptedStep(chat_step.ChatStep):
         self._send_message(message)
 
         message = 'נוכל להשתמש בשם שלכם?'
-        self._send_message(message)
 
         buttons = [
             BotButton(title='כן', payload=constants.BUTTON_YES),
             BotButton(title='לא', payload=constants.BUTTON_NO)
         ]
         self._send_buttons(message, buttons)
-
 
     def handle_user_response(self, chat_data_wrapper):
         text = chat_data_wrapper.extract_text()
@@ -40,8 +39,6 @@ class AcceptedStep(chat_step.ChatStep):
         else:
             self.save_user_info(chat_data_wrapper)
 
-        self._send_message(
-            'נשמח אם תוכלו לשלוח תמונות סרטונים או הערות נוספות שיכולו לעזור לנו')
         return 'more_media'
 
     def save_chat_report(self):
@@ -55,7 +52,6 @@ class AcceptedStep(chat_step.ChatStep):
             report_type=models.ChatReport.ReportType.CANCEL,
             session=self.session,
             full_trip=full_reported_trip,
-            user_data=full_user_data,
         )
         logger.info("Created chat report %d", chat_report.id)
 
@@ -63,7 +59,7 @@ class AcceptedStep(chat_step.ChatStep):
         if self.is_fb:
             full_user_data = self.get_fb_full_user_data()
         else:
-            full_user_data = chat_data_wrapper.message.get('chat')
+            full_user_data = chat_data_wrapper.get_user_data()
 
         self.session.report.user_data = full_user_data
         self.session.report.save()

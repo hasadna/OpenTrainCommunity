@@ -57,6 +57,7 @@ class TgChatDataWrapper(ChatDataWrapper):
     def message(self):
         return self.update.message
 
+
     @property
     def callback_query(self):
         return self.update.callback_query
@@ -66,6 +67,12 @@ class TgChatDataWrapper(ChatDataWrapper):
             return self.message.chat_id
         if self.callback_query:
             return self.callback_query.message.chat_id
+
+    def get_user_data(self):
+        if self.message:
+            return self.message.chat.to_dict()
+        if self.callback_query:
+            return self.callback_query.message.chat.to_dict()
 
     def to_json(self):
         return self.update.to_dict()
