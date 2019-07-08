@@ -9,7 +9,7 @@ class TrainDateAndTimeStep(chat_step.ChatStep):
         return 'train_date_and_time'
 
     def send_message(self):
-        message = 'מתי הרכבת היתה אמורה לצאת?'
+        message = 'מתי הרכבת היתה אמורה לצאת? (למשל 13:45)'
         self._send_message(message)
 
     def handle_user_response(self, chat_data_wrapper):
