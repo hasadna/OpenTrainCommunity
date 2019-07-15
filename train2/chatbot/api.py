@@ -5,5 +5,5 @@ from . import serializers, models
 
 class CancelReportsViewSet(ListModelMixin, GenericViewSet):
     serializer_class = serializers.ChatReportSerializer
-    queryset = models.ChatReport.objects.all()
+    queryset = models.ChatReport.objects.filter(real_report=True)
     pagination_class = None
