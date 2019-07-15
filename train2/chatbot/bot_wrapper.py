@@ -1,3 +1,4 @@
+import time
 from collections import namedtuple
 from typing import List
 
@@ -53,7 +54,10 @@ class FbBotWrapper(BotWrapper):
 
 
 class TgBotWrapper(BotWrapper):
+    sleep_time = 0.35
+
     def send_text_message(self, chat_id, message):
+        time.sleep(self.sleep_time)
         self.bot.send_message(
             chat_id=chat_id,
             text=message
@@ -64,6 +68,7 @@ class TgBotWrapper(BotWrapper):
             InlineKeyboardButton(text=b.title, callback_data=b.payload)
             for b in buttons
         ]]
+        time.sleep(self.sleep_time)
         self.bot.send_message(
             chat_id=chat_id,
             text=message,
@@ -80,6 +85,7 @@ class TgBotWrapper(BotWrapper):
                 InlineKeyboardButton(text=r.title, callback_data=r.payload)
             ] for r in quick_replies
         ]
+        time.sleep(self.sleep_time)
         self.bot.send_message(
             chat_id=chat_id,
             text=message,
