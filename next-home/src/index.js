@@ -19,8 +19,8 @@ function sleep(ms) {
 
 $(function() {
     const axiosInstance = axios.create({
-        //baseURL: 'https://otrain.org',
-        baseURL: 'http://localhost:8000',
+        baseURL: 'https://otrain.org',
+        //baseURL: 'http://localhost:8000',
     });
     Vue.prototype.$axios = axiosInstance;
     Vue.prototype._ = _;
