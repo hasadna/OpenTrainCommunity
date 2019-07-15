@@ -90,6 +90,36 @@ function formatHours(hours) {
     return pairsStrs.join(",");
 }
 
+function to2(x) {
+    if (x < 10) {
+        return `0${x}`;
+    }
+    return x;
+}
+
+function toDate(s) {
+    let r = new Date(s);
+    console.log(r);
+    let y = r.getFullYear();
+    let m = r.getMonth() + 1;
+    let d = r.getDate() + 1;
+    return `${d}/${m}/${y}`;
+}
+
+function toHM(s) {
+    let r = new Date(s);
+    let hh = to2(r.getHours());
+    let mm = to2(r.getMinutes());
+    return `${hh}:${mm}`
+}
+
+function HMS2HM(hms) {
+    if (hms) {
+        return hms.substr(0, 5);
+    }
+    return ''
+}
+
 const dtUtils = {
     monthNames,
     daysNames,
@@ -97,6 +127,9 @@ const dtUtils = {
     computeStart,
     isFullWeek,
     formatHours,
+    toDate,
+    toHM,
+    HMS2HM
 };
 
 export default dtUtils;

@@ -163,6 +163,7 @@
             }
         },
         mounted() {
+            this.$root.restoreTitle();
             this.yms = this.$dtUtils.getRange(this.global.begin, this.global.end);
             this.refresh();
         },

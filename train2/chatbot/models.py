@@ -84,3 +84,36 @@ class ChatReport(models.Model):
         for payload in self.session.payloads[self.session.accept_payload_index:]:
             result.extend(collect_attachments_from_payload(self.session, payload['payload']))
         return result
+
+    @property
+    def train_trip(self):
+        from chatbot.steps.chat_step import ChatStep
+        t = self.session.steps_data['train_trip']
+        return ChatStep._deserialize_trip(t)
+
+    @property
+    def reported_from(self):
+        return {
+            'name': self.train_trip['from']['stop_name'],
+            'time': self.train_trip['from']['departure_time']
+        }
+
+    @property
+    def reported_to(self):
+        return {
+            'name': self.train_trip['to']['stop_name'],
+            'time': self.train_trip['to']['departure_time']
+        }
+
+    @property
+    def stops(self):
+        return sorted(self.full_trip['stops'], key=lambda x: x['stop_sequence'])
+
+    @property
+    def trip(self):
+        return {
+            'stops': self.stops,
+            'first_stop': self.stops[0],
+            'last_stop': self.stops[-1],
+        }
+

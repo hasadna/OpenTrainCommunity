@@ -6,13 +6,13 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <meta property="og:title" content="רכבת פתוחה" />
-    <meta property="og:type" content="website" />
-    <meta property="og:description" content="מדד דיוק מציאותי לרכבת ישראל" />
-    <meta property="og:image" content="https://next.otrain.org/images/fb_icon2.png" />
-    <meta property="og:image:type" content="image/png" />
-    <meta property="og:image:width" content="220" />
-    <meta property="og:image:height" content="208" />
+    <meta property="og:title" content="רכבת פתוחה"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:description" content="מדד דיוק מציאותי לרכבת ישראל"/>
+    <meta property="og:image" content="https://next.otrain.org/images/fb_icon2.png"/>
+    <meta property="og:image:type" content="image/png"/>
+    <meta property="og:image:width" content="220"/>
+    <meta property="og:image:height" content="208"/>
 
     <link rel="icon" type="image/png" href="/images/opentrain-favicon.png">
     <title>רכבת פתוחה: מדד איחור</title>
@@ -21,38 +21,36 @@
 </head>
 
 <body dir="rtl">
+    <div id="app">
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+            <div class="p-2 flex-grow-1">
+                <a class="navbar-brand" href="https://otrain.org">
+                    <i class="fas fa-train"></i>
+                    רכבת פתוחה
+                </a>
+            </div>
+            <div class="p-2 flex-grow-1 d-none d-sm-inline-block">
+                <h2 class="text-white">
+                    {{ appTitle }}
+                </h2>
+            </div>
+            <div class="p-2 d-sm-inline-block d-none">
+                <a class="navbar-brand" href="https://github.com/hasadna/OpenTrainCommunity/tree/master/next-home">
+                    <div class="bg-white rounded-circle" style="padding: 5px">
+                        <img class="mx-auto d-block" src="/images/github.png">
+                    </div>
+                </a>
+                <a class="navbar-brand" href="http://www.hasadna.org.il/" title="הסדנא לידע ציבורי">
+                    <div class="bg-white rounded-circle" style="padding: 5px">
+                        <img class="mx-auto d-block" src="/images/sadna30x30.png">
+                    </div>
+                </a>
+            </div>
+        </nav>
 
-<div id="app">
-
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-        <div class="p-2 flex-grow-1">
-            <a class="navbar-brand" href="https://otrain.org">
-                <i class="fas fa-train"></i>
-                רכבת פתוחה
-            </a>
-        </div>
-        <div class="p-2 flex-grow-1 d-none d-sm-inline-block">
-            <h2 class="text-white">
-                מדד האיחור שלנו
-            </h2>
-        </div>
-        <div class="p-2 d-sm-inline-block d-none">
-            <a class="navbar-brand" href="https://github.com/hasadna/OpenTrainCommunity/tree/master/next-home">
-                <div class="bg-white rounded-circle" style="padding: 5px">
-                    <img class="mx-auto d-block" src="/images/github.png">
-                </div>
-            </a>
-            <a class="navbar-brand" href="http://www.hasadna.org.il/" title="הסדנא לידע ציבורי">
-                <div class="bg-white rounded-circle"  style="padding: 5px">
-                    <img class="mx-auto d-block" src="/images/sadna30x30.png">
-                </div>
-            </a>
-        </div>
-    </nav>
-
-    <main role="main" class="container-fluid">
-        <trips-charts>
-    </main><!-- /.container -->
-</div>
+        <main role="main" class="container-fluid">
+            <router-view></router-view>
+        </main><!-- /.container -->
+    </div>
 </body>
 </html>

@@ -2,6 +2,7 @@ from django.conf.urls import url, include
 from rest_framework import routers
 import data.api
 import stories.api
+import chatbot.api
 
 router = routers.SimpleRouter()
 
@@ -9,7 +10,7 @@ router.register('stops', data.api.StopViewSet)
 router.register('stats', data.api.StatViewSet, base_name="stats")
 router.register('routes', data.api.RoutesViewSet)
 router.register('trips', data.api.TripViewSet)
-router.register('routes/(?P<route_id>\d+)/trips',
+router.register(r'routes/(?P<route_id>\d+)/trips',
                 data.api.RouteTripsViewSet,
                 base_name='route-trips')
 
@@ -21,13 +22,14 @@ router.register('general', data.api.GeneralViewSet, base_name='general')
 
 router.register('highlights', data.api.HighlightsViewSet, base_name='highlights')
 
-router.register('real-routes/(?P<year>\d{4})/(?P<month>\d{1,2})',
+router.register(r'real-routes/(?P<year>\d{4})/(?P<month>\d{1,2})',
                 data.api.RealRoutesViewSet, base_name='real-routes')
 
 router.register('monthly', data.api.MonthlyViewSet, base_name='monthly')
 
 router.register('stories', stories.api.StoriesViewSet, base_name='stories')
 
+router.register(r'chatbot/cancel-reports', chatbot.api.CancelReportsViewSet, base_name='chatbot-cancel-reports')
 
 # router.register('routes/(?P<route_id>\d+)/services',
 #                 data.api.RouteServicesViewSet,
