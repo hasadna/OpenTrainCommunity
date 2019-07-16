@@ -19,6 +19,11 @@ class ChatUtils:
         return session.steps_data.get(key)
 
     @staticmethod
+    def clear_step_data(session):
+        session.steps_data = {}
+        session.save()
+
+    @staticmethod
     def anonymize(json_payload):
         """
         Removes First and last name from json payload

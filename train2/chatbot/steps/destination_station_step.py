@@ -1,9 +1,9 @@
 import datetime
 
-from . import chat_step
-from chatbot.station_utils import StationUtils
 from chatbot.chat_utils import ChatUtils
+from chatbot.station_utils import StationUtils
 from common.ot_gtfs_utils import get_trips_from_to
+from . import chat_step
 
 
 class DestinationStationStep(chat_step.ChatStep):
@@ -72,8 +72,7 @@ class DestinationStationStep(chat_step.ChatStep):
         )
 
         if len(trips) == 0:
-            self._send_message('לא מצאתי רכבת מתאימה :( ננסה שוב')
-            return 'train_date_and_time'
+            return 'confirm_retry'
 
         if 2 <= len(trips):
             nearest_trips = self.get_nearest_trips_by_departure_time(trips, number_of_trips=self.MAX_ITEMS_FOR_BUTTONS)

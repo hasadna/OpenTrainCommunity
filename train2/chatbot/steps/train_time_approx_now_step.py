@@ -10,7 +10,7 @@ class TrainTimeApproxNowStep(chat_step.ChatStep):
 
     @staticmethod
     def get_name():
-        return 'welcome'
+        return 'train_time_approx_now'
 
     def send_message(self):
         message = 'רכבת שהיתה אמורה לצאת בערך עכשיו?'
