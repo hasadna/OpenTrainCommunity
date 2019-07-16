@@ -99,7 +99,6 @@ function to2(x) {
 
 function toDate(s) {
     let r = new Date(s);
-    console.log(r);
     let y = r.getFullYear();
     let m = r.getMonth() + 1;
     let d = r.getDate() + 1;

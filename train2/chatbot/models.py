@@ -68,7 +68,7 @@ class ChatReport(models.Model):
     user_data = JSONField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     real_report = models.BooleanField(default=True)
-    
+
     def __str__(self):
         return f'{self.get_report_type_display()} report #{self.pk}'
 

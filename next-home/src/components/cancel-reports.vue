@@ -2,20 +2,40 @@
     <div>
         <div class="row">
             <div class="col-12">
+                <div class="alert alert-info">
+                    הדיווחים מתקבלים דרך בוט בטלגרם
+                    &bull;
+                    <a target="_blank" href="https://telegram.me/opentrain_bot">
+                    קישור
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
                 <table class="table">
                     <thead>
-                        <th>מזהה</th>
-                        <th>תאריך דיווח</th>
-                        <th>שעת דיווח</th>
-                        <th>תחנת מוצא לדיווח</th>
-                        <th>תחנת יעד לדיווח</th>
-                        <th>תחנת מוצא</th>
-                        <th>תחנת יעד</th>
-                        <th>מדיה</th>
+                    <th>מזהה</th>
+                    <th>מקור</th>
+                    <th>תאריך דיווח</th>
+                    <th>שעת דיווח</th>
+                    <th>תחנת מוצא לדיווח</th>
+                    <th>תחנת יעד לדיווח</th>
+                    <th>תחנת מוצא</th>
+                    <th>תחנת יעד</th>
+                    <th>מדיה</th>
                     </thead>
                     <tbody>
                     <tr v-for="report in reports">
                         <td>{{ report.id }}</td>
+                        <td>
+                        <span v-if="report.platform === 'telegram'">
+                            <i class="fab fa-telegram-plane"></i>
+                        </span>
+                            <span v-if="report.platform === 'facebook'">
+                            <i class="fab fa-facebook-messenger"></i>
+                        </span>
+                        </td>
                         <td>{{ report.created_at | to-date }}</td>
                         <td>{{ report.created_at | to-hm }}</td>
                         <td>
@@ -37,7 +57,9 @@
                         <td>
                             <div v-for="att in report.attachments">
                                 <div v-if="att.type === 'image'">
-                                    <a target="_blank" :href="att.url"><img style="max-width: 200px" class="img-fluid" :src="att.url"></a>
+                                    <a target="_blank" :href="att.url">
+                                        <img style="max-width: 200px" class="img-fluid"
+                                             :src="att.url"></a>
                                 </div>
                                 <a v-else :href="att.url">
                                     {{ att.type }}

@@ -20,5 +20,6 @@ class ChatReportSerializer(serializers.ModelSerializer):
             'reported_from',
             'reported_to',
             'trip',
+            'platform',
             'attachments',
         ]
