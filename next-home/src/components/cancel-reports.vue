@@ -8,6 +8,11 @@
                     <a target="_blank" href="https://telegram.me/opentrain_bot">
                     קישור
                     </a>
+                    &bull;
+                    לקבלת הדיווחים בזמן אמת ניתן להרשם לערוץ שלנו בטלגרם
+                    <a href="https://t.me/opentrain">
+                        <span dir="ltr">@opentrain</span>
+                    </a>
                 </div>
             </div>
         </div>
