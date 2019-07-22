@@ -208,4 +208,4 @@ SLACK_URL = None
 
 TELEGRAM_TOKEN = None
 
-TELEGRAM_CHANNEL = '@opentrain'
+TELEGRAM_CHANNEL = 'opentrain'

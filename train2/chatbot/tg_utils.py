@@ -42,6 +42,11 @@ def cmd_catch_all(bot, update):
         text="מצטער, אני לא מכיר את הפקודה " + cmd
     )
 
+def is_from_channel(update):
+    if update.channel_post:
+        if update.channel_post.chat.username == settings.TELEGRAM_CHANNEL:
+            return True
+    return False
 
 @handle_error
 def handle_reply(bot, update):
@@ -49,7 +54,10 @@ def handle_reply(bot, update):
     logger.info("In handle_reply update = %s", ChatUtils.anonymize(update.to_json()))
     # note, we send here the full update object, not only the message
     # since for callback we need other members
-    views.handle_chat(ChatPlatform.TELEGRAM, update, bot=bot)
+    if is_from_channel(update):
+        logger.info('skipping message from channel')
+    else:
+        views.handle_chat(ChatPlatform.TELEGRAM, update, bot=bot)
 
 
 def setup_telegram_bot():

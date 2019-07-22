@@ -16,10 +16,11 @@ def get_broadcast_message(report: models.ChatReport):
 
 
 def broadcast_to_telegram_channel(report: models.ChatReport):
+    channel = '@' + settings.TELEGRAM_CHANNEL
     try:
         bot = telegram.Bot(settings.TELEGRAM_TOKEN)
         message = get_broadcast_message(report)
-        bot.send_message(settings.TELEGRAM_CHANNEL, message, parse_mode='html')
+        bot.send_message(channel, message, parse_mode='html')
     except Exception:
         logger.exception('Failed to broadcast to channel')
 
