@@ -1,0 +1,5 @@
+{% load chatbot_tags %}
+דיווח חדש התקבל דרך בוט הדיווחים בטלגרם על ביטול רכבות.
+הדיווח התקבל על הרכבת מ{{ report.trip.first_stop.stop_name }} בשעה {{ report.trip.first_stop.departure_time | strip_seconds }} ל{{ report.trip.last_stop.stop_name }}.
+הדיווח התקבל בתחנת {{ report.reported_from.name }} ב - {{ report.created_at | date:'H:i' }}.
+ניתן לצפות בכל הדיווחים <a href="https://next.otrain.org/#/reports">כאן</a>

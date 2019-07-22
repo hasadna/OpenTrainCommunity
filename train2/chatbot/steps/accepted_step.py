@@ -8,6 +8,7 @@ from chatbot.bot_wrapper import BotButton
 from chatbot.chat_utils import ChatUtils
 from common.ot_gtfs_utils import get_full_trip
 from . import chat_step
+from .. import broadcast
 
 logger = logging.getLogger(__name__)
 
@@ -54,6 +55,7 @@ class AcceptedStep(chat_step.ChatStep):
             full_trip=full_reported_trip,
         )
         logger.info("Created chat report %d", chat_report.id)
+        broadcast.broadcast_to_telegram_channel(chat_report)
 
     def save_user_info(self, chat_data_wrapper):
         if self.is_fb:
