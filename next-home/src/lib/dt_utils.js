@@ -101,7 +101,7 @@ function toDate(s) {
     let r = new Date(s);
     let y = r.getFullYear();
     let m = r.getMonth() + 1;
-    let d = r.getDate() + 1;
+    let d = r.getDate();
     return `${d}/${m}/${y}`;
 }
 

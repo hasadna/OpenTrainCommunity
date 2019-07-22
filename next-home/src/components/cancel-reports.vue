@@ -82,7 +82,7 @@
             }
         },
         mounted() {
-            this.$root.setTitle('דיווחי איחורים');
+            this.$root.setTitle('דיווחי ביטולים');
             this.getReports();
         },
         methods: {
