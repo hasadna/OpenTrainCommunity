@@ -28,18 +28,19 @@
                     <th>תחנת יעד לדיווח</th>
                     <th>תחנת מוצא</th>
                     <th>תחנת יעד</th>
+                    <th>מזהה נסיעה</th>
                     <th>מדיה</th>
                     </thead>
                     <tbody>
                     <tr v-for="report in reports">
                         <td>{{ report.id }}</td>
                         <td>
-                        <span v-if="report.platform === 'telegram'">
-                            <i class="fab fa-telegram-plane"></i>
-                        </span>
-                            <span v-if="report.platform === 'facebook'">
-                            <i class="fab fa-facebook-messenger"></i>
-                        </span>
+                            <span v-if="report.platform === 'telegram'">
+                                <i class="fab fa-telegram-plane"></i>
+                            </span>
+                                <span v-if="report.platform === 'facebook'">
+                                <i class="fab fa-facebook-messenger"></i>
+                            </span>
                         </td>
                         <td>{{ report.created_at | to-date }}</td>
                         <td>{{ report.created_at | to-hm }}</td>
@@ -58,6 +59,17 @@
                         <td>
                             {{ report.trip.last_stop.stop_name }}
                             {{ report.trip.last_stop.departure_time | hms2hm }}
+                        </td>
+                        <td>
+                            <code dir="ltr">
+                                {{report.trip_id }}
+                            </code>
+                            &nbsp;
+                            <span v-if="report.trip_id_reports >= 2">
+                                <span class="badge badge-pill badge-primary">
+                                    {{report.trip_id_reports}}
+                                </span>
+                            </span>
                         </td>
                         <td>
                             <div v-for="att in report.attachments">

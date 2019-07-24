@@ -62,6 +62,13 @@ class ChatReport(models.Model):
         choices = [
             (CANCEL, CANCEL)
         ]
+    chat_report_trip = models.ForeignKey(
+        'ChatReportTrip',
+        null=True,
+        blank=True,
+        related_name='reports',
+        on_delete=models.SET_NULL,
+    )
     report_type = models.CharField(max_length=20, choices=ReportType.choices)
     session = models.OneToOneField(ChatSession, related_name="report", on_delete=models.PROTECT)
     full_trip = JSONField()
@@ -118,3 +125,25 @@ class ChatReport(models.Model):
             'last_stop': self.stops[-1],
         }
 
+    @property
+    def trip_id(self):
+        return self.full_trip['trip_id']
+
+    @property
+    def trip_id_reports(self):
+        return self.chat_report_trip.reports.count()
+
+    def connect_to_trip(self):
+        if not self.chat_report_trip:
+            rt, is_created = ChatReportTrip.objects.get_or_create(
+                trip_id=self.trip_id
+            )
+            self.chat_report_trip = rt
+            self.save()
+
+
+class ChatReportTrip(models.Model):
+    trip_id = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.trip_id

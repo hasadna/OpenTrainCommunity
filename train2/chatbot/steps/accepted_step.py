@@ -54,6 +54,7 @@ class AcceptedStep(chat_step.ChatStep):
             session=self.session,
             full_trip=full_reported_trip,
         )
+        chat_report.connect_to_trip()
         logger.info("Created chat report %d", chat_report.id)
         broadcast.broadcast_to_telegram_channel(chat_report)
 
