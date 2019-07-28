@@ -1,6 +1,6 @@
 import json
 
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.utils.safestring import mark_safe
 
 from . import models
@@ -23,13 +23,26 @@ class ChatSessionAdmin(admin.ModelAdmin):
         return nice_json(obj.steps_data)
 
 
+def mark_wrong(modeladmin: admin.ModelAdmin, request, queryset):
+    if queryset.count() != 1:
+        modeladmin.message_user(request, 'select exactly one', level=messages.ERROR)
+        return
+    for report in queryset:
+        if not report.wrong_report:
+            report.mark_as_wrong()
+
+mark_wrong.short_description = "Mark selcted report as wrong and notify"
+
+
 @admin.register(models.ChatReport)
 class ChatReportAdmin(admin.ModelAdmin):
-    list_display = ['__str__', 'created_at', 'report_type', 'attachments_count']
+    list_display = ['__str__', 'created_at', 'real_report', 'wrong_report', 'report_type', 'attachments_count']
     readonly_fields = [
         'session_nice', 'full_trip_nice', 'user_data_nice', 'att_list'
     ]
     exclude = ['session', 'full_trip', 'user_data', 'attachments']
+
+    actions = [mark_wrong]
 
     def attachments_count(self, obj):
         return len(obj.generated_attachments)

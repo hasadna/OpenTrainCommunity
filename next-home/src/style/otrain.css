@@ -10,5 +10,7 @@ body {
     cursor: pointer;
 }
 
-
+.wrong-report {
+    opacity: 0.5;
+}
 

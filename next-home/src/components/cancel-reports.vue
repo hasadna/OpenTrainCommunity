@@ -32,8 +32,13 @@
                     <th>מדיה</th>
                     </thead>
                     <tbody>
-                    <tr v-for="report in reports">
-                        <td>{{ report.id }}</td>
+                    <tr v-for="report in reports" :class="{'wrong-report': report.wrong_report}">
+                        <td>
+                        <span v-if="report.wrong_report" title="הדיווח ככל הנראה שגוי">
+                            <i class="far fa-exclamation-square"></i>
+                        </span>
+                        {{ report.id }}
+                        </td>
                         <td>
                             <span v-if="report.platform === 'telegram'">
                                 <i class="fab fa-telegram-plane"></i>

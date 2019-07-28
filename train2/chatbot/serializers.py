@@ -16,6 +16,7 @@ class ChatReportSerializer(serializers.ModelSerializer):
         model = models.ChatReport
         fields = [
             'id',
+            'wrong_report',
             'created_at',
             'reported_from',
             'reported_to',
