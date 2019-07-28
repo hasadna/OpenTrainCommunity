@@ -56,7 +56,7 @@ class AcceptedStep(chat_step.ChatStep):
         )
         chat_report.connect_to_trip()
         logger.info("Created chat report %d", chat_report.id)
-        broadcast.broadcast_to_telegram_channel(chat_report)
+        broadcast.broadcast_new_report_to_telegram_channel(chat_report)
 
     def save_user_info(self, chat_data_wrapper):
         if self.is_fb:

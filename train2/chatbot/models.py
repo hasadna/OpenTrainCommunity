@@ -75,6 +75,15 @@ class ChatReport(models.Model):
     user_data = JSONField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     real_report = models.BooleanField(default=True)
+    wrong_report = models.BooleanField(default=False)
+
+    def mark_as_wrong(self, *, notify):
+        from chatbot import broadcast
+        if not self.wrong_report:
+            self.wrong_report = True
+            self.save()
+            if notify:
+                broadcast.broadcast_wrong_report_to_telegram_channel(self)
 
     def __str__(self):
         return f'{self.get_report_type_display()} report #{self.pk}'
