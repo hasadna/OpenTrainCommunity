@@ -1,3 +1,3 @@
 {% load chatbot_tags %}
-[ביטול] {{ report.trip.first_stop.departure_time | strip_seconds }} {{ report.trip.first_stop.stop_name }} - {{ report.trip.last_stop.stop_name }}
+[ביטול] {{ report.first_stop.departure_time | strip_seconds }} {{ report.first_stop.stop_name }} - {{ report.last_stop.stop_name }}
 התקבל בתחנת: {{ report.reported_from.name }}

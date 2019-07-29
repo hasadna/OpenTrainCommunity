@@ -127,12 +127,12 @@ class ChatReport(models.Model):
         return sorted(self.full_trip['stops'], key=lambda x: x['stop_sequence'])
 
     @property
-    def trip(self):
-        return {
-            'stops': self.stops,
-            'first_stop': self.stops[0],
-            'last_stop': self.stops[-1],
-        }
+    def first_stop(self):
+        return self.stops[0]
+
+    @property
+    def last_stop(self):
+        return self.stops[-1]
 
     @property
     def trip_id(self):
