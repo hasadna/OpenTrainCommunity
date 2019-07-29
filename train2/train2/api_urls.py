@@ -29,7 +29,15 @@ router.register('monthly', data.api.MonthlyViewSet, base_name='monthly')
 
 router.register('stories', stories.api.StoriesViewSet, base_name='stories')
 
-router.register(r'chatbot/cancel-reports', chatbot.api.CancelReportsViewSet, base_name='chatbot-cancel-reports')
+router.register(
+    r'chatbot/cancel-reports',
+    chatbot.api.CancelReportsViewSet,
+    base_name='chatbot-cancel-reports')
+
+router.register(
+    r'chatbot/trips',
+    chatbot.api.TripViewSet,
+    base_name='chatbot-trips')
 
 # router.register('routes/(?P<route_id>\d+)/services',
 #                 data.api.RouteServicesViewSet,

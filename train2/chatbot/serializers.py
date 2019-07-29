@@ -28,3 +28,16 @@ class ChatReportSerializer(serializers.ModelSerializer):
             'gtfs_trip_id',
             'gtfs_trip_id_reports',
         ]
+
+
+class TripSerializer(serializers.ModelSerializer):
+    reports = ChatReportSerializer(many=True)
+
+    class Meta:
+        model = models.ChatReportTrip
+        fields = [
+            'id',
+            'gtfs_trip_id',
+            'reports'
+        ]
+
