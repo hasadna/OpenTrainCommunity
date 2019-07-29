@@ -58,21 +58,21 @@
                             {{ report.reported_to.time | hms2hm }}
                         </td>
                         <td>
-                            {{ report.trip.first_stop.stop_name }}
-                            {{ report.trip.first_stop.departure_time | hms2hm }}
+                            {{ report.first_stop.stop_name }}
+                            {{ report.first_stop.departure_time | hms2hm }}
                         </td>
                         <td>
-                            {{ report.trip.last_stop.stop_name }}
-                            {{ report.trip.last_stop.departure_time | hms2hm }}
+                            {{ report.last_stop.stop_name }}
+                            {{ report.last_stop.departure_time | hms2hm }}
                         </td>
                         <td>
                             <code dir="ltr">
-                                {{report.trip_id }}
+                                {{report.gtfs_trip_id }}
                             </code>
                             &nbsp;
-                            <span v-if="report.trip_id_reports >= 2">
+                            <span v-if="report.gtfs_trip_id_reports >= 2">
                                 <span class="badge badge-pill badge-primary">
-                                    {{report.trip_id_reports}}
+                                    {{report.gtfs_trip_id_reports}}
                                 </span>
                             </span>
                         </td>

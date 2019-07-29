@@ -28,6 +28,7 @@ def _broadcast(message: str):
     try:
         bot = telegram.Bot(settings.TELEGRAM_TOKEN)
         bot.send_message(channel, message, parse_mode='html')
+        logger.info("Broadcasting to channel %s:\n%s", channel, message)
     except Exception:
         logger.exception('Failed to broadcast to channel')
 

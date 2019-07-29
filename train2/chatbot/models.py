@@ -62,7 +62,7 @@ class ChatReport(models.Model):
         choices = [
             (CANCEL, CANCEL)
         ]
-    chat_report_trip = models.ForeignKey(
+    trip = models.ForeignKey(
         'ChatReportTrip',
         null=True,
         blank=True,
@@ -135,24 +135,24 @@ class ChatReport(models.Model):
         return self.stops[-1]
 
     @property
-    def trip_id(self):
+    def gtfs_trip_id(self):
         return self.full_trip['trip_id']
 
     @property
-    def trip_id_reports(self):
-        return self.chat_report_trip.reports.count()
+    def gtfs_trip_id_reports(self):
+        return self.trip.reports.count()
 
     def connect_to_trip(self):
-        if not self.chat_report_trip:
+        if not self.trip:
             rt, is_created = ChatReportTrip.objects.get_or_create(
-                trip_id=self.trip_id
+                gtfs_trip_id=self.gtfs_trip_id
             )
-            self.chat_report_trip = rt
+            self.trip = rt
             self.save()
 
 
 class ChatReportTrip(models.Model):
-    trip_id = models.CharField(max_length=100, unique=True)
+    gtfs_trip_id = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
-        return self.trip_id
+        return self.gtfs_trip_id
