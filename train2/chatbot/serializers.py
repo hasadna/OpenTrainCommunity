@@ -27,6 +27,7 @@ class ChatReportSerializer(serializers.ModelSerializer):
             'attachments',
             'gtfs_trip_id',
             'gtfs_trip_id_reports',
+            'trip',
         ]
 
 
