@@ -56,7 +56,13 @@ class AcceptedStep(chat_step.ChatStep):
         )
         chat_report.connect_to_trip()
         logger.info("Created chat report %d", chat_report.id)
-        broadcast.broadcast_new_report_to_telegram_channel(chat_report)
+        # Chcek if this is the first chat report for the trip
+        # and if so, broadcast the message
+        if chat_report.trip.reports.count() == 1:
+            broadcast.broadcast_new_report_to_telegram_channel(chat_report)
+        else:
+            logger.info("There are %d reports, skipping broadcast",
+                        chat_report.trip.reports.count())
 
     def save_user_info(self, chat_data_wrapper):
         if self.is_fb:
