@@ -112,14 +112,16 @@ class ChatReport(models.Model):
     def reported_from(self):
         return {
             'name': self.train_trip['from']['stop_name'],
-            'time': self.train_trip['from']['departure_time']
+            'time': self.train_trip['from']['departure_time'],
+            'code': self.train_trip['from']['stop_code']
         }
 
     @property
     def reported_to(self):
         return {
             'name': self.train_trip['to']['stop_name'],
-            'time': self.train_trip['to']['departure_time']
+            'time': self.train_trip['to']['departure_time'],
+            'code': self.train_trip['from']['stop_code']
         }
 
     @property
