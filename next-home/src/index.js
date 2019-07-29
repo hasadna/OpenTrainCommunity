@@ -10,6 +10,7 @@ import TripsCharts from './components/trips-charts.vue';
 import CancelReports from './components/cancel-reports.vue';
 import MonthYear from './components/month_year.vue';
 import dtUtils from './lib/dt_utils';
+import TripDetails from './components/trip-details.vue';
 
 function sleep(ms) {
     return new Promise((resolve, reject) => {
@@ -45,6 +46,7 @@ $(function() {
     const routes = [
         {path: '/', component: TripsCharts},
         {path: '/reports', component: CancelReports},
+        {path: '/trip/:id', component: TripDetails},
         { path: '*', redirect: '/' }
     ];
 
