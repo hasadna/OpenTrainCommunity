@@ -67,7 +67,9 @@
                         </td>
                         <td>
                             <code dir="ltr">
-                                {{report.gtfs_trip_id }}
+                                <router-link :to="{ name: 'trip-details', params: { id: report.trip }}">
+                                    {{ report.gtfs_trip_id }}
+                                </router-link>
                             </code>
                             &nbsp;
                             <span v-if="report.gtfs_trip_id_reports >= 2">

@@ -46,7 +46,7 @@ $(function() {
     const routes = [
         {path: '/', component: TripsCharts},
         {path: '/reports', component: CancelReports},
-        {path: '/trip/:id', component: TripDetails},
+        {path: '/trip/:id', component: TripDetails, name: "trip-details"},
         { path: '*', redirect: '/' }
     ];
 
