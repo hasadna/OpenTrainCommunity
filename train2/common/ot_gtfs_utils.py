@@ -146,6 +146,7 @@ def get_trips_from_to(from_code: str, to_code: str, when: datetime.datetime = No
     :param from_code, to_code: Station code from GTFS data (different from GTFS id stored in db)
     :return: array of results
     """
+    logger.info("In get_trips_from_to() from_code = %s to_code = %s when = %s", from_code, to_code, when)
     when = when or datetime.datetime.now()
     date = when.date()
     df, pickle_path = get_or_create_daily_trips(date, add_pickle_path=True)
