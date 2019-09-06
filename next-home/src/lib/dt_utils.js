@@ -137,8 +137,14 @@ function toDate(s) {
     return `${d}/${m}/${y}`;
 }
 
-function toIsoDateStr(s) {
+function toFreqStr(s, freq) {
     let r = new Date(s);
+    r.setHours(12); // make it middle of day, to avoid day time issues
+    if (freq === 'w') {
+        r.setDate(r.getDate()-r.getDay());
+    } else if (freq === 'm') {
+        r.setDate(1);
+    }
     let y = r.getFullYear();
     let m = to2(r.getMonth() + 1);
     let d = to2(r.getDate());
@@ -188,7 +194,7 @@ const dtUtils = {
     toDate,
     toHM,
     HMS2HM,
-    toIsoDateStr,
+    toFreqStr,
     dateStrToMidDay,
     engToNumber,
 };

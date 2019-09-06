@@ -18,7 +18,10 @@
         </div>
         <div class="row mb-1" v-if="dataLoaded">
             <div class="col-12">
-                <div class="btn btn-group">
+                <h2 class="d-inline-block">{{ reports.length }} דיווחים
+                - {{ uniqueReports.length }} נסיעות
+                </h2>
+                <div class="btn btn-group float-right">
                     <button class="btn" :class="{'btn-primary disabled': !isGraphMode, 'btn-outline-primary': isGraphMode}" @click="isGraphMode=false">
                         <i class="fal fa-table"></i>
                     </button>
@@ -31,8 +34,8 @@
 
         <div class="row">
             <div class="col-12" v-if="this.dataLoaded">
-                <results-table-view v-if="!isGraphMode" :reports="reports"/>
-                <results-graph-view v-if="isGraphMode" :reports="reports"/>
+                <results-table-view v-show="!isGraphMode" :reports="reports"/>
+                <results-graph-view v-show="isGraphMode" :unique-reports="uniqueReports"/>
             </div>
         </div>
         <div class="row">
@@ -53,6 +56,7 @@
         data() {
             return {
                 reports: [],
+                uniqueReports: [],
                 dataLoaded: false,
                 isGraphMode: false,
             }
@@ -66,9 +70,21 @@
             this.getReports();
         },
         methods: {
+            getUniqueValidReports() {
+                let tripIdsSoFar = new Set();
+                let result = [];
+                for (let r of this.reports) {
+                    if (!r.wrong_report && !tripIdsSoFar.has(r.gtfs_trip_id)) {
+                        tripIdsSoFar.add(r.gtfs_trip_id);
+                        result.push(r);
+                    }
+                }
+                return result;
+            },
             async getReports() {
                 let resp = await this.$axios.get('/api/v1/chatbot/cancel-reports/');
                 this.reports = resp.data;
+                this.uniqueReports = this.getUniqueValidReports();
                 this.dataLoaded = true;
             }
         }
