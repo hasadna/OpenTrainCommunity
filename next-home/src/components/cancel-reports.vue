@@ -6,7 +6,7 @@
                     הדיווחים מתקבלים דרך בוט בטלגרם
                     &bull;
                     <a target="_blank" href="https://telegram.me/opentrain_bot">
-                    קישור
+                        קישור
                     </a>
                     &bull;
                     לקבלת הדיווחים בזמן אמת ניתן להרשם לערוץ שלנו בטלגרם
@@ -37,13 +37,13 @@
                         <span v-if="report.wrong_report" title="הדיווח ככל הנראה שגוי" class="text-danger">
                             <i class="far fa-exclamation-square"></i>
                         </span>
-                        {{ report.id }}
+                            {{ report.id }}
                         </td>
                         <td>
                             <span v-if="report.platform === 'telegram'">
                                 <i class="fab fa-telegram-plane"></i>
                             </span>
-                                <span v-if="report.platform === 'facebook'">
+                            <span v-if="report.platform === 'facebook'">
                                 <i class="fab fa-facebook-messenger"></i>
                             </span>
                         </td>
@@ -93,6 +93,9 @@
                     </tr>
                     </tbody>
                 </table>
+                <p v-if="!dataLoaded" class="text-center">
+                    <i class="fa fa-spin fa-spinner fa-5x"></i>
+                </p>
             </div>
         </div>
     </div>
@@ -103,6 +106,7 @@
         data() {
             return {
                 reports: [],
+                dataLoaded: false,
             }
         },
         mounted() {
@@ -113,6 +117,7 @@
             async getReports() {
                 let resp = await this.$axios.get('/api/v1/chatbot/cancel-reports/');
                 this.reports = resp.data;
+                this.dataLoaded = true;
             }
         }
     }
