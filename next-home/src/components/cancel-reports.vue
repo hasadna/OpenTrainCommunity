@@ -33,16 +33,19 @@
         </div>
 
         <div class="row">
-            <div class="col-12" v-if="this.dataLoaded">
+            <div class="col-12" v-if="dataLoaded">
                 <results-table-view v-show="!isGraphMode" :reports="reports"/>
                 <results-graph-view v-show="isGraphMode" :unique-reports="uniqueReports"/>
             </div>
         </div>
         <div class="row">
             <div class="col-12">
-                <div v-if="!dataLoaded" class="text-center">
+                <div v-if="!dataLoaded && !dataLoadedError" class="text-center">
                     <h4>נתונים נטענים...</h4>
                     <i class="fa fa-spin fa-spinner fa-5x"></i>
+                </div>
+                <div v-if="!dataLoaded && dataLoadedError" class=" alert-danger alert">
+                    שגיאה בקריאת הנתונים. אפשר לנסות שוב עוד מספר דקות. סליחה...
                 </div>
             </div>
         </div>
@@ -58,6 +61,7 @@
                 reports: [],
                 uniqueReports: [],
                 dataLoaded: false,
+                dataLoadedError: null,
                 isGraphMode: false,
             }
         },
@@ -82,10 +86,15 @@
                 return result;
             },
             async getReports() {
-                let resp = await this.$axios.get('/api/v1/chatbot/cancel-reports/');
-                this.reports = resp.data;
-                this.uniqueReports = this.getUniqueValidReports();
-                this.dataLoaded = true;
+                try {
+                    let resp = await this.$axios.get('/api/v1/chatbot/cancel-reports/');
+                    this.reports = resp.data;
+                    this.uniqueReports = this.getUniqueValidReports();
+                    this.dataLoaded = true;
+                } catch (err) {
+                    console.log(err);
+                    this.dataLoadedError = err;
+                }
             }
         }
     }
