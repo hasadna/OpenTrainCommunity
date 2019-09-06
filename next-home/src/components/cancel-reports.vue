@@ -16,7 +16,7 @@
                 </div>
             </div>
         </div>
-        <div class="row mb-1">
+        <div class="row mb-1" v-if="dataLoaded">
             <div class="col-12">
                 <div class="btn btn-group">
                     <button class="btn" :class="{'btn-primary disabled': !isGraphMode, 'btn-outline-primary': isGraphMode}" @click="isGraphMode=false">
@@ -30,17 +30,17 @@
         </div>
 
         <div class="row">
-            <div class="col-12">
+            <div class="col-12" v-if="this.dataLoaded">
                 <results-table-view v-if="!isGraphMode" :reports="reports"/>
                 <results-graph-view v-if="isGraphMode" :reports="reports"/>
             </div>
         </div>
         <div class="row">
             <div class="col-12">
-                <p v-if="!dataLoaded" class="text-center">
+                <div v-if="!dataLoaded" class="text-center">
+                    <h4>נתונים נטענים...</h4>
                     <i class="fa fa-spin fa-spinner fa-5x"></i>
-                </p>
-
+                </div>
             </div>
         </div>
     </div>

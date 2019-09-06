@@ -47,17 +47,13 @@
                 {{ report.last_stop.departure_time | hms2hm }}
             </td>
             <td>
-                <code dir="ltr">
-                    <router-link :to="{ name: 'trip-details', params: { id: report.trip }}">
-                        {{ report.gtfs_trip_id }}
-                    </router-link>
-                </code>
+                <code dir="ltr"><router-link :to="{ name: 'trip-details', params: { id: report.trip }}">{{ report.gtfs_trip_id }}</router-link></code>
                 &nbsp;
                 <span v-if="report.gtfs_trip_id_reports >= 2">
-                                <span class="badge badge-pill badge-primary">
-                                    {{report.gtfs_trip_id_reports}}
-                                </span>
-                            </span>
+                    <span class="badge badge-pill badge-primary">
+                        {{report.gtfs_trip_id_reports}}
+                    </span>
+                </span>
             </td>
             <td>
                 <div v-for="att in report.attachments">

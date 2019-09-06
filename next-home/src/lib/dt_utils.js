@@ -26,6 +26,38 @@ const monthNames = [
     'דצמבר',
 ];
 
+const shortMonthNames = [
+    '',
+    'ינו',
+    'פבר',
+    'מרץ',
+    'אפר',
+    'מאי',
+    'יוני',
+    'יולי',
+    'אוג',
+    'ספט',
+    'אוק',
+    'נוב',
+    'דצמ',
+];
+
+let engPrefixes = [
+    '',
+    'jan',
+    'feb',
+    'mar',
+    'apr',
+    'may',
+    'jun',
+    'jul',
+    'aug',
+    'sep',
+    'oct',
+    'nov',
+    'dec',
+]
+
 function isFullWeek(days) {
     if (days && days.length >= 7) {
         for (let i = 0; i <= 6; i++) {
@@ -105,6 +137,20 @@ function toDate(s) {
     return `${d}/${m}/${y}`;
 }
 
+function toIsoDateStr(s) {
+    let r = new Date(s);
+    let y = r.getFullYear();
+    let m = to2(r.getMonth() + 1);
+    let d = to2(r.getDate());
+    return `${y}-${m}-${d}`;
+}
+
+function dateStrToMidDay(s) {
+    // s if format yyyy-mm-dd
+    let [y, m, d] = s.split("-");
+    return new Date(parseInt(y), parseInt(m)-1, parseInt(d), 12);
+}
+
 function toHM(s) {
     let r = new Date(s);
     let hh = to2(r.getHours());
@@ -119,8 +165,21 @@ function HMS2HM(hms) {
     return ''
 }
 
+function engToNumber(n) {
+    let nl = n.toLowerCase();
+    for (let i = 1; i <= 12 ; i++) {
+        let prefix = engPrefixes[i];
+        if (nl.startsWith(prefix)) {
+            return i;
+        }
+    }
+    return 0;
+}
+
+
 const dtUtils = {
     monthNames,
+    shortMonthNames,
     daysNames,
     getRange,
     computeStart,
@@ -128,7 +187,10 @@ const dtUtils = {
     formatHours,
     toDate,
     toHM,
-    HMS2HM
+    HMS2HM,
+    toIsoDateStr,
+    dateStrToMidDay,
+    engToNumber,
 };
 
 export default dtUtils;

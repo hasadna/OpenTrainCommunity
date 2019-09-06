@@ -1,5 +1,5 @@
 <template>
-    <div class="card" style="margin-bottom: 10px">
+    <div class="card mb-3">
         <div class="card-header">
             <h4>
                 <span title="מדד אלטרנטיבי" class="float-right badge badge-pill badge-danger">{{ lateMaxTotal }}%</span>
