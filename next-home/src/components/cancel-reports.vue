@@ -16,9 +16,23 @@
                 </div>
             </div>
         </div>
+        <div class="row mb-1">
+            <div class="col-12">
+                <div class="btn btn-group">
+                    <button class="btn" :class="{'btn-primary disabled': !isGraphMode, 'btn-outline-primary': isGraphMode}" @click="isGraphMode=false">
+                        <i class="fal fa-table"></i>
+                    </button>
+                    <button class="btn" :class="{'btn-primary disabled': isGraphMode, 'btn-outline-primary': !isGraphMode}" @click="isGraphMode=true">
+                        <i class="fal fa-chart-bar"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-12">
-                <results-table-view :reports="reports"/>
+                <results-table-view v-if="!isGraphMode" :reports="reports"/>
+                <results-graph-view v-if="isGraphMode" :reports="reports"/>
             </div>
         </div>
         <div class="row">
@@ -33,17 +47,19 @@
 </template>
 
 <script>
-    import ResultsTable from './results-table.vue';
-
+    import ResultsTable from './cr/results-table.vue';
+    import ResultsGraph from './cr/results-graph.vue';
     export default {
         data() {
             return {
                 reports: [],
                 dataLoaded: false,
+                isGraphMode: false,
             }
         },
         components: {
-            resultsTableView: ResultsTable
+            resultsTableView: ResultsTable,
+            resultsGraphView: ResultsGraph,
         },
         mounted() {
             this.$root.setTitle('דיווחי ביטולים');

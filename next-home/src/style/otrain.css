@@ -14,3 +14,7 @@ body {
     opacity: 0.5;
 }
 
+.btn:focus{
+    box-shadow:none !important;
+}
+
