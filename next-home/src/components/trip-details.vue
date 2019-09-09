@@ -30,6 +30,13 @@
                 </table>
             </div>
         </div>
+        <div class="row">
+            <div class="col-12 col-sm-6">
+                <p class="text-center">
+                    <router-link :to="{ name: 'reports'}">לרשימת הדיווחים המלאה</router-link>
+                </p>
+            </div>
+        </div>
     </div>
 </template>
 

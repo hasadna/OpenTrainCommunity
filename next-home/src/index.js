@@ -45,7 +45,7 @@ $(function() {
     Vue.use(VueRouter);
     const routes = [
         {path: '/', component: TripsCharts},
-        {path: '/reports', component: CancelReports},
+        {path: '/reports', component: CancelReports, name: "reports"},
         {path: '/trip/:id', component: TripDetails, name: "trip-details"},
         { path: '*', redirect: '/' }
     ];
