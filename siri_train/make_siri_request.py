@@ -39,6 +39,7 @@ def make_request_and_dump():
     pretty_path = os.path.join('/home/opentrain/public_html/files/siri_train/{y}/{m}/{d}/{nu}_pretty.xml')
     path_dir = os.path.dirname(path)
     os.makedirs(path_dir, exist_ok=True)
+    os.makedirs(os.path.dirname(pretty_path, exist_ok=True))
     with gzip.open(path,'wt', encoding='utf-8') as fh:
         fh.write(resp_text)
     logger.info('Wrote to %s', path)
