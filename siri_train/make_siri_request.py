@@ -35,8 +35,8 @@ def make_request_and_dump():
     m = now.strftime('%m')
     d = now.strftime('%d')
     nu = now.strftime('%Y_%m_%d_%H_%M_%S')
-    path = os.path.join(CUR_DIR, f'./siri_resps/{y}/{m}/{d}/{nu}.xml.gz')
-    pretty_path = os.path.join(CUR_DIR, f'./siri_resps/{y}/{m}/{d}/{nu}_pretty.xml')
+    path = os.path.join(CUR_DIR, f'./siri_resps/private/{y}/{m}/{d}/{nu}.xml.gz')
+    pretty_path = os.path.join('/home/opentrain/public_html/files/siri_train/{y}/{m}/{d}/{nu}_pretty.xml')
     path_dir = os.path.dirname(path)
     os.makedirs(path_dir, exist_ok=True)
     with gzip.open(path,'wt', encoding='utf-8') as fh:
