@@ -209,3 +209,5 @@ SLACK_URL = None
 TELEGRAM_TOKEN = None
 
 TELEGRAM_CHANNEL = 'opentrain'
+
+ADMIN_CHAT_IDS = dict()

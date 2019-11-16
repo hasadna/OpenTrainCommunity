@@ -33,6 +33,17 @@ def cmd_start(bot, update):
 
 
 @handle_error
+def cmd_admin(bot, update):
+    from . import managers
+    managers.handle_cmd(bot, update)
+
+
+@handle_error
+def handle_admin_callback(bot, update):
+    from . import managers
+    managers.handle_callback(bot, update)
+
+@handle_error
 def cmd_catch_all(bot, update):
     chat_id = update.message.chat_id
     logger.info("In cmd_catch_all chat_id = %s", chat_id)
@@ -41,6 +52,7 @@ def cmd_catch_all(bot, update):
         chat_id=update.message.chat_id,
         text="מצטער, אני לא מכיר את הפקודה " + cmd
     )
+
 
 def is_from_channel(update):
     if update.channel_post:
@@ -66,6 +78,9 @@ def setup_telegram_bot():
     dispatcher: Dispatcher = updater.dispatcher
     # handle the /start command
     dispatcher.add_handler(CommandHandler('start', cmd_start))
+    dispatcher.add_handler(CommandHandler('admin', cmd_admin))
+    dispatcher.add_handler(CommandHandler('list', cmd_admin))
+    dispatcher.add_handler(CallbackQueryHandler(handle_admin_callback, pattern=r'^admin_report:[a-z_]+:\d+$'))
     # handle any other command
     dispatcher.add_handler(MessageHandler(Filters.command, cmd_catch_all))
     # handle text
