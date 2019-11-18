@@ -52,9 +52,22 @@ def handle_cmd(bot, update):
     show_list(bot, chat_id)
 
 
-def show_list(bot, chat_id):
-    last_reports = models.ChatReport.objects.order_by('-created_at')[0:10]
-    buttons = InlineKeyboardMarkup([[_report_to_button(r)] for r in last_reports])
+def show_list(bot, chat_id, before_pk=None):
+    qs = models.ChatReport.objects.order_by('-created_at')
+    if before_pk:
+        qs = qs.filter(pk__lt=before_pk)
+    last_reports = list(qs[0:10])
+    if last_reports:
+        show_more = [
+            [get_show_more_button(last_reports[-1].pk)]
+        ]
+    else:
+        show_more = []
+    buttons = InlineKeyboardMarkup(
+        [
+            [_report_to_button(r)] for r in last_reports
+        ] + show_more
+    )
     admin_name = settings.ADMIN_CHAT_IDS[str(chat_id)]
     return bot.send_message(
         chat_id,
@@ -72,20 +85,19 @@ def handle_callback(bot, update):
     report_id = int(report_id)
     logger.info('cmd = %s report_id = %d', cmd, report_id)
     with transaction.atomic():
-        if report_id == 0:
-            if cmd == 'list':
-                return show_list(bot, chat_id)
-        else:
-            bot.delete_message(chat_id, update.callback_query.message.message_id)
-            report = models.ChatReport.objects.get(pk=report_id)
-            if cmd == 'show':
-                return show_report(bot, chat_id, report)
-            if cmd == 'del_notify':
-                return del_report(bot, chat_id, report, notify=True)
-            if cmd == 'del_silent':
-                return del_report(bot, chat_id, report, notify=False)
-            if cmd == 'undel_silent':
-                return undel_report(bot, chat_id, report, notify=False)
+        if cmd == 'list':
+            return show_list(bot, chat_id, before_pk=report_id)
+
+        bot.delete_message(chat_id, update.callback_query.message.message_id)
+        report = models.ChatReport.objects.get(pk=report_id)
+        if cmd == 'show':
+            return show_report(bot, chat_id, report)
+        if cmd == 'del_notify':
+            return del_report(bot, chat_id, report, notify=True)
+        if cmd == 'del_silent':
+            return del_report(bot, chat_id, report, notify=False)
+        if cmd == 'undel_silent':
+            return undel_report(bot, chat_id, report, notify=False)
 
 
 def get_line(t, a, rid):
@@ -98,12 +110,14 @@ def get_line(t, a, rid):
     )
 
 
-def get_list_button():
-    return InlineKeyboardMarkup(
-        [
-            [InlineKeyboardButton(text='הצג רשימה', callback_data='admin_report:list:0')]
-        ]
-    )
+def get_show_more_button(before_pk=None):
+    return InlineKeyboardButton(text='*** הצג עוד ***', callback_data=f'admin_report:list:{before_pk}')
+
+
+def get_list_markup():
+    return InlineKeyboardMarkup([[
+        InlineKeyboardButton(text='הצג רשימה', callback_data=f'admin_report:list:0')
+    ]])
 
 
 def show_report(bot, chat_id, report):
@@ -149,7 +163,7 @@ def del_report(bot, chat_id, report, *, notify):
         text=_to_msg(report, 'הנסיעה סומנה כשגויה' + ' ' + notif_msg),
         parse_mode='html',
         disable_web_page_preview=True,
-        reply_markup=get_list_button()
+        reply_markup=get_list_markup()
     )
     if notify:
         broadcast.broadcast_wrong_report_to_telegram_channel(report)
@@ -163,7 +177,7 @@ def undel_report(bot, chat_id, report, *, notify):
             text=_to_msg(report, 'הנסיעה איננה מסומנת כשגויה'),
             parse_mode='html',
             disable_web_page_preview=True,
-            reply_markup=get_list_button()
+            reply_markup=get_list_markup()
         )
         return
     report.wrong_report = False
@@ -173,5 +187,5 @@ def undel_report(bot, chat_id, report, *, notify):
         text=_to_msg(report,'סימון הנסיעה כשגיאה בוטל'),
         parse_mode='html',
         disable_web_page_preview=True,
-        reply_markup=get_list_button()
+        reply_markup=get_list_markup()
     )
