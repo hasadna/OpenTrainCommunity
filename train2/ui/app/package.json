@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "OpenTrain Route Explorer",
   "devDependencies": {
-    "angular": "^1.7.2",
+    "angular": "^1.7.9",
     "angular-route": "^1.7.2",
     "angular-ui-bootstrap": "^2.5.6",
     "babel-core": "^6.26.3",
