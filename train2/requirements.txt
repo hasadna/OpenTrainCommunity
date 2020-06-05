@@ -1,4 +1,4 @@
-Django==1.11.21
+Django==1.11.29
 ipython==4.1.2
 django-extensions==1.7.5
 djangorestframework==3.5.3
