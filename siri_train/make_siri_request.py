@@ -89,5 +89,6 @@ def get_xml(now):
 
     
 if __name__ == '__main__':
+    assert False, 'depr for now'
     make_request_and_dump()
 
