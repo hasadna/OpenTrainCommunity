@@ -1,0 +1,2 @@
+XlsxWriter==1.0.5
+matplotlib==2.2.2
