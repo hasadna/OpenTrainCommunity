@@ -9,10 +9,13 @@ sys.path.append(os.path.dirname(os.getcwd()))
 import json
 #from data.models import Route
 
+# all data for specific routes separately, generated from save_data function
 DATA_FILE = os.path.expanduser('~/tmp/res.txt')
-base_url = 'http://otrain.org/api/route-info-full?route_id={}'
+base_url = 'http://otrain.org/api/v1/stats/route-info-full?route_id={}'
+start_end_dates_url = 'http://otrain.org/api/v1/general/dates-range/'
 
 def save_data():
+  """Saves data from route-info-full endpoint to file"""
   route_ids = []
   route_info_list = []
   for route_id in range(1,1000):
@@ -33,6 +36,7 @@ def save_data():
     json.dump(all_data, outfile)
   
 def analyse():
+  """Prints list of least and most delayed routes"""
   with open(DATA_FILE, 'r') as outfile:
     all_data = json.load(outfile)
 
@@ -41,7 +45,10 @@ def analyse():
   scores = []
   urls = []
   num_trips = []
-
+  start_end_dates = json.loads(requests.get(url=start_end_dates_url).text)
+  start_date = str(start_end_dates['first_date']['year']) + str(start_end_dates['first_date']['month'])
+  end_date = str(start_end_dates['last_date']['year']) + str(start_end_dates['last_date']['month'])
+  date_range = start_date + '-' + end_date
   for route, route_info in zip(route_ids, route_info_list):
     for sub_route_info in route_info:
       if (sub_route_info['info']['num_trips'] == 0):
@@ -56,7 +63,7 @@ def analyse():
         num_trips.append(sub_route_info['info']['num_trips'])
         info = sub_route_info['info']
         # otrain.org/ui/routes/#/route-details/13?time=9-12&day=3
-        url = 'http://otrain.org/ui/routes/#/route-details/{}?'.format(route)
+        url = 'http://otrain.org/#/{}/routes/{}'.format(date_range, route)
         if info['week_day'] != 'all':
           url = url + 'day={}'.format(info['week_day'])
         if info['hours'] != 'all':
@@ -85,6 +92,15 @@ def analyse():
 
 
 def analyse2():
+  """
+  Graph demonstrating change in lateness at each
+  stop as the route progresses from source to destination
+  Data used is provided by save_data function
+  """
+
+  # For saving to file without X display
+  # import matplotlib
+  # matplotlib.use('Agg')
   import matplotlib.pyplot as plt
   import numpy as np
   
@@ -124,6 +140,8 @@ def analyse2():
   plt.ylabel('Percent late')
   plt.title('Route lateness progression')
   plt.show()
+  # For saving to file without X display; must also disable plt.show
+  # plt.savefig('route_lateness_vs_progression.png')
 
 res = analyse2()
 #save_data()

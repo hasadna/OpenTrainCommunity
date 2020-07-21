@@ -1,10 +1,16 @@
 """Functions to help in analysis of website data using ipython notebook"""
+"""
+Running the script saves CSV, XLS files with various stats
+on a per-route basis. Depends on pre-cached route data sitting in a
+cache directory (supplied by the download_cache_data_stations_* script)
+"""
 import collections
 import json
 import os
 import requests
 import pandas as pd
 import numpy as np
+import analysis_utils
 
 SERVER_DOMAIN = 'otrain.org'
 LOCAL_DOMAIN = '127.0.0.1:8000'
@@ -43,6 +49,7 @@ logger.addHandler(ch)
 
 
 def get_connected_stop_id_pairs():
+  """Get list of all pairs of directly connected (not requiring transfer) stop_ids"""
   routes = requests.get('http://{}/api/v1/routes/all'.format(DOMAIN)).json()
   pairs = set()
   for route in routes:
@@ -185,8 +192,10 @@ highlights_table = save_highlights_html(stats_table)
 
 print(highlights_table.shape)
 print("")
-highlights_table.to_csv('output_stations.csv', sep='\t')
+stations_csv_path = os.path.join(analysis_utils.STATIC_ANALYSIS_DIR, 'output_stations.csv')
+stations_xls_path = os.path.join(analysis_utils.STATIC_ANALYSIS_DIR, 'stations_output.xlsx')
+highlights_table.to_csv('stations_csv_path', sep='\t')
 # TODO: Add "sudo pip install XlsxWriter", "pip install xlsxwriter" to installation
-writer = pd.ExcelWriter('static/analysis/stations_output.xlsx', engine='xlsxwriter')
+writer = pd.ExcelWriter('stations_xls_path', engine='xlsxwriter')
 highlights_table.to_excel(writer, sheet_name='Sheet1')
 writer.save()

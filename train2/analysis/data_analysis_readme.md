@@ -4,13 +4,13 @@ This README file describes basic usage for the data analysis Python scripts.
 
 The first step (only done once) involves downloading a local cache of the train data from the otrain.org API.
 
-Edit the `download_cache_data.py` script to set the desired date ranges--the `TIME_PERIODS` list contains all year/month combinations to download. Then run the script as follows:
+Edit the `download_cache_data_*.py` scripts to set the desired date ranges--the `TIME_PERIODS` list contains all year/month combinations to download. For *_timespan.py scripts, set the `START_YEAR`, `START_MONTH`, `END_YEAR`, `END_MONTH` variables to define the desired timespans to download. For each script, run it similar to the following example:
 
 ```
-python3 download_cache_data.py
+python3 download_cache_data_routes.py
 ```
 
-The script will create a JSON file for each route, each file containing objects for every time period of interest. These JSON files can later be loaded for analysis offline.
+The script will create a JSON file for each route/station, each file containing objects for every time period of interest. These JSON files can later be loaded for analysis offline.
 
 ### Example analysis--find URLs showing poor performance
 

@@ -1,9 +1,15 @@
 """Functions to help in analysis of website data using ipython notebook"""
+"""
+Running the script saves JSON, XLS files with various stats
+on a per-route basis. Depends on pre-cached route data sitting in a
+cache directory (supplied by the download_cache_data_routes_timespan script)
+"""
 import collections
 import json
 import os
 import requests
 import pandas as pd
+import analysis_utils
 
 DOMAIN = 'otrain.org'
 CACHE_PATH = 'cache/'
@@ -86,7 +92,10 @@ json_stats_table = stats_table[['route_id', 'year', 'month', 'week_day', 'hours'
     'url', 'first_stop', 'last_stop', 'last_stop_arrival_late_pct', 'mean_arrival_late_pct',
     'max_arrival_late_pct']]
 
-json_stats_table.to_json('static/analysis/routes_output_format_records.json', orient='records', lines=True)
+route_json_path = os.path.join(analysis_utils.STATIC_ANALYSIS_DIR, 'routes_output_format_records.json')
+route_xls_path = os.path.join(analysis_utils.STATIC_ANALYSIS_DIR, 'routes_output.xlsx')
+
+json_stats_table.to_json(route_json_path, orient='records', lines=True)
 
 excel_stats_table = stats_table[['year', 'month', 'week_day', 'hours', 'num_trips',
     'url', 'first_stop_hebrew', 'last_stop_hebrew', 'last_stop_arrival_late_pct', 'mean_arrival_late_pct',
@@ -94,6 +103,6 @@ excel_stats_table = stats_table[['year', 'month', 'week_day', 'hours', 'num_trip
 percent_columns = ['last_stop_arrival_late_pct', 'mean_arrival_late_pct', 'max_arrival_late_pct']
 excel_stats_table.loc[:, percent_columns] *= 100
 # TODO: Add "sudo pip install XlsxWriter" to installation
-writer = pd.ExcelWriter('static/analysis/routes_output.xlsx', engine='xlsxwriter')
+writer = pd.ExcelWriter(route_xls_path, engine='xlsxwriter')
 excel_stats_table.to_excel(writer, sheet_name='Sheet1')
 writer.save()
