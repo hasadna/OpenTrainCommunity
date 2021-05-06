@@ -28,7 +28,7 @@
     "clean": "rm -rf ../static/build/"
   },
   "dependencies": {
-    "highcharts": "^6.1.1",
+    "highcharts": "^9.0.0",
     "highcharts-ng": "^1.2.1"
   }
 }
