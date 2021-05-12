@@ -20,7 +20,7 @@
     "popper.js": "^1.14.4"
   },
   "devDependencies": {
-    "chart.js": "^2.7.3",
+    "chart.js": "^2.9.4",
     "css-loader": "^1.0.1",
     "lodash": "^4.17.11",
     "rtlcss": "^2.4.0",
