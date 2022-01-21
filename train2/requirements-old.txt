@@ -1,5 +1,5 @@
 Django==1.10.5
-ipython==4.1.2
+ipython==7.16.3
 django-extensions==1.7.5
 djangorestframework==3.5.3
 pytz==2016.10
