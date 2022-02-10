@@ -17,7 +17,7 @@
     "font-awesome": "^4.7.0",
     "fontawesome": "^4.7.0",
     "ng-annotate-loader": "^0.6.1",
-    "node-sass": "^4.9.3",
+    "node-sass": "^7.0.0",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.0",
     "webpack": "^4.16.1",
