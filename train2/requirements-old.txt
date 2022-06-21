@@ -8,7 +8,7 @@ psycopg2==2.6.2
 requests==2.12.5
 django-rest-swagger==2.1.1
 django-cors-headers==2.0.0
-numpy==1.11.0
+numpy==1.22.0
 networkx==1.11
 pandas==0.19.1
 geocoder==1.22.6
